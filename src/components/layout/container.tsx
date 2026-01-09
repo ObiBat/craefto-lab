@@ -3,11 +3,11 @@ import { cn } from "@/lib/utils";
 
 interface ContainerProps extends React.HTMLAttributes<HTMLDivElement> {
   size?: "sm" | "md" | "lg" | "xl" | "full";
-  as?: React.ElementType;
+  as?: "div" | "section" | "article" | "main";
 }
 
 const Container = React.forwardRef<HTMLDivElement, ContainerProps>(
-  ({ className, size = "full", as: Component = "div", children, ...props }, ref) => {
+  ({ className, size = "full", as = "div", children, ...props }, ref) => {
     const sizeClasses = {
       sm: "max-w-2xl",
       md: "max-w-3xl",
@@ -16,8 +16,10 @@ const Container = React.forwardRef<HTMLDivElement, ContainerProps>(
       full: "max-w-[87.5rem]",
     };
 
+    const Tag = as;
+
     return (
-      <Component
+      <Tag
         ref={ref}
         className={cn(
           "mx-auto w-full px-4 sm:px-6 lg:px-8",
@@ -27,7 +29,7 @@ const Container = React.forwardRef<HTMLDivElement, ContainerProps>(
         {...props}
       >
         {children}
-      </Component>
+      </Tag>
     );
   }
 );
