@@ -183,11 +183,12 @@ export function Metaballs({ className }: MetaballsProps) {
         camera={{ position: [0, 0, 1] }}
         dpr={[1, 1.5]} // Lower DPR for performance
         gl={{
-          antialias: false, // Disable for performance
+          antialias: false,
           alpha: true,
           powerPreference: "high-performance",
           stencil: false,
           depth: false,
+          preserveDrawingBuffer: true, // Required for pixel sampling
         }}
         style={{ background: 'transparent' }}
       >

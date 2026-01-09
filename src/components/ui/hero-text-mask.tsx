@@ -9,12 +9,6 @@ interface HeroTextMaskProps {
   lightClassName?: string;
 }
 
-interface BlobPosition {
-  x: number;
-  y: number;
-  r: number;
-}
-
 export function HeroTextMask({
   children,
   className = "",
@@ -22,118 +16,103 @@ export function HeroTextMask({
   lightClassName = "text-white",
 }: HeroTextMaskProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [blobs, setBlobs] = useState<BlobPosition[]>([]);
-  const [maskId] = useState(() => `hero-mask-${Math.random().toString(36).slice(2, 9)}`);
+  const [isDark, setIsDark] = useState(false);
+  const glRef = useRef<WebGLRenderingContext | WebGL2RenderingContext | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  useEffect(() => {
+    // Find and cache the WebGL canvas
+    const findCanvas = () => {
+      const canvas = document.querySelector("canvas") as HTMLCanvasElement;
+      if (canvas && !canvasRef.current) {
+        canvasRef.current = canvas;
+        glRef.current = canvas.getContext("webgl", { preserveDrawingBuffer: true })
+          || canvas.getContext("webgl2", { preserveDrawingBuffer: true });
+      }
+    };
+
+    // Initial find
+    findCanvas();
+
+    // Retry if not found
+    const retryTimeout = setTimeout(findCanvas, 500);
+
+    return () => clearTimeout(retryTimeout);
+  }, []);
 
   useEffect(() => {
     let animationId: number;
-    const startTime = performance.now();
+    const pixels = new Uint8Array(4);
 
-    const animate = () => {
-      if (!containerRef.current) {
-        animationId = requestAnimationFrame(animate);
+    const checkOverlap = () => {
+      const container = containerRef.current;
+      const canvas = canvasRef.current;
+      const gl = glRef.current;
+
+      if (!container || !canvas || !gl) {
+        animationId = requestAnimationFrame(checkOverlap);
         return;
       }
 
-      const elapsed = (performance.now() - startTime) / 1000;
-      const t = elapsed * 1.2;
+      const textRect = container.getBoundingClientRect();
+      const canvasRect = canvas.getBoundingClientRect();
 
-      // Get the metaball container position relative to viewport
-      // The metaballs are positioned at: md:right-0 md:w-[55%] or translate-x-[30%] on mobile
-      const viewportWidth = window.innerWidth;
-      const viewportHeight = window.innerHeight;
+      // Sample points across the text area
+      const sampleCount = 7;
+      let darkPixelCount = 0;
 
-      // Calculate metaball container bounds
-      let metaballCenterX: number;
-      let metaballCenterY: number;
-      let scale: number;
+      for (let i = 0; i < sampleCount; i++) {
+        // Sample across the width of the text
+        const xRatio = (i + 0.5) / sampleCount;
+        const screenX = textRect.left + textRect.width * xRatio;
+        const screenY = textRect.top + textRect.height * 0.5;
 
-      if (viewportWidth >= 768) {
-        // Desktop: right 55% of screen
-        metaballCenterX = viewportWidth * 0.725; // center of right 55%
-        metaballCenterY = viewportHeight * 0.5;
-        scale = Math.min(viewportWidth * 0.55, viewportHeight) * 0.35;
-      } else {
-        // Mobile: full width but translated 30% right
-        metaballCenterX = viewportWidth * 0.5 + viewportWidth * 0.3;
-        metaballCenterY = viewportHeight * 0.5;
-        scale = Math.min(viewportWidth, viewportHeight) * 0.3;
+        // Convert to canvas coordinates
+        const canvasX = Math.floor(
+          ((screenX - canvasRect.left) / canvasRect.width) * canvas.width
+        );
+        const canvasY = Math.floor(
+          canvas.height - ((screenY - canvasRect.top) / canvasRect.height) * canvas.height
+        );
+
+        if (canvasX >= 0 && canvasX < canvas.width && canvasY >= 0 && canvasY < canvas.height) {
+          try {
+            gl.readPixels(canvasX, canvasY, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+
+            const brightness = (pixels[0] + pixels[1] + pixels[2]) / 3;
+            const alpha = pixels[3];
+
+            // Dark pixel with significant alpha
+            if (alpha > 100 && brightness < 60) {
+              darkPixelCount++;
+            }
+          } catch {
+            // Ignore read errors
+          }
+        }
       }
 
-      // Convert to container-relative coordinates
-      const rect = containerRef.current.getBoundingClientRect();
-      const offsetX = rect.left;
-      const offsetY = rect.top;
-
-      // Calculate blob positions (matching shader math)
-      const newBlobs: BlobPosition[] = [
-        // Core
-        {
-          x: metaballCenterX - offsetX,
-          y: metaballCenterY - offsetY,
-          r: scale * (0.22 + Math.sin(t * 3.0) * 0.04) * 2.5,
-        },
-        // Orbiter 1
-        {
-          x: metaballCenterX - offsetX + (Math.sin(t * 1.4) * 0.35 + Math.cos(t * 2.1) * 0.1) * scale,
-          y: metaballCenterY - offsetY - Math.cos(t * 1.2) * 0.25 * scale,
-          r: scale * (0.16 + Math.sin(t * 2.5) * 0.03) * 2.5,
-        },
-        // Orbiter 2
-        {
-          x: metaballCenterX - offsetX + Math.cos(t * 1.6) * 0.3 * scale,
-          y: metaballCenterY - offsetY - (Math.sin(t * 1.8) * 0.2 + Math.cos(t * 2.4) * 0.1) * scale,
-          r: scale * (0.14 + Math.cos(t * 2.8) * 0.025) * 2.5,
-        },
-        // Particle
-        {
-          x: metaballCenterX - offsetX + Math.sin(t * 2.5) * 0.4 * scale,
-          y: metaballCenterY - offsetY - Math.cos(t * 2.2) * 0.3 * scale,
-          r: scale * (0.08 + Math.sin(t * 4.0) * 0.02) * 2.5,
-        },
-      ];
-
-      setBlobs(newBlobs);
-      animationId = requestAnimationFrame(animate);
+      // If any sample points are dark, switch to light text
+      setIsDark(darkPixelCount >= 1);
+      animationId = requestAnimationFrame(checkOverlap);
     };
 
-    animationId = requestAnimationFrame(animate);
+    // Start checking after a short delay
+    const startTimeout = setTimeout(() => {
+      animationId = requestAnimationFrame(checkOverlap);
+    }, 200);
 
     return () => {
+      clearTimeout(startTimeout);
       cancelAnimationFrame(animationId);
     };
   }, []);
 
   return (
     <div ref={containerRef} className={`relative ${className}`}>
-      {/* SVG Mask Definition */}
-      <svg className="absolute w-0 h-0" aria-hidden="true">
-        <defs>
-          <mask id={maskId}>
-            {/* White background = visible, black = hidden */}
-            <rect x="0" y="0" width="100%" height="100%" fill="black" />
-            {blobs.map((blob, i) => (
-              <circle
-                key={i}
-                cx={blob.x}
-                cy={blob.y}
-                r={blob.r}
-                fill="white"
-              />
-            ))}
-          </mask>
-        </defs>
-      </svg>
-
-      {/* Dark text layer (always visible) */}
-      <div className={darkClassName}>
-        {children}
-      </div>
-
-      {/* Light text layer (only visible where blobs are) */}
       <div
-        className={`absolute inset-0 ${lightClassName}`}
-        style={{ mask: `url(#${maskId})`, WebkitMask: `url(#${maskId})` }}
+        className={isDark ? lightClassName : darkClassName}
+        style={{ transition: "color 0.1s ease-out" }}
       >
         {children}
       </div>
