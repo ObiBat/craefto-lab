@@ -14,14 +14,14 @@ const Metaballs = dynamic(
 export function Hero() {
   return (
     <section className="relative min-h-[100vh] flex items-center pt-20 pb-16 overflow-hidden bg-[hsl(var(--color-background))]">
-      {/* Metaballs - positioned to the right */}
-      <div className="absolute inset-0 z-0 pointer-events-none">
+      {/* 3D Animation - only on larger screens for performance */}
+      <div className="absolute top-0 right-0 w-[55%] h-full z-0 pointer-events-none hidden md:block">
         <Metaballs className="w-full h-full" />
       </div>
 
       {/* Content - left aligned */}
       <Container size="lg" className="relative z-10">
-        <div className="flex flex-col items-start text-left gap-6 max-w-2xl">
+        <div className="flex flex-col items-start text-left gap-6 max-w-xl lg:max-w-2xl">
           <HeroText delay={0}>
             <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-semibold tracking-tighter leading-[0.95] text-[hsl(var(--color-foreground))]">
               Built to compound.
