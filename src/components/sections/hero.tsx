@@ -11,17 +11,14 @@ export function Hero() {
       <Container size="lg">
         <div className="flex flex-col items-center text-center gap-6">
           <HeroText delay={0}>
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-medium tracking-tighter leading-[1.1] text-balance">
-              Crafted Systems for shapers
-              <br />
-              who think long-term.
+            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-semibold tracking-tighter leading-[1] text-balance">
+              Built to compound.
             </h1>
           </HeroText>
 
           <HeroText delay={0.15}>
-            <p className="text-lg sm:text-xl text-[hsl(var(--color-foreground-muted))] max-w-2xl leading-relaxed text-pretty">
-              Craefto Lab is a creative tech studio. We design and build brands,
-              products, and tools for founders and teams who value craft.
+            <p className="text-lg sm:text-xl text-[hsl(var(--color-foreground-muted))] max-w-xl leading-relaxed text-pretty">
+              Design systems and digital products for founders who measure success in years, not quarters.
             </p>
           </HeroText>
 
