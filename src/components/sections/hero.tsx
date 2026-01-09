@@ -6,7 +6,6 @@ import { Container } from "@/components/layout/container";
 import { Button } from "@/components/ui/button";
 import { HeroText } from "@/components/ui/motion";
 
-// Dynamic import to avoid SSR issues with Three.js
 const Metaballs = dynamic(
   () => import("@/components/ui/metaballs").then((mod) => mod.Metaballs),
   { ssr: false }
@@ -14,26 +13,23 @@ const Metaballs = dynamic(
 
 export function Hero() {
   return (
-    <section className="relative min-h-[100vh] flex items-center pt-16 overflow-hidden">
-      {/* Metaballs Background */}
-      <div className="absolute inset-0 z-0">
+    <section className="relative min-h-[100vh] flex items-center pt-20 pb-16 overflow-hidden bg-[hsl(var(--color-background))]">
+      {/* Metaballs - positioned to the right */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
         <Metaballs className="w-full h-full" />
       </div>
 
-      {/* Gradient overlay for text readability */}
-      <div className="absolute inset-0 z-[1] bg-gradient-to-b from-[hsl(var(--color-background))]/30 via-transparent to-[hsl(var(--color-background))]/80 pointer-events-none" />
-
-      {/* Content */}
+      {/* Content - left aligned */}
       <Container size="lg" className="relative z-10">
-        <div className="flex flex-col items-center text-center gap-6">
+        <div className="flex flex-col items-start text-left gap-6 max-w-2xl">
           <HeroText delay={0}>
-            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-semibold tracking-tighter leading-[1] text-balance">
+            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-semibold tracking-tighter leading-[0.95] text-[hsl(var(--color-foreground))]">
               Built to compound.
             </h1>
           </HeroText>
 
           <HeroText delay={0.15}>
-            <p className="text-lg sm:text-xl text-[hsl(var(--color-foreground-muted))] max-w-xl leading-relaxed text-pretty">
+            <p className="text-lg sm:text-xl text-[hsl(var(--color-foreground-muted))] max-w-lg leading-relaxed">
               Design systems and digital products for founders who measure success in years, not quarters.
             </p>
           </HeroText>
