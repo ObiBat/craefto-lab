@@ -14,8 +14,8 @@ const Metaballs = dynamic(
 export function Hero() {
   return (
     <section className="relative min-h-[100vh] flex items-center pt-20 pb-16 overflow-hidden bg-[hsl(var(--color-background))]">
-      {/* 3D Animation - only on larger screens for performance */}
-      <div className="absolute top-0 right-0 w-[55%] h-full z-0 pointer-events-none hidden md:block">
+      {/* 3D Animation - desktop: right side, mobile: behind text offset right */}
+      <div className="absolute inset-0 z-0 pointer-events-none md:left-auto md:right-0 md:w-[55%] translate-x-[15%] md:translate-x-0">
         <Metaballs className="w-full h-full" />
       </div>
 
