@@ -122,10 +122,10 @@ const fragmentShader = `
     float diff2 = max(dot(n, l2), 0.0) * 0.4;
     float spec = pow(max(dot(reflect(-l1, n), v), 0.0), 48.0);
 
-    // Muted but with depth
-    vec3 base = vec3(0.06, 0.055, 0.08);
-    vec3 mid = vec3(0.12, 0.11, 0.15);
-    vec3 rim = vec3(0.22, 0.19, 0.28);
+    // Muted with sage green accent (brand color)
+    vec3 base = vec3(0.05, 0.055, 0.055);
+    vec3 mid = vec3(0.10, 0.12, 0.11);
+    vec3 rim = vec3(0.29, 0.42, 0.34); // Sage green accent
 
     vec3 color = base;
     color += mid * (diff1 + diff2);
