@@ -188,7 +188,6 @@ export function Metaballs({ className }: MetaballsProps) {
           powerPreference: "high-performance",
           stencil: false,
           depth: false,
-          preserveDrawingBuffer: true, // Required for pixel sampling
         }}
         style={{ background: 'transparent' }}
       >

@@ -9,6 +9,12 @@ interface HeroTextMaskProps {
   lightClassName?: string;
 }
 
+interface Blob {
+  x: number;
+  y: number;
+  r: number;
+}
+
 export function HeroTextMask({
   children,
   className = "",
@@ -16,103 +22,118 @@ export function HeroTextMask({
   lightClassName = "text-white",
 }: HeroTextMaskProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [isDark, setIsDark] = useState(false);
-  const glRef = useRef<WebGLRenderingContext | WebGL2RenderingContext | null>(null);
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-
-  useEffect(() => {
-    // Find and cache the WebGL canvas
-    const findCanvas = () => {
-      const canvas = document.querySelector("canvas") as HTMLCanvasElement;
-      if (canvas && !canvasRef.current) {
-        canvasRef.current = canvas;
-        glRef.current = canvas.getContext("webgl", { preserveDrawingBuffer: true })
-          || canvas.getContext("webgl2", { preserveDrawingBuffer: true });
-      }
-    };
-
-    // Initial find
-    findCanvas();
-
-    // Retry if not found
-    const retryTimeout = setTimeout(findCanvas, 500);
-
-    return () => clearTimeout(retryTimeout);
-  }, []);
+  const [isOverlapping, setIsOverlapping] = useState(false);
+  const startTimeRef = useRef(performance.now());
 
   useEffect(() => {
     let animationId: number;
-    const pixels = new Uint8Array(4);
 
     const checkOverlap = () => {
       const container = containerRef.current;
-      const canvas = canvasRef.current;
-      const gl = glRef.current;
-
-      if (!container || !canvas || !gl) {
+      if (!container) {
         animationId = requestAnimationFrame(checkOverlap);
         return;
       }
 
-      const textRect = container.getBoundingClientRect();
-      const canvasRect = canvas.getBoundingClientRect();
+      const elapsed = (performance.now() - startTimeRef.current) / 1000;
+      const t = elapsed * 1.2; // Match shader time multiplier
 
-      // Sample points across the text area
-      const sampleCount = 7;
-      let darkPixelCount = 0;
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
 
-      for (let i = 0; i < sampleCount; i++) {
-        // Sample across the width of the text
-        const xRatio = (i + 0.5) / sampleCount;
-        const screenX = textRect.left + textRect.width * xRatio;
-        const screenY = textRect.top + textRect.height * 0.5;
+      // Calculate metaball container center based on CSS positioning
+      // Mobile: full width + translate-x-[30%]
+      // Desktop (md+): right 55% of screen
+      let centerX: number;
+      let centerY: number;
+      let scale: number;
 
-        // Convert to canvas coordinates
-        const canvasX = Math.floor(
-          ((screenX - canvasRect.left) / canvasRect.width) * canvas.width
-        );
-        const canvasY = Math.floor(
-          canvas.height - ((screenY - canvasRect.top) / canvasRect.height) * canvas.height
-        );
-
-        if (canvasX >= 0 && canvasX < canvas.width && canvasY >= 0 && canvasY < canvas.height) {
-          try {
-            gl.readPixels(canvasX, canvasY, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
-
-            const brightness = (pixels[0] + pixels[1] + pixels[2]) / 3;
-            const alpha = pixels[3];
-
-            // Dark pixel with significant alpha
-            if (alpha > 100 && brightness < 60) {
-              darkPixelCount++;
-            }
-          } catch {
-            // Ignore read errors
-          }
-        }
+      if (vw >= 768) {
+        // Desktop: positioned at right 55%, so center is at 72.5% from left
+        centerX = vw * 0.725;
+        centerY = vh * 0.5;
+        scale = Math.min(vw * 0.55, vh) * 0.4;
+      } else {
+        // Mobile: centered + 30% offset to right
+        centerX = vw * 0.5 + vw * 0.3;
+        centerY = vh * 0.5;
+        scale = Math.min(vw, vh) * 0.35;
       }
 
-      // If any sample points are dark, switch to light text
-      setIsDark(darkPixelCount >= 1);
+      // Calculate blob positions matching shader exactly
+      const blobs: Blob[] = [
+        // Core with breathing
+        {
+          x: centerX,
+          y: centerY,
+          r: scale * (0.22 + Math.sin(t * 3.0) * 0.04) * 2.2,
+        },
+        // Orbiter 1
+        {
+          x: centerX + (Math.sin(t * 1.4) * 0.35 + Math.cos(t * 2.1) * 0.1) * scale,
+          y: centerY - Math.cos(t * 1.2) * 0.25 * scale,
+          r: scale * (0.16 + Math.sin(t * 2.5) * 0.03) * 2.2,
+        },
+        // Orbiter 2
+        {
+          x: centerX + Math.cos(t * 1.6) * 0.3 * scale,
+          y: centerY - (Math.sin(t * 1.8) * 0.2 + Math.cos(t * 2.4) * 0.1) * scale,
+          r: scale * (0.14 + Math.cos(t * 2.8) * 0.025) * 2.2,
+        },
+        // Small particle
+        {
+          x: centerX + Math.sin(t * 2.5) * 0.4 * scale,
+          y: centerY - Math.cos(t * 2.2) * 0.3 * scale,
+          r: scale * (0.08 + Math.sin(t * 4.0) * 0.02) * 2.2,
+        },
+      ];
+
+      // Get text element bounds
+      const textRect = container.getBoundingClientRect();
+      const textCenterX = textRect.left + textRect.width * 0.5;
+      const textCenterY = textRect.top + textRect.height * 0.5;
+
+      // Check multiple points along the text
+      const samplePoints = [
+        { x: textRect.left + textRect.width * 0.2, y: textCenterY },
+        { x: textRect.left + textRect.width * 0.4, y: textCenterY },
+        { x: textCenterX, y: textCenterY },
+        { x: textRect.left + textRect.width * 0.6, y: textCenterY },
+        { x: textRect.left + textRect.width * 0.8, y: textCenterY },
+      ];
+
+      // Check if any sample point is inside any blob
+      let hasOverlap = false;
+      for (const point of samplePoints) {
+        for (const blob of blobs) {
+          const dx = point.x - blob.x;
+          const dy = point.y - blob.y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+
+          if (distance < blob.r) {
+            hasOverlap = true;
+            break;
+          }
+        }
+        if (hasOverlap) break;
+      }
+
+      setIsOverlapping(hasOverlap);
       animationId = requestAnimationFrame(checkOverlap);
     };
 
-    // Start checking after a short delay
-    const startTimeout = setTimeout(() => {
-      animationId = requestAnimationFrame(checkOverlap);
-    }, 200);
+    animationId = requestAnimationFrame(checkOverlap);
 
     return () => {
-      clearTimeout(startTimeout);
       cancelAnimationFrame(animationId);
     };
   }, []);
 
   return (
-    <div ref={containerRef} className={`relative ${className}`}>
+    <div ref={containerRef} className={`${className}`}>
       <div
-        className={isDark ? lightClassName : darkClassName}
-        style={{ transition: "color 0.1s ease-out" }}
+        className={isOverlapping ? lightClassName : darkClassName}
+        style={{ transition: "color 0.15s ease-out" }}
       >
         {children}
       </div>
