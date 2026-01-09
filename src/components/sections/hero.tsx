@@ -13,27 +13,30 @@ const Metaballs = dynamic(
 
 export function Hero() {
   return (
-    <section className="relative min-h-[100vh] flex items-center pt-20 pb-16 overflow-hidden bg-[hsl(var(--color-background))]">
+    <section className="relative min-h-[100vh] flex items-center pt-20 pb-16 overflow-hidden bg-[hsl(var(--color-background))] isolate">
       {/* 3D Animation - desktop: right side, mobile: behind text offset right */}
       <div className="absolute inset-0 z-0 pointer-events-none md:left-auto md:right-0 md:w-[55%] translate-x-[30%] md:translate-x-0">
         <Metaballs className="w-full h-full" />
       </div>
 
-      {/* Content - left aligned */}
+      {/* Content - left aligned with blend mode for text inversion */}
       <Container size="lg" className="relative z-10">
         <div className="flex flex-col items-start text-left gap-6 max-w-xl lg:max-w-2xl">
+          {/* Headline with mix-blend-mode: difference - white text inverts to dark on light bg, stays light on dark shapes */}
           <HeroText delay={0}>
-            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-semibold tracking-tighter leading-[0.95] text-[hsl(var(--color-foreground))]">
+            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-semibold tracking-tighter leading-[0.95] text-white mix-blend-difference">
               Built to compound.
             </h1>
           </HeroText>
 
+          {/* Subtext with blend mode - slightly off-white for softer contrast */}
           <HeroText delay={0.15}>
-            <p className="text-lg sm:text-xl text-[hsl(var(--color-foreground-muted))] max-w-lg leading-relaxed">
+            <p className="text-lg sm:text-xl text-[#E8E5E0] max-w-lg leading-relaxed mix-blend-difference">
               Design systems and digital products for founders who measure success in years, not quarters.
             </p>
           </HeroText>
 
+          {/* Buttons stay normal - no blend mode */}
           <HeroText delay={0.3}>
             <div className="flex flex-col sm:flex-row gap-4 mt-4">
               <Button size="lg" asChild>
