@@ -13,9 +13,12 @@ const Metaballs = dynamic(
 
 export function Hero() {
   return (
-    <section className="relative min-h-[100vh] flex items-center pt-20 pb-16 overflow-hidden bg-[hsl(var(--color-background))] isolate">
+    <section className="relative min-h-[100vh] flex items-center pt-20 pb-16 overflow-hidden">
+      {/* Background layer for blend mode to work against */}
+      <div className="absolute inset-0 bg-[hsl(var(--color-background))] z-0" />
+
       {/* 3D Animation - desktop: right side, mobile: behind text offset right */}
-      <div className="absolute inset-0 z-0 pointer-events-none md:left-auto md:right-0 md:w-[55%] translate-x-[30%] md:translate-x-0">
+      <div className="absolute inset-0 z-[1] pointer-events-none md:left-auto md:right-0 md:w-[55%] translate-x-[30%] md:translate-x-0">
         <Metaballs className="w-full h-full" />
       </div>
 
