@@ -1,14 +1,30 @@
 "use client";
 
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { Container } from "@/components/layout/container";
 import { Button } from "@/components/ui/button";
 import { HeroText } from "@/components/ui/motion";
 
+// Dynamic import to avoid SSR issues with Three.js
+const Metaballs = dynamic(
+  () => import("@/components/ui/metaballs").then((mod) => mod.Metaballs),
+  { ssr: false }
+);
+
 export function Hero() {
   return (
-    <section className="relative min-h-[90vh] flex items-center pt-16">
-      <Container size="lg">
+    <section className="relative min-h-[100vh] flex items-center pt-16 overflow-hidden">
+      {/* Metaballs Background */}
+      <div className="absolute inset-0 z-0">
+        <Metaballs className="w-full h-full" />
+      </div>
+
+      {/* Gradient overlay for text readability */}
+      <div className="absolute inset-0 z-[1] bg-gradient-to-b from-[hsl(var(--color-background))]/30 via-transparent to-[hsl(var(--color-background))]/80 pointer-events-none" />
+
+      {/* Content */}
+      <Container size="lg" className="relative z-10">
         <div className="flex flex-col items-center text-center gap-6">
           <HeroText delay={0}>
             <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-semibold tracking-tighter leading-[1] text-balance">

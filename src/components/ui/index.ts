@@ -3,6 +3,7 @@ export { Card, CardHeader, CardTitle, CardDescription, CardContent } from "./car
 export { Badge, badgeVariants } from "./badge";
 export { Logo, LogoStatic } from "./logo";
 export { ProjectImagePlaceholder } from "./project-image-placeholder";
+export { Metaballs } from "./metaballs";
 export { Input } from "./input";
 export { Textarea } from "./textarea";
 export { Select } from "./select";
