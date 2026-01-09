@@ -9,6 +9,7 @@ export { Textarea } from "./textarea";
 export { Select } from "./select";
 export { Separator } from "./separator";
 export { SectionLabel } from "./section-label";
+export { HeroTextMask } from "./hero-text-mask";
 export {
   // Components
   AnimatedSection,

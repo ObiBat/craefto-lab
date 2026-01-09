@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import { Container } from "@/components/layout/container";
 import { Button } from "@/components/ui/button";
 import { HeroText } from "@/components/ui/motion";
+import { HeroTextMask } from "@/components/ui/hero-text-mask";
 
 const Metaballs = dynamic(
   () => import("@/components/ui/metaballs").then((mod) => mod.Metaballs),
@@ -23,15 +24,25 @@ export function Hero() {
       <Container size="lg" className="relative z-10">
         <div className="flex flex-col items-start text-left gap-6 max-w-xl lg:max-w-2xl">
           <HeroText delay={0}>
-            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-semibold tracking-tighter leading-[0.95] text-[hsl(var(--color-foreground))]">
-              Built to compound.
-            </h1>
+            <HeroTextMask
+              darkClassName="text-[hsl(var(--color-foreground))]"
+              lightClassName="text-white"
+            >
+              <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-semibold tracking-tighter leading-[0.95]">
+                Built to compound.
+              </h1>
+            </HeroTextMask>
           </HeroText>
 
           <HeroText delay={0.15}>
-            <p className="text-lg sm:text-xl text-[hsl(var(--color-foreground-muted))] max-w-lg leading-relaxed">
-              Design systems and digital products for founders who measure success in years, not quarters.
-            </p>
+            <HeroTextMask
+              darkClassName="text-[hsl(var(--color-foreground-muted))]"
+              lightClassName="text-white/90"
+            >
+              <p className="text-lg sm:text-xl max-w-lg leading-relaxed">
+                Design systems and digital products for founders who measure success in years, not quarters.
+              </p>
+            </HeroTextMask>
           </HeroText>
 
           <HeroText delay={0.3}>
