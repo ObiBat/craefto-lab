@@ -2,97 +2,106 @@
 
 import Link from "next/link";
 import { Header, Footer, Container, Section } from "@/components/layout";
-import { Separator, PageTransition, AnimatedSection, StaggeredGrid, StaggeredItem, HeroText } from "@/components/ui";
+import { Separator, PageTransition, AnimatedSection, StaggeredGrid, StaggeredItem, HeroText, SectionLabel } from "@/components/ui";
 import { Button } from "@/components/ui/button";
 
 const services = [
   {
     id: "brand",
+    number: "01",
     title: "Brand Identity & Design Systems",
+    tagline: "Strategic foundations that scale",
     description:
-      "Strategic foundations and visual systems that scale with your business. We create brands that communicate clearly and design systems that maintain consistency across every touchpoint.",
+      "We create brands that communicate clearly and design systems that maintain consistency across every touchpoint.",
     includes: [
       "Brand strategy & positioning",
       "Logo & visual identity",
       "Design system & component library",
       "Brand guidelines documentation",
-      "Asset creation & templates",
     ],
   },
   {
     id: "web",
+    number: "02",
     title: "Web Design & Development",
+    tagline: "Design and engineering as one",
     description:
-      "Marketing sites, SaaS platforms, and dashboards built for performance. Design and development as one unified process with no handoffs and no lost context.",
+      "Marketing sites, SaaS platforms, and dashboards. No handoffs, no lost context between design and code.",
     includes: [
       "Information architecture & UX",
       "Visual design & prototyping",
       "Frontend development (React, Next.js)",
-      "CMS integration",
       "Performance optimization",
     ],
   },
   {
     id: "creative",
+    number: "03",
     title: "Creative-Tech Products",
+    tagline: "Memorable digital moments",
     description:
-      "Interactive experiences, 3D, and experimental web work. For brands that want to push boundaries and create memorable digital moments.",
+      "Interactive experiences, 3D, and experimental web work for brands that want to push boundaries.",
     includes: [
       "Interactive storytelling",
       "3D & WebGL experiences",
       "Generative & data-driven art",
-      "Experimental interfaces",
       "Campaign microsites",
     ],
   },
   {
     id: "saas",
+    number: "04",
     title: "SaaS & Internal Tools",
+    tagline: "Tools your business needs",
     description:
-      "MVPs, client portals, and automation systems. We help you build the tools your business needs, whether customer facing or internal operations.",
+      "MVPs, client portals, and automation systems. Customer-facing or internal operations.",
     includes: [
       "Product strategy & scoping",
       "UI/UX design",
       "Full-stack development",
-      "Database architecture",
       "API integrations",
     ],
   },
   {
     id: "ai",
+    number: "05",
     title: "AI-Powered Systems",
+    tagline: "AI as a force multiplier",
     description:
-      "Workflows, agents, and intelligence tools for modern teams. We help you leverage AI meaningfully, not as a buzzword but as a genuine force multiplier.",
+      "Workflows, agents, and intelligence tools. Meaningful AI, not buzzwords.",
     includes: [
       "AI strategy & use case discovery",
       "Custom agent development",
       "Workflow automation",
       "LLM integrations",
-      "Internal knowledge systems",
     ],
   },
 ];
 
 const workProcess = [
   {
+    number: "01",
     title: "Discovery",
     description:
-      "We start with a conversation to understand your goals, context, and constraints. No assumptions, just questions.",
+      "Understand goals, context, and constraints.",
   },
   {
+    number: "02",
     title: "Proposal",
     description:
-      "Based on discovery, we provide a clear scope, timeline, and investment. Transparent and straightforward.",
+      "Clear scope, timeline, and investment.",
   },
   {
+    number: "03",
     title: "Execution",
     description:
-      "Design and build in focused sprints with regular check-ins. You're involved throughout, not just at the end.",
+      "Build in focused sprints with regular check-ins.",
   },
   {
+    number: "04",
     title: "Launch & Support",
     description:
-      "We deploy, test, and support your project post-launch. The relationship doesn't end at delivery.",
+      "Deploy, test, and support post-launch.",
   },
 ];
 
@@ -103,69 +112,77 @@ export default function ServicesPage() {
       <PageTransition>
         <main id="main-content" className="pt-20">
           {/* Hero */}
-          <Section spacing="xs">
+          <Section spacing="sm">
             <Container>
               <div className="max-w-3xl">
                 <HeroText>
-                  <h1 className="text-4xl sm:text-5xl font-semibold tracking-tight mb-6">
+                  <h1 className="font-semibold tracking-tight mb-6">
                     Services
                   </h1>
                 </HeroText>
                 <HeroText delay={0.1}>
-                  <p className="text-xl text-[hsl(var(--color-foreground-muted))] leading-relaxed">
-                    We build tailored systems, not templates. Each project is
-                    approached from first principles, designed for your specific
-                    goals.
+                  <p className="text-xl text-[hsl(var(--color-foreground-muted))] leading-relaxed max-w-xl">
+                    Tailored systems, not templates. Each project is approached from first principles.
                   </p>
                 </HeroText>
               </div>
             </Container>
           </Section>
 
+          {/* Anchor Navigation */}
+          <Section spacing="xs">
+            <Container>
+              <AnimatedSection>
+                <nav className="flex flex-wrap gap-3">
+                  {services.map((service) => (
+                    <a
+                      key={service.id}
+                      href={`#${service.id}`}
+                      className="px-4 py-2 text-sm font-medium rounded-full border border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground-muted))] hover:text-[hsl(var(--color-foreground))] hover:border-[hsl(var(--color-foreground))] transition-colors"
+                    >
+                      {service.title.split(" ")[0]}
+                    </a>
+                  ))}
+                </nav>
+              </AnimatedSection>
+            </Container>
+          </Section>
+
           {/* Services List */}
           <Section spacing="md">
             <Container>
-              <div className="flex flex-col gap-16">
+              <div className="flex flex-col gap-20">
                 {services.map((service, index) => (
                   <AnimatedSection key={service.id} delay={index * 0.05}>
-                    <div id={service.id}>
-                      {index > 0 && <Separator className="mb-16" />}
-                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16">
-                        <div>
-                          <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight mb-4">
+                    <div id={service.id} className="scroll-mt-24">
+                      {index > 0 && <Separator className="mb-20" />}
+                      <div className="flex flex-col gap-8">
+                        {/* Service Header */}
+                        <div className="flex flex-col gap-4 max-w-2xl">
+                          <span className="text-xs font-medium text-[hsl(var(--color-accent))] tabular-nums">
+                            {service.number}
+                          </span>
+                          <h2 className="font-semibold tracking-tight">
                             {service.title}
                           </h2>
-                          <p className="text-[hsl(var(--color-foreground-muted))] leading-relaxed">
+                          <p className="text-sm font-medium text-[hsl(var(--color-foreground-subtle))] uppercase tracking-wide">
+                            {service.tagline}
+                          </p>
+                          <p className="text-lg text-[hsl(var(--color-foreground-muted))] leading-relaxed mt-2">
                             {service.description}
                           </p>
                         </div>
-                        <div>
-                          <h3 className="text-sm font-medium text-[hsl(var(--color-foreground-subtle))] uppercase tracking-wide mb-4">
-                            What&apos;s included
-                          </h3>
-                          <ul className="space-y-3">
-                            {service.includes.map((item) => (
-                              <li
-                                key={item}
-                                className="flex items-start gap-3 text-[hsl(var(--color-foreground-muted))]"
-                              >
-                                <svg
-                                  className="w-5 h-5 text-[hsl(var(--color-accent))] mt-0.5 flex-shrink-0"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  viewBox="0 0 24 24"
-                                >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M5 13l4 4L19 7"
-                                  />
-                                </svg>
-                                {item}
-                              </li>
-                            ))}
-                          </ul>
+
+                        {/* Includes as pills */}
+                        <div className="flex flex-wrap gap-2 mt-4">
+                          {service.includes.map((item) => (
+                            <span
+                              key={item}
+                              className="px-3 py-1.5 text-sm rounded-full bg-[hsl(var(--color-background-muted))] text-[hsl(var(--color-foreground-muted))] border border-[hsl(var(--color-border))]"
+                            >
+                              {item}
+                            </span>
+                          ))}
                         </div>
                       </div>
                     </div>
@@ -178,23 +195,26 @@ export default function ServicesPage() {
           {/* How We Work */}
           <Section spacing="lg">
             <Container>
-              <div className="flex flex-col gap-12">
+              <div className="flex flex-col gap-14">
                 <AnimatedSection>
-                  <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight">
-                    How we work
-                  </h2>
+                  <div className="flex flex-col gap-4">
+                    <SectionLabel label="Process" />
+                    <h2 className="font-semibold tracking-tight">
+                      How we work
+                    </h2>
+                  </div>
                 </AnimatedSection>
 
                 <Separator />
 
-                <StaggeredGrid className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                  {workProcess.map((step, index) => (
+                <StaggeredGrid className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
+                  {workProcess.map((step) => (
                     <StaggeredItem key={step.title}>
                       <div className="flex flex-col gap-3">
-                        <span className="text-sm font-medium text-[hsl(var(--color-foreground-subtle))]">
-                          {String(index + 1).padStart(2, "0")}
+                        <span className="text-xs font-semibold text-[hsl(var(--color-accent))] tabular-nums">
+                          {step.number}
                         </span>
-                        <h3 className="text-lg font-semibold">{step.title}</h3>
+                        <h3 className="font-semibold tracking-tight">{step.title}</h3>
                         <p className="text-sm text-[hsl(var(--color-foreground-muted))] leading-relaxed">
                           {step.description}
                         </p>

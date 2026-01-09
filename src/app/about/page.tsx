@@ -2,30 +2,41 @@
 
 import Link from "next/link";
 import { Header, Footer, Container, Section } from "@/components/layout";
-import { Separator, PageTransition, AnimatedSection, StaggeredGrid, StaggeredItem, HeroText } from "@/components/ui";
+import { Separator, PageTransition, AnimatedSection, StaggeredGrid, StaggeredItem, HeroText, SectionLabel } from "@/components/ui";
 import { Button } from "@/components/ui/button";
 
 const values = [
   {
+    number: "01",
     title: "Clarity over cleverness",
     description:
-      "If it can't be explained simply, it's not ready. We value clear thinking and clear communication above all.",
+      "If it can't be explained simply, it's not ready.",
   },
   {
+    number: "02",
     title: "Systems over shortcuts",
     description:
-      "We build foundations that scale, not quick fixes that create debt. Every decision considers the long game.",
+      "Foundations that scale, not fixes that create debt.",
   },
   {
+    number: "03",
     title: "Craft over speed",
     description:
-      "Quality takes time. We don't rush to ship, we ship when it's right. The details matter.",
+      "We ship when it's right. Details matter.",
   },
   {
+    number: "04",
     title: "Partnership over transactions",
     description:
-      "We work with clients, not for them. The best outcomes come from real collaboration and shared ownership.",
+      "We work with clients, not for them.",
   },
+];
+
+const whatWeDontDo = [
+  "Rush to ship half-baked work",
+  "Follow trends without purpose",
+  "Disappear after delivery",
+  "Treat your project as just another job",
 ];
 
 export default function AboutPage() {
@@ -35,18 +46,17 @@ export default function AboutPage() {
       <PageTransition>
         <main id="main-content" className="pt-20">
           {/* Hero */}
-          <Section spacing="xs">
+          <Section spacing="sm">
             <Container>
               <div className="max-w-3xl">
                 <HeroText>
-                  <h1 className="text-4xl sm:text-5xl font-semibold tracking-tight mb-6">
+                  <h1 className="font-semibold tracking-tight mb-6">
                     About
                   </h1>
                 </HeroText>
                 <HeroText delay={0.1}>
-                  <p className="text-xl text-[hsl(var(--color-foreground-muted))] leading-relaxed">
-                    Craefto Lab is a creative tech studio building systems for
-                    founders and teams who think long-term.
+                  <p className="text-xl text-[hsl(var(--color-foreground-muted))] leading-relaxed max-w-xl">
+                    A creative tech studio building systems for founders who think long-term.
                   </p>
                 </HeroText>
               </div>
@@ -54,39 +64,38 @@ export default function AboutPage() {
           </Section>
 
           {/* Philosophy */}
-          <Section spacing="md">
+          <Section spacing="lg">
             <Container>
-              <div className="flex flex-col gap-12">
+              <div className="flex flex-col gap-14">
                 <AnimatedSection>
-                  <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight">
-                    Philosophy
-                  </h2>
+                  <div className="flex flex-col gap-4">
+                    <SectionLabel number="01" label="Philosophy" />
+                    <h2 className="font-semibold tracking-tight">
+                      How we think
+                    </h2>
+                  </div>
                 </AnimatedSection>
 
                 <Separator />
 
                 <AnimatedSection delay={0.1}>
-                  <div className="max-w-3xl space-y-6 text-lg text-[hsl(var(--color-foreground-muted))] leading-relaxed">
-                    <p>
-                      We believe the best digital products come from treating design
-                      and engineering as one discipline, not separate departments
-                      that hand off work.
-                    </p>
-                    <p>
-                      We don&apos;t build templates. We don&apos;t follow trends for
-                      their own sake. Every project starts with understanding: what
-                      are you actually trying to build, and why does it matter?
-                    </p>
-                    <p>
-                      From there, we design systems, not just interfaces. Systems
-                      that scale, that maintain consistency, that can evolve as your
-                      business grows.
-                    </p>
-                    <p>
-                      This isn&apos;t about being slow or precious. It&apos;s about
-                      being intentional. The time we invest in foundations pays off
-                      in speed, quality, and longevity.
-                    </p>
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
+                    <div className="space-y-6 text-lg text-[hsl(var(--color-foreground-muted))] leading-relaxed">
+                      <p>
+                        <strong className="text-[hsl(var(--color-foreground))]">Design and engineering as one.</strong> The best digital products come from treating them as one discipline, not separate departments.
+                      </p>
+                      <p>
+                        <strong className="text-[hsl(var(--color-foreground))]">Systems, not templates.</strong> Every project starts with understanding: what are you actually building, and why?
+                      </p>
+                    </div>
+                    <div className="space-y-6 text-lg text-[hsl(var(--color-foreground-muted))] leading-relaxed">
+                      <p>
+                        <strong className="text-[hsl(var(--color-foreground))]">Intentional foundations.</strong> We design systems that scale, maintain consistency, and evolve with your business.
+                      </p>
+                      <p>
+                        <strong className="text-[hsl(var(--color-foreground))]">Long-term thinking.</strong> The time we invest in foundations pays off in speed, quality, and longevity.
+                      </p>
+                    </div>
                   </div>
                 </AnimatedSection>
               </div>
@@ -96,25 +105,77 @@ export default function AboutPage() {
           {/* Values */}
           <Section spacing="lg">
             <Container>
-              <div className="flex flex-col gap-12">
+              <div className="flex flex-col gap-14">
                 <AnimatedSection>
-                  <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight">
-                    What we value
-                  </h2>
+                  <div className="flex flex-col gap-4">
+                    <SectionLabel number="02" label="Values" />
+                    <h2 className="font-semibold tracking-tight">
+                      What we value
+                    </h2>
+                  </div>
                 </AnimatedSection>
 
                 <Separator />
 
-                <StaggeredGrid className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
+                <StaggeredGrid className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                   {values.map((value) => (
                     <StaggeredItem key={value.title}>
-                      <div className="p-6 rounded-lg border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))]">
-                        <h3 className="text-lg font-semibold tracking-tight mb-3">
+                      <div className="flex flex-col gap-4">
+                        <span className="text-xs font-semibold text-[hsl(var(--color-accent))] tabular-nums">
+                          {value.number}
+                        </span>
+                        <h3 className="font-semibold tracking-tight">
                           {value.title}
                         </h3>
-                        <p className="text-[hsl(var(--color-foreground-muted))] leading-relaxed">
+                        <p className="text-sm text-[hsl(var(--color-foreground-muted))] leading-relaxed">
                           {value.description}
                         </p>
+                      </div>
+                    </StaggeredItem>
+                  ))}
+                </StaggeredGrid>
+              </div>
+            </Container>
+          </Section>
+
+          {/* What We Don't Do */}
+          <Section spacing="lg">
+            <Container>
+              <div className="flex flex-col gap-14">
+                <AnimatedSection>
+                  <div className="flex flex-col gap-4">
+                    <SectionLabel number="03" label="Boundaries" />
+                    <h2 className="font-semibold tracking-tight">
+                      What we don&apos;t do
+                    </h2>
+                    <p className="text-lg text-[hsl(var(--color-foreground-muted))] max-w-xl leading-relaxed mt-2">
+                      Being clear about what we won&apos;t do helps us focus on what we do best.
+                    </p>
+                  </div>
+                </AnimatedSection>
+
+                <Separator />
+
+                <StaggeredGrid className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  {whatWeDontDo.map((item, index) => (
+                    <StaggeredItem key={item}>
+                      <div className="flex items-center gap-4 p-4 rounded-lg border border-[hsl(var(--color-border))]">
+                        <svg
+                          className="w-5 h-5 text-[hsl(var(--color-foreground-subtle))] shrink-0"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M6 18L18 6M6 6l12 12"
+                          />
+                        </svg>
+                        <span className="text-[hsl(var(--color-foreground-muted))]">
+                          {item}
+                        </span>
                       </div>
                     </StaggeredItem>
                   ))}
@@ -126,30 +187,28 @@ export default function AboutPage() {
           {/* Looking Ahead */}
           <Section spacing="lg">
             <Container>
-              <div className="flex flex-col gap-12">
+              <div className="flex flex-col gap-14">
                 <AnimatedSection>
-                  <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight">
-                    Looking ahead
-                  </h2>
+                  <div className="flex flex-col gap-4">
+                    <SectionLabel number="04" label="Future" />
+                    <h2 className="font-semibold tracking-tight">
+                      Looking ahead
+                    </h2>
+                  </div>
                 </AnimatedSection>
 
                 <Separator />
 
                 <AnimatedSection delay={0.1}>
-                  <div className="max-w-3xl space-y-6 text-lg text-[hsl(var(--color-foreground-muted))] leading-relaxed">
+                  <div className="max-w-2xl space-y-6 text-lg text-[hsl(var(--color-foreground-muted))] leading-relaxed">
                     <p>
-                      Craefto Lab is more than a service studio. We&apos;re building
-                      toward our own products, tools, and systems. Things we can
-                      release into the world.
+                      <strong className="text-[hsl(var(--color-foreground))]">Beyond services.</strong> We&apos;re building toward our own products, tools, and systems we can release into the world.
                     </p>
                     <p>
-                      The Lab section (coming soon) will be home to experiments, R&D
-                      projects, and open resources. We believe in building in public
-                      and sharing what we learn.
+                      <strong className="text-[hsl(var(--color-foreground))]">The Lab.</strong> Coming soon: experiments, R&D projects, and open resources. Building in public and sharing what we learn.
                     </p>
                     <p>
-                      If you&apos;re a founder, creator, or team building something
-                      meaningful, we&apos;d love to hear from you.
+                      If you&apos;re a founder building something meaningful, we&apos;d love to hear from you.
                     </p>
                   </div>
                 </AnimatedSection>
@@ -158,17 +217,19 @@ export default function AboutPage() {
           </Section>
 
           {/* CTA */}
-          <Section spacing="lg">
+          <Section spacing="xl">
             <Container>
               <AnimatedSection variant="scaleIn">
-                <div className="rounded-xl bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] p-8 sm:p-12 md:p-16">
-                  <div className="flex flex-col items-center text-center gap-6 max-w-2xl mx-auto">
-                    <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight">
+                <div className="rounded-2xl bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] p-10 sm:p-14 md:p-20">
+                  <div className="flex flex-col items-center text-center gap-8 max-w-2xl mx-auto">
+                    <span className="text-xs font-medium uppercase tracking-widest text-[hsl(var(--color-accent))]">
+                      Connect
+                    </span>
+                    <h2 className="font-semibold tracking-tight">
                       Let&apos;s build something together
                     </h2>
-                    <p className="text-[hsl(var(--color-foreground-muted))] text-lg leading-relaxed">
-                      We&apos;re always interested in new projects and
-                      collaborations with people who care about craft.
+                    <p className="text-[hsl(var(--color-foreground-muted))] text-lg leading-relaxed max-w-lg">
+                      Interested in new projects and collaborations with people who care about craft.
                     </p>
                     <Button size="lg" className="mt-2" asChild>
                       <Link href="/contact">

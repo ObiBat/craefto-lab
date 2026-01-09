@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Container } from "@/components/layout/container";
 import { Section } from "@/components/layout/section";
 import { Separator } from "@/components/ui/separator";
+import { SectionLabel } from "@/components/ui/section-label";
 import { Badge } from "@/components/ui/badge";
 import { AnimatedSection, StaggeredGrid, StaggeredItem } from "@/components/ui/motion";
 import { ProjectImagePlaceholder } from "@/components/ui/project-image-placeholder";
@@ -40,32 +41,40 @@ export function SelectedWork() {
   return (
     <Section spacing="lg">
       <Container>
-        <div className="flex flex-col gap-12">
+        <div className="flex flex-col gap-14">
           {/* Header */}
           <AnimatedSection>
-            <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
-              <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight">
-                Selected work
-              </h2>
-              <Link
-                href="/work"
-                className="text-sm text-[hsl(var(--color-foreground-muted))] hover:text-[hsl(var(--color-foreground))] transition-colors group flex items-center gap-2"
-              >
-                View all work
-                <svg
-                  className="w-4 h-4 transition-transform group-hover:translate-x-1"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
+            <div className="flex flex-col gap-4">
+              <SectionLabel number="03" label="Work" />
+              <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+                <div>
+                  <h2 className="font-semibold tracking-tight">
+                    Selected work
+                  </h2>
+                  <p className="text-lg text-[hsl(var(--color-foreground-muted))] max-w-xl leading-relaxed mt-3">
+                    Recent projects for founders building the future.
+                  </p>
+                </div>
+                <Link
+                  href="/work"
+                  className="text-sm text-[hsl(var(--color-foreground-muted))] hover:text-[hsl(var(--color-foreground))] transition-colors group flex items-center gap-2 shrink-0"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={1.5}
-                    d="M17 8l4 4m0 0l-4 4m4-4H3"
-                  />
-                </svg>
-              </Link>
+                  View all work
+                  <svg
+                    className="w-4 h-4 transition-transform group-hover:translate-x-1"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={1.5}
+                      d="M17 8l4 4m0 0l-4 4m4-4H3"
+                    />
+                  </svg>
+                </Link>
+              </div>
             </div>
           </AnimatedSection>
 

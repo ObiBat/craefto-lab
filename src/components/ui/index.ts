@@ -8,6 +8,7 @@ export { Input } from "./input";
 export { Textarea } from "./textarea";
 export { Select } from "./select";
 export { Separator } from "./separator";
+export { SectionLabel } from "./section-label";
 export {
   // Components
   AnimatedSection,
