@@ -3,11 +3,11 @@ import { cn } from "@/lib/utils";
 
 interface SectionProps extends React.HTMLAttributes<HTMLElement> {
   spacing?: "xs" | "sm" | "md" | "lg" | "xl";
-  as?: React.ElementType;
+  as?: "section" | "div" | "article" | "aside";
 }
 
 const Section = React.forwardRef<HTMLElement, SectionProps>(
-  ({ className, spacing = "lg", as: Component = "section", children, ...props }, ref) => {
+  ({ className, spacing = "lg", as = "section", children, ...props }, ref) => {
     const spacingClasses = {
       xs: "py-8 md:py-10",
       sm: "py-12 md:py-16",
@@ -16,14 +16,16 @@ const Section = React.forwardRef<HTMLElement, SectionProps>(
       xl: "py-24 md:py-32",
     };
 
+    const Tag = as;
+
     return (
-      <Component
-        ref={ref}
+      <Tag
+        ref={ref as React.Ref<HTMLElement>}
         className={cn(spacingClasses[spacing], className)}
         {...props}
       >
         {children}
-      </Component>
+      </Tag>
     );
   }
 );
