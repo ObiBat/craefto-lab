@@ -15,7 +15,7 @@ export function Hero() {
   return (
     <section className="relative min-h-[100vh] flex items-center pt-20 pb-16 overflow-hidden bg-[hsl(var(--color-background))]">
       {/* 3D Animation - desktop: right side, mobile: bottom 15% */}
-      <div className="absolute left-0 right-0 top-[15%] bottom-0 z-0 pointer-events-none translate-x-[15%] md:top-0 md:left-auto md:right-0 md:w-[55%] md:translate-x-0">
+      <div className="absolute left-0 right-0 top-[15%] bottom-0 z-0 pointer-events-none translate-x-[20%] md:top-0 md:left-auto md:right-0 md:w-[55%] md:translate-x-0">
         <Metaballs className="w-full h-full" />
       </div>
 
