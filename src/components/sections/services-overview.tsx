@@ -27,7 +27,7 @@ function AccordionItem({
     <div className="border-b border-[hsl(var(--color-border))]">
       <button
         onClick={onToggle}
-        className="w-full py-6 sm:py-8 flex items-center gap-4 sm:gap-8 text-left group transition-colors hover:bg-[hsl(var(--color-background-muted)/0.5)]"
+        className="w-full py-6 sm:py-8 flex items-center gap-4 sm:gap-8 text-left group transition-colors"
         aria-expanded={isOpen}
       >
         {/* Number */}
@@ -36,11 +36,11 @@ function AccordionItem({
         </span>
 
         {/* Title */}
-        <h3 className="flex-1 text-xl sm:text-2xl md:text-3xl font-semibold tracking-tight transition-colors group-hover:text-[hsl(var(--color-accent))]">
+        <h3 className="flex-1 text-xl sm:text-2xl md:text-3xl font-semibold tracking-tight">
           {service.title}
         </h3>
 
-        {/* Toggle Icon */}
+        {/* Toggle Icon - green accent on hover */}
         <motion.div
           animate={{ rotate: isOpen ? 45 : 0 }}
           transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
