@@ -60,7 +60,7 @@ export default function WorkPage() {
               <div className="max-w-3xl">
                 <HeroText>
                   <h1 className="text-4xl sm:text-5xl font-semibold tracking-tight mb-6">
-                    Work
+                    Case studies
                   </h1>
                 </HeroText>
                 <HeroText delay={0.1}>
@@ -85,27 +85,52 @@ export default function WorkPage() {
                       href={`/work/${project.slug}`}
                       className="group block"
                     >
-                      <div className="aspect-[4/3] rounded-xl mb-5 transition-all duration-300 group-hover:shadow-lg group-hover:-translate-y-1 overflow-hidden">
-                        <ProjectImagePlaceholder
-                          projectName={project.title}
-                          imageType="thumb"
-                          accentColor={project.accentColor}
-                        />
-                      </div>
-                      <div className="flex flex-col gap-3">
-                        <div className="flex items-center gap-3">
-                          <Badge variant="secondary">{project.category}</Badge>
-                          <span className="text-sm text-[hsl(var(--color-foreground-subtle))]">{project.year}</span>
+                      <div className="relative aspect-[4/3] rounded-2xl overflow-hidden transition-all duration-500 group-hover:shadow-2xl group-hover:-translate-y-2">
+                        {/* Image */}
+                        <div className="absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-105">
+                          <ProjectImagePlaceholder
+                            projectName={project.title}
+                            imageType="thumb"
+                            accentColor={project.accentColor}
+                          />
                         </div>
-                        <h2 className="text-xl font-semibold tracking-tight">
-                          <span className="animated-underline">{project.title}</span>
-                        </h2>
-                        <p className="text-[hsl(var(--color-foreground-muted))] leading-relaxed">
-                          {project.description}
-                        </p>
-                        <p className="text-sm text-[hsl(var(--color-foreground-subtle))]">
-                          {project.industry}
-                        </p>
+
+                        {/* Gradient Overlay */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-80 transition-opacity duration-300 group-hover:opacity-90" />
+
+                        {/* Content */}
+                        <div className="absolute inset-0 flex flex-col justify-end p-6 sm:p-8">
+                          {/* Category & Year */}
+                          <div className="flex items-center gap-3 mb-3">
+                            <Badge variant="secondary" className="bg-white/15 text-white border-white/20 backdrop-blur-sm">
+                              {project.category}
+                            </Badge>
+                            <span className="text-sm text-white/60">{project.year}</span>
+                          </div>
+
+                          {/* Title with animated underline */}
+                          <p className="text-2xl sm:text-3xl font-semibold tracking-tight mb-2 relative inline-block" style={{ color: '#ffffff' }}>
+                            {project.title}
+                            <span className="absolute bottom-0 left-0 w-full h-0.5 bg-white origin-left scale-x-0 transition-transform duration-300 ease-out group-hover:scale-x-100" />
+                          </p>
+
+                          {/* Description */}
+                          <p className="text-sm sm:text-base text-white/70 leading-relaxed line-clamp-2 mb-3">
+                            {project.description}
+                          </p>
+
+                          {/* Industry */}
+                          <p className="text-xs text-white/50 uppercase tracking-wider">
+                            {project.industry}
+                          </p>
+
+                          {/* View indicator */}
+                          <div className="absolute top-6 right-6 w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center opacity-0 translate-y-2 transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0">
+                            <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                            </svg>
+                          </div>
+                        </div>
                       </div>
                     </Link>
                   </StaggeredItem>

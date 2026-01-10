@@ -318,8 +318,12 @@ export default function CaseStudyPage() {
     notFound();
   }
 
-  const currentIndex = projects.findIndex((p) => p.slug === slug);
-  const nextProject = projects[(currentIndex + 1) % projects.length];
+  // Only cycle through featured (real) projects for "next project"
+  const featuredProjects = projects.filter((p) => p.featured);
+  const currentFeaturedIndex = featuredProjects.findIndex((p) => p.slug === slug);
+  const nextProject = currentFeaturedIndex !== -1
+    ? featuredProjects[(currentFeaturedIndex + 1) % featuredProjects.length]
+    : featuredProjects[0];
 
   return (
     <>
@@ -363,6 +367,30 @@ export default function CaseStudyPage() {
                     {project.description}
                   </p>
                 </HeroText>
+                {project.liveUrl && (
+                  <HeroText delay={0.15}>
+                    <div className="mt-8">
+                      <Button size="lg" asChild>
+                        <a href={project.liveUrl} target="_blank" rel="noopener noreferrer">
+                          <span className="btn-text-wrapper">
+                            <span className="btn-text-primary">
+                              Visit live site
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                              </svg>
+                            </span>
+                            <span className="btn-text-secondary" aria-hidden="true">
+                              View project
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                              </svg>
+                            </span>
+                          </span>
+                        </a>
+                      </Button>
+                    </div>
+                  </HeroText>
+                )}
               </div>
             </Container>
           </Section>
@@ -660,31 +688,60 @@ export default function CaseStudyPage() {
           {/* Next Project */}
           <Section spacing="lg">
             <Container>
-              <Separator className="mb-12" />
+              <Separator className="mb-16" />
               <AnimatedSection>
-                <div className="flex flex-col gap-4">
-                  <p className="text-xs uppercase tracking-wide text-[hsl(var(--color-foreground-subtle))]">
-                    Next project
-                  </p>
-                  <Link href={`/work/${nextProject.slug}`} className="group block">
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-6 sm:p-8 rounded-xl border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] transition-all duration-300 group-hover:shadow-lg group-hover:-translate-y-1">
-                      <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
-                        <Badge variant="secondary">{nextProject.category}</Badge>
-                        <h3 className="text-xl sm:text-2xl font-semibold tracking-tight">
-                          {nextProject.title}
-                        </h3>
-                      </div>
-                      <svg
-                        className="w-6 h-6 text-[hsl(var(--color-foreground-muted))] transition-transform group-hover:translate-x-2"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                      </svg>
+                <Link href={`/work/${nextProject.slug}`} className="group block">
+                  <div className="relative overflow-hidden rounded-2xl">
+                    {/* Background Image */}
+                    <div className="aspect-[21/9] sm:aspect-[3/1]">
+                      <ProjectImagePlaceholder
+                        projectName={nextProject.title}
+                        imageType="hero"
+                        caption=""
+                        accentColor={nextProject.accentColor}
+                      />
                     </div>
-                  </Link>
-                </div>
+
+                    {/* Overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent transition-opacity group-hover:from-black/70" />
+
+                    {/* Content */}
+                    <div className="absolute inset-0 flex flex-col justify-end p-6 sm:p-10 lg:p-12">
+                      <p className="text-xs uppercase tracking-widest text-white/60 mb-3">
+                        Next Case Study
+                      </p>
+                      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+                        <div>
+                          <div className="flex items-center gap-3 mb-2">
+                            <Badge variant="secondary" className="bg-white/10 text-white border-white/20">
+                              {nextProject.category}
+                            </Badge>
+                          </div>
+                          <p className="text-2xl sm:text-3xl lg:text-4xl font-semibold tracking-tight mb-2 relative inline-block" style={{ color: '#ffffff' }}>
+                            {nextProject.title}
+                            <span className="absolute bottom-0 left-0 w-full h-0.5 bg-white origin-left scale-x-0 transition-transform duration-300 ease-out group-hover:scale-x-100" />
+                          </p>
+                          <p className="text-sm sm:text-base text-white/70 max-w-xl line-clamp-2">
+                            {nextProject.description}
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-2 text-white shrink-0">
+                          <span className="text-sm font-medium hidden sm:inline">View project</span>
+                          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center transition-transform group-hover:translate-x-1 group-hover:bg-white/20">
+                            <svg
+                              className="w-5 h-5"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </Link>
               </AnimatedSection>
             </Container>
           </Section>

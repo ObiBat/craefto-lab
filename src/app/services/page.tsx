@@ -130,23 +130,21 @@ export default function ServicesPage() {
           </Section>
 
           {/* Anchor Navigation */}
-          <Section spacing="xs">
-            <Container>
-              <AnimatedSection>
-                <nav className="flex flex-wrap gap-3">
-                  {services.map((service) => (
-                    <a
-                      key={service.id}
-                      href={`#${service.id}`}
-                      className="px-4 py-2 text-sm font-medium rounded-full border border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground-muted))] hover:text-[hsl(var(--color-foreground))] hover:border-[hsl(var(--color-foreground))] transition-colors"
-                    >
-                      {service.title.split(" ")[0]}
-                    </a>
-                  ))}
-                </nav>
-              </AnimatedSection>
-            </Container>
-          </Section>
+          <Container>
+            <AnimatedSection>
+              <nav className="flex flex-wrap items-center gap-3 sm:gap-4 mt-6">
+                {services.map((service) => (
+                  <a
+                    key={service.id}
+                    href={`#${service.id}`}
+                    className="px-5 py-2.5 text-sm font-medium rounded-full border border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground-muted))] hover:text-[hsl(var(--color-foreground))] hover:border-[hsl(var(--color-foreground))] hover:bg-[hsl(var(--color-background-muted))] transition-all"
+                  >
+                    {service.title.split(" ")[0]}
+                  </a>
+                ))}
+              </nav>
+            </AnimatedSection>
+          </Container>
 
           {/* Services List */}
           <Section spacing="md">
@@ -230,16 +228,16 @@ export default function ServicesPage() {
           <Section spacing="lg">
             <Container>
               <AnimatedSection variant="scaleIn">
-                <div className="rounded-xl bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] p-8 sm:p-12 md:p-16">
+                <div className="rounded-xl bg-[hsl(var(--color-accent))] p-8 sm:p-12 md:p-16">
                   <div className="flex flex-col items-center text-center gap-6 max-w-2xl mx-auto">
-                    <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight">
+                    <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-white">
                       Ready to start a project?
                     </h2>
-                    <p className="text-[hsl(var(--color-foreground-muted))] text-lg leading-relaxed">
+                    <p className="text-white/80 text-lg leading-relaxed">
                       Tell us about what you&apos;re building. We&apos;ll see if
                       we&apos;re the right fit.
                     </p>
-                    <Button size="lg" className="mt-2" asChild>
+                    <Button size="lg" variant="secondary" className="mt-2 !bg-white !text-[hsl(var(--color-accent))] hover:!bg-white/90" asChild>
                       <Link href="/contact">
                         <span className="btn-text-wrapper">
                           <span className="btn-text-primary">

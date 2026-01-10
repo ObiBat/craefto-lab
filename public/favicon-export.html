@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Craefto Lab - Favicon & OG Image Export</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #1a1a1a;
+      color: #fff;
+      padding: 40px;
+      min-height: 100vh;
+    }
+    h1 { margin-bottom: 10px; font-weight: 600; }
+    p.subtitle { color: #888; margin-bottom: 40px; }
+    .section { margin-bottom: 60px; }
+    h2 { font-size: 14px; text-transform: uppercase; letter-spacing: 0.1em; color: #666; margin-bottom: 20px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
+    .card {
+      background: #2a2a2a;
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+    }
+    .card canvas {
+      border-radius: 8px;
+      margin-bottom: 15px;
+      background: #333;
+    }
+    .card h3 { font-size: 14px; margin-bottom: 5px; }
+    .card p { font-size: 12px; color: #888; margin-bottom: 15px; }
+    .btn {
+      display: inline-block;
+      padding: 8px 16px;
+      background: #4A4A4A;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 12px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    .btn:hover { background: #5a5a5a; }
+    .preview-large {
+      max-width: 600px;
+      margin: 0 auto 20px;
+      background: #2a2a2a;
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+    }
+    .preview-large canvas {
+      border-radius: 8px;
+      max-width: 100%;
+      height: auto;
+    }
+  </style>
+</head>
+<body>
+  <h1>Craefto Lab Asset Export</h1>
+  <p class="subtitle">Click each button to download the PNG. Open browser console for progress.</p>
+
+  <!-- OG Image -->
+  <div class="section">
+    <h2>Open Graph Image (1200 × 630)</h2>
+    <div class="preview-large">
+      <canvas id="og-canvas" width="1200" height="630"></canvas>
+      <p style="margin: 15px 0 15px; color: #888;">og-image.png</p>
+      <button class="btn" onclick="downloadCanvas('og-canvas', 'og-image.png')">Download PNG</button>
+    </div>
+  </div>
+
+  <!-- Favicons -->
+  <div class="section">
+    <h2>Favicon Set</h2>
+    <div class="grid">
+      <div class="card">
+        <canvas id="favicon-512" width="512" height="512"></canvas>
+        <h3>512 × 512</h3>
+        <p>android-chrome-512x512.png</p>
+        <button class="btn" onclick="downloadCanvas('favicon-512', 'android-chrome-512x512.png')">Download</button>
+      </div>
+      <div class="card">
+        <canvas id="favicon-192" width="192" height="192"></canvas>
+        <h3>192 × 192</h3>
+        <p>android-chrome-192x192.png</p>
+        <button class="btn" onclick="downloadCanvas('favicon-192', 'android-chrome-192x192.png')">Download</button>
+      </div>
+      <div class="card">
+        <canvas id="favicon-180" width="180" height="180"></canvas>
+        <h3>180 × 180</h3>
+        <p>apple-touch-icon.png</p>
+        <button class="btn" onclick="downloadCanvas('favicon-180', 'apple-touch-icon.png')">Download</button>
+      </div>
+      <div class="card">
+        <canvas id="favicon-32" width="32" height="32"></canvas>
+        <h3>32 × 32</h3>
+        <p>favicon-32x32.png</p>
+        <button class="btn" onclick="downloadCanvas('favicon-32', 'favicon-32x32.png')">Download</button>
+      </div>
+      <div class="card">
+        <canvas id="favicon-16" width="16" height="16"></canvas>
+        <h3>16 × 16</h3>
+        <p>favicon-16x16.png</p>
+        <button class="btn" onclick="downloadCanvas('favicon-16', 'favicon-16x16.png')">Download</button>
+      </div>
+      <div class="card">
+        <canvas id="favicon-48" width="48" height="48"></canvas>
+        <h3>48 × 48</h3>
+        <p>favicon.ico</p>
+        <button class="btn" onclick="downloadCanvas('favicon-48', 'favicon.ico')">Download</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Logo PNG -->
+  <div class="section">
+    <h2>Logo (for structured data)</h2>
+    <div class="grid">
+      <div class="card">
+        <canvas id="logo-512" width="512" height="512"></canvas>
+        <h3>512 × 512</h3>
+        <p>logo.png</p>
+        <button class="btn" onclick="downloadCanvas('logo-512', 'logo.png')">Download</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Logo path data
+    const logoPath = "M749.676 71.1953C726.914 71.1953 704.151 79.1059 681.389 94.927C658.626 109.759 638.833 134.48 622.008 169.089C606.174 203.698 596.277 250.667 592.318 309.996H795.696C830.334 309.996 853.592 303.074 865.468 289.231C877.344 274.398 883.282 253.139 883.282 225.452C883.282 179.966 870.416 142.885 844.685 114.209C818.953 85.5332 787.284 71.1953 749.676 71.1953ZM751.161 752C689.801 752 634.379 740.134 584.896 716.402C536.402 692.671 496.815 658.062 466.135 612.576C432.486 649.162 401.312 677.838 372.611 698.604C344.9 718.38 317.685 732.224 290.963 740.134C264.242 748.045 235.047 752 203.377 752C144.987 752 96.493 735.684 57.8958 703.053C19.2986 670.422 0 623.453 0 562.146C0 530.504 7.42253 501.828 22.2676 476.118C37.1127 450.409 63.339 425.688 100.946 401.957C139.544 378.225 194.47 354.988 265.727 332.245C285.52 325.323 307.788 318.401 332.53 311.479C357.271 304.558 382.508 297.636 408.239 290.714V247.7C408.239 178.483 398.343 132.008 378.549 108.276C359.746 83.5556 327.086 71.1953 280.572 71.1953C262.758 71.1953 241.975 72.6785 218.223 75.645L200.408 163.156C196.45 198.753 185.563 224.957 167.749 241.767C150.925 258.577 130.142 266.982 105.4 266.982C82.6376 266.982 63.8338 261.049 48.9887 249.183C35.1333 236.329 26.2263 219.024 22.2676 197.27C31.1746 138.93 62.8441 91.4661 117.276 54.8797C172.698 18.2932 245.438 0 335.499 0C382.013 0 422.095 7.91059 455.744 23.7318C490.382 38.5641 517.598 62.7903 537.392 96.4103C599.741 32.1368 674.461 0 761.552 0C849.633 0 920.394 27.1926 973.837 81.5779C1027.28 135.963 1054 208.642 1054 299.613C1054 330.267 1051.03 356.965 1045.09 379.708H590.834C593.803 463.758 615.576 527.537 656.152 571.045C697.718 613.565 749.676 634.824 812.025 634.824C855.571 634.824 892.684 626.42 923.363 609.61C954.043 591.811 981.754 569.068 1006.5 541.381L1049.55 579.945C1020.85 634.33 981.259 676.849 930.786 707.503C881.302 737.168 821.427 752 751.161 752ZM173.687 532.481C173.687 572.034 184.574 600.71 206.346 618.509C228.119 635.319 252.861 643.724 280.572 643.724C297.396 643.724 312.736 641.746 326.592 637.791C340.447 633.836 355.787 625.925 372.611 614.059C390.425 602.193 412.693 585.383 439.414 563.629C414.672 509.244 402.301 447.937 402.301 379.708C402.301 374.764 402.301 369.82 402.301 364.876C402.301 359.932 402.796 355.482 403.786 351.527C383.992 357.46 365.189 363.887 347.375 370.809C330.55 376.742 315.705 382.18 302.839 387.124C253.356 406.901 219.212 429.149 200.408 453.87C182.594 477.602 173.687 503.805 173.687 532.481Z";
+
+    // Draw favicon (white circle bg with dark logo - precisely centered)
+    function drawFavicon(canvasId, size) {
+      const canvas = document.getElementById(canvasId);
+      const ctx = canvas.getContext('2d');
+
+      // Clean white circle background
+      ctx.beginPath();
+      ctx.arc(size/2, size/2, size/2, 0, Math.PI * 2);
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fill();
+
+      // Draw subtle inner ring for depth
+      ctx.beginPath();
+      ctx.arc(size/2, size/2, size/2 * 0.9375, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(0,0,0,0.04)';
+      ctx.lineWidth = Math.max(1, size / 512);
+      ctx.stroke();
+
+      // Draw logo - precisely centered
+      // Original logo: 1054 x 752
+      // Scale to 60% of circle diameter
+      const logoScale = (size * 0.6) / 1054;
+      const scaledW = 1054 * logoScale;
+      const scaledH = 752 * logoScale;
+      const offsetX = (size - scaledW) / 2;
+      const offsetY = (size - scaledH) / 2;
+
+      ctx.save();
+      ctx.translate(offsetX, offsetY);
+      ctx.scale(logoScale, logoScale);
+
+      const path = new Path2D(logoPath);
+      ctx.fillStyle = '#1a1a1f';
+      ctx.fill(path);
+      ctx.restore();
+    }
+
+    // Draw OG image - Brand cream background with small centered logo
+    function drawOGImage() {
+      const canvas = document.getElementById('og-canvas');
+      const ctx = canvas.getContext('2d');
+      const w = 1200, h = 630;
+
+      // Brand cream gradient background
+      const bgGradient = ctx.createLinearGradient(0, 0, w, h);
+      bgGradient.addColorStop(0, '#FAF7F2');
+      bgGradient.addColorStop(0.5, '#F7F3EC');
+      bgGradient.addColorStop(1, '#F4EFE8');
+      ctx.fillStyle = bgGradient;
+      ctx.fillRect(0, 0, w, h);
+
+      // Subtle warm glow (top-left)
+      const warmGlow = ctx.createRadialGradient(w * 0.3, h * 0.3, 0, w * 0.3, h * 0.3, w * 0.5);
+      warmGlow.addColorStop(0, 'rgba(255,250,240,0.6)');
+      warmGlow.addColorStop(1, 'rgba(255,250,240,0)');
+      ctx.fillStyle = warmGlow;
+      ctx.fillRect(0, 0, w, h);
+
+      // Soft glow behind logo
+      const logoGlow = ctx.createRadialGradient(600, 315, 0, 600, 315, 120);
+      logoGlow.addColorStop(0, 'rgba(74,74,74,0.03)');
+      logoGlow.addColorStop(1, 'rgba(74,74,74,0)');
+      ctx.fillStyle = logoGlow;
+      ctx.beginPath();
+      ctx.ellipse(600, 315, 150, 100, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Subtle vignette
+      const vignette = ctx.createRadialGradient(600, 315, 0, 600, 315, 700);
+      vignette.addColorStop(0, 'rgba(0,0,0,0)');
+      vignette.addColorStop(1, 'rgba(0,0,0,0.04)');
+      ctx.fillStyle = vignette;
+      ctx.fillRect(0, 0, w, h);
+
+      // Logo - smaller, humble, precisely centered
+      // Scale: 0.14 for humble presence
+      const logoScale = 0.14;
+      const logoW = 1054 * logoScale;
+      const logoH = 752 * logoScale;
+      const logoX = (w - logoW) / 2;
+      const logoY = (h - logoH) / 2;
+
+      ctx.save();
+      ctx.translate(logoX, logoY);
+      ctx.scale(logoScale, logoScale);
+
+      const path = new Path2D(logoPath);
+      ctx.fillStyle = '#4A4A4A';
+      ctx.fill(path);
+      ctx.restore();
+
+      // Subtle corner accents
+      ctx.fillStyle = 'rgba(74,74,74,0.06)';
+      ctx.fillRect(40, 40, 50, 1);
+      ctx.fillRect(40, 40, 1, 50);
+      ctx.fillRect(1110, 589, 50, 1);
+      ctx.fillRect(1159, 540, 1, 50);
+    }
+
+    // Draw logo only (transparent bg)
+    function drawLogo(canvasId, size) {
+      const canvas = document.getElementById(canvasId);
+      const ctx = canvas.getContext('2d');
+
+      // Transparent background
+      ctx.clearRect(0, 0, size, size);
+
+      // Draw logo centered
+      const logoScale = size / 1054 * 0.8;
+      const logoW = 1054 * logoScale;
+      const logoH = 752 * logoScale;
+      const logoX = (size - logoW) / 2;
+      const logoY = (size - logoH) / 2;
+
+      ctx.save();
+      ctx.translate(logoX, logoY);
+      ctx.scale(logoScale, logoScale);
+
+      const path = new Path2D(logoPath);
+      ctx.fillStyle = '#4A4A4A';
+      ctx.fill(path);
+      ctx.restore();
+    }
+
+    // Download canvas as PNG
+    function downloadCanvas(canvasId, filename) {
+      const canvas = document.getElementById(canvasId);
+      const link = document.createElement('a');
+      link.download = filename;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+      console.log(`Downloaded: ${filename}`);
+    }
+
+    // Initialize all canvases
+    window.onload = function() {
+      drawOGImage();
+      drawFavicon('favicon-512', 512);
+      drawFavicon('favicon-192', 192);
+      drawFavicon('favicon-180', 180);
+      drawFavicon('favicon-48', 48);
+      drawFavicon('favicon-32', 32);
+      drawFavicon('favicon-16', 16);
+      drawLogo('logo-512', 512);
+      console.log('All assets rendered. Click buttons to download.');
+    };
+  </script>
+</body>
+</html>

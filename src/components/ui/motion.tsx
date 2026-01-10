@@ -226,6 +226,7 @@ interface AnimatedSectionProps {
   className?: string;
   delay?: number;
   variant?: "fadeUp" | "fadeIn" | "fadeLeft" | "fadeRight" | "scaleIn";
+  id?: string;
 }
 
 const variantMap = {
@@ -241,6 +242,7 @@ export function AnimatedSection({
   className,
   delay = 0,
   variant = "fadeUp",
+  id,
 }: AnimatedSectionProps) {
   const { ref, isInView } = useScrollAnimation();
   const prefersReducedMotion = useReducedMotion();
@@ -253,6 +255,7 @@ export function AnimatedSection({
   return (
     <motion.div
       ref={ref}
+      id={id}
       initial="hidden"
       animate={isInView ? "visible" : "hidden"}
       variants={selectedVariant}

@@ -12,7 +12,7 @@ export const siteConfig = {
 
 export const navigation = {
   main: [
-    { name: "Work", href: "/work" },
+    { name: "Case studies", href: "/work" },
     { name: "Services", href: "/services" },
     { name: "About", href: "/about" },
   ],
@@ -23,27 +23,31 @@ export const services = [
   {
     title: "Brand Identity & Design Systems",
     description: "Strategic foundations and visual systems that scale.",
+    capabilities: ["Visual identity", "Logo systems", "Design tokens", "Brand guidelines", "Typography systems"],
     href: "/services#brand",
   },
   {
     title: "Web Design & Development",
-    description:
-      "Marketing sites, SaaS platforms, and dashboards built for performance.",
+    description: "Marketing sites, SaaS platforms, and dashboards built for performance.",
+    capabilities: ["Marketing sites", "Landing pages", "SaaS interfaces", "Dashboard design", "Responsive development"],
     href: "/services#web",
   },
   {
     title: "Creative-Tech Products",
     description: "Interactive experiences, 3D, and experimental web work.",
+    capabilities: ["WebGL & 3D", "Interactive installations", "Motion design", "Generative art", "Experimental UI"],
     href: "/services#creative",
   },
   {
     title: "SaaS & Internal Tools",
     description: "MVPs, client portals, and automation systems.",
+    capabilities: ["MVP development", "Client portals", "Admin dashboards", "Workflow automation", "API integrations"],
     href: "/services#saas",
   },
   {
     title: "AI-Powered Systems",
     description: "Workflows, agents, and intelligence tools for modern teams.",
+    capabilities: ["AI agents", "LLM integrations", "Intelligent workflows", "Data pipelines", "Custom AI tools"],
     href: "/services#ai",
   },
 ];

@@ -5,7 +5,6 @@ import dynamic from "next/dynamic";
 import { Container } from "@/components/layout/container";
 import { Button } from "@/components/ui/button";
 import { HeroText } from "@/components/ui/motion";
-import { HeroTextMask } from "@/components/ui/hero-text-mask";
 
 const Metaballs = dynamic(
   () => import("@/components/ui/metaballs").then((mod) => mod.Metaballs),
@@ -15,8 +14,8 @@ const Metaballs = dynamic(
 export function Hero() {
   return (
     <section className="relative min-h-[100vh] flex items-center pt-20 pb-16 overflow-hidden bg-[hsl(var(--color-background))]">
-      {/* 3D Animation - desktop: right side, mobile: behind text offset right */}
-      <div className="absolute inset-0 z-0 pointer-events-none md:left-auto md:right-0 md:w-[55%] translate-x-[30%] md:translate-x-0">
+      {/* 3D Animation - desktop: right side, mobile: bottom 15% */}
+      <div className="absolute left-0 right-0 top-[15%] bottom-0 z-0 pointer-events-none translate-x-[15%] md:top-0 md:left-auto md:right-0 md:w-[55%] md:translate-x-0">
         <Metaballs className="w-full h-full" />
       </div>
 
@@ -24,25 +23,15 @@ export function Hero() {
       <Container size="lg" className="relative z-10">
         <div className="flex flex-col items-start text-left gap-6 max-w-xl lg:max-w-2xl">
           <HeroText delay={0}>
-            <HeroTextMask
-              darkClassName="text-[hsl(var(--color-foreground))]"
-              lightClassName="text-white"
-            >
-              <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-semibold tracking-tighter leading-[0.95]">
-                Built to compound.
-              </h1>
-            </HeroTextMask>
+            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-semibold tracking-tighter leading-[0.95] text-[#4A4A4A]">
+              Built to compound.
+            </h1>
           </HeroText>
 
           <HeroText delay={0.15}>
-            <HeroTextMask
-              darkClassName="text-[hsl(var(--color-foreground-muted))]"
-              lightClassName="text-white/90"
-            >
-              <p className="text-lg sm:text-xl max-w-lg leading-relaxed">
-                Design systems and digital products for founders who measure success in years, not quarters.
-              </p>
-            </HeroTextMask>
+            <p className="text-lg sm:text-xl max-w-lg leading-relaxed text-[#6B6B6B]">
+              Design systems and digital products built with craft and intention.
+            </p>
           </HeroText>
 
           <HeroText delay={0.3}>
@@ -88,8 +77,8 @@ export function Hero() {
               <Button size="lg" variant="secondary" asChild>
                 <Link href="/work">
                   <span className="btn-text-wrapper">
-                    <span className="btn-text-primary">View our work</span>
-                    <span className="btn-text-secondary" aria-hidden="true">See projects</span>
+                    <span className="btn-text-primary">Case studies</span>
+                    <span className="btn-text-secondary" aria-hidden="true">See our work</span>
                   </span>
                 </Link>
               </Button>

@@ -220,18 +220,18 @@ export default function AboutPage() {
           <Section spacing="xl">
             <Container>
               <AnimatedSection variant="scaleIn">
-                <div className="rounded-2xl bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] p-10 sm:p-14 md:p-20">
+                <div className="rounded-2xl bg-[hsl(var(--color-accent))] p-10 sm:p-14 md:p-20">
                   <div className="flex flex-col items-center text-center gap-8 max-w-2xl mx-auto">
-                    <span className="text-xs font-medium uppercase tracking-widest text-[hsl(var(--color-accent))]">
+                    <span className="text-xs font-medium uppercase tracking-widest text-white/70">
                       Connect
                     </span>
-                    <h2 className="font-semibold tracking-tight">
+                    <h2 className="font-semibold tracking-tight text-white">
                       Let&apos;s build something together
                     </h2>
-                    <p className="text-[hsl(var(--color-foreground-muted))] text-lg leading-relaxed max-w-lg">
+                    <p className="text-white/80 text-lg leading-relaxed max-w-lg">
                       Interested in new projects and collaborations with people who care about craft.
                     </p>
-                    <Button size="lg" className="mt-2" asChild>
+                    <Button size="lg" variant="secondary" className="mt-2 !bg-white !text-[hsl(var(--color-accent))] hover:!bg-white/90" asChild>
                       <Link href="/contact">
                         <span className="btn-text-wrapper">
                           <span className="btn-text-primary">

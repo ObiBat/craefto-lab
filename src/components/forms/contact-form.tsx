@@ -180,12 +180,16 @@ export function ContactForm() {
           </label>
           <Select id="budget" error={!!errors.budget} {...register("budget")}>
             <option value="">Select one</option>
-            <option value="10-25k">$10k to $25k</option>
-            <option value="25-50k">$25k to $50k</option>
-            <option value="50-100k">$50k to $100k</option>
-            <option value="100k+">$100k+</option>
+            <option value="3-5k">A$3k – A$5k</option>
+            <option value="5-10k">A$5k – A$10k</option>
+            <option value="10-25k">A$10k – A$25k</option>
+            <option value="25-50k">A$25k – A$50k</option>
+            <option value="50k+">A$50k+</option>
             <option value="discuss">Let&apos;s discuss</option>
           </Select>
+          <p className="text-xs text-[hsl(var(--color-foreground-subtle))]">
+            Minimum project investment: A$3,000
+          </p>
           {errors.budget && (
             <p className="text-sm text-[hsl(var(--color-error))]">
               {errors.budget.message}

@@ -11,18 +11,18 @@ export function CTABlock() {
     <Section spacing="xl">
       <Container>
         <AnimatedSection>
-          <div className="rounded-2xl bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] p-10 sm:p-14 md:p-20">
+          <div className="rounded-2xl bg-[hsl(var(--color-accent))] p-10 sm:p-14 md:p-20">
             <div className="flex flex-col items-center text-center gap-8 max-w-2xl mx-auto">
-              <span className="text-xs font-medium uppercase tracking-widest text-[hsl(var(--color-accent))]">
+              <span className="text-xs font-medium uppercase tracking-widest text-white/70">
                 Start a project
               </span>
-              <h2 className="font-semibold tracking-tight">
+              <h2 className="font-semibold tracking-tight text-white">
                 Ready to build something that lasts?
               </h2>
-              <p className="text-[hsl(var(--color-foreground-muted))] text-lg leading-relaxed max-w-lg">
+              <p className="text-white/80 text-lg leading-relaxed max-w-lg">
                 Let&apos;s talk about your project. We work with founders who value clarity, craft, and long-term thinking.
               </p>
-              <Button size="lg" className="mt-2" asChild>
+              <Button size="lg" variant="secondary" className="mt-2 !bg-white !text-[hsl(var(--color-accent))] hover:!bg-white/90" asChild>
                 <Link href="/contact">
                   <span className="btn-text-wrapper">
                     <span className="btn-text-primary">
