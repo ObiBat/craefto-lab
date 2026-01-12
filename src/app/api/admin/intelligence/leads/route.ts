@@ -1,6 +1,29 @@
 import { NextResponse } from 'next/server';
 import { createServerClient } from '@/lib/supabase';
 
+interface Analysis {
+  fit_score: number;
+  project_type: string;
+  complexity: string;
+  scope_creep_risk: number;
+  recommended_stack: string[];
+  requires_review: boolean;
+  analyzed_at: string;
+}
+
+interface TransformedLead {
+  id: string;
+  name: string;
+  email: string;
+  company: string | null;
+  service_interest: string | null;
+  budget_range: string | null;
+  timeline: string | null;
+  message: string | null;
+  created_at: string;
+  analysis: Analysis | null;
+}
+
 export async function GET() {
   try {
     const supabase = createServerClient();
@@ -36,21 +59,32 @@ export async function GET() {
     }
 
     // Transform data to flatten analysis
-    const transformedLeads = (leads || []).map((lead: Record<string, unknown>) => ({
-      ...lead,
-      analysis: Array.isArray(lead.lead_analysis) && lead.lead_analysis.length > 0
-        ? lead.lead_analysis[0]
-        : null,
-      lead_analysis: undefined,
-    }));
+    const transformedLeads: TransformedLead[] = (leads || []).map((lead) => {
+      const leadData = lead as Record<string, unknown>;
+      const leadAnalysis = leadData.lead_analysis as Analysis[] | null;
+      return {
+        id: leadData.id as string,
+        name: leadData.name as string,
+        email: leadData.email as string,
+        company: leadData.company as string | null,
+        service_interest: leadData.service_interest as string | null,
+        budget_range: leadData.budget_range as string | null,
+        timeline: leadData.timeline as string | null,
+        message: leadData.message as string | null,
+        created_at: leadData.created_at as string,
+        analysis: Array.isArray(leadAnalysis) && leadAnalysis.length > 0
+          ? leadAnalysis[0]
+          : null,
+      };
+    });
 
     // Calculate stats
-    const analyzed = transformedLeads.filter((l: Record<string, unknown>) => l.analysis).length;
-    const analyzedLeads = transformedLeads.filter((l: Record<string, unknown>) => l.analysis);
+    const analyzed = transformedLeads.filter((l) => l.analysis).length;
+    const analyzedLeads = transformedLeads.filter((l) => l.analysis);
     const avgFit = analyzed > 0
-      ? analyzedLeads.reduce((sum: number, l: Record<string, { fit_score: number }>) => sum + (l.analysis?.fit_score || 0), 0) / analyzed
+      ? analyzedLeads.reduce((sum, l) => sum + (l.analysis?.fit_score || 0), 0) / analyzed
       : 0;
-    const highRisk = analyzedLeads.filter((l: Record<string, { scope_creep_risk: number }>) =>
+    const highRisk = analyzedLeads.filter((l) =>
       l.analysis && l.analysis.scope_creep_risk > 0.7
     ).length;
 
