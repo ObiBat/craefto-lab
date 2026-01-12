@@ -142,16 +142,20 @@ function MetaballScene() {
   const mouse = useRef(new THREE.Vector2(0.5, 0.5));
   const { size } = useThree();
 
+  // Create uniforms once - never recreate on resize
   const uniforms = useMemo(() => ({
     uTime: { value: 0 },
-    uResolution: { value: new THREE.Vector2(size.width, size.height) },
+    uResolution: { value: new THREE.Vector2(1, 1) },
     uMouse: { value: new THREE.Vector2(0.5, 0.5) },
-  }), [size.width, size.height]);
+  }), []);
 
   useFrame((state) => {
     if (!meshRef.current) return;
     const mat = meshRef.current.material as THREE.ShaderMaterial;
     mat.uniforms.uTime.value = state.clock.elapsedTime;
+
+    // Update resolution on every frame to handle resize
+    mat.uniforms.uResolution.value.set(size.width, size.height);
 
     mouse.current.x += ((state.pointer.x + 1) / 2 - mouse.current.x) * 0.05;
     mouse.current.y += ((state.pointer.y + 1) / 2 - mouse.current.y) * 0.05;
