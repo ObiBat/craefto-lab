@@ -971,6 +971,27 @@ img {
 }
 
 /* ─────────────────────────────────────────────────────────────
+   ADMIN PANEL STYLES - Dark Theme Override
+   ───────────────────────────────────────────────────────────── */
+
+/* Admin pages need dark theme with light text */
+.admin-theme {
+  --color-foreground: 0 0% 98%;
+  --color-background: 240 10% 4%;
+  background-color: #09090b;
+  color: #fafafa !important;
+}
+
+.admin-theme h1,
+.admin-theme h2,
+.admin-theme h3,
+.admin-theme h4,
+.admin-theme h5,
+.admin-theme h6 {
+  color: #fafafa !important;
+}
+
+/* ─────────────────────────────────────────────────────────────
    PRINT STYLES
    ───────────────────────────────────────────────────────────── */
 

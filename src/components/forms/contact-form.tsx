@@ -4,6 +4,7 @@ import * as React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -24,6 +25,9 @@ type ContactFormData = z.infer<typeof contactSchema>;
 export function ContactForm() {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [isSubmitted, setIsSubmitted] = React.useState(false);
+  const [submitError, setSubmitError] = React.useState<string | null>(null);
+  const honeypotRef = React.useRef<HTMLInputElement>(null);
+  const searchParams = useSearchParams();
 
   const {
     register,
@@ -36,15 +40,47 @@ export function ContactForm() {
 
   const onSubmit = async (data: ContactFormData) => {
     setIsSubmitting(true);
+    setSubmitError(null);
 
-    // Simulate form submission
-    // In production, you'd send this to your backend or email service
-    console.log("Form submitted:", data);
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    try {
+      const response = await fetch('/api/leads', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: data.name,
+          email: data.email,
+          company: data.company,
+          service: data.projectType,
+          budget: data.budget,
+          timeline: data.timeline,
+          message: data.message,
+          // Honeypot for spam protection
+          website_url: honeypotRef.current?.value || '',
+          // UTM parameters for attribution
+          utm_source: searchParams.get('utm_source'),
+          utm_medium: searchParams.get('utm_medium'),
+          utm_campaign: searchParams.get('utm_campaign'),
+          utm_content: searchParams.get('utm_content'),
+          landing_page: typeof window !== 'undefined' ? window.location.pathname : null,
+        }),
+      });
 
-    setIsSubmitting(false);
-    setIsSubmitted(true);
-    reset();
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Something went wrong');
+      }
+
+      setIsSubmitted(true);
+      reset();
+    } catch (error) {
+      console.error('Form submission error:', error);
+      setSubmitError(error instanceof Error ? error.message : 'Failed to submit. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (isSubmitted) {
@@ -84,6 +120,24 @@ export function ContactForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+      {/* Honeypot field - hidden from users, catches bots */}
+      <input
+        ref={honeypotRef}
+        type="text"
+        name="website_url"
+        autoComplete="off"
+        tabIndex={-1}
+        className="absolute -left-[9999px] opacity-0 pointer-events-none"
+        aria-hidden="true"
+      />
+
+      {/* Error message */}
+      {submitError && (
+        <div className="p-4 rounded-lg border border-[hsl(var(--color-error)/0.3)] bg-[hsl(var(--color-error)/0.1)] text-[hsl(var(--color-error))]">
+          <p className="text-sm">{submitError}</p>
+        </div>
+      )}
+
       {/* Name & Email */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         <div className="space-y-2">

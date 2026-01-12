@@ -1,10 +1,30 @@
 "use client";
 
 import * as React from "react";
+import { Suspense } from "react";
 import { Header, Footer, Container, Section } from "@/components/layout";
 import { PageTransition, AnimatedSection, HeroText } from "@/components/ui";
 import { ContactForm } from "@/components/forms/contact-form";
 import { siteConfig } from "@/lib/constants";
+
+function ContactFormSkeleton() {
+  return (
+    <div className="space-y-6 animate-pulse">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <div className="h-12 bg-[hsl(var(--color-background-muted))] rounded-lg" />
+        <div className="h-12 bg-[hsl(var(--color-background-muted))] rounded-lg" />
+      </div>
+      <div className="h-12 bg-[hsl(var(--color-background-muted))] rounded-lg" />
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+        <div className="h-12 bg-[hsl(var(--color-background-muted))] rounded-lg" />
+        <div className="h-12 bg-[hsl(var(--color-background-muted))] rounded-lg" />
+        <div className="h-12 bg-[hsl(var(--color-background-muted))] rounded-lg" />
+      </div>
+      <div className="h-32 bg-[hsl(var(--color-background-muted))] rounded-lg" />
+      <div className="h-12 w-40 bg-[hsl(var(--color-background-muted))] rounded-lg" />
+    </div>
+  );
+}
 
 export default function ContactPage() {
   const [copied, setCopied] = React.useState(false);
@@ -48,7 +68,9 @@ export default function ContactPage() {
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-16">
                 {/* Form */}
                 <AnimatedSection className="lg:col-span-2" delay={0.2}>
-                  <ContactForm />
+                  <Suspense fallback={<ContactFormSkeleton />}>
+                    <ContactForm />
+                  </Suspense>
                 </AnimatedSection>
 
                 {/* Sidebar */}
