@@ -24,6 +24,19 @@ interface Lead {
   stage: { id: string; name: string; color: string } | null;
 }
 
+interface LeadAnalysis {
+  fit_score: number;
+  scope_creep_risk: number;
+  project_type: string;
+  complexity: string;
+  recommended_stack: string[];
+  red_flags: string[];
+  green_flags: string[];
+  requires_review: boolean;
+  analysis_mode: string;
+  analyzed_at: string;
+}
+
 interface Activity {
   id: string;
   type: string;
@@ -103,6 +116,12 @@ function getActivityIcon(type: string) {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
         </svg>
       );
+    case "ai_analysis":
+      return (
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+        </svg>
+      );
     case "email_sent":
       return (
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -136,16 +155,19 @@ export default function LeadDetailPage() {
   const [lead, setLead] = React.useState<Lead | null>(null);
   const [activities, setActivities] = React.useState<Activity[]>([]);
   const [stages, setStages] = React.useState<PipelineStage[]>([]);
+  const [analysis, setAnalysis] = React.useState<LeadAnalysis | null>(null);
   const [loading, setLoading] = React.useState(true);
+  const [analyzing, setAnalyzing] = React.useState(false);
   const [note, setNote] = React.useState("");
   const [addingNote, setAddingNote] = React.useState(false);
 
   React.useEffect(() => {
     async function fetchData() {
       try {
-        const [leadRes, stagesRes] = await Promise.all([
+        const [leadRes, stagesRes, analysisRes] = await Promise.all([
           fetch(`/api/admin/leads/${params.id}`),
           fetch("/api/admin/stages"),
+          fetch(`/api/admin/intelligence/lead/${params.id}`),
         ]);
 
         if (leadRes.ok) {
@@ -160,6 +182,11 @@ export default function LeadDetailPage() {
           const data = await stagesRes.json();
           setStages(data.stages || []);
         }
+
+        if (analysisRes.ok) {
+          const data = await analysisRes.json();
+          setAnalysis(data.analysis);
+        }
       } catch (error) {
         console.error("Failed to fetch data:", error);
       } finally {
@@ -168,6 +195,37 @@ export default function LeadDetailPage() {
     }
     fetchData();
   }, [params.id, router]);
+
+  const handleAnalyze = async () => {
+    if (!lead) return;
+    setAnalyzing(true);
+    try {
+      const res = await fetch("/api/admin/intelligence/analyze", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ leadId: lead.id }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setAnalysis(data.analysis);
+        // Add to activities
+        setActivities((prev) => [
+          {
+            id: Date.now().toString(),
+            type: "ai_analysis",
+            description: `AI analysis completed: Fit ${Math.round(data.analysis.fit_score * 100)}%`,
+            metadata: null,
+            created_at: new Date().toISOString(),
+          },
+          ...prev,
+        ]);
+      }
+    } catch (error) {
+      console.error("Failed to analyze:", error);
+    } finally {
+      setAnalyzing(false);
+    }
+  };
 
   const handleStageChange = async (newStageId: string) => {
     if (!lead) return;
@@ -375,6 +433,135 @@ export default function LeadDetailPage() {
               </div>
             </div>
           )}
+
+          {/* AI Intelligence */}
+          <div className="bg-[#18181b] border border-[#27272a] rounded-xl p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-semibold">AI Intelligence</h2>
+              {!analysis && (
+                <button
+                  onClick={handleAnalyze}
+                  disabled={analyzing}
+                  className="px-4 py-2 bg-[#22c55e] text-black text-sm font-medium rounded-lg hover:bg-[#16a34a] transition-colors disabled:opacity-50"
+                >
+                  {analyzing ? (
+                    <span className="flex items-center gap-2">
+                      <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                      </svg>
+                      Analyzing...
+                    </span>
+                  ) : (
+                    "Run Analysis"
+                  )}
+                </button>
+              )}
+            </div>
+
+            {analysis ? (
+              <div className="space-y-6">
+                {/* Score Cards */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="p-4 bg-[#27272a] rounded-lg">
+                    <p className="text-[#71717a] text-sm mb-1">Fit Score</p>
+                    <p className={`text-2xl font-semibold ${analysis.fit_score >= 0.7 ? 'text-green-400' : analysis.fit_score >= 0.4 ? 'text-yellow-400' : 'text-red-400'}`}>
+                      {Math.round(analysis.fit_score * 100)}%
+                    </p>
+                  </div>
+                  <div className="p-4 bg-[#27272a] rounded-lg">
+                    <p className="text-[#71717a] text-sm mb-1">Scope Risk</p>
+                    <p className={`text-2xl font-semibold ${analysis.scope_creep_risk < 0.3 ? 'text-green-400' : analysis.scope_creep_risk < 0.7 ? 'text-yellow-400' : 'text-red-400'}`}>
+                      {Math.round(analysis.scope_creep_risk * 100)}%
+                    </p>
+                  </div>
+                </div>
+
+                {/* Classification */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-[#71717a] text-sm mb-1">Project Type</p>
+                    <p className="text-white font-medium">{analysis.project_type}</p>
+                  </div>
+                  <div>
+                    <p className="text-[#71717a] text-sm mb-1">Complexity</p>
+                    <p className="text-white font-medium">{analysis.complexity}</p>
+                  </div>
+                </div>
+
+                {/* Recommended Stack */}
+                {analysis.recommended_stack && analysis.recommended_stack.length > 0 && (
+                  <div>
+                    <p className="text-[#71717a] text-sm mb-2">Recommended Stack</p>
+                    <div className="flex flex-wrap gap-2">
+                      {analysis.recommended_stack.map((tech) => (
+                        <span key={tech} className="px-3 py-1 bg-[#27272a] text-[#a1a1aa] text-sm rounded-full">
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Flags */}
+                <div className="grid grid-cols-2 gap-4">
+                  {analysis.green_flags && analysis.green_flags.length > 0 && (
+                    <div>
+                      <p className="text-[#71717a] text-sm mb-2">Green Flags</p>
+                      <div className="space-y-1">
+                        {analysis.green_flags.map((flag, i) => (
+                          <div key={i} className="flex items-center gap-2 text-green-400 text-sm">
+                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                            </svg>
+                            {flag}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {analysis.red_flags && analysis.red_flags.length > 0 && (
+                    <div>
+                      <p className="text-[#71717a] text-sm mb-2">Red Flags</p>
+                      <div className="space-y-1">
+                        {analysis.red_flags.map((flag, i) => (
+                          <div key={i} className="flex items-center gap-2 text-red-400 text-sm">
+                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                            </svg>
+                            {flag}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Review Status */}
+                {analysis.requires_review && (
+                  <div className="p-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg flex items-center gap-2 text-yellow-400">
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                    <span className="text-sm font-medium">This lead requires human review</span>
+                  </div>
+                )}
+
+                {/* Analysis Mode */}
+                <p className="text-xs text-[#71717a]">
+                  Analyzed via {analysis.analysis_mode === 'ml_service' ? 'ML Service' : 'Rule-based Engine'}
+                  {analysis.analyzed_at && ` • ${formatDate(analysis.analyzed_at)}`}
+                </p>
+              </div>
+            ) : (
+              <div className="text-center py-8 text-[#71717a]">
+                <svg className="w-12 h-12 mx-auto mb-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                </svg>
+                <p>Click &quot;Run Analysis&quot; to get AI-powered insights</p>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Activity Timeline */}
