@@ -1,10 +1,9 @@
 import { Header, Footer } from "@/components/layout";
 import {
   Hero,
-  Positioning,
   ServicesOverview,
   SelectedWork,
-  Process,
+  ApproachProcess,
   CTABlock,
 } from "@/components/sections";
 
@@ -14,10 +13,9 @@ export default function Home() {
       <Header />
       <main id="main-content">
         <Hero />
-        <Positioning />
         <ServicesOverview />
         <SelectedWork />
-        <Process />
+        <ApproachProcess />
         <CTABlock />
       </main>
       <Footer />

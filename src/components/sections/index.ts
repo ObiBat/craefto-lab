@@ -6,3 +6,4 @@ export { SelectedWork } from "./selected-work";
 export { Metrics } from "./metrics";
 export { Process } from "./process";
 export { CTABlock } from "./cta-block";
+export { ApproachProcess } from "./approach-process";
