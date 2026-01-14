@@ -1,0 +1,283 @@
+import * as React from "react";
+import Link from "next/link";
+import { cn } from "@/lib/utils";
+import { CodeBlock } from "./code-block";
+
+// Pull Quote Component - Editorial style with visual impact
+export function PullQuote({ children }: { children: React.ReactNode }) {
+  return (
+    <blockquote className="my-12 md:my-16 relative pl-8 md:pl-10 border-l-[3px] border-accent">
+      <div className="absolute -left-3 -top-2 text-6xl text-accent/20 font-heading select-none" aria-hidden="true">
+        &ldquo;
+      </div>
+      <div className="font-heading text-2xl md:text-3xl leading-[1.4] text-foreground/95 max-w-[50ch]">
+        {children}
+      </div>
+    </blockquote>
+  );
+}
+
+// Callout Component - Modern editorial style
+export function Callout({
+  type = "note",
+  children,
+}: {
+  type?: "note" | "warning" | "tip";
+  children: React.ReactNode;
+}) {
+  const styles = {
+    note: "bg-blue-50 border-blue-200 text-blue-900 [&_svg]:text-blue-500",
+    warning: "bg-amber-50 border-amber-200 text-amber-900 [&_svg]:text-amber-500",
+    tip: "bg-emerald-50 border-emerald-200 text-emerald-900 [&_svg]:text-emerald-500",
+  };
+
+  const labels = {
+    note: "Note",
+    warning: "Warning",
+    tip: "Tip",
+  };
+
+  const icons = {
+    note: (
+      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+    ),
+    warning: (
+      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+      </svg>
+    ),
+    tip: (
+      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+      </svg>
+    ),
+  };
+
+  return (
+    <aside className={cn("my-8 p-5 rounded-xl border-l-4 shadow-sm", styles[type])}>
+      <div className="flex items-start gap-4">
+        <span className="shrink-0 mt-0.5">{icons[type]}</span>
+        <div>
+          <p className="font-semibold text-sm uppercase tracking-wide mb-2 opacity-80">{labels[type]}</p>
+          <div className="text-base leading-relaxed [&>p]:my-0 [&>p:not(:first-child)]:mt-3">{children}</div>
+        </div>
+      </div>
+    </aside>
+  );
+}
+
+// Custom Link Component
+function CustomLink({
+  href,
+  children,
+  ...props
+}: React.AnchorHTMLAttributes<HTMLAnchorElement>) {
+  const isInternal = href?.startsWith("/") || href?.startsWith("#");
+
+  if (isInternal) {
+    return (
+      <Link href={href || "#"} {...props} className="text-accent hover:underline">
+        {children}
+      </Link>
+    );
+  }
+
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="text-accent hover:underline inline-flex items-center gap-1"
+      {...props}
+    >
+      {children}
+      <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+      </svg>
+    </a>
+  );
+}
+
+// Helper to generate heading ID
+function generateHeadingId(children: React.ReactNode): string | undefined {
+  if (typeof children === "string") {
+    return children.toLowerCase().replace(/\s+/g, "-").replace(/[^\w-]/g, "");
+  }
+  return undefined;
+}
+
+// Anchor link component for headings
+function HeadingAnchor({ id, children }: { id?: string; children: React.ReactNode }) {
+  if (!id) return null;
+  return (
+    <a
+      href={`#${id}`}
+      className="ml-3 opacity-0 group-hover:opacity-100 transition-all duration-200 text-accent/60 hover:text-accent text-[0.65em]"
+      aria-label={`Link to section: ${children}`}
+    >
+      #
+    </a>
+  );
+}
+
+// Heading Components with Anchor Links - Improved spacing and typography
+function Heading1({ children, id, ...props }: React.HTMLAttributes<HTMLHeadingElement>) {
+  const headingId = id || generateHeadingId(children);
+  return (
+    <h1 id={headingId} className="font-heading text-foreground group text-4xl md:text-5xl font-semibold mt-0 mb-8 leading-[1.1] tracking-tight" {...props}>
+      {children}
+    </h1>
+  );
+}
+
+function Heading2({ children, id, ...props }: React.HTMLAttributes<HTMLHeadingElement>) {
+  const headingId = id || generateHeadingId(children);
+  return (
+    <h2 id={headingId} className="font-heading text-foreground group text-2xl md:text-[1.875rem] font-semibold mt-16 mb-6 scroll-mt-28 leading-[1.2] tracking-tight" {...props}>
+      {children}
+      <HeadingAnchor id={headingId}>{children}</HeadingAnchor>
+    </h2>
+  );
+}
+
+function Heading3({ children, id, ...props }: React.HTMLAttributes<HTMLHeadingElement>) {
+  const headingId = id || generateHeadingId(children);
+  return (
+    <h3 id={headingId} className="font-heading text-foreground group text-xl md:text-2xl font-semibold mt-12 mb-4 scroll-mt-28 leading-[1.25]" {...props}>
+      {children}
+      <HeadingAnchor id={headingId}>{children}</HeadingAnchor>
+    </h3>
+  );
+}
+
+function Heading4({ children, id, ...props }: React.HTMLAttributes<HTMLHeadingElement>) {
+  const headingId = id || generateHeadingId(children);
+  return (
+    <h4 id={headingId} className="font-heading text-foreground group text-lg md:text-xl font-semibold mt-10 mb-3 scroll-mt-28 leading-[1.3]" {...props}>
+      {children}
+      <HeadingAnchor id={headingId}>{children}</HeadingAnchor>
+    </h4>
+  );
+}
+
+function Heading5({ children, id, ...props }: React.HTMLAttributes<HTMLHeadingElement>) {
+  const headingId = id || generateHeadingId(children);
+  return (
+    <h5 id={headingId} className="font-heading text-foreground group text-base md:text-lg font-semibold mt-8 mb-3 scroll-mt-28" {...props}>
+      {children}
+      <HeadingAnchor id={headingId}>{children}</HeadingAnchor>
+    </h5>
+  );
+}
+
+function Heading6({ children, id, ...props }: React.HTMLAttributes<HTMLHeadingElement>) {
+  const headingId = id || generateHeadingId(children);
+  return (
+    <h6 id={headingId} className="font-heading text-foreground-muted group text-sm font-semibold mt-6 mb-2 scroll-mt-28 uppercase tracking-wide" {...props}>
+      {children}
+      <HeadingAnchor id={headingId}>{children}</HeadingAnchor>
+    </h6>
+  );
+}
+
+// Image Component
+function CustomImage({
+  src,
+  alt,
+  ...props
+}: React.ImgHTMLAttributes<HTMLImageElement>) {
+  return (
+    <figure className="my-8">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={src}
+        alt={alt || ""}
+        className="w-full rounded-lg"
+        loading="lazy"
+        {...props}
+      />
+      {alt && (
+        <figcaption className="mt-2 text-center text-sm text-foreground-muted">
+          {alt}
+        </figcaption>
+      )}
+    </figure>
+  );
+}
+
+// Export all MDX components
+export const mdxComponents = {
+  h1: Heading1,
+  h2: Heading2,
+  h3: Heading3,
+  h4: Heading4,
+  h5: Heading5,
+  h6: Heading6,
+  a: CustomLink,
+  img: CustomImage,
+  pre: CodeBlock,
+  blockquote: PullQuote,
+  Callout,
+  PullQuote,
+
+  // Default element styling - Optimized for reading (Awwwards 2026 standards)
+  // Typography: 18px body, 1.75 line-height, max 70ch width
+  p: ({ children, ...props }: React.HTMLAttributes<HTMLParagraphElement>) => (
+    <p className="my-6 text-lg leading-[1.8] text-foreground/90 max-w-[70ch]" {...props}>
+      {children}
+    </p>
+  ),
+  ul: ({ children, ...props }: React.HTMLAttributes<HTMLUListElement>) => (
+    <ul className="my-6 ml-6 list-disc space-y-3 text-lg text-foreground/90 max-w-[70ch]" {...props}>
+      {children}
+    </ul>
+  ),
+  ol: ({ children, ...props }: React.HTMLAttributes<HTMLOListElement>) => (
+    <ol className="my-6 ml-6 list-decimal space-y-3 text-lg text-foreground/90 max-w-[70ch]" {...props}>
+      {children}
+    </ol>
+  ),
+  li: ({ children, ...props }: React.HTMLAttributes<HTMLLIElement>) => (
+    <li className="leading-[1.75] pl-2" {...props}>
+      {children}
+    </li>
+  ),
+  hr: () => (
+    <hr className="my-16 border-0 h-px bg-gradient-to-r from-transparent via-border-strong to-transparent" />
+  ),
+  table: ({ children, ...props }: React.HTMLAttributes<HTMLTableElement>) => (
+    <div className="my-8 overflow-x-auto rounded-lg border border-border">
+      <table className="w-full border-collapse text-base" {...props}>
+        {children}
+      </table>
+    </div>
+  ),
+  th: ({ children, ...props }: React.HTMLAttributes<HTMLTableCellElement>) => (
+    <th className="border-b border-border bg-background-subtle px-5 py-3 text-left font-semibold text-sm uppercase tracking-wide text-foreground-muted" {...props}>
+      {children}
+    </th>
+  ),
+  td: ({ children, ...props }: React.HTMLAttributes<HTMLTableCellElement>) => (
+    <td className="border-b border-border-subtle px-5 py-4 text-foreground/90" {...props}>
+      {children}
+    </td>
+  ),
+  code: ({ children, ...props }: React.HTMLAttributes<HTMLElement>) => (
+    <code className="rounded-md bg-background-muted px-2 py-1 font-mono text-[0.9em] text-foreground border border-border-subtle" {...props}>
+      {children}
+    </code>
+  ),
+  // Strong and emphasis
+  strong: ({ children, ...props }: React.HTMLAttributes<HTMLElement>) => (
+    <strong className="font-semibold text-foreground" {...props}>
+      {children}
+    </strong>
+  ),
+  em: ({ children, ...props }: React.HTMLAttributes<HTMLElement>) => (
+    <em className="italic text-foreground/95" {...props}>
+      {children}
+    </em>
+  ),
+};

@@ -38,7 +38,7 @@ export function Footer() {
             </div>
 
             {/* Navigation Grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-8 md:gap-12">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 md:gap-12">
               {/* Navigate */}
               <nav aria-label="Footer navigation">
                 <p className="text-xs font-semibold uppercase tracking-widest mb-4" style={{ color: '#ffffff' }}>
@@ -61,6 +61,47 @@ export function Footer() {
                       className="text-sm text-white/70 hover:text-white transition-colors"
                     >
                       {navigation.cta.name}
+                    </Link>
+                  </li>
+                </ul>
+              </nav>
+
+              {/* Journal */}
+              <nav aria-label="Journal">
+                <p className="text-xs font-semibold uppercase tracking-widest mb-4" style={{ color: '#ffffff' }}>
+                  Journal
+                </p>
+                <ul className="space-y-2.5">
+                  <li>
+                    <Link
+                      href="/journal"
+                      className="text-sm text-white/70 hover:text-white transition-colors"
+                    >
+                      All Articles
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/journal/pillar/engineering"
+                      className="text-sm text-white/70 hover:text-white transition-colors"
+                    >
+                      Engineering
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/journal/pillar/design"
+                      className="text-sm text-white/70 hover:text-white transition-colors"
+                    >
+                      Design
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/journal/pillar/product"
+                      className="text-sm text-white/70 hover:text-white transition-colors"
+                    >
+                      Product
                     </Link>
                   </li>
                 </ul>

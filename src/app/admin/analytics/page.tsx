@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Link from "next/link";
 
 interface AnalyticsData {
   summary: {
@@ -123,7 +124,7 @@ export default function AnalyticsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold mb-1">Analytics</h1>
-          <p>Website traffic and performance metrics</p>
+          <p className="text-[#a1a1aa]">Website traffic and performance metrics</p>
         </div>
         <div className="flex items-center gap-2">
           {[7, 30, 90].map((d) => (
@@ -140,6 +141,66 @@ export default function AnalyticsPage() {
             </button>
           ))}
         </div>
+      </div>
+
+      {/* Quick Links to Dashboards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <Link
+          href="/admin/analytics/content"
+          className="group bg-[#18181b] border border-[#27272a] rounded-xl p-4 hover:border-[#22c55e]/30 transition-colors"
+        >
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-[#22c55e]/10 rounded-lg">
+              <svg className="w-5 h-5 text-[#22c55e]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+            </div>
+            <div>
+              <h3 className="font-medium text-white group-hover:text-[#22c55e] transition-colors">
+                Content Performance
+              </h3>
+              <p className="text-sm text-[#71717a]">Article views, engagement, trending</p>
+            </div>
+          </div>
+        </Link>
+
+        <Link
+          href="/admin/analytics/ab-testing"
+          className="group bg-[#18181b] border border-[#27272a] rounded-xl p-4 hover:border-blue-500/30 transition-colors"
+        >
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-blue-500/10 rounded-lg">
+              <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+              </svg>
+            </div>
+            <div>
+              <h3 className="font-medium text-white group-hover:text-blue-400 transition-colors">
+                A/B Testing
+              </h3>
+              <p className="text-sm text-[#71717a]">Test titles, CTAs, optimize CTR</p>
+            </div>
+          </div>
+        </Link>
+
+        <Link
+          href="/admin/analytics/feedback"
+          className="group bg-[#18181b] border border-[#27272a] rounded-xl p-4 hover:border-purple-500/30 transition-colors"
+        >
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-purple-500/10 rounded-lg">
+              <svg className="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+            </div>
+            <div>
+              <h3 className="font-medium text-white group-hover:text-purple-400 transition-colors">
+                Agent Feedback
+              </h3>
+              <p className="text-sm text-[#71717a]">AI agent performance tracking</p>
+            </div>
+          </div>
+        </Link>
       </div>
 
       {/* Stats Grid */}

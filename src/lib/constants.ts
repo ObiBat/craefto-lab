@@ -14,6 +14,7 @@ export const navigation = {
   main: [
     { name: "Case studies", href: "/work" },
     { name: "Services", href: "/services" },
+    { name: "Journal", href: "/journal" },
     { name: "About", href: "/about" },
   ],
   cta: { name: "Contact", href: "/contact" },
