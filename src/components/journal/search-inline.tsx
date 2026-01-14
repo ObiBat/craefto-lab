@@ -88,11 +88,11 @@ export function JournalSearchInline() {
     const showDropdown = isFocused && (query.length >= 2 || results.length > 0);
 
     return (
-        <div ref={containerRef} className="relative">
+        <div ref={containerRef} className="relative shrink-0">
             {/* Search Input */}
             <div className="relative flex items-center">
                 <svg
-                    className="absolute left-3 w-4 h-4 text-[hsl(var(--color-foreground-muted))] pointer-events-none"
+                    className="absolute left-2 sm:left-3 w-3.5 h-3.5 sm:w-4 sm:h-4 text-[hsl(var(--color-foreground-muted))] pointer-events-none"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -111,10 +111,10 @@ export function JournalSearchInline() {
                     onChange={(e) => setQuery(e.target.value)}
                     onFocus={() => setIsFocused(true)}
                     placeholder="Search..."
-                    className="w-32 sm:w-40 md:w-48 pl-9 pr-3 py-2 rounded-lg bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] text-sm text-[hsl(var(--color-foreground))] placeholder:text-[hsl(var(--color-foreground-muted))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-accent))] focus:border-transparent transition-all"
+                    className="w-24 sm:w-32 md:w-40 pl-7 sm:pl-9 pr-2 sm:pr-3 py-1.5 sm:py-2 rounded-lg bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] text-xs sm:text-sm text-[hsl(var(--color-foreground))] placeholder:text-[hsl(var(--color-foreground-muted))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-accent))] focus:border-transparent transition-all"
                 />
                 {isLoading && (
-                    <div className="absolute right-3 w-4 h-4 border-2 border-[hsl(var(--color-foreground-muted))] border-t-transparent rounded-full animate-spin" />
+                    <div className="absolute right-2 sm:right-3 w-3.5 h-3.5 sm:w-4 sm:h-4 border-2 border-[hsl(var(--color-foreground-muted))] border-t-transparent rounded-full animate-spin" />
                 )}
             </div>
 

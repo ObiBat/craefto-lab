@@ -191,14 +191,16 @@ function CustomImage({
 }: React.ImgHTMLAttributes<HTMLImageElement>) {
   return (
     <figure className="my-10 max-w-2xl mx-auto">
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={src}
-        alt={alt || ""}
-        className="w-full rounded-lg shadow-sm"
-        loading="lazy"
-        {...props}
-      />
+      <div className="relative overflow-hidden rounded-lg bg-background-muted aspect-[16/9]">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={src}
+          alt={alt || ""}
+          className="absolute inset-0 w-full h-full object-cover shadow-sm"
+          loading="lazy"
+          {...props}
+        />
+      </div>
       {alt && (
         <figcaption className="mt-3 text-center text-sm text-foreground-muted italic">
           {alt}

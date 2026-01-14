@@ -128,19 +128,19 @@ export function ArticleHeader({ article }: ArticleHeaderProps) {
 
       {/* Featured Image */}
       {article.featured_image_url && (
-        <figure className="mt-12 -mx-6 md:-mx-12 lg:-mx-20">
-          <div className="relative overflow-hidden rounded-2xl shadow-xl">
+        <figure className="mt-12 max-w-2xl mx-auto">
+          <div className="relative overflow-hidden rounded-xl shadow-sm">
             <Image
               src={article.featured_image_url}
               alt={article.featured_image_alt || article.title}
-              width={1400}
-              height={700}
+              width={1200}
+              height={600}
               className="w-full object-cover"
               priority
             />
           </div>
           {article.featured_image_alt && (
-            <figcaption className="mt-4 text-center text-sm text-foreground-muted">
+            <figcaption className="mt-3 text-center text-sm text-foreground-muted italic">
               {article.featured_image_alt}
             </figcaption>
           )}

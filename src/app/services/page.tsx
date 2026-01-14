@@ -31,6 +31,7 @@ const services = [
       "Information architecture & UX",
       "Visual design & prototyping",
       "Frontend development (React, Next.js)",
+      "Payment integration (Stripe, Apple Pay)",
       "Performance optimization",
     ],
   },

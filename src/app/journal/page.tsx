@@ -142,13 +142,10 @@ export default async function JournalPage({ searchParams }: JournalPageProps) {
         </Section>
 
         {/* Pillar Filters - Sticky */}
-        <div className="sticky top-16 z-30 bg-[hsl(var(--color-background))] backdrop-blur-md border-b border-[hsl(var(--color-border))]">
+        <div className="sticky top-16 z-30 bg-[hsl(var(--color-background))]/95 backdrop-blur-md border-b border-[hsl(var(--color-border))]">
           <Container>
-            <div className="flex items-center justify-between py-4">
-              <nav className="flex flex-wrap items-center gap-2" aria-label="Content pillars">
-                <span className="text-xs font-semibold text-[hsl(var(--color-foreground-muted))] uppercase tracking-wider mr-2 hidden sm:inline">
-                  Filter:
-                </span>
+            <div className="flex items-center justify-between gap-3 py-2 sm:py-3">
+              <nav className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto scrollbar-hide -mx-1 px-1" aria-label="Content pillars">
                 <PillarTab href="/journal" active={!activePillar}>
                   All
                 </PillarTab>
@@ -163,7 +160,9 @@ export default async function JournalPage({ searchParams }: JournalPageProps) {
                   </PillarTab>
                 ))}
               </nav>
-              <JournalSearchInline />
+              <div className="hidden sm:block">
+                <JournalSearchInline />
+              </div>
             </div>
           </Container>
         </div>
@@ -278,14 +277,14 @@ function PillarTab({
   return (
     <Link
       href={href}
-      className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${active
+      className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 sm:px-3 sm:py-1.5 rounded-full text-xs sm:text-sm font-medium transition-all duration-200 whitespace-nowrap shrink-0 ${active
         ? "bg-foreground text-background shadow-sm"
         : "bg-background text-foreground-muted hover:text-foreground hover:bg-background-subtle border border-border-subtle"
         }`}
     >
       {color && (
         <span
-          className={`w-2 h-2 rounded-full transition-transform ${active ? "scale-0" : "scale-100"}`}
+          className={`w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full transition-transform ${active ? "scale-0" : "scale-100"}`}
           style={{ backgroundColor: color }}
         />
       )}

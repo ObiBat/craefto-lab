@@ -30,7 +30,7 @@ export const services = [
   {
     title: "Web Design & Development",
     description: "Marketing sites, SaaS platforms, and dashboards built for performance.",
-    capabilities: ["Marketing sites", "Landing pages", "SaaS interfaces", "Dashboard design", "Responsive development"],
+    capabilities: ["Marketing sites", "Landing pages", "SaaS interfaces", "Dashboard design", "Payment integration (Stripe, Apple Pay)", "Responsive development"],
     href: "/services#web",
   },
   {
