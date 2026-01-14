@@ -9,34 +9,93 @@ const values = [
   {
     number: "01",
     title: "Clarity over cleverness",
-    description:
-      "If it can't be explained simply, it's not ready.",
+    description: "If it can't be explained simply, it's not ready. We prioritize understanding over complexity.",
+    icon: (
+      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+      </svg>
+    ),
   },
   {
     number: "02",
     title: "Systems over shortcuts",
-    description:
-      "Foundations that scale, not fixes that create debt.",
+    description: "Foundations that scale, not fixes that create debt. We build for the long term.",
+    icon: (
+      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+      </svg>
+    ),
   },
   {
     number: "03",
     title: "Craft over speed",
-    description:
-      "We ship when it's right. Details matter.",
+    description: "We ship when it's right, not when it's fast. Details matter in everything we create.",
+    icon: (
+      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+      </svg>
+    ),
   },
   {
     number: "04",
     title: "Partnership over transactions",
-    description:
-      "We work with clients, not for them.",
+    description: "We work with clients, not for them. True collaboration creates the best outcomes.",
+    icon: (
+      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+      </svg>
+    ),
   },
 ];
 
 const whatWeDontDo = [
-  "Rush to ship half-baked work",
-  "Follow trends without purpose",
-  "Disappear after delivery",
-  "Treat your project as just another job",
+  {
+    text: "Rush to ship half-baked work",
+    icon: (
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    ),
+  },
+  {
+    text: "Follow trends without purpose",
+    icon: (
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    ),
+  },
+  {
+    text: "Disappear after delivery",
+    icon: (
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    ),
+  },
+  {
+    text: "Treat your project as just another job",
+    icon: (
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    ),
+  },
+];
+
+const lookingAhead = [
+  {
+    title: "Beyond services",
+    description: "We're building toward our own products, tools, and systems we can release into the world.",
+  },
+  {
+    title: "The Lab",
+    description: "Experiments, R&D projects, and open resources. Building in public and sharing what we learn.",
+  },
+  {
+    title: "Community",
+    description: "Growing a network of founders and creators who share our values and approach to building.",
+  },
 ];
 
 export default function AboutPage() {
@@ -49,9 +108,24 @@ export default function AboutPage() {
           <Section spacing="sm">
             <Container>
               <div className="max-w-3xl">
+                {/* Breadcrumb */}
+                <nav className="mb-8" aria-label="Breadcrumb">
+                  <ol className="flex items-center gap-2 text-sm text-[hsl(var(--color-foreground-muted))]">
+                    <li>
+                      <a href="/" className="hover:text-[hsl(var(--color-foreground))] transition-colors">
+                        Home
+                      </a>
+                    </li>
+                    <li>
+                      <span className="mx-2">/</span>
+                    </li>
+                    <li className="text-[hsl(var(--color-foreground))] font-medium">About</li>
+                  </ol>
+                </nav>
+
                 <HeroText>
                   <h1 className="font-semibold tracking-tight mb-6">
-                    About
+                    About Us
                   </h1>
                 </HeroText>
                 <HeroText delay={0.1}>
@@ -110,26 +184,36 @@ export default function AboutPage() {
                   <div className="flex flex-col gap-4">
                     <SectionLabel number="02" label="Values" />
                     <h2 className="font-semibold tracking-tight">
-                      What we value
+                      What we believe
                     </h2>
+                    <p className="text-lg text-[hsl(var(--color-foreground-muted))] max-w-xl leading-relaxed mt-2">
+                      The principles that guide every decision we make.
+                    </p>
                   </div>
                 </AnimatedSection>
 
                 <Separator />
 
-                <StaggeredGrid className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                <StaggeredGrid className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   {values.map((value) => (
                     <StaggeredItem key={value.title}>
-                      <div className="flex flex-col gap-4">
-                        <span className="text-xs font-semibold text-[hsl(var(--color-accent))] tabular-nums">
-                          {value.number}
-                        </span>
-                        <h3 className="font-semibold tracking-tight">
-                          {value.title}
-                        </h3>
-                        <p className="text-sm text-[hsl(var(--color-foreground-muted))] leading-relaxed">
-                          {value.description}
-                        </p>
+                      <div className="group p-6 rounded-xl border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] hover:border-[hsl(var(--color-border-hover))] hover:shadow-sm transition-all">
+                        <div className="flex items-start gap-4">
+                          <div className="w-12 h-12 rounded-lg bg-[hsl(var(--color-background-muted))] flex items-center justify-center text-[hsl(var(--color-foreground-muted))] group-hover:text-[hsl(var(--color-accent))] transition-colors flex-shrink-0">
+                            {value.icon}
+                          </div>
+                          <div>
+                            <span className="text-xs font-semibold text-[hsl(var(--color-accent))] tabular-nums">
+                              {value.number}
+                            </span>
+                            <h3 className="font-semibold tracking-tight mt-1 mb-2">
+                              {value.title}
+                            </h3>
+                            <p className="text-sm text-[hsl(var(--color-foreground-muted))] leading-relaxed">
+                              {value.description}
+                            </p>
+                          </div>
+                        </div>
                       </div>
                     </StaggeredItem>
                   ))}
@@ -156,25 +240,15 @@ export default function AboutPage() {
 
                 <Separator />
 
-                <StaggeredGrid className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  {whatWeDontDo.map((item, index) => (
-                    <StaggeredItem key={item}>
-                      <div className="flex items-center gap-4 p-4 rounded-lg border border-[hsl(var(--color-border))]">
-                        <svg
-                          className="w-5 h-5 text-[hsl(var(--color-foreground-subtle))] shrink-0"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M6 18L18 6M6 6l12 12"
-                          />
-                        </svg>
+                <StaggeredGrid className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {whatWeDontDo.map((item) => (
+                    <StaggeredItem key={item.text}>
+                      <div className="flex items-center gap-4 p-5 rounded-xl border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))]">
+                        <div className="w-10 h-10 rounded-lg bg-[hsl(var(--color-background-muted))] flex items-center justify-center text-[hsl(var(--color-foreground-subtle))] flex-shrink-0">
+                          {item.icon}
+                        </div>
                         <span className="text-[hsl(var(--color-foreground-muted))]">
-                          {item}
+                          {item.text}
                         </span>
                       </div>
                     </StaggeredItem>
@@ -199,15 +273,25 @@ export default function AboutPage() {
 
                 <Separator />
 
-                <AnimatedSection delay={0.1}>
-                  <div className="max-w-2xl space-y-6 text-lg text-[hsl(var(--color-foreground-muted))] leading-relaxed">
-                    <p>
-                      <strong className="text-[hsl(var(--color-foreground))]">Beyond services.</strong> We&apos;re building toward our own products, tools, and systems we can release into the world.
-                    </p>
-                    <p>
-                      <strong className="text-[hsl(var(--color-foreground))]">The Lab.</strong> Coming soon: experiments, R&D projects, and open resources. Building in public and sharing what we learn.
-                    </p>
-                    <p>
+                <StaggeredGrid className="grid grid-cols-1 sm:grid-cols-3 gap-8">
+                  {lookingAhead.map((item, index) => (
+                    <StaggeredItem key={item.title}>
+                      <div className="flex flex-col gap-3">
+                        <span className="text-xs font-semibold text-[hsl(var(--color-accent))] tabular-nums">
+                          {String(index + 1).padStart(2, "0")}
+                        </span>
+                        <h3 className="font-semibold tracking-tight">{item.title}</h3>
+                        <p className="text-sm text-[hsl(var(--color-foreground-muted))] leading-relaxed">
+                          {item.description}
+                        </p>
+                      </div>
+                    </StaggeredItem>
+                  ))}
+                </StaggeredGrid>
+
+                <AnimatedSection delay={0.2}>
+                  <div className="max-w-2xl">
+                    <p className="text-lg text-[hsl(var(--color-foreground-muted))] leading-relaxed">
                       If you&apos;re a founder building something meaningful, we&apos;d love to hear from you.
                     </p>
                   </div>

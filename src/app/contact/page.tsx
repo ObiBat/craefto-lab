@@ -44,11 +44,26 @@ export default function ContactPage() {
       <PageTransition>
         <main id="main-content" className="pt-20">
           {/* Hero */}
-          <Section spacing="xs">
+          <Section spacing="sm">
             <Container>
               <div className="max-w-3xl">
+                {/* Breadcrumb */}
+                <nav className="mb-8" aria-label="Breadcrumb">
+                  <ol className="flex items-center gap-2 text-sm text-[hsl(var(--color-foreground-muted))]">
+                    <li>
+                      <a href="/" className="hover:text-[hsl(var(--color-foreground))] transition-colors">
+                        Home
+                      </a>
+                    </li>
+                    <li>
+                      <span className="mx-2">/</span>
+                    </li>
+                    <li className="text-[hsl(var(--color-foreground))] font-medium">Contact</li>
+                  </ol>
+                </nav>
+
                 <HeroText>
-                  <h1 className="text-4xl sm:text-5xl font-semibold tracking-tight mb-6">
+                  <h1 className="font-semibold tracking-tight mb-6">
                     Start a project
                   </h1>
                 </HeroText>
@@ -114,9 +129,8 @@ export default function ContactPage() {
                           </svg>
                         )}
                         <span
-                          className={`absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 text-xs rounded bg-[hsl(var(--color-foreground))] text-[hsl(var(--color-background))] whitespace-nowrap transition-opacity ${
-                            copied ? "opacity-100" : "opacity-0"
-                          }`}
+                          className={`absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 text-xs rounded bg-[hsl(var(--color-foreground))] text-[hsl(var(--color-background))] whitespace-nowrap transition-opacity ${copied ? "opacity-100" : "opacity-0"
+                            }`}
                         >
                           Copied!
                         </span>

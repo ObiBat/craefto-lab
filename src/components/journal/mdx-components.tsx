@@ -123,10 +123,11 @@ function HeadingAnchor({ id, children }: { id?: string; children: React.ReactNod
 }
 
 // Heading Components with Anchor Links - Improved spacing and typography
+// Note: H1 is smaller because articles already have a hero title
 function Heading1({ children, id, ...props }: React.HTMLAttributes<HTMLHeadingElement>) {
   const headingId = id || generateHeadingId(children);
   return (
-    <h1 id={headingId} className="font-heading text-foreground group text-4xl md:text-5xl font-semibold mt-0 mb-8 leading-[1.1] tracking-tight" {...props}>
+    <h1 id={headingId} className="font-heading text-foreground group text-2xl md:text-3xl font-semibold mt-12 mb-6 leading-[1.2] tracking-tight" {...props}>
       {children}
     </h1>
   );
@@ -182,24 +183,24 @@ function Heading6({ children, id, ...props }: React.HTMLAttributes<HTMLHeadingEl
   );
 }
 
-// Image Component
+// Image Component - Constrained size for better reading flow
 function CustomImage({
   src,
   alt,
   ...props
 }: React.ImgHTMLAttributes<HTMLImageElement>) {
   return (
-    <figure className="my-8">
+    <figure className="my-10 max-w-2xl mx-auto">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={src}
         alt={alt || ""}
-        className="w-full rounded-lg"
+        className="w-full rounded-lg shadow-sm"
         loading="lazy"
         {...props}
       />
       {alt && (
-        <figcaption className="mt-2 text-center text-sm text-foreground-muted">
+        <figcaption className="mt-3 text-center text-sm text-foreground-muted italic">
           {alt}
         </figcaption>
       )}
@@ -224,11 +225,30 @@ export const mdxComponents = {
 
   // Default element styling - Optimized for reading (Awwwards 2026 standards)
   // Typography: 18px body, 1.75 line-height, max 70ch width
-  p: ({ children, ...props }: React.HTMLAttributes<HTMLParagraphElement>) => (
-    <p className="my-6 text-lg leading-[1.8] text-foreground/90 max-w-[70ch]" {...props}>
-      {children}
-    </p>
-  ),
+  p: ({ children, ...props }: React.HTMLAttributes<HTMLParagraphElement>) => {
+    // Check if children contains block-level elements (like images wrapped in figure)
+    // If so, render as div to prevent hydration errors
+    const hasBlockChild = React.Children.toArray(children).some((child) => {
+      if (React.isValidElement(child)) {
+        // Check for img elements which will become figures
+        const childType = child.type;
+        if (childType === 'img' || childType === CustomImage) {
+          return true;
+        }
+      }
+      return false;
+    });
+
+    if (hasBlockChild) {
+      return <div className="my-6" {...props}>{children}</div>;
+    }
+
+    return (
+      <p className="my-6 text-lg leading-[1.8] text-foreground/90 max-w-[70ch]" {...props}>
+        {children}
+      </p>
+    );
+  },
   ul: ({ children, ...props }: React.HTMLAttributes<HTMLUListElement>) => (
     <ul className="my-6 ml-6 list-disc space-y-3 text-lg text-foreground/90 max-w-[70ch]" {...props}>
       {children}

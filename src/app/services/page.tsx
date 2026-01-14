@@ -115,6 +115,21 @@ export default function ServicesPage() {
           <Section spacing="sm">
             <Container>
               <div className="max-w-3xl">
+                {/* Breadcrumb */}
+                <nav className="mb-8" aria-label="Breadcrumb">
+                  <ol className="flex items-center gap-2 text-sm text-[hsl(var(--color-foreground-muted))]">
+                    <li>
+                      <a href="/" className="hover:text-[hsl(var(--color-foreground))] transition-colors">
+                        Home
+                      </a>
+                    </li>
+                    <li>
+                      <span className="mx-2">/</span>
+                    </li>
+                    <li className="text-[hsl(var(--color-foreground))] font-medium">Services</li>
+                  </ol>
+                </nav>
+
                 <HeroText>
                   <h1 className="font-semibold tracking-tight mb-6">
                     Services

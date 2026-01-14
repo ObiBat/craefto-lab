@@ -53,13 +53,28 @@ export default function WorkPage() {
     <>
       <Header />
       <PageTransition>
-        <main id="main-content" className="pt-16">
+        <main id="main-content" className="pt-20">
           {/* Hero */}
-          <Section spacing="xs">
+          <Section spacing="sm">
             <Container>
               <div className="max-w-3xl">
+                {/* Breadcrumb */}
+                <nav className="mb-8" aria-label="Breadcrumb">
+                  <ol className="flex items-center gap-2 text-sm text-[hsl(var(--color-foreground-muted))]">
+                    <li>
+                      <a href="/" className="hover:text-[hsl(var(--color-foreground))] transition-colors">
+                        Home
+                      </a>
+                    </li>
+                    <li>
+                      <span className="mx-2">/</span>
+                    </li>
+                    <li className="text-[hsl(var(--color-foreground))] font-medium">Work</li>
+                  </ol>
+                </nav>
+
                 <HeroText>
-                  <h1 className="text-4xl sm:text-5xl font-semibold tracking-tight mb-6">
+                  <h1 className="font-semibold tracking-tight mb-6">
                     Case studies
                   </h1>
                 </HeroText>

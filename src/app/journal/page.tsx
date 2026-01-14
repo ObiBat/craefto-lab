@@ -1,8 +1,10 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import { createServerClient } from "@/lib/supabase";
+import { Header, Footer, Section, Container } from "@/components/layout";
+import { HeroText, AnimatedSection, Separator } from "@/components/ui";
 import { ArticleCard } from "@/components/journal/article-card";
-import { JournalSearch } from "@/components/journal/search";
+import { JournalSearchInline } from "@/components/journal/search-inline";
 import type { ArticleCard as ArticleCardType, Pillar } from "@/lib/journal-types";
 
 // ISR: Revalidate every 60 seconds
@@ -68,9 +70,13 @@ async function getArticles(pillarSlug?: string): Promise<ArticleCardType[]> {
 async function getPillars(): Promise<Pillar[]> {
   const supabase = createServerClient();
 
+  // Only fetch the 5 main pillars
+  const allowedSlugs = ['engineering', 'design', 'product', 'ai-automation', 'craefto-practice'];
+
   const { data, error } = await supabase
     .from("journal_pillars")
     .select("*")
+    .in("slug", allowedSlugs)
     .order("sort_order");
 
   if (error) {
@@ -98,153 +104,163 @@ export default async function JournalPage({ searchParams }: JournalPageProps) {
   const remainingArticles = articles.slice(1);
 
   return (
-    <main className="min-h-screen bg-background">
-      {/* Header */}
-      <section className="pt-28 md:pt-32 pb-12 md:pb-16 px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          {/* Breadcrumb */}
-          <nav className="mb-8" aria-label="Breadcrumb">
-            <ol className="flex items-center gap-2 text-sm text-foreground-muted">
-              <li>
-                <Link href="/" className="hover:text-foreground transition-colors">
-                  Home
-                </Link>
-              </li>
-              <li>
-                <span className="mx-2">/</span>
-              </li>
-              <li className="text-foreground font-medium">Journal</li>
-            </ol>
-          </nav>
+    <>
+      <Header />
+      <main id="main-content" className="min-h-screen bg-[hsl(var(--color-background))] pt-20">
+        {/* Hero */}
+        <Section spacing="sm">
+          <Container>
+            <div className="max-w-3xl">
+              {/* Breadcrumb */}
+              <nav className="mb-8" aria-label="Breadcrumb">
+                <ol className="flex items-center gap-2 text-sm text-[hsl(var(--color-foreground-muted))]">
+                  <li>
+                    <Link href="/" className="hover:text-[hsl(var(--color-foreground))] transition-colors">
+                      Home
+                    </Link>
+                  </li>
+                  <li>
+                    <span className="mx-2">/</span>
+                  </li>
+                  <li className="text-[hsl(var(--color-foreground))] font-medium">Journal</li>
+                </ol>
+              </nav>
 
-          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8">
-            <div className="max-w-2xl">
-              <h1 className="font-heading text-5xl md:text-6xl lg:text-7xl font-semibold tracking-tight text-foreground mb-6">
-                Journal
-              </h1>
-              <p className="text-xl text-foreground-muted leading-relaxed">
-                Insights on systems thinking, applied AI, product craft, and creative
-                technology from the Craefto Lab team.
-              </p>
+              <HeroText>
+                <h1 className="font-semibold tracking-tight mb-6">
+                  Journal
+                </h1>
+              </HeroText>
+              <HeroText delay={0.1}>
+                <p className="text-xl text-[hsl(var(--color-foreground-muted))] leading-relaxed max-w-xl">
+                  Insights on systems thinking, applied AI, product craft, and creative
+                  technology from the Craefto Lab team.
+                </p>
+              </HeroText>
             </div>
-            <div className="lg:pb-2">
-              <JournalSearch />
+          </Container>
+        </Section>
+
+        {/* Pillar Filters - Sticky */}
+        <div className="sticky top-16 z-30 bg-[hsl(var(--color-background))] backdrop-blur-md border-b border-[hsl(var(--color-border))]">
+          <Container>
+            <div className="flex items-center justify-between py-4">
+              <nav className="flex flex-wrap items-center gap-2" aria-label="Content pillars">
+                <span className="text-xs font-semibold text-[hsl(var(--color-foreground-muted))] uppercase tracking-wider mr-2 hidden sm:inline">
+                  Filter:
+                </span>
+                <PillarTab href="/journal" active={!activePillar}>
+                  All
+                </PillarTab>
+                {pillars.map((pillar) => (
+                  <PillarTab
+                    key={pillar.id}
+                    href={`/journal?pillar=${pillar.slug}`}
+                    active={activePillar === pillar.slug}
+                    color={pillar.color}
+                  >
+                    {pillar.name}
+                  </PillarTab>
+                ))}
+              </nav>
+              <JournalSearchInline />
             </div>
-          </div>
+          </Container>
         </div>
-      </section>
 
-      {/* Pillar Filters */}
-      <section className="px-6 lg:px-8 pb-12 md:pb-16 sticky top-16 z-30 bg-background/80 backdrop-blur-md border-b border-border-subtle">
-        <div className="max-w-7xl mx-auto">
-          <nav className="flex flex-wrap items-center gap-2 py-4" aria-label="Content pillars">
-            <span className="text-xs font-semibold text-foreground-muted uppercase tracking-wider mr-2 hidden sm:inline">
-              Filter:
-            </span>
-            <PillarTab href="/journal" active={!activePillar}>
-              All
-            </PillarTab>
-            {pillars.map((pillar) => (
-              <PillarTab
-                key={pillar.id}
-                href={`/journal?pillar=${pillar.slug}`}
-                active={activePillar === pillar.slug}
-                color={pillar.color}
-              >
-                {pillar.name}
-              </PillarTab>
-            ))}
-          </nav>
-        </div>
-      </section>
-
-      {/* Articles */}
-      <section className="px-6 lg:px-8 py-12 md:py-16">
-        <div className="max-w-7xl mx-auto">
-          {articles.length === 0 ? (
-            <div className="text-center py-24">
-              <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-background-subtle flex items-center justify-center">
-                <svg className="w-8 h-8 text-foreground-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
-                </svg>
-              </div>
-              <p className="text-foreground-muted text-lg mb-2">
-                No articles published yet.
-              </p>
-              <p className="text-foreground-subtle text-sm">
-                Check back soon for new content.
-              </p>
-            </div>
-          ) : (
-            <div className="space-y-20">
-              {/* Featured Article */}
-              {featuredArticle && (
-                <Suspense fallback={<ArticleCardSkeleton featured />}>
-                  <ArticleCard article={featuredArticle} featured />
-                </Suspense>
-              )}
-
-              {/* Divider */}
-              {remainingArticles.length > 0 && (
-                <div className="flex items-center gap-4">
-                  <div className="h-px flex-1 bg-border" />
-                  <span className="text-xs font-semibold text-foreground-muted uppercase tracking-wider">
-                    Latest Articles
-                  </span>
-                  <div className="h-px flex-1 bg-border" />
+        {/* Articles */}
+        <Section spacing="md">
+          <Container>
+            {articles.length === 0 ? (
+              <AnimatedSection variant="fadeUp">
+                <div className="text-center py-24">
+                  <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-[hsl(var(--color-background-muted))] flex items-center justify-center">
+                    <svg className="w-8 h-8 text-[hsl(var(--color-foreground-muted))]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+                    </svg>
+                  </div>
+                  <p className="text-[hsl(var(--color-foreground-muted))] text-lg mb-2">
+                    No articles published yet.
+                  </p>
+                  <p className="text-[hsl(var(--color-foreground-subtle))] text-sm">
+                    Check back soon for new content.
+                  </p>
                 </div>
-              )}
-
-              {/* Article Grid */}
-              {remainingArticles.length > 0 && (
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12">
-                  {remainingArticles.map((article) => (
-                    <Suspense key={article.id} fallback={<ArticleCardSkeleton />}>
-                      <ArticleCard article={article} />
+              </AnimatedSection>
+            ) : (
+              <div className="space-y-20">
+                {/* Featured Article */}
+                {featuredArticle && (
+                  <AnimatedSection>
+                    <Suspense fallback={<ArticleCardSkeleton featured />}>
+                      <ArticleCard article={featuredArticle} featured />
                     </Suspense>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-      </section>
+                  </AnimatedSection>
+                )}
 
-      {/* Newsletter CTA */}
-      <section className="px-6 lg:px-8 py-20 md:py-28 bg-background-subtle">
-        <div className="max-w-2xl mx-auto text-center">
-          <div className="w-14 h-14 mx-auto mb-6 rounded-full bg-accent/10 flex items-center justify-center">
-            <svg className="w-7 h-7 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-            </svg>
-          </div>
-          <h2 className="font-heading text-3xl md:text-4xl font-semibold text-foreground mb-4">
-            Stay in the loop
-          </h2>
-          <p className="text-foreground-muted mb-10 max-w-md mx-auto">
-            Get our latest insights on AI, product strategy, and creative
-            technology delivered to your inbox.
-          </p>
-          <form className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-            <input
-              type="email"
-              placeholder="your@email.com"
-              className="flex-1 px-5 py-3.5 rounded-xl border border-border bg-background text-foreground placeholder:text-foreground-muted focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent shadow-sm"
-              required
-            />
-            <button
-              type="submit"
-              className="px-7 py-3.5 rounded-xl bg-accent text-white font-medium hover:bg-accent-hover transition-colors shadow-sm hover:shadow-md"
-            >
-              Subscribe
-            </button>
-          </form>
-          <p className="text-xs text-foreground-subtle mt-4">
-            No spam, unsubscribe anytime.
-          </p>
-        </div>
-      </section>
-    </main>
+                {/* Divider */}
+                {remainingArticles.length > 0 && (
+                  <Separator />
+                )}
+
+                {/* Article Grid */}
+                {remainingArticles.length > 0 && (
+                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12">
+                    {remainingArticles.map((article, index) => (
+                      <AnimatedSection key={article.id} delay={index * 0.05}>
+                        <Suspense fallback={<ArticleCardSkeleton />}>
+                          <ArticleCard article={article} />
+                        </Suspense>
+                      </AnimatedSection>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+          </Container>
+        </Section>
+
+        {/* Newsletter CTA */}
+        <Section spacing="lg" className="bg-[hsl(var(--color-background-muted))]">
+          <Container>
+            <AnimatedSection variant="scaleIn">
+              <div className="max-w-2xl mx-auto text-center">
+                <div className="w-14 h-14 mx-auto mb-6 rounded-full bg-[hsl(var(--color-accent))]/10 flex items-center justify-center">
+                  <svg className="w-7 h-7 text-[hsl(var(--color-accent))]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <h2 className="font-semibold tracking-tight text-[hsl(var(--color-foreground))] mb-4">
+                  Stay in the loop
+                </h2>
+                <p className="text-[hsl(var(--color-foreground-muted))] mb-10 max-w-md mx-auto">
+                  Get our latest insights on AI, product strategy, and creative
+                  technology delivered to your inbox.
+                </p>
+                <form className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+                  <input
+                    type="email"
+                    placeholder="your@email.com"
+                    className="flex-1 px-5 py-3.5 rounded-xl border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] text-[hsl(var(--color-foreground))] placeholder:text-[hsl(var(--color-foreground-muted))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-accent))] focus:border-transparent shadow-sm transition-shadow"
+                    required
+                  />
+                  <button
+                    type="submit"
+                    className="px-7 py-3.5 rounded-xl bg-[hsl(var(--color-accent))] text-white font-medium hover:opacity-90 transition-all shadow-sm hover:shadow-md"
+                  >
+                    Subscribe
+                  </button>
+                </form>
+                <p className="text-xs text-[hsl(var(--color-foreground-subtle))] mt-4">
+                  No spam, unsubscribe anytime.
+                </p>
+              </div>
+            </AnimatedSection>
+          </Container>
+        </Section>
+      </main>
+      <Footer />
+    </>
   );
 }
 
@@ -262,11 +278,10 @@ function PillarTab({
   return (
     <Link
       href={href}
-      className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
-        active
-          ? "bg-foreground text-background shadow-sm"
-          : "bg-background text-foreground-muted hover:text-foreground hover:bg-background-subtle border border-border-subtle"
-      }`}
+      className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${active
+        ? "bg-foreground text-background shadow-sm"
+        : "bg-background text-foreground-muted hover:text-foreground hover:bg-background-subtle border border-border-subtle"
+        }`}
     >
       {color && (
         <span

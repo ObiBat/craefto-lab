@@ -167,8 +167,6 @@ export function ServicesOverview() {
             </div>
           </AnimatedSection>
 
-          <Separator />
-
           {/* Services Accordion */}
           <AnimatedSection>
             <div className="border-t border-[hsl(var(--color-border))]">
