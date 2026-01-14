@@ -134,7 +134,7 @@ export function ServicesOverview() {
           {/* Header */}
           <AnimatedSection>
             <div className="flex flex-col gap-4">
-              <SectionLabel number="02" label="Services" />
+              <SectionLabel number="01" label="Services" />
               <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
                 <div>
                   <h2 className="font-semibold tracking-tight">

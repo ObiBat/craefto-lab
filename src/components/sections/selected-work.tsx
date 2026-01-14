@@ -45,7 +45,7 @@ export function SelectedWork() {
           {/* Header */}
           <AnimatedSection>
             <div className="flex flex-col gap-4">
-              <SectionLabel number="03" label="Case studies" />
+              <SectionLabel number="02" label="Case studies" />
               <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
                 <div>
                   <h2 className="font-semibold tracking-tight">
