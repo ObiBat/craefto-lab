@@ -70,8 +70,9 @@ function ProjectImage({
   imageType?: "hero" | "gallery" | "thumb";
   className?: string;
 }) {
-  // Check if this project has real images (TACTIX for now)
-  const hasRealImages = project.slug === "tactix" && src?.includes("/images/projects/tactix/");
+  // Check if this project has real images
+  const projectsWithRealImages = ["tactix", "nuu", "fontkin"];
+  const hasRealImages = projectsWithRealImages.includes(project.slug) && src?.includes("/images/projects/");
 
   if (hasRealImages && src) {
     return (
