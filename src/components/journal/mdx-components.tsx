@@ -3,15 +3,14 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { CodeBlock } from "./code-block";
 
-// Pull Quote Component - Editorial style with visual impact
+// Pull Quote Component - Centered editorial style
 export function PullQuote({ children }: { children: React.ReactNode }) {
   return (
-    <blockquote className="my-12 md:my-16 relative pl-8 md:pl-10 border-l-[3px] border-accent">
-      <div className="absolute -left-3 -top-2 text-6xl text-accent/20 font-heading select-none" aria-hidden="true">
-        &ldquo;
-      </div>
-      <div className="font-heading text-2xl md:text-3xl leading-[1.4] text-foreground/95 max-w-[50ch]">
+    <blockquote className="my-16 md:my-20 py-10 border-y border-border">
+      <div className="font-heading text-[1.375rem] md:text-[1.625rem] leading-[1.45] text-foreground max-w-[42ch] mx-auto text-center">
+        <span className="text-accent/60">&ldquo;</span>
         {children}
+        <span className="text-accent/60">&rdquo;</span>
       </div>
     </blockquote>
   );
@@ -122,12 +121,13 @@ function HeadingAnchor({ id, children }: { id?: string; children: React.ReactNod
   );
 }
 
-// Heading Components with Anchor Links - Improved spacing and typography
-// Note: H1 is smaller because articles already have a hero title
+// Heading Components - Professional newspaper-style hierarchy (2026 standards)
+// Clear visual separation between levels with generous spacing
+
 function Heading1({ children, id, ...props }: React.HTMLAttributes<HTMLHeadingElement>) {
   const headingId = id || generateHeadingId(children);
   return (
-    <h1 id={headingId} className="font-heading text-foreground group text-2xl md:text-3xl font-semibold mt-12 mb-6 leading-[1.2] tracking-tight" {...props}>
+    <h1 id={headingId} className="font-heading text-foreground group text-[1.75rem] md:text-[2rem] font-semibold mt-14 mb-6 leading-[1.15] tracking-[-0.02em]" {...props}>
       {children}
     </h1>
   );
@@ -136,7 +136,7 @@ function Heading1({ children, id, ...props }: React.HTMLAttributes<HTMLHeadingEl
 function Heading2({ children, id, ...props }: React.HTMLAttributes<HTMLHeadingElement>) {
   const headingId = id || generateHeadingId(children);
   return (
-    <h2 id={headingId} className="font-heading text-foreground group text-2xl md:text-[1.875rem] font-semibold mt-16 mb-6 scroll-mt-28 leading-[1.2] tracking-tight" {...props}>
+    <h2 id={headingId} className="font-heading text-foreground group text-[1.625rem] md:text-[2rem] font-semibold mt-20 mb-6 scroll-mt-24 leading-[1.15] tracking-[-0.02em]" {...props}>
       {children}
       <HeadingAnchor id={headingId}>{children}</HeadingAnchor>
     </h2>
@@ -146,7 +146,7 @@ function Heading2({ children, id, ...props }: React.HTMLAttributes<HTMLHeadingEl
 function Heading3({ children, id, ...props }: React.HTMLAttributes<HTMLHeadingElement>) {
   const headingId = id || generateHeadingId(children);
   return (
-    <h3 id={headingId} className="font-heading text-foreground group text-xl md:text-2xl font-semibold mt-12 mb-4 scroll-mt-28 leading-[1.25]" {...props}>
+    <h3 id={headingId} className="font-heading text-foreground group text-[1.3125rem] md:text-[1.5rem] font-semibold mt-14 mb-5 scroll-mt-24 leading-[1.2] tracking-[-0.01em]" {...props}>
       {children}
       <HeadingAnchor id={headingId}>{children}</HeadingAnchor>
     </h3>
@@ -156,7 +156,7 @@ function Heading3({ children, id, ...props }: React.HTMLAttributes<HTMLHeadingEl
 function Heading4({ children, id, ...props }: React.HTMLAttributes<HTMLHeadingElement>) {
   const headingId = id || generateHeadingId(children);
   return (
-    <h4 id={headingId} className="font-heading text-foreground group text-lg md:text-xl font-semibold mt-10 mb-3 scroll-mt-28 leading-[1.3]" {...props}>
+    <h4 id={headingId} className="font-heading text-foreground group text-[1.125rem] md:text-[1.25rem] font-semibold mt-12 mb-4 scroll-mt-24 leading-[1.25]" {...props}>
       {children}
       <HeadingAnchor id={headingId}>{children}</HeadingAnchor>
     </h4>
@@ -166,7 +166,7 @@ function Heading4({ children, id, ...props }: React.HTMLAttributes<HTMLHeadingEl
 function Heading5({ children, id, ...props }: React.HTMLAttributes<HTMLHeadingElement>) {
   const headingId = id || generateHeadingId(children);
   return (
-    <h5 id={headingId} className="font-heading text-foreground group text-base md:text-lg font-semibold mt-8 mb-3 scroll-mt-28" {...props}>
+    <h5 id={headingId} className="font-heading text-foreground group text-base md:text-[1.0625rem] font-semibold mt-10 mb-3 scroll-mt-24" {...props}>
       {children}
       <HeadingAnchor id={headingId}>{children}</HeadingAnchor>
     </h5>
@@ -176,33 +176,34 @@ function Heading5({ children, id, ...props }: React.HTMLAttributes<HTMLHeadingEl
 function Heading6({ children, id, ...props }: React.HTMLAttributes<HTMLHeadingElement>) {
   const headingId = id || generateHeadingId(children);
   return (
-    <h6 id={headingId} className="font-heading text-foreground-muted group text-sm font-semibold mt-6 mb-2 scroll-mt-28 uppercase tracking-wide" {...props}>
+    <h6 id={headingId} className="font-heading text-foreground-muted group text-sm font-semibold mt-8 mb-2 scroll-mt-24 uppercase tracking-[0.05em]" {...props}>
       {children}
       <HeadingAnchor id={headingId}>{children}</HeadingAnchor>
     </h6>
   );
 }
 
-// Image Component - Constrained size for better reading flow
+// Image Component - Natural aspect ratio for smooth scrolling
 function CustomImage({
   src,
   alt,
   ...props
 }: React.ImgHTMLAttributes<HTMLImageElement>) {
   return (
-    <figure className="my-10 max-w-2xl mx-auto">
-      <div className="relative overflow-hidden rounded-lg bg-background-muted aspect-[16/9]">
+    <figure className="my-10 md:my-14 max-w-2xl mx-auto">
+      <div className="overflow-hidden rounded-lg bg-background-muted">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={src}
           alt={alt || ""}
-          className="absolute inset-0 w-full h-full object-cover shadow-sm"
+          className="w-full h-auto shadow-sm"
           loading="lazy"
+          decoding="async"
           {...props}
         />
       </div>
       {alt && (
-        <figcaption className="mt-3 text-center text-sm text-foreground-muted italic">
+        <figcaption className="mt-4 text-center text-sm text-foreground-muted">
           {alt}
         </figcaption>
       )}
@@ -225,8 +226,8 @@ export const mdxComponents = {
   Callout,
   PullQuote,
 
-  // Default element styling - Optimized for reading (Awwwards 2026 standards)
-  // Typography: 18px body, 1.75 line-height, max 70ch width
+  // Default element styling - Professional editorial typography (2026 standards)
+  // Body: 19px desktop / 17px mobile, 1.65 line-height, 65ch max width
   p: ({ children, ...props }: React.HTMLAttributes<HTMLParagraphElement>) => {
     // Check if children contains block-level elements (like images wrapped in figure)
     // If so, render as div to prevent hydration errors
@@ -242,27 +243,27 @@ export const mdxComponents = {
     });
 
     if (hasBlockChild) {
-      return <div className="my-6" {...props}>{children}</div>;
+      return <div className="my-7" {...props}>{children}</div>;
     }
 
     return (
-      <p className="my-6 text-lg leading-[1.8] text-foreground/90 max-w-[70ch]" {...props}>
+      <p className="my-7 text-[1.0625rem] md:text-[1.1875rem] leading-[1.7] md:leading-[1.65] text-foreground/90 max-w-[65ch] tracking-[0.005em]" {...props}>
         {children}
       </p>
     );
   },
   ul: ({ children, ...props }: React.HTMLAttributes<HTMLUListElement>) => (
-    <ul className="my-6 ml-6 list-disc space-y-3 text-lg text-foreground/90 max-w-[70ch]" {...props}>
+    <ul className="my-7 ml-5 list-disc space-y-3 text-[1.0625rem] md:text-[1.1875rem] leading-[1.65] text-foreground/90 max-w-[65ch] marker:text-foreground-subtle" {...props}>
       {children}
     </ul>
   ),
   ol: ({ children, ...props }: React.HTMLAttributes<HTMLOListElement>) => (
-    <ol className="my-6 ml-6 list-decimal space-y-3 text-lg text-foreground/90 max-w-[70ch]" {...props}>
+    <ol className="my-7 ml-5 list-decimal space-y-3 text-[1.0625rem] md:text-[1.1875rem] leading-[1.65] text-foreground/90 max-w-[65ch] marker:text-foreground-muted marker:font-medium" {...props}>
       {children}
     </ol>
   ),
   li: ({ children, ...props }: React.HTMLAttributes<HTMLLIElement>) => (
-    <li className="leading-[1.75] pl-2" {...props}>
+    <li className="leading-[1.65] pl-2" {...props}>
       {children}
     </li>
   ),

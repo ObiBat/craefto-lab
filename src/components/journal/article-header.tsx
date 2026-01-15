@@ -64,13 +64,13 @@ export function ArticleHeader({ article }: ArticleHeaderProps) {
       </div>
 
       {/* Title */}
-      <h1 className="font-heading text-4xl md:text-5xl lg:text-[3.5rem] font-semibold leading-[1.08] tracking-tight text-foreground mb-6">
+      <h1 className="font-heading text-[2.25rem] md:text-[3rem] lg:text-[3.5rem] font-semibold leading-[1.08] tracking-[-0.025em] text-foreground mb-6">
         {article.title}
       </h1>
 
       {/* Subtitle */}
       {article.subtitle && (
-        <p className="text-xl md:text-2xl text-foreground-muted leading-relaxed mb-10 max-w-[42ch]">
+        <p className="text-lg md:text-xl lg:text-[1.375rem] text-foreground-muted leading-[1.5] mb-8 md:mb-10 max-w-[40ch]">
           {article.subtitle}
         </p>
       )}
@@ -128,19 +128,20 @@ export function ArticleHeader({ article }: ArticleHeaderProps) {
 
       {/* Featured Image */}
       {article.featured_image_url && (
-        <figure className="mt-12 max-w-2xl mx-auto">
-          <div className="relative overflow-hidden rounded-xl shadow-sm">
+        <figure className="mt-12 md:mt-16 max-w-2xl mx-auto">
+          <div className="overflow-hidden rounded-xl shadow-sm bg-background-muted">
             <Image
               src={article.featured_image_url}
               alt={article.featured_image_alt || article.title}
-              width={1200}
-              height={600}
-              className="w-full object-cover"
+              width={680}
+              height={0}
+              sizes="(max-width: 768px) 100vw, 680px"
+              className="w-full h-auto"
               priority
             />
           </div>
           {article.featured_image_alt && (
-            <figcaption className="mt-3 text-center text-sm text-foreground-muted italic">
+            <figcaption className="mt-4 text-center text-sm text-foreground-muted">
               {article.featured_image_alt}
             </figcaption>
           )}

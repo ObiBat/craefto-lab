@@ -10,7 +10,6 @@ import { TableOfContents } from "@/components/journal/table-of-contents";
 import { AuthorCard } from "@/components/journal/author-card";
 import { ArticleCard } from "@/components/journal/article-card";
 import { ArticleAnalytics } from "@/components/journal/article-analytics";
-import { ReadingProgress } from "@/components/journal/reading-progress";
 import { mdxComponents } from "@/components/journal/mdx-components";
 import type { ArticleCard as ArticleCardType } from "@/lib/journal-types";
 
@@ -183,21 +182,17 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   }
 
   return (
-    <>
-      {/* Reading Progress Bar */}
-      <ReadingProgress />
-
-      <main className="min-h-screen bg-background">
+    <main className="min-h-screen bg-background">
         {/* Article Container */}
-        <article className="pt-28 md:pt-32 pb-24">
-          <div className="max-w-7xl mx-auto px-6 lg:px-8">
-            <div className="grid xl:grid-cols-[1fr_300px] gap-16">
+        <article className="pt-24 md:pt-32 pb-20 md:pb-24">
+          <div className="max-w-7xl mx-auto px-5 md:px-6 lg:px-8">
+            <div className="grid xl:grid-cols-[1fr_300px] gap-12 xl:gap-16">
               {/* Main Content */}
-              <div className="max-w-[720px]">
+              <div className="max-w-[680px] mx-auto xl:mx-0">
                 <ArticleHeader article={article} />
 
-                {/* Article Body - Enhanced prose styling */}
-                <div className="mt-12 md:mt-16">
+                {/* Article Body - Editorial prose styling */}
+                <div className="mt-14 md:mt-20 article-content">
                   <MDXRemote
                     source={article.content || ""}
                     components={mdxComponents}
@@ -222,8 +217,12 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                 </div>
 
                 {/* Article Footer Divider */}
-                <div className="mt-16 mb-12">
-                  <div className="h-px bg-gradient-to-r from-transparent via-border-strong to-transparent" />
+                <div className="mt-20 mb-16">
+                  <div className="flex items-center justify-center gap-4">
+                    <div className="h-px w-16 bg-border" />
+                    <span className="text-foreground-subtle text-xs tracking-[0.2em] uppercase font-medium">End</span>
+                    <div className="h-px w-16 bg-border" />
+                  </div>
                 </div>
 
                 {/* Author Card */}
@@ -303,6 +302,5 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         {/* Analytics Tracking */}
         <ArticleAnalytics articleId={article.id} slug={article.slug} />
       </main>
-    </>
   );
 }
