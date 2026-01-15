@@ -71,7 +71,7 @@ function ProjectImage({
   className?: string;
 }) {
   // Check if this project has real images
-  const projectsWithRealImages = ["tactix", "nuu", "fontkin"];
+  const projectsWithRealImages = ["tactix", "nuu", "fontkin", "globfam"];
   const hasRealImages = projectsWithRealImages.includes(project.slug) && src?.includes("/images/projects/");
 
   if (hasRealImages && src) {
@@ -148,12 +148,12 @@ const projects: CaseStudy[] = [
     approach: "The design process began with extensive research into the emotional journey of families managing cross-border finances, understanding the stress of international transfers, the joy of shared goals, and the need for transparency. The 6-petal flower logo was developed as a symbol of family unity (each petal representing a family member) and organic growth. The color palette draws from nature: ocean blues for trust, mint greens for growth, and soft creams for warmth. A comprehensive motion design language was created using spring physics and magnetic interactions.",
     solution: "Delivered a complete brand system including: A distinctive 6-petal thin-stroke flower logo with animated variants; a carefully curated 15-color palette with semantic meanings; a dual-font typography system (Sora + Manrope) with fluid scales; a motion design language with custom easing curves, spring physics, and 9+ reusable animation components; an interactive design system documentation page; and a production-ready landing page with glassmorphism UI, magnetic hover effects, and a functional email waitlist system.",
     outcome: "The brand identity successfully positions GlobFam as a premium, trustworthy fintech platform while maintaining warmth and approachability. The motion design system creates memorable interactions that differentiate the product. The magnetic CTA buttons and organic blur backgrounds have become signature brand elements. The design system documentation ensures consistency across future development.",
-    heroImage: "/images/projects/globfam-hero.jpg",
-    thumbnail: "/images/projects/globfam-thumb.jpg",
+    heroImage: "/images/projects/globfam/globfam-hero.jpg",
+    thumbnail: "/images/projects/globfam/globfam-thumb.jpg",
     gallery: [
-      { src: "/images/projects/globfam-1.jpg", alt: "GlobFam logo system", caption: "6-petal flower logo with light/dark variants" },
-      { src: "/images/projects/globfam-2.jpg", alt: "Color palette", caption: "Ocean-to-mint palette for trust and growth" },
-      { src: "/images/projects/globfam-3.jpg", alt: "Motion design system", caption: "Spring physics and magnetic interactions" },
+      { src: "/images/projects/globfam/globfam-gallery-01.jpg", alt: "GlobFam logo proportion", caption: "6-petal flower logo with precise grid system" },
+      { src: "/images/projects/globfam/globfam-gallery-02.jpg", alt: "Color palette", caption: "Primary palette: Blue, Charcoal, Ivory, Green" },
+      { src: "/images/projects/globfam/globfam-gallery-03.mp4", alt: "Motion design system", caption: "Spring physics and magnetic interactions" },
     ],
     metrics: [
       { label: "Animations", value: "364+" },
@@ -224,12 +224,12 @@ const projects: CaseStudy[] = [
     approach: "We took an AI-first design approach, reimagining property search as a conversation rather than a form. We implemented GPT-4o as a 'property concierge' that extracts structured preferences from natural language. We developed a sophisticated 7-factor weighted scoring algorithm that evaluates location, budget, features, amenities, transport, property type, and bedrooms. We created an industrial 'operating system' aesthetic that positions NUU as a premium, tech-forward solution.",
     solution: "NUU is a full-stack property matching platform featuring a conversational AI interface powered by GPT-4o that guides users through preference discovery in 2-3 natural exchanges. The multi-factor matching algorithm scores properties across 7 dimensions with bonuses for exceptional matches. The frontend features an immersive 3D architectural visualization built with Three.js, scroll-triggered animations, and a dark industrial design language. The backend runs on Vercel serverless with Supabase PostgreSQL, including pgvector for semantic search and PostGIS for geospatial queries.",
     outcome: "The platform transforms the rental search experience from a tedious filtering exercise into an engaging conversation. The AI accurately extracts preferences from casual language and the matching algorithm surfaces relevant properties. The industrial 'operating system' branding differentiates NUU in a market full of generic real estate interfaces. The architecture is built for scale with vector search ready for real-time property data feeds.",
-    heroImage: "/images/projects/nuu-hero.jpg",
-    thumbnail: "/images/projects/nuu-thumb.jpg",
+    heroImage: "/images/projects/nuu/nuu-hero.png",
+    thumbnail: "/images/projects/nuu/nuu-thumb.jpg",
     gallery: [
-      { src: "/images/projects/nuu-1.jpg", alt: "AI concierge chat", caption: "GPT-4o powered conversational search" },
-      { src: "/images/projects/nuu-2.jpg", alt: "Property results", caption: "Scored matches with AI explanations" },
-      { src: "/images/projects/nuu-3.jpg", alt: "3D visualization", caption: "Three.js architectural scene" },
+      { src: "/images/projects/nuu/nuu-gallery-01.jpg", alt: "AI concierge chat", caption: "GPT-4o powered conversational search" },
+      { src: "/images/projects/nuu/nuu-gallery-02.jpg", alt: "Property results", caption: "Scored matches with AI explanations" },
+      { src: "/images/projects/nuu/nuu-gallery-03.jpg", alt: "3D visualization", caption: "Three.js architectural scene" },
     ],
     metrics: [
       { label: "Conversations", value: "2-3" },

@@ -27,6 +27,7 @@ const projects = [
     year: 2025,
     featured: true,
     accentColor: "195 78% 38%",
+    thumbnail: "/images/projects/globfam/globfam-thumb.jpg",
   },
   {
     slug: "tactix",

@@ -19,6 +19,7 @@ const featuredProjects = [
     category: "Brand",
     year: 2025,
     accentColor: "195 78% 38%",
+    thumbnail: "/images/projects/globfam/globfam-thumb.jpg",
   },
   {
     slug: "tactix",
