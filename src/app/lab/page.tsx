@@ -227,7 +227,7 @@ export default function LabPage() {
           </Section>
 
           {/* Newsletter / Stay Updated */}
-          <Section spacing="lg">
+          <Section spacing="lg" className="pt-8 md:pt-12">
             <Container>
               <AnimatedSection variant="scaleIn">
                 <div className="rounded-2xl bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] p-10 sm:p-14 md:p-16">
@@ -278,10 +278,10 @@ export default function LabPage() {
           </Section>
 
           {/* CTA */}
-          <Section spacing="xl">
+          <Section spacing="lg" className="pt-0">
             <Container>
               <AnimatedSection variant="scaleIn">
-                <div className="rounded-2xl bg-[hsl(var(--color-accent))] p-10 sm:p-14 md:p-20">
+                <div className="rounded-2xl bg-[hsl(var(--color-accent))] p-10 sm:p-14 md:p-16">
                   <div className="flex flex-col items-center text-center gap-8 max-w-2xl mx-auto">
                     <span className="text-xs font-medium uppercase tracking-widest text-white/70">
                       Collaborate

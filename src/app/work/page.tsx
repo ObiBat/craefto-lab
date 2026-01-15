@@ -89,7 +89,7 @@ export default function WorkPage() {
           </Section>
 
           {/* Projects Grid */}
-          <Section spacing="md" className="pt-0">
+          <Section spacing="md" className="pt-0 pb-16 md:pb-20">
             <Container>
               <Separator className="mb-12" />
 

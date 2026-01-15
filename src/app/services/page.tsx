@@ -350,7 +350,7 @@ export default function ServicesPage() {
           </Section>
 
           {/* CTA */}
-          <Section spacing="md">
+          <Section spacing="md" className="pt-8 md:pt-12">
             <Container>
               <AnimatedSection variant="scaleIn">
                 <div className="rounded-2xl bg-[hsl(var(--color-accent))] p-8 sm:p-10 lg:p-12">

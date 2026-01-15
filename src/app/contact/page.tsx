@@ -78,7 +78,7 @@ export default function ContactPage() {
           </Section>
 
           {/* Form Section */}
-          <Section spacing="md" className="pt-0">
+          <Section spacing="md" className="pt-0 pb-16 md:pb-20">
             <Container>
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-16">
                 {/* Form */}
