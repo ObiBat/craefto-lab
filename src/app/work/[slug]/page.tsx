@@ -54,6 +54,47 @@ interface CaseStudy {
   accentColor?: string;
 }
 
+// Helper component to render real image or placeholder
+function ProjectImage({
+  project,
+  src,
+  alt,
+  caption,
+  imageType = "gallery",
+  className = "",
+}: {
+  project: CaseStudy;
+  src?: string;
+  alt?: string;
+  caption?: string;
+  imageType?: "hero" | "gallery" | "thumb";
+  className?: string;
+}) {
+  // Check if this project has real images (TACTIX for now)
+  const hasRealImages = project.slug === "tactix" && src?.includes("/images/projects/tactix/");
+
+  if (hasRealImages && src) {
+    return (
+      <Image
+        src={src}
+        alt={alt || `${project.title} ${imageType}`}
+        fill
+        className={`object-cover ${className}`}
+        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
+      />
+    );
+  }
+
+  return (
+    <ProjectImagePlaceholder
+      projectName={project.title}
+      imageType={imageType}
+      caption={caption || ""}
+      accentColor={project.accentColor}
+    />
+  );
+}
+
 // Project data - in production, this would come from a CMS
 const projects: CaseStudy[] = [
   {
@@ -144,12 +185,12 @@ const projects: CaseStudy[] = [
     approach: "We adopted a visual excellence first philosophy, building the 3D rendering system before the game logic to ensure the visual standard would never be compromised. We chose React Three Fiber for declarative 3D scene management, allowing rapid iteration on lighting, materials, and animations. For the chess engine, we implemented Stockfish WASM client-side, eliminating server costs and latency while enabling offline play.",
     solution: "TACTIX delivers a premium 3D chess experience with mahogany-framed boards, realistic Staunton pieces with lathe-turned geometries, and professional 3-point lighting with bloom and vignette post-processing effects. The Learning Academy features 25+ interactive lessons across beginner to advanced tracks. The Stockfish integration offers 5 difficulty levels with real-time position evaluation. The exam system uses Google Gemini to generate personalized coaching reports.",
     outcome: "TACTIX successfully demonstrates that chess software can achieve AAA visual quality while remaining performant across devices. The adaptive DPR and LOD systems maintain smooth framerates even on mobile. The local-first architecture with Supabase sync ensures progress is never lost while minimizing backend costs. The platform is positioned for global ranked matchmaking and premium cosmetics monetization.",
-    heroImage: "/images/projects/tactix-hero.jpg",
-    thumbnail: "/images/projects/tactix-thumb.jpg",
+    heroImage: "/images/projects/tactix/tactix-hero.jpg",
+    thumbnail: "/images/projects/tactix/tactix-thumb.jpg",
     gallery: [
-      { src: "/images/projects/tactix-1.jpg", alt: "3D chess board", caption: "Premium 3D rendering with realistic materials" },
-      { src: "/images/projects/tactix-2.jpg", alt: "Learning Academy", caption: "25+ interactive lessons with visual overlays" },
-      { src: "/images/projects/tactix-3.jpg", alt: "AI coaching", caption: "Gemini-powered personalized exam reports" },
+      { src: "/images/projects/tactix/tactix-gallery-01-gameplay.jpg", alt: "3D chess gameplay interface", caption: "Premium 3D rendering with realistic materials" },
+      { src: "/images/projects/tactix/tactix-gallery-02-lifestyle.jpg", alt: "Social chess learning", caption: "Learning chess together" },
+      { src: "/images/projects/tactix/tactix-gallery-03-tablet.jpg", alt: "iPad tablet experience", caption: "Beautiful cross-device experience" },
     ],
     metrics: [
       { label: "Lessons", value: "25+" },
@@ -399,12 +440,13 @@ export default function CaseStudyPage() {
           <Section spacing="sm">
             <Container>
               <AnimatedSection variant="scaleIn">
-                <div className="aspect-[16/9] rounded-2xl overflow-hidden">
-                  <ProjectImagePlaceholder
-                    projectName={project.title}
-                    imageType="hero"
+                <div className="aspect-[16/9] rounded-2xl overflow-hidden relative">
+                  <ProjectImage
+                    project={project}
+                    src={project.heroImage}
+                    alt={`${project.title} hero`}
                     caption="Main project showcase"
-                    accentColor={project.accentColor}
+                    imageType="hero"
                   />
                 </div>
               </AnimatedSection>
@@ -460,12 +502,13 @@ export default function CaseStudyPage() {
           <Section spacing="sm">
             <Container>
               <AnimatedSection variant="scaleIn">
-                <div className="aspect-[16/9] rounded-xl overflow-hidden">
-                  <ProjectImagePlaceholder
-                    projectName={project.title}
+                <div className="aspect-[16/9] rounded-xl overflow-hidden relative">
+                  <ProjectImage
+                    project={project}
+                    src={project.gallery[0]?.src}
+                    alt={project.gallery[0]?.alt || "Project gallery"}
+                    caption={project.gallery[0]?.caption || "Challenge context visualization"}
                     imageType="gallery"
-                    caption="Challenge context visualization"
-                    accentColor={project.accentColor}
                   />
                 </div>
               </AnimatedSection>
@@ -492,20 +535,22 @@ export default function CaseStudyPage() {
             <Container>
               <AnimatedSection>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-                  <div className="aspect-[4/3] rounded-xl overflow-hidden">
-                    <ProjectImagePlaceholder
-                      projectName={project.title}
+                  <div className="aspect-[4/3] rounded-xl overflow-hidden relative">
+                    <ProjectImage
+                      project={project}
+                      src={project.gallery[1]?.src}
+                      alt={project.gallery[1]?.alt || "Design process"}
+                      caption={project.gallery[1]?.caption || "Design process & iterations"}
                       imageType="gallery"
-                      caption="Design process & iterations"
-                      accentColor={project.accentColor}
                     />
                   </div>
-                  <div className="aspect-[4/3] rounded-xl overflow-hidden">
-                    <ProjectImagePlaceholder
-                      projectName={project.title}
+                  <div className="aspect-[4/3] rounded-xl overflow-hidden relative">
+                    <ProjectImage
+                      project={project}
+                      src={project.gallery[2]?.src}
+                      alt={project.gallery[2]?.alt || "Implementation"}
+                      caption={project.gallery[2]?.caption || "Implementation details"}
                       imageType="gallery"
-                      caption="Implementation details"
-                      accentColor={project.accentColor}
                     />
                   </div>
                 </div>
@@ -553,12 +598,13 @@ export default function CaseStudyPage() {
           <Section spacing="sm">
             <Container>
               <AnimatedSection variant="scaleIn">
-                <div className="aspect-[21/9] rounded-xl overflow-hidden">
-                  <ProjectImagePlaceholder
-                    projectName={project.title}
-                    imageType="hero"
+                <div className="aspect-[21/9] rounded-xl overflow-hidden relative">
+                  <ProjectImage
+                    project={project}
+                    src={project.heroImage}
+                    alt={`${project.title} showcase`}
                     caption="Full showcase view"
-                    accentColor={project.accentColor}
+                    imageType="hero"
                   />
                 </div>
               </AnimatedSection>

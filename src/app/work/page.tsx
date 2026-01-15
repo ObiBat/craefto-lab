@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { Header, Footer, Container, Section } from "@/components/layout";
 import { Badge, Separator, PageTransition, AnimatedSection, StaggeredGrid, StaggeredItem, HeroText, ProjectImagePlaceholder } from "@/components/ui";
 
@@ -35,6 +36,7 @@ const projects = [
     year: 2025,
     featured: true,
     accentColor: "45 61% 52%",
+    thumbnail: "/images/projects/tactix/tactix-thumb.jpg",
   },
   {
     slug: "nuu",
@@ -103,11 +105,21 @@ export default function WorkPage() {
                       <div className="relative aspect-[4/3] rounded-2xl overflow-hidden transition-all duration-500 group-hover:shadow-2xl group-hover:-translate-y-2">
                         {/* Image */}
                         <div className="absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-105">
-                          <ProjectImagePlaceholder
-                            projectName={project.title}
-                            imageType="thumb"
-                            accentColor={project.accentColor}
-                          />
+                          {project.thumbnail ? (
+                            <Image
+                              src={project.thumbnail}
+                              alt={`${project.title} thumbnail`}
+                              fill
+                              className="object-cover"
+                              sizes="(max-width: 768px) 100vw, 50vw"
+                            />
+                          ) : (
+                            <ProjectImagePlaceholder
+                              projectName={project.title}
+                              imageType="thumb"
+                              accentColor={project.accentColor}
+                            />
+                          )}
                         </div>
 
                         {/* Gradient Overlay */}

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { Container } from "@/components/layout/container";
 import { Section } from "@/components/layout/section";
 import { Separator } from "@/components/ui/separator";
@@ -26,6 +27,7 @@ const featuredProjects = [
     category: "Product",
     year: 2025,
     accentColor: "45 61% 52%",
+    thumbnail: "/images/projects/tactix/tactix-thumb.jpg",
   },
   {
     slug: "nuu",
@@ -88,12 +90,22 @@ export function SelectedWork() {
                   href={`/work/${project.slug}`}
                   className="group block"
                 >
-                  <div className="aspect-[4/3] rounded-xl mb-5 transition-all duration-300 group-hover:shadow-lg group-hover:-translate-y-1 overflow-hidden">
-                    <ProjectImagePlaceholder
-                      projectName={project.title}
-                      imageType="thumb"
-                      accentColor={project.accentColor}
-                    />
+                  <div className="aspect-[4/3] rounded-xl mb-5 transition-all duration-300 group-hover:shadow-lg group-hover:-translate-y-1 overflow-hidden relative">
+                    {project.thumbnail ? (
+                      <Image
+                        src={project.thumbnail}
+                        alt={`${project.title} thumbnail`}
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      />
+                    ) : (
+                      <ProjectImagePlaceholder
+                        projectName={project.title}
+                        imageType="thumb"
+                        accentColor={project.accentColor}
+                      />
+                    )}
                   </div>
                   <div className="flex flex-col gap-3">
                     <div className="flex items-center gap-3">
