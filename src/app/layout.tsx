@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Space_Grotesk, DM_Sans } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import { CookieConsent, BackToTop } from "@/components/ui";
 import { AnalyticsProvider } from "@/components/analytics/analytics-provider";
 import "./globals.css";
@@ -223,6 +224,7 @@ export default function RootLayout({
         <BackToTop />
         <CookieConsent />
         <AnalyticsProvider />
+        <Analytics />
       </body>
     </html>
   );
