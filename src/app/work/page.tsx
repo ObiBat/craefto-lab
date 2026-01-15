@@ -16,6 +16,7 @@ const projects = [
     year: 2024,
     featured: true,
     accentColor: "0 0% 6%",
+    thumbnail: "/images/projects/fontkin/fontkin-thumb.jpg",
   },
   {
     slug: "globfam",
@@ -47,6 +48,7 @@ const projects = [
     year: 2025,
     featured: true,
     accentColor: "18 100% 50%",
+    thumbnail: "/images/projects/nuu/nuu-thumb.jpg",
   },
 ];
 

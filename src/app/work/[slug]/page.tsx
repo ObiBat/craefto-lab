@@ -115,12 +115,12 @@ const projects: CaseStudy[] = [
     approach: "Rather than building another random font generator, the approach focused on curation over quantity. Each of the 34 font pairings was hand-selected based on real design principles—contrast, x-height compatibility, mood alignment, and use-case appropriateness. The tool was designed around three key insights: designers need to see fonts in context (web UI, editorial, hero sections), developers need copy-paste-ready code, and both audiences benefit from smart filtering by mood and purpose.",
     solution: "Fontkin delivers a comprehensive font pairing experience with multiple preview modes (web UI, editorial layouts, hero sections), a custom combo builder with fine-grained typography controls (weight, size, line-height, letter-spacing), a side-by-side comparison tool for up to 3 pairings, and developer-friendly exports in 4 formats: CSS variables, Tailwind config, Google Fonts HTML, and AI prompts for design handoff.",
     outcome: "Fontkin provides an intuitive solution for typography decisions that saves designers hours of font exploration. The curated approach ensures every pairing is production-ready, while multiple preview modes let users confidently visualize fonts in context before committing. The one-click export system bridges the design-to-development gap, eliminating copy errors and format inconsistencies.",
-    heroImage: "/images/projects/fontkin-hero.jpg",
-    thumbnail: "/images/projects/fontkin-thumb.jpg",
+    heroImage: "/images/projects/fontkin/fontkin-hero.jpg",
+    thumbnail: "/images/projects/fontkin/fontkin-thumb.jpg",
     gallery: [
-      { src: "/images/projects/fontkin-1.jpg", alt: "Font pairing gallery", caption: "Explore 34 curated font pairings" },
-      { src: "/images/projects/fontkin-2.jpg", alt: "Custom combo builder", caption: "Build custom type systems" },
-      { src: "/images/projects/fontkin-3.jpg", alt: "Export panel", caption: "One-click developer exports" },
+      { src: "/images/projects/fontkin/fontkin-gallery-01.jpg", alt: "Font pairing explorer", caption: "Explore 34 curated font pairings" },
+      { src: "/images/projects/fontkin/fontkin-gallery-02.jpg", alt: "Custom combo builder", caption: "Build custom type systems" },
+      { src: "/images/projects/fontkin/fontkin-gallery-03.jpg", alt: "Typography preview", caption: "See fonts in real context" },
     ],
     metrics: [
       { label: "Font Pairings", value: "34" },

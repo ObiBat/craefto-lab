@@ -36,6 +36,7 @@ const featuredProjects = [
     category: "SaaS",
     year: 2025,
     accentColor: "18 100% 50%",
+    thumbnail: "/images/projects/nuu/nuu-thumb.jpg",
   },
 ];
 
