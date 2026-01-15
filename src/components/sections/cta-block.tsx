@@ -8,10 +8,10 @@ import { AnimatedSection } from "@/components/ui/motion";
 
 export function CTABlock() {
   return (
-    <Section spacing="xl">
+    <Section spacing="lg" className="pt-8 md:pt-12">
       <Container>
         <AnimatedSection>
-          <div className="rounded-2xl bg-[hsl(var(--color-accent))] p-10 sm:p-14 md:p-20">
+          <div className="rounded-2xl bg-[hsl(var(--color-accent))] p-10 sm:p-14 md:p-16">
             <div className="flex flex-col items-center text-center gap-8 max-w-2xl mx-auto">
               <span className="text-xs font-medium uppercase tracking-widest text-white/70">
                 Start a project
