@@ -44,11 +44,11 @@ export default function ContactPage() {
       <PageTransition>
         <main id="main-content" className="pt-20">
           {/* Hero */}
-          <Section spacing="sm">
+          <Section spacing="sm" className="pb-8 md:pb-10">
             <Container>
               <div className="max-w-3xl">
                 {/* Breadcrumb */}
-                <nav className="mb-8" aria-label="Breadcrumb">
+                <nav className="mb-6" aria-label="Breadcrumb">
                   <ol className="flex items-center gap-2 text-sm text-[hsl(var(--color-foreground-muted))]">
                     <li>
                       <a href="/" className="hover:text-[hsl(var(--color-foreground))] transition-colors">
@@ -63,7 +63,7 @@ export default function ContactPage() {
                 </nav>
 
                 <HeroText>
-                  <h1 className="font-semibold tracking-tight mb-6">
+                  <h1 className="font-semibold tracking-tight mb-4">
                     Start a project
                   </h1>
                 </HeroText>
@@ -78,7 +78,7 @@ export default function ContactPage() {
           </Section>
 
           {/* Form Section */}
-          <Section spacing="md">
+          <Section spacing="md" className="pt-0">
             <Container>
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-16">
                 {/* Form */}
