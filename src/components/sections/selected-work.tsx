@@ -17,7 +17,7 @@ const featuredProjects = [
     title: "Fontkin",
     description: "Professional font pairing lab for designers & developers with curated combinations and one-click exports.",
     category: "Web",
-    year: 2024,
+    year: 2026,
     accentColor: "0 0% 6%",
     thumbnail: "/images/projects/fontkin/fontkin-thumb.jpg",
   },
