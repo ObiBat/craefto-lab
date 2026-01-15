@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { notFound, useParams } from "next/navigation";
 import { Header, Footer, Container, Section } from "@/components/layout";
-import { Badge, Separator, PageTransition, AnimatedSection, HeroText, StaggeredGrid, StaggeredItem, ProjectImagePlaceholder } from "@/components/ui";
+import { Badge, Separator, PageTransition, AnimatedSection, HeroText, StaggeredGrid, StaggeredItem, ProjectImagePlaceholder, InteractiveLogo } from "@/components/ui";
 import { Button } from "@/components/ui/button";
 
 // TypeScript interfaces for case study data
@@ -546,13 +546,18 @@ export default function CaseStudyPage() {
                     />
                   </div>
                   <div className="aspect-[4/3] rounded-xl overflow-hidden relative">
-                    <ProjectImage
-                      project={project}
-                      src={project.gallery[2]?.src}
-                      alt={project.gallery[2]?.alt || "Implementation"}
-                      caption={project.gallery[2]?.caption || "Implementation details"}
-                      imageType="gallery"
-                    />
+                    {/* Interactive logo for GlobFam, regular image for others */}
+                    {project.slug === "globfam" ? (
+                      <InteractiveLogo />
+                    ) : (
+                      <ProjectImage
+                        project={project}
+                        src={project.gallery[2]?.src}
+                        alt={project.gallery[2]?.alt || "Implementation"}
+                        caption={project.gallery[2]?.caption || "Implementation details"}
+                        imageType="gallery"
+                      />
+                    )}
                   </div>
                 </div>
               </AnimatedSection>
