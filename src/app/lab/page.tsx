@@ -88,13 +88,13 @@ export default function LabPage() {
                     <li>
                       <span className="mx-2">/</span>
                     </li>
-                    <li className="text-[hsl(var(--color-foreground))] font-medium">Lab</li>
+                    <li className="text-[hsl(var(--color-foreground))] font-medium">About</li>
                   </ol>
                 </nav>
 
                 <HeroText>
                   <h1 className="font-semibold tracking-tight mb-4">
-                    The Lab
+                    About Cræfto Lab
                   </h1>
                 </HeroText>
                 <HeroText delay={0.1}>
