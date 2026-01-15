@@ -189,9 +189,9 @@ const projects: CaseStudy[] = [
     heroImage: "/images/projects/tactix/tactix-hero.jpg",
     thumbnail: "/images/projects/tactix/tactix-thumb.jpg",
     gallery: [
-      { src: "/images/projects/tactix/tactix-gallery-01-gameplay.jpg", alt: "3D chess gameplay interface", caption: "Premium 3D rendering with realistic materials" },
-      { src: "/images/projects/tactix/tactix-gallery-02-lifestyle.jpg", alt: "Social chess learning", caption: "Learning chess together" },
-      { src: "/images/projects/tactix/tactix-gallery-03-tablet.jpg", alt: "iPad tablet experience", caption: "Beautiful cross-device experience" },
+      { src: "/images/projects/tactix/tactix-gallery-01.jpg", alt: "3D chess gameplay interface", caption: "Premium 3D rendering with realistic materials" },
+      { src: "/images/projects/tactix/tactix-gallery-02.jpg", alt: "Social chess learning", caption: "Learning chess together" },
+      { src: "/images/projects/tactix/tactix-gallery-03.jpg", alt: "iPad tablet experience", caption: "Beautiful cross-device experience" },
     ],
     metrics: [
       { label: "Lessons", value: "25+" },
