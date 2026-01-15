@@ -76,15 +76,18 @@ export function InteractiveLogo({ className = "" }: InteractiveLogoProps) {
 
       {/* Interaction hint - fades out after first interaction */}
       <motion.div
-        className="absolute bottom-6 left-0 right-0 flex flex-col items-center gap-2 pointer-events-none"
+        className="absolute bottom-4 right-4 flex items-center gap-2 pointer-events-none"
         initial={{ opacity: 1 }}
         animate={{ opacity: hasInteracted ? 0 : 1 }}
         transition={{ duration: 0.3 }}
       >
+        <span className="text-white/80 text-xs font-medium tracking-wider uppercase">
+          Hover to interact
+        </span>
         {/* Animated cursor icon */}
         <motion.div
           animate={{
-            y: [0, -6, 0],
+            y: [0, -4, 0],
           }}
           transition={{
             duration: 1.2,
@@ -93,8 +96,8 @@ export function InteractiveLogo({ className = "" }: InteractiveLogoProps) {
           }}
         >
           <svg
-            width="28"
-            height="28"
+            width="20"
+            height="20"
             viewBox="0 0 24 24"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
@@ -109,9 +112,6 @@ export function InteractiveLogo({ className = "" }: InteractiveLogoProps) {
             />
           </svg>
         </motion.div>
-        <span className="text-white/80 text-xs font-medium tracking-wider uppercase">
-          Hover to interact
-        </span>
       </motion.div>
 
       {/* Decorative ring */}
