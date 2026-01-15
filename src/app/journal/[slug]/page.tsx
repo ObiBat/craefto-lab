@@ -184,7 +184,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   return (
     <main className="min-h-screen bg-background">
         {/* Article Container */}
-        <article className="pt-24 md:pt-32 pb-20 md:pb-24">
+        <article className="pt-20 md:pt-24 pb-20 md:pb-24">
           <div className="max-w-7xl mx-auto px-5 md:px-6 lg:px-8">
             <div className="grid xl:grid-cols-[1fr_300px] gap-12 xl:gap-16">
               {/* Main Content */}
