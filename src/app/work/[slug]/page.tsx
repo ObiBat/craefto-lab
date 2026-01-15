@@ -102,10 +102,10 @@ const projects: CaseStudy[] = [
     services: ["Brand Strategy", "Logo Design", "Motion Design", "UI/UX Design", "Design System", "Frontend Development", "Backend Development"],
     techStack: ["Next.js 15", "TypeScript", "React 18", "Tailwind CSS v4", "Framer Motion", "Lenis", "Supabase", "Resend", "Radix UI"],
     liveUrl: "https://globfam.io",
-    challenge: "GlobFam needed a complete brand identity from scratch for their cross-border family finance platform. The challenge was creating a visual language that conveyed trust and security (essential for fintech) while feeling warm, approachable, and family-oriented. The brand needed to resonate with diverse global families managing finances across borders—balancing professionalism with emotional connection. Additionally, the digital presence required premium motion design to differentiate from competitors.",
-    approach: "The design process began with extensive research into the emotional journey of families managing cross-border finances—understanding the stress of international transfers, the joy of shared goals, and the need for transparency. The 6-petal flower logo was developed as a symbol of family unity (each petal representing a family member) and organic growth. The color palette draws from nature—ocean blues for trust, mint greens for growth, and soft creams for warmth. A comprehensive motion design language was created using spring physics and magnetic interactions.",
+    challenge: "GlobFam needed a complete brand identity from scratch for their cross-border family finance platform. The challenge was creating a visual language that conveyed trust and security (essential for fintech) while feeling warm, approachable, and family-oriented. The brand needed to resonate with diverse global families managing finances across borders, balancing professionalism with emotional connection. Additionally, the digital presence required premium motion design to differentiate from competitors.",
+    approach: "The design process began with extensive research into the emotional journey of families managing cross-border finances, understanding the stress of international transfers, the joy of shared goals, and the need for transparency. The 6-petal flower logo was developed as a symbol of family unity (each petal representing a family member) and organic growth. The color palette draws from nature: ocean blues for trust, mint greens for growth, and soft creams for warmth. A comprehensive motion design language was created using spring physics and magnetic interactions.",
     solution: "Delivered a complete brand system including: A distinctive 6-petal thin-stroke flower logo with animated variants; a carefully curated 15-color palette with semantic meanings; a dual-font typography system (Sora + Manrope) with fluid scales; a motion design language with custom easing curves, spring physics, and 9+ reusable animation components; an interactive design system documentation page; and a production-ready landing page with glassmorphism UI, magnetic hover effects, and a functional email waitlist system.",
-    outcome: "The brand identity successfully positions GlobFam as a premium, trustworthy fintech platform while maintaining warmth and approachability. The motion design system creates memorable interactions that differentiate the product—the magnetic CTA buttons and organic blur backgrounds have become signature brand elements. The design system documentation ensures consistency across future development.",
+    outcome: "The brand identity successfully positions GlobFam as a premium, trustworthy fintech platform while maintaining warmth and approachability. The motion design system creates memorable interactions that differentiate the product. The magnetic CTA buttons and organic blur backgrounds have become signature brand elements. The design system documentation ensures consistency across future development.",
     heroImage: "/images/projects/globfam-hero.jpg",
     thumbnail: "/images/projects/globfam-thumb.jpg",
     gallery: [
@@ -140,8 +140,8 @@ const projects: CaseStudy[] = [
     services: ["Brand Strategy", "Design System", "UI/UX Design", "Frontend Development", "Backend Development", "3D Development", "AI Integration"],
     techStack: ["React 19", "TypeScript", "Three.js", "React Three Fiber", "Tailwind CSS", "Zustand", "Stockfish WASM", "Supabase", "Clerk", "Google Gemini", "WebSockets"],
     liveUrl: "",
-    challenge: "The chess software market is dominated by outdated interfaces that feel clinical and uninspiring. Existing platforms prioritize function over form, missing the opportunity to make chess feel like the elegant, strategic art form it truly is. The challenge was to create a chess platform that could rival AAA game visuals while maintaining educational depth—essentially 'MasterClass meets Gran Turismo' for chess.",
-    approach: "We adopted a 'visual excellence first' philosophy, building the 3D rendering system before the game logic to ensure the visual standard would never be compromised. We chose React Three Fiber for declarative 3D scene management, allowing rapid iteration on lighting, materials, and animations. For the chess engine, we implemented Stockfish WASM client-side—eliminating server costs and latency while enabling offline play.",
+    challenge: "The chess software market is dominated by outdated interfaces that feel clinical and uninspiring. Existing platforms prioritize function over form, missing the opportunity to make chess feel like the elegant, strategic art form it truly is. The challenge was to create a chess platform that could rival AAA game visuals while maintaining educational depth, essentially MasterClass meets Gran Turismo for chess.",
+    approach: "We adopted a visual excellence first philosophy, building the 3D rendering system before the game logic to ensure the visual standard would never be compromised. We chose React Three Fiber for declarative 3D scene management, allowing rapid iteration on lighting, materials, and animations. For the chess engine, we implemented Stockfish WASM client-side, eliminating server costs and latency while enabling offline play.",
     solution: "TACTIX delivers a premium 3D chess experience with mahogany-framed boards, realistic Staunton pieces with lathe-turned geometries, and professional 3-point lighting with bloom and vignette post-processing effects. The Learning Academy features 25+ interactive lessons across beginner to advanced tracks. The Stockfish integration offers 5 difficulty levels with real-time position evaluation. The exam system uses Google Gemini to generate personalized coaching reports.",
     outcome: "TACTIX successfully demonstrates that chess software can achieve AAA visual quality while remaining performant across devices. The adaptive DPR and LOD systems maintain smooth framerates even on mobile. The local-first architecture with Supabase sync ensures progress is never lost while minimizing backend costs. The platform is positioned for global ranked matchmaking and premium cosmetics monetization.",
     heroImage: "/images/projects/tactix-hero.jpg",
@@ -158,7 +158,7 @@ const projects: CaseStudy[] = [
       { label: "Server Latency", value: "0ms" },
     ],
     testimonial: {
-      quote: "TACTIX represents what chess software should have always been—a visually stunning, intellectually engaging experience that respects both the beauty of the game and the intelligence of the player.",
+      quote: "TACTIX represents what chess software should have always been: a visually stunning, intellectually engaging experience that respects both the beauty of the game and the intelligence of the player.",
       author: "Tactix Team",
       role: "Product Vision",
       company: "TACTIX",
@@ -216,7 +216,7 @@ const projects: CaseStudy[] = [
     services: ["Brand Strategy", "Visual Identity", "Web Design", "Development"],
     techStack: ["Next.js", "TypeScript", "Tailwind CSS", "Framer Motion", "Sanity CMS"],
     liveUrl: "https://example.com",
-    challenge: "Alpha Inc. came to us as a pre-launch fintech startup with a revolutionary payment solution but no visual identity. They needed to establish credibility in a crowded market while communicating complex technology in an approachable way. The challenge was creating a brand that felt both innovative and trustworthy—edgy enough to stand out but professional enough for enterprise clients.",
+    challenge: "Alpha Inc. came to us as a pre-launch fintech startup with a revolutionary payment solution but no visual identity. They needed to establish credibility in a crowded market while communicating complex technology in an approachable way. The challenge was creating a brand that felt both innovative and trustworthy, edgy enough to stand out but professional enough for enterprise clients.",
     approach: "We started with extensive research into the fintech landscape, identifying visual patterns and finding white space. Rather than following typical fintech conventions (blues, gradients, abstract shapes), we developed a distinctive visual language rooted in precision and clarity. The brand system was built to scale, from business cards to complex data visualizations.",
     solution: "The final system includes a complete brand identity with logo, typography, color palette, and extensive guidelines. The web platform was built with Next.js for performance and features custom animations, a blog system, and integration with their product demo. Every component was designed as part of a cohesive system that can grow with the company.",
     outcome: "The new brand helped Alpha Inc. secure their Series A funding within three months of launch. The website consistently achieves 95+ Lighthouse scores and has become a key part of their sales process. The design system continues to serve them as they scale their team and product.",
@@ -233,7 +233,7 @@ const projects: CaseStudy[] = [
       { label: "Page Load Time", value: "< 1.2s" },
     ],
     testimonial: {
-      quote: "Craefto Lab didn't just design our brand—they helped us understand who we are. The system they created has become the foundation for everything we do.",
+      quote: "Craefto Lab didn&apos;t just design our brand. They helped us understand who we are. The system they created has become the foundation for everything we do.",
       author: "Sarah Chen",
       role: "CEO & Co-founder",
       company: "Alpha Inc.",
@@ -445,7 +445,7 @@ export default function CaseStudyPage() {
           <Section spacing="md">
             <Container size="md">
               <AnimatedSection>
-                <p className="text-xs uppercase tracking-wide text-[hsl(var(--color-foreground-subtle))] mb-4">01 — The Challenge</p>
+                <p className="text-xs uppercase tracking-wide text-[hsl(var(--color-foreground-subtle))] mb-4">01 / The Challenge</p>
                 <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight mb-6">
                   Understanding the problem
                 </h2>
@@ -476,7 +476,7 @@ export default function CaseStudyPage() {
           <Section spacing="md">
             <Container size="md">
               <AnimatedSection>
-                <p className="text-xs uppercase tracking-wide text-[hsl(var(--color-foreground-subtle))] mb-4">02 — The Approach</p>
+                <p className="text-xs uppercase tracking-wide text-[hsl(var(--color-foreground-subtle))] mb-4">02 / The Approach</p>
                 <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight mb-6">
                   How we tackled it
                 </h2>
@@ -517,7 +517,7 @@ export default function CaseStudyPage() {
           <Section spacing="md">
             <Container size="md">
               <AnimatedSection>
-                <p className="text-xs uppercase tracking-wide text-[hsl(var(--color-foreground-subtle))] mb-4">03 — The Solution</p>
+                <p className="text-xs uppercase tracking-wide text-[hsl(var(--color-foreground-subtle))] mb-4">03 / The Solution</p>
                 <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight mb-6">
                   What we built
                 </h2>
@@ -569,7 +569,7 @@ export default function CaseStudyPage() {
           <Section spacing="md">
             <Container size="md">
               <AnimatedSection>
-                <p className="text-xs uppercase tracking-wide text-[hsl(var(--color-foreground-subtle))] mb-4">04 — The Outcome</p>
+                <p className="text-xs uppercase tracking-wide text-[hsl(var(--color-foreground-subtle))] mb-4">04 / The Outcome</p>
                 <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight mb-6">
                   Results & impact
                 </h2>

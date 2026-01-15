@@ -125,7 +125,7 @@ export default function LabPage() {
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
                     <div className="space-y-6 text-lg text-[hsl(var(--color-foreground-muted))] leading-relaxed">
                       <p>
-                        <strong className="text-[hsl(var(--color-foreground))]">Beyond client work.</strong> The Lab is where we explore ideas that don&apos;t fit neatly into project scopes—tools we wish existed, patterns we keep using, experiments worth sharing.
+                        <strong className="text-[hsl(var(--color-foreground))]">Beyond client work.</strong> The Lab is where we explore ideas that don&apos;t fit neatly into project scopes: tools we wish existed, patterns we keep using, experiments worth sharing.
                       </p>
                       <p>
                         <strong className="text-[hsl(var(--color-foreground))]">From practice to product.</strong> Every experiment starts as something we need ourselves. If it proves valuable, we polish it for others.
