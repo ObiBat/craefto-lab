@@ -745,7 +745,7 @@ export default function CaseStudyPage() {
                 <Link href={`/work/${nextProject.slug}`} className="group block">
                   <div className="relative overflow-hidden rounded-2xl">
                     {/* Background Image */}
-                    <div className="aspect-[21/9] sm:aspect-[3/1] relative">
+                    <div className="aspect-[4/3] sm:aspect-[21/9] md:aspect-[3/1] relative">
                       {["tactix", "nuu", "fontkin", "globfam"].includes(nextProject.slug) ? (
                         <Image
                           src={nextProject.heroImage}
@@ -765,33 +765,33 @@ export default function CaseStudyPage() {
                     </div>
 
                     {/* Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent transition-opacity group-hover:from-black/70" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/20 transition-opacity group-hover:from-black/80" />
 
                     {/* Content */}
-                    <div className="absolute inset-0 flex flex-col justify-end p-6 sm:p-10 lg:p-12">
-                      <p className="text-xs uppercase tracking-widest text-white/60 mb-3">
+                    <div className="absolute inset-0 flex flex-col justify-end p-5 sm:p-10 lg:p-12">
+                      <p className="text-[10px] sm:text-xs uppercase tracking-widest text-white/60 mb-2 sm:mb-3">
                         Next Case Study
                       </p>
-                      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
-                        <div>
-                          <div className="flex items-center gap-3 mb-2">
-                            <Badge variant="secondary" className="bg-white/10 text-white border-white/20">
+                      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 sm:gap-4">
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-2 sm:gap-3 mb-1.5 sm:mb-2">
+                            <Badge variant="secondary" className="bg-white/10 text-white border-white/20 text-[10px] sm:text-xs">
                               {nextProject.category}
                             </Badge>
                           </div>
-                          <p className="text-2xl sm:text-3xl lg:text-4xl font-semibold tracking-tight mb-2 relative inline-block" style={{ color: '#ffffff' }}>
+                          <p className="text-xl sm:text-3xl lg:text-4xl font-semibold tracking-tight mb-1.5 sm:mb-2 relative inline-block" style={{ color: '#ffffff' }}>
                             {nextProject.title}
                             <span className="absolute bottom-0 left-0 w-full h-0.5 bg-white origin-left scale-x-0 transition-transform duration-300 ease-out group-hover:scale-x-100" />
                           </p>
-                          <p className="text-sm sm:text-base text-white/70 max-w-xl line-clamp-2">
+                          <p className="text-xs sm:text-base text-white/70 max-w-xl line-clamp-2">
                             {nextProject.description}
                           </p>
                         </div>
-                        <div className="flex items-center gap-2 text-white shrink-0">
-                          <span className="text-sm font-medium hidden sm:inline">View project</span>
-                          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center transition-transform group-hover:translate-x-1 group-hover:bg-white/20">
+                        <div className="flex items-center gap-2 text-white shrink-0 mt-2 sm:mt-0">
+                          <span className="text-xs sm:text-sm font-medium">View project</span>
+                          <div className="w-8 h-8 sm:w-12 sm:h-12 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center transition-transform group-hover:translate-x-1 group-hover:bg-white/20">
                             <svg
-                              className="w-5 h-5"
+                              className="w-4 h-4 sm:w-5 sm:h-5"
                               fill="none"
                               stroke="currentColor"
                               viewBox="0 0 24 24"
