@@ -181,7 +181,7 @@ const projects: CaseStudy[] = [
     featured: true,
     services: ["Brand Strategy", "Design System", "UI/UX Design", "Frontend Development", "Backend Development", "3D Development", "AI Integration"],
     techStack: ["React 19", "TypeScript", "Three.js", "React Three Fiber", "Tailwind CSS", "Zustand", "Stockfish WASM", "Supabase", "Clerk", "Google Gemini", "WebSockets"],
-    liveUrl: "",
+    liveUrl: "https://tactix.run",
     challenge: "The chess software market is dominated by outdated interfaces that feel clinical and uninspiring. Existing platforms prioritize function over form, missing the opportunity to make chess feel like the elegant, strategic art form it truly is. The challenge was to create a chess platform that could rival AAA game visuals while maintaining educational depth, essentially MasterClass meets Gran Turismo for chess.",
     approach: "We adopted a visual excellence first philosophy, building the 3D rendering system before the game logic to ensure the visual standard would never be compromised. We chose React Three Fiber for declarative 3D scene management, allowing rapid iteration on lighting, materials, and animations. For the chess engine, we implemented Stockfish WASM client-side, eliminating server costs and latency while enabling offline play.",
     solution: "TACTIX delivers a premium 3D chess experience with mahogany-framed boards, realistic Staunton pieces with lathe-turned geometries, and professional 3-point lighting with bloom and vignette post-processing effects. The Learning Academy features 25+ interactive lessons across beginner to advanced tracks. The Stockfish integration offers 5 difficulty levels with real-time position evaluation. The exam system uses Google Gemini to generate personalized coaching reports.",
@@ -219,7 +219,7 @@ const projects: CaseStudy[] = [
     featured: true,
     services: ["Brand Strategy", "UI/UX Design", "Design System", "Frontend Development", "Backend Development", "AI/ML Integration", "Database Architecture"],
     techStack: ["React 19", "Vite", "TypeScript", "Three.js", "React Three Fiber", "OpenAI GPT-4o", "Supabase", "PostgreSQL", "pgvector", "PostGIS", "Vercel", "Tailwind CSS"],
-    liveUrl: "",
+    liveUrl: "https://nuu.agency",
     challenge: "The Australian rental market is notoriously competitive and frustrating. Renters struggle with fragmented listings across multiple platforms, impersonal search filters that don't capture lifestyle preferences, and an overwhelming number of unsuitable results. Traditional property search interfaces require users to think in technical terms rather than expressing what they actually want: 'a beachy vibe near good coffee shops' or 'somewhere quiet for my family near trains to the CBD'.",
     approach: "We took an AI-first design approach, reimagining property search as a conversation rather than a form. We implemented GPT-4o as a 'property concierge' that extracts structured preferences from natural language. We developed a sophisticated 7-factor weighted scoring algorithm that evaluates location, budget, features, amenities, transport, property type, and bedrooms. We created an industrial 'operating system' aesthetic that positions NUU as a premium, tech-forward solution.",
     solution: "NUU is a full-stack property matching platform featuring a conversational AI interface powered by GPT-4o that guides users through preference discovery in 2-3 natural exchanges. The multi-factor matching algorithm scores properties across 7 dimensions with bonuses for exceptional matches. The frontend features an immersive 3D architectural visualization built with Three.js, scroll-triggered animations, and a dark industrial design language. The backend runs on Vercel serverless with Supabase PostgreSQL, including pgvector for semantic search and PostGIS for geospatial queries.",
@@ -656,8 +656,8 @@ export default function CaseStudyPage() {
             </Section>
           )}
 
-          {/* Testimonial */}
-          {project.testimonial && (
+          {/* Testimonial - hidden for GlobFam */}
+          {project.testimonial && project.slug !== "globfam" && (
             <Section spacing="md">
               <Container size="md">
                 <AnimatedSection variant="scaleIn">
@@ -745,13 +745,23 @@ export default function CaseStudyPage() {
                 <Link href={`/work/${nextProject.slug}`} className="group block">
                   <div className="relative overflow-hidden rounded-2xl">
                     {/* Background Image */}
-                    <div className="aspect-[21/9] sm:aspect-[3/1]">
-                      <ProjectImagePlaceholder
-                        projectName={nextProject.title}
-                        imageType="hero"
-                        caption=""
-                        accentColor={nextProject.accentColor}
-                      />
+                    <div className="aspect-[21/9] sm:aspect-[3/1] relative">
+                      {["tactix", "nuu", "fontkin", "globfam"].includes(nextProject.slug) ? (
+                        <Image
+                          src={nextProject.heroImage}
+                          alt={`${nextProject.title} preview`}
+                          fill
+                          className="object-cover"
+                          sizes="(max-width: 768px) 100vw, 1200px"
+                        />
+                      ) : (
+                        <ProjectImagePlaceholder
+                          projectName={nextProject.title}
+                          imageType="hero"
+                          caption=""
+                          accentColor={nextProject.accentColor}
+                        />
+                      )}
                     </div>
 
                     {/* Overlay */}

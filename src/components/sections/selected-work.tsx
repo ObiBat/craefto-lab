@@ -13,13 +13,13 @@ import { ProjectImagePlaceholder } from "@/components/ui/project-image-placehold
 // Featured projects for homepage (show top 3)
 const featuredProjects = [
   {
-    slug: "globfam",
-    title: "GlobFam",
-    description: "Cross-border family finance platform with premium branding & motion design system.",
-    category: "Brand",
-    year: 2025,
-    accentColor: "195 78% 38%",
-    thumbnail: "/images/projects/globfam/globfam-thumb.jpg",
+    slug: "fontkin",
+    title: "Fontkin",
+    description: "Professional font pairing lab for designers & developers with curated combinations and one-click exports.",
+    category: "Web",
+    year: 2024,
+    accentColor: "0 0% 6%",
+    thumbnail: "/images/projects/fontkin/fontkin-thumb.jpg",
   },
   {
     slug: "tactix",
@@ -31,13 +31,13 @@ const featuredProjects = [
     thumbnail: "/images/projects/tactix/tactix-thumb.jpg",
   },
   {
-    slug: "nuu",
-    title: "NUU",
-    description: "AI-powered property matching platform for the Australian rental market.",
-    category: "SaaS",
+    slug: "globfam",
+    title: "GlobFam",
+    description: "Cross-border family finance platform with premium branding & motion design system.",
+    category: "Brand",
     year: 2025,
-    accentColor: "18 100% 50%",
-    thumbnail: "/images/projects/nuu/nuu-thumb.jpg",
+    accentColor: "195 78% 38%",
+    thumbnail: "/images/projects/globfam/globfam-thumb.jpg",
   },
 ];
 
