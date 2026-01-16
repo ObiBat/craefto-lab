@@ -42,58 +42,53 @@ export default function ContactPage() {
     <>
       <Header />
       <PageTransition>
-        <main id="main-content" className="pt-20">
-          {/* Hero */}
-          <Section spacing="sm" className="pb-8 md:pb-6">
+        <main id="main-content" className="pt-16 md:pt-20">
+          <Section spacing="sm" className="pb-12 md:pb-16">
             <Container>
-              <div className="max-w-3xl">
-                {/* Breadcrumb */}
-                <nav className="mb-6 md:mb-4" aria-label="Breadcrumb">
-                  <ol className="flex items-center gap-2 text-sm text-[hsl(var(--color-foreground-muted))]">
-                    <li>
-                      <a href="/" className="hover:text-[hsl(var(--color-foreground))] transition-colors">
-                        Home
-                      </a>
-                    </li>
-                    <li>
-                      <span className="mx-2">/</span>
-                    </li>
-                    <li className="text-[hsl(var(--color-foreground))] font-medium">Contact</li>
-                  </ol>
-                </nav>
+              {/* Header Row - Title + Quick Info */}
+              <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4 mb-8 md:mb-10">
+                <div>
+                  <HeroText>
+                    <h1 className="text-3xl md:text-4xl font-semibold tracking-tight">
+                      Start a project
+                    </h1>
+                  </HeroText>
+                  <HeroText delay={0.1}>
+                    <p className="text-base text-[hsl(var(--color-foreground-muted))] mt-2 max-w-md">
+                      For founders and teams who value clarity and craft.
+                    </p>
+                  </HeroText>
+                </div>
 
-                <HeroText>
-                  <h1 className="font-semibold tracking-tight mb-4">
-                    Start a project
-                  </h1>
-                </HeroText>
-                <HeroText delay={0.1}>
-                  <p className="text-xl text-[hsl(var(--color-foreground-muted))] leading-relaxed">
-                    We work with founders, startups, and teams who value clarity and
-                    long-term thinking. If that sounds like you, let&apos;s talk.
-                  </p>
-                </HeroText>
+                {/* Quick Info - Inline on desktop */}
+                <AnimatedSection delay={0.2} className="flex flex-wrap items-center gap-3">
+                  <div className="flex items-center gap-2 text-sm text-[hsl(var(--color-foreground-muted))]">
+                    <span className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                    </span>
+                    Sydney, AU
+                  </div>
+                  <span className="text-[hsl(var(--color-border))]">·</span>
+                  <span className="text-sm text-[hsl(var(--color-foreground-muted))]">Replies in 1 to 2 days</span>
+                </AnimatedSection>
               </div>
-            </Container>
-          </Section>
 
-          {/* Form Section */}
-          <Section spacing="md" className="pt-0 pb-16 md:pb-20">
-            <Container>
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-12">
-                {/* Form */}
-                <AnimatedSection className="lg:col-span-2" delay={0.2}>
+              {/* Main Content Grid */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
+                {/* Form - Takes most space */}
+                <AnimatedSection className="lg:col-span-8" delay={0.15}>
                   <Suspense fallback={<ContactFormSkeleton />}>
                     <ContactForm />
                   </Suspense>
                 </AnimatedSection>
 
-                {/* Sidebar */}
-                <div className="flex flex-col gap-4">
-                  {/* Quick Contact Card */}
-                  <AnimatedSection delay={0.3} variant="fadeLeft">
-                    <div className="p-5 rounded-2xl bg-[hsl(var(--color-foreground))] text-[hsl(var(--color-background))]">
-                      <p className="text-xs uppercase tracking-widest opacity-60 mb-3">
+                {/* Sidebar - Compact */}
+                <div className="lg:col-span-4 flex flex-col gap-6">
+                  {/* Email Card */}
+                  <AnimatedSection delay={0.25}>
+                    <div className="p-5 rounded-xl bg-[hsl(var(--color-foreground))] text-[hsl(var(--color-background))]">
+                      <p className="text-xs uppercase tracking-widest opacity-50 mb-2">
                         Prefer email?
                       </p>
                       <button
@@ -101,10 +96,10 @@ export default function ContactPage() {
                         className="group flex items-center justify-between w-full"
                         aria-label="Copy email address"
                       >
-                        <span className="text-base font-medium group-hover:opacity-80 transition-opacity">
+                        <span className="text-sm font-medium group-hover:opacity-80 transition-opacity">
                           {siteConfig.email}
                         </span>
-                        <span className={`flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full transition-all ${copied ? "bg-green-500/20 text-green-400" : "bg-white/10 group-hover:bg-white/20"}`}>
+                        <span className={`flex items-center gap-1 text-xs px-2 py-0.5 rounded-full transition-all ${copied ? "bg-green-500/20 text-green-400" : "bg-white/10 group-hover:bg-white/20"}`}>
                           {copied ? (
                             <>
                               <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -125,32 +120,25 @@ export default function ContactPage() {
                     </div>
                   </AnimatedSection>
 
-                  {/* Info Pills */}
-                  <AnimatedSection delay={0.4} variant="fadeLeft">
-                    <div className="flex flex-wrap gap-2">
-                      {/* Location Pill */}
-                      <div className="group flex items-center gap-2 px-4 py-2.5 rounded-full border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] hover:border-[hsl(var(--color-foreground)/20)] transition-colors cursor-default">
-                        <span className="relative flex h-2 w-2">
-                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                          <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-                        </span>
-                        <span className="text-sm text-[hsl(var(--color-foreground-muted))]">Sydney, AU</span>
-                      </div>
-
-                      {/* Global Pill */}
-                      <div className="flex items-center gap-2 px-4 py-2.5 rounded-full border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] hover:border-[hsl(var(--color-foreground)/20)] transition-colors cursor-default">
-                        <svg className="w-3.5 h-3.5 text-[hsl(var(--color-foreground-subtle))]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        <span className="text-sm text-[hsl(var(--color-foreground-muted))]">Working globally</span>
-                      </div>
-
-                      {/* Response Time Pill */}
-                      <div className="flex items-center gap-2 px-4 py-2.5 rounded-full border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] hover:border-[hsl(var(--color-foreground)/20)] transition-colors cursor-default">
-                        <svg className="w-3.5 h-3.5 text-[hsl(var(--color-foreground-subtle))]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        <span className="text-sm text-[hsl(var(--color-foreground-muted))]">Replies in 1 to 2 days</span>
+                  {/* What to expect */}
+                  <AnimatedSection delay={0.3}>
+                    <div className="space-y-4">
+                      <p className="text-xs uppercase tracking-widest text-[hsl(var(--color-foreground-subtle))]">
+                        What happens next
+                      </p>
+                      <div className="space-y-3">
+                        <div className="flex gap-3">
+                          <div className="flex-shrink-0 w-6 h-6 rounded-full bg-[hsl(var(--color-background-muted))] flex items-center justify-center text-xs font-medium text-[hsl(var(--color-foreground-muted))]">1</div>
+                          <p className="text-sm text-[hsl(var(--color-foreground-muted))]">We review your project details</p>
+                        </div>
+                        <div className="flex gap-3">
+                          <div className="flex-shrink-0 w-6 h-6 rounded-full bg-[hsl(var(--color-background-muted))] flex items-center justify-center text-xs font-medium text-[hsl(var(--color-foreground-muted))]">2</div>
+                          <p className="text-sm text-[hsl(var(--color-foreground-muted))]">Schedule a discovery call</p>
+                        </div>
+                        <div className="flex gap-3">
+                          <div className="flex-shrink-0 w-6 h-6 rounded-full bg-[hsl(var(--color-background-muted))] flex items-center justify-center text-xs font-medium text-[hsl(var(--color-foreground-muted))]">3</div>
+                          <p className="text-sm text-[hsl(var(--color-foreground-muted))]">Receive a tailored proposal</p>
+                        </div>
                       </div>
                     </div>
                   </AnimatedSection>
