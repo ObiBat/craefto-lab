@@ -132,14 +132,6 @@ export function Footer() {
                   Connect
                 </p>
                 <ul className="space-y-2.5">
-                  <li>
-                    <a
-                      href={`mailto:${siteConfig.email}`}
-                      className="text-sm text-white/70 hover:text-white transition-colors"
-                    >
-                      Email
-                    </a>
-                  </li>
                   {siteConfig.links.linkedin && (
                     <li>
                       <a
