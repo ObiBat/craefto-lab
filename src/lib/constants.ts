@@ -6,7 +6,7 @@ export const siteConfig = {
   email: "hello@craefto.com",
   links: {
     twitter: "https://x.com/craefto",
-    linkedin: "https://linkedin.com/company/craeftolab",
+    linkedin: "https://www.linkedin.com/company/craefto",
   },
 };
 

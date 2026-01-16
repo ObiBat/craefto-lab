@@ -138,7 +138,7 @@ const jsonLd = {
   logo: "https://craefto.com/logo.png",
   sameAs: [
     "https://x.com/craefto",
-    "https://linkedin.com/company/craeftolab",
+    "https://www.linkedin.com/company/craefto",
   ],
   contactPoint: {
     "@type": "ContactPoint",
