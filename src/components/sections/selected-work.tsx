@@ -92,13 +92,13 @@ export function SelectedWork() {
                   href={`/work/${project.slug}`}
                   className="group block"
                 >
-                  <div className="aspect-[4/3] rounded-xl mb-5 transition-all duration-300 group-hover:shadow-lg group-hover:-translate-y-1 overflow-hidden relative">
+                  <div className="aspect-[4/3] rounded-xl mb-5 transition-shadow duration-500 ease-out group-hover:shadow-2xl overflow-hidden relative">
                     {project.thumbnail ? (
                       <Image
                         src={project.thumbnail}
                         alt={`${project.title} thumbnail`}
                         fill
-                        className="object-cover"
+                        className="object-cover transition-all duration-700 ease-[cubic-bezier(0.25,0.1,0.25,1)] group-hover:scale-105"
                         sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                       />
                     ) : (
