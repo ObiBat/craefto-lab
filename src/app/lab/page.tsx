@@ -9,7 +9,7 @@ const upcomingExperiments = [
   {
     number: "01",
     title: "Open Source Design System",
-    description: "A comprehensive, production-ready design system we're building in public for the creative community.",
+    description: "A comprehensive, production ready design system we're building in public for the creative community.",
     status: "In Progress",
     icon: (
       <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -19,8 +19,8 @@ const upcomingExperiments = [
   },
   {
     number: "02",
-    title: "AI-Augmented Creative Workflows",
-    description: "Researching how AI tools can enhance — not replace — the creative process for design teams.",
+    title: "AI Augmented Creative Workflows",
+    description: "Researching how AI tools can enhance, not replace, the creative process for design teams.",
     status: "Research",
     icon: (
       <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -31,7 +31,7 @@ const upcomingExperiments = [
   {
     number: "03",
     title: "Studio Playbook",
-    description: "Documenting our processes, methodologies, and lessons learned — sharing what actually works.",
+    description: "Documenting our processes, methodologies, and lessons learned. Sharing what actually works.",
     status: "Writing",
     icon: (
       <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -42,7 +42,7 @@ const upcomingExperiments = [
   {
     number: "04",
     title: "Cræfto Sydney Community",
-    description: "Building a community of creative industry experts in Sydney who thrive to grow — and sometimes enjoy chess.",
+    description: "Building a community of creative industry experts in Sydney who thrive to grow and sometimes enjoy chess.",
     status: "Building Partnerships",
     icon: (
       <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
