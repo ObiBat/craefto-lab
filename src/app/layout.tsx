@@ -137,7 +137,7 @@ const jsonLd = {
   url: "https://craefto.com",
   logo: "https://craefto.com/logo.png",
   sameAs: [
-    "https://twitter.com/craeftolab",
+    "https://x.com/craefto",
     "https://linkedin.com/company/craeftolab",
   ],
   contactPoint: {

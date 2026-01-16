@@ -245,7 +245,7 @@ export default function LabPage() {
                     </div>
                     <div className="flex flex-col sm:flex-row gap-3 lg:flex-shrink-0">
                       <Button size="lg" asChild>
-                        <a href="https://twitter.com/craeftolab" target="_blank" rel="noopener noreferrer">
+                        <a href="https://x.com/craefto" target="_blank" rel="noopener noreferrer">
                           <span className="btn-text-wrapper">
                             <span className="btn-text-primary">
                               Follow on X
