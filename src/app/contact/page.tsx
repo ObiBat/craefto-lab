@@ -137,7 +137,7 @@ export default function ContactPage() {
                         </div>
                         <div className="flex gap-3">
                           <div className="flex-shrink-0 w-6 h-6 rounded-full bg-[hsl(var(--color-background-muted))] flex items-center justify-center text-xs font-medium text-[hsl(var(--color-foreground-muted))]">3</div>
-                          <p className="text-sm text-[hsl(var(--color-foreground-muted))]">Receive a tailored proposal</p>
+                          <p className="text-sm text-[hsl(var(--color-foreground-muted))]">Receive a personalised proposal</p>
                         </div>
                       </div>
                     </div>
