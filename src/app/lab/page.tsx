@@ -199,7 +199,7 @@ export default function LabPage() {
                           <span className="text-xs font-semibold text-white/50 tabular-nums">
                             {experiment.number}
                           </span>
-                          <h3 className="font-semibold tracking-tight mt-1 mb-2">
+                          <h3 className="font-semibold tracking-tight mt-1 mb-2 text-white">
                             {experiment.title}
                           </h3>
                           <p className="text-sm text-white/70 leading-relaxed mb-4">
