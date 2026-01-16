@@ -45,6 +45,21 @@ export default function ContactPage() {
         <main id="main-content" className="pt-16 md:pt-20">
           <Section spacing="sm" className="pb-12 md:pb-16">
             <Container>
+              {/* Breadcrumb */}
+              <nav className="mb-4" aria-label="Breadcrumb">
+                <ol className="flex items-center gap-2 text-sm text-[hsl(var(--color-foreground-muted))]">
+                  <li>
+                    <a href="/" className="hover:text-[hsl(var(--color-foreground))] transition-colors">
+                      Home
+                    </a>
+                  </li>
+                  <li>
+                    <span className="mx-2">/</span>
+                  </li>
+                  <li className="text-[hsl(var(--color-foreground))] font-medium">Contact</li>
+                </ol>
+              </nav>
+
               {/* Header Row - Title + Quick Info */}
               <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4 mb-8 md:mb-10">
                 <div>
