@@ -160,7 +160,7 @@ export function Footer() {
                         rel="noopener noreferrer"
                         className="text-sm text-white/70 hover:text-white transition-colors"
                       >
-                        Twitter
+                        X
                       </a>
                     </li>
                   )}
