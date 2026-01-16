@@ -1,5 +1,6 @@
 "use client";
 
+import * as React from "react";
 import Link from "next/link";
 import { Header, Footer, Container, Section } from "@/components/layout";
 import { Separator, PageTransition, AnimatedSection, StaggeredGrid, StaggeredItem, HeroText, SectionLabel } from "@/components/ui";
@@ -68,6 +69,24 @@ const principles = [
 ];
 
 export default function LabPage() {
+  const [communityEmail, setCommunityEmail] = React.useState("");
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [isSubmitted, setIsSubmitted] = React.useState(false);
+
+  const handleCommunitySignup = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!communityEmail) return;
+
+    setIsSubmitting(true);
+
+    // Simulate API call - replace with actual endpoint
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    setIsSubmitting(false);
+    setIsSubmitted(true);
+    setCommunityEmail("");
+  };
+
   return (
     <>
       <Header />
@@ -166,25 +185,86 @@ export default function LabPage() {
                 <StaggeredGrid className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   {upcomingExperiments.map((experiment) => (
                     <StaggeredItem key={experiment.title} className="h-full">
-                      <div className="group p-6 rounded-xl border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] hover:border-[hsl(var(--color-border-hover))] hover:shadow-sm transition-all h-full flex flex-col">
-                        <div className="flex items-start justify-between mb-4">
-                          <div className="w-12 h-12 rounded-lg bg-[hsl(var(--color-background-muted))] flex items-center justify-center text-[hsl(var(--color-foreground-muted))] group-hover:text-[hsl(var(--color-accent))] transition-colors">
-                            {experiment.icon}
+                      {experiment.number === "04" ? (
+                        /* Community Card - Interactive with Email Signup */
+                        <div className="group p-6 rounded-xl bg-[hsl(var(--color-foreground))] text-[hsl(var(--color-background))] h-full flex flex-col">
+                          <div className="flex items-start justify-between mb-4">
+                            <div className="w-12 h-12 rounded-lg bg-white/10 flex items-center justify-center">
+                              {experiment.icon}
+                            </div>
+                            <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-white/10 text-white/70">
+                              {experiment.status}
+                            </span>
                           </div>
-                          <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-[hsl(var(--color-background-muted))] text-[hsl(var(--color-foreground-subtle))]">
-                            {experiment.status}
+                          <span className="text-xs font-semibold text-white/50 tabular-nums">
+                            {experiment.number}
                           </span>
+                          <h3 className="font-semibold tracking-tight mt-1 mb-2">
+                            {experiment.title}
+                          </h3>
+                          <p className="text-sm text-white/70 leading-relaxed mb-4">
+                            {experiment.description}
+                          </p>
+
+                          {/* Email Signup Form */}
+                          <div className="mt-auto pt-4 border-t border-white/10">
+                            {isSubmitted ? (
+                              <div className="flex items-center gap-2 text-sm text-green-400">
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                </svg>
+                                <span>You&apos;re on the list. We&apos;ll be in touch.</span>
+                              </div>
+                            ) : (
+                              <form onSubmit={handleCommunitySignup} className="flex gap-2">
+                                <input
+                                  type="email"
+                                  value={communityEmail}
+                                  onChange={(e) => setCommunityEmail(e.target.value)}
+                                  placeholder="Enter your email"
+                                  required
+                                  className="flex-1 px-3 py-2 text-sm bg-white/10 border border-white/20 rounded-lg placeholder:text-white/40 focus:outline-none focus:border-white/40 transition-colors"
+                                />
+                                <button
+                                  type="submit"
+                                  disabled={isSubmitting}
+                                  className="px-4 py-2 text-sm font-medium bg-white text-[hsl(var(--color-foreground))] rounded-lg hover:bg-white/90 transition-colors disabled:opacity-50"
+                                >
+                                  {isSubmitting ? (
+                                    <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                                    </svg>
+                                  ) : (
+                                    "Join"
+                                  )}
+                                </button>
+                              </form>
+                            )}
+                          </div>
                         </div>
-                        <span className="text-xs font-semibold text-[hsl(var(--color-accent))] tabular-nums">
-                          {experiment.number}
-                        </span>
-                        <h3 className="font-semibold tracking-tight mt-1 mb-2">
-                          {experiment.title}
-                        </h3>
-                        <p className="text-sm text-[hsl(var(--color-foreground-muted))] leading-relaxed flex-grow">
-                          {experiment.description}
-                        </p>
-                      </div>
+                      ) : (
+                        /* Regular Card */
+                        <div className="group p-6 rounded-xl border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] hover:border-[hsl(var(--color-border-hover))] hover:shadow-sm transition-all h-full flex flex-col">
+                          <div className="flex items-start justify-between mb-4">
+                            <div className="w-12 h-12 rounded-lg bg-[hsl(var(--color-background-muted))] flex items-center justify-center text-[hsl(var(--color-foreground-muted))] group-hover:text-[hsl(var(--color-accent))] transition-colors">
+                              {experiment.icon}
+                            </div>
+                            <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-[hsl(var(--color-background-muted))] text-[hsl(var(--color-foreground-subtle))]">
+                              {experiment.status}
+                            </span>
+                          </div>
+                          <span className="text-xs font-semibold text-[hsl(var(--color-accent))] tabular-nums">
+                            {experiment.number}
+                          </span>
+                          <h3 className="font-semibold tracking-tight mt-1 mb-2">
+                            {experiment.title}
+                          </h3>
+                          <p className="text-sm text-[hsl(var(--color-foreground-muted))] leading-relaxed flex-grow">
+                            {experiment.description}
+                          </p>
+                        </div>
+                      )}
                     </StaggeredItem>
                   ))}
                 </StaggeredGrid>
