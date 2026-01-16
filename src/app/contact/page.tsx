@@ -60,43 +60,43 @@ export default function ContactPage() {
                 </ol>
               </nav>
 
-              {/* Header Row - Title + Quick Info */}
-              <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4 mb-8 md:mb-10">
-                <div>
-                  <HeroText>
-                    <h1 className="text-3xl md:text-4xl font-semibold tracking-tight">
-                      Start a project
-                    </h1>
-                  </HeroText>
-                  <HeroText delay={0.1}>
-                    <p className="text-base text-[hsl(var(--color-foreground-muted))] mt-2 max-w-md">
-                      For founders and teams who value clarity and craft.
-                    </p>
-                  </HeroText>
-                </div>
-
-                {/* Quick Info - Inline on desktop */}
-                <AnimatedSection delay={0.2} className="flex flex-wrap items-center gap-3">
-                  <div className="flex items-center gap-2 text-sm text-[hsl(var(--color-foreground-muted))]">
-                    <span className="relative flex h-2 w-2">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-                    </span>
-                    Sydney, AU
-                  </div>
-                  <span className="text-[hsl(var(--color-border))]">·</span>
-                  <span className="text-sm text-[hsl(var(--color-foreground-muted))]">Replies in 1 to 2 days</span>
-                </AnimatedSection>
+              {/* Header */}
+              <div className="mb-8 md:mb-10">
+                <HeroText>
+                  <h1 className="text-3xl md:text-4xl font-semibold tracking-tight">
+                    Start a project
+                  </h1>
+                </HeroText>
+                <HeroText delay={0.1}>
+                  <p className="text-base text-[hsl(var(--color-foreground-muted))] mt-2 max-w-md">
+                    For founders and teams who value clarity and craft.
+                  </p>
+                </HeroText>
               </div>
 
               {/* Main Content Grid */}
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
                 {/* Form - Takes most space */}
-                <AnimatedSection className="lg:col-span-8" delay={0.15}>
-                  <Suspense fallback={<ContactFormSkeleton />}>
-                    <ContactForm />
-                  </Suspense>
-                </AnimatedSection>
+                <div className="lg:col-span-8">
+                  <AnimatedSection delay={0.15}>
+                    <Suspense fallback={<ContactFormSkeleton />}>
+                      <ContactForm />
+                    </Suspense>
+                  </AnimatedSection>
+
+                  {/* Quick Info - Below form */}
+                  <AnimatedSection delay={0.3} className="flex flex-wrap items-center gap-3 mt-6 pt-6 border-t border-[hsl(var(--color-border))]">
+                    <div className="flex items-center gap-2 text-sm text-[hsl(var(--color-foreground-muted))]">
+                      <span className="relative flex h-2 w-2">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                      </span>
+                      Sydney, AU
+                    </div>
+                    <span className="text-[hsl(var(--color-border))]">·</span>
+                    <span className="text-sm text-[hsl(var(--color-foreground-muted))]">Replies in 1 to 2 days</span>
+                  </AnimatedSection>
+                </div>
 
                 {/* Sidebar - Compact */}
                 <div className="lg:col-span-4 flex flex-col gap-6">
