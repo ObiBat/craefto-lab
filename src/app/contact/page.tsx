@@ -155,6 +155,8 @@ export default function ContactPage() {
                       Sydney, AU
                     </div>
                     <span className="text-[hsl(var(--color-border))]">·</span>
+                    <span className="text-sm text-[hsl(var(--color-foreground-muted))]">Working globally</span>
+                    <span className="text-[hsl(var(--color-border))]">·</span>
                     <span className="text-sm text-[hsl(var(--color-foreground-muted))]">Replies in 1 to 2 days</span>
                   </AnimatedSection>
                 </div>
