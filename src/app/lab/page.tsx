@@ -165,8 +165,8 @@ export default function LabPage() {
 
                 <StaggeredGrid className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   {upcomingExperiments.map((experiment) => (
-                    <StaggeredItem key={experiment.title}>
-                      <div className="group p-6 rounded-xl border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] hover:border-[hsl(var(--color-border-hover))] hover:shadow-sm transition-all">
+                    <StaggeredItem key={experiment.title} className="h-full">
+                      <div className="group p-6 rounded-xl border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] hover:border-[hsl(var(--color-border-hover))] hover:shadow-sm transition-all h-full flex flex-col">
                         <div className="flex items-start justify-between mb-4">
                           <div className="w-12 h-12 rounded-lg bg-[hsl(var(--color-background-muted))] flex items-center justify-center text-[hsl(var(--color-foreground-muted))] group-hover:text-[hsl(var(--color-accent))] transition-colors">
                             {experiment.icon}
@@ -181,7 +181,7 @@ export default function LabPage() {
                         <h3 className="font-semibold tracking-tight mt-1 mb-2">
                           {experiment.title}
                         </h3>
-                        <p className="text-sm text-[hsl(var(--color-foreground-muted))] leading-relaxed">
+                        <p className="text-sm text-[hsl(var(--color-foreground-muted))] leading-relaxed flex-grow">
                           {experiment.description}
                         </p>
                       </div>
