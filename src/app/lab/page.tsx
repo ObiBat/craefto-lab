@@ -187,9 +187,9 @@ export default function LabPage() {
                     <StaggeredItem key={experiment.title} className="h-full">
                       {experiment.number === "04" ? (
                         /* Community Card - Interactive with Email Signup */
-                        <div className="group p-6 rounded-xl bg-[hsl(var(--color-foreground))] text-[hsl(var(--color-background))] h-full flex flex-col">
+                        <div className="group p-6 rounded-xl bg-neutral-900 h-full flex flex-col">
                           <div className="flex items-start justify-between mb-4">
-                            <div className="w-12 h-12 rounded-lg bg-white/10 flex items-center justify-center">
+                            <div className="w-12 h-12 rounded-lg bg-white/10 flex items-center justify-center text-white">
                               {experiment.icon}
                             </div>
                             <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-white/10 text-white/70">
