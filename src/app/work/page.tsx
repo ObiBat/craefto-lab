@@ -60,11 +60,11 @@ export default function WorkPage() {
       <PageTransition>
         <main id="main-content" className="pt-20">
           {/* Hero */}
-          <Section spacing="sm" className="pb-8 md:pb-10">
+          <Section spacing="sm" className="pb-8 md:pb-6">
             <Container>
               <div className="max-w-3xl">
                 {/* Breadcrumb */}
-                <nav className="mb-6" aria-label="Breadcrumb">
+                <nav className="mb-6 md:mb-4" aria-label="Breadcrumb">
                   <ol className="flex items-center gap-2 text-sm text-[hsl(var(--color-foreground-muted))]">
                     <li>
                       <a href="/" className="hover:text-[hsl(var(--color-foreground))] transition-colors">
@@ -96,7 +96,7 @@ export default function WorkPage() {
           {/* Projects Grid */}
           <Section spacing="md" className="pt-0 pb-16 md:pb-20">
             <Container>
-              <Separator className="mb-12" />
+              <Separator className="mb-12 md:mb-8" />
 
               <StaggeredGrid className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
                 {projects.map((project) => (

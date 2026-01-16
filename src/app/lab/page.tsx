@@ -74,11 +74,11 @@ export default function LabPage() {
       <PageTransition>
         <main id="main-content" className="pt-20">
           {/* Hero */}
-          <Section spacing="sm" className="pb-8 md:pb-10">
+          <Section spacing="sm" className="pb-8 md:pb-6">
             <Container>
               <div className="max-w-3xl">
                 {/* Breadcrumb */}
-                <nav className="mb-6" aria-label="Breadcrumb">
+                <nav className="mb-6 md:mb-4" aria-label="Breadcrumb">
                   <ol className="flex items-center gap-2 text-sm text-[hsl(var(--color-foreground-muted))]">
                     <li>
                       <a href="/" className="hover:text-[hsl(var(--color-foreground))] transition-colors">
@@ -107,9 +107,9 @@ export default function LabPage() {
           </Section>
 
           {/* Vision */}
-          <Section spacing="lg" className="pt-0">
+          <Section spacing="lg" className="pt-0 md:pt-0">
             <Container>
-              <div className="flex flex-col gap-14">
+              <div className="flex flex-col gap-14 md:gap-10">
                 <AnimatedSection>
                   <div className="flex flex-col gap-4">
                     <SectionLabel number="01" label="Vision" />
