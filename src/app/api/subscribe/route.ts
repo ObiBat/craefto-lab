@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerClient } from '@/lib/supabase';
 import { resend, EMAIL_FROM, isEmailEnabled } from '@/lib/resend';
-import { SubscriptionConfirmationEmail, getSubscriptionConfirmationSubject } from '@/emails/subscription-confirmation';
+import { SubscriptionWelcomeEmail, getSubscriptionWelcomeSubject } from '@/emails/subscription-welcome';
 
 // Rate limiting: simple in-memory store (use Redis in production)
 const rateLimitMap = new Map<string, { count: number; timestamp: number }>();
@@ -86,12 +86,12 @@ export async function POST(request: NextRequest) {
       }
 
       if (existing.status === 'unsubscribed') {
-        // Re-subscribe: update status back to pending and generate new token
+        // Re-subscribe: update status to confirmed immediately
         const { error: updateError } = await supabase
           .from('journal_subscribers')
           .update({
-            status: 'pending',
-            confirmation_token: crypto.randomUUID(),
+            status: 'confirmed',
+            confirmed_at: new Date().toISOString(),
             unsubscribed_at: null,
           })
           .eq('id', existing.id);
@@ -104,42 +104,46 @@ export async function POST(request: NextRequest) {
           );
         }
 
-        // Get updated record for confirmation email
-        const { data: updated } = await supabase
-          .from('journal_subscribers')
-          .select('confirmation_token')
-          .eq('id', existing.id)
-          .single();
-
-        if (updated && isEmailEnabled()) {
-          await sendConfirmationEmail(email, updated.confirmation_token);
+        // Send welcome email
+        if (isEmailEnabled()) {
+          await sendWelcomeEmail(email, existing.confirmation_token);
         }
 
         return NextResponse.json({
           success: true,
-          message: 'Please check your email to confirm your subscription.',
+          message: 'Welcome back! You\'re now subscribed.',
         });
       }
 
-      // Status is pending - resend confirmation email
-      if (isEmailEnabled()) {
-        await sendConfirmationEmail(email, existing.confirmation_token);
+      // Status is pending - confirm them now
+      const { error: updateError } = await supabase
+        .from('journal_subscribers')
+        .update({
+          status: 'confirmed',
+          confirmed_at: new Date().toISOString(),
+        })
+        .eq('id', existing.id);
+
+      if (updateError) {
+        console.error('Failed to confirm subscriber:', updateError);
       }
 
       return NextResponse.json({
         success: true,
-        message: 'Please check your email to confirm your subscription.',
+        message: 'You\'re now subscribed!',
+        alreadySubscribed: true,
       });
     }
 
-    // Create new subscriber
+    // Create new subscriber - confirmed immediately (single opt-in)
     const confirmationToken = crypto.randomUUID();
     const { error: insertError } = await supabase
       .from('journal_subscribers')
       .insert({
         email,
-        status: 'pending',
+        status: 'confirmed',
         confirmation_token: confirmationToken,
+        confirmed_at: new Date().toISOString(),
         source: body.source || 'journal_page',
       });
 
@@ -151,14 +155,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Send confirmation email
+    // Send welcome email immediately
     if (isEmailEnabled()) {
-      await sendConfirmationEmail(email, confirmationToken);
+      await sendWelcomeEmail(email, confirmationToken);
     }
 
     return NextResponse.json({
       success: true,
-      message: 'Please check your email to confirm your subscription.',
+      message: 'You\'re now subscribed!',
     });
   } catch (error) {
     console.error('Subscription error:', error);
@@ -169,19 +173,19 @@ export async function POST(request: NextRequest) {
   }
 }
 
-async function sendConfirmationEmail(email: string, token: string) {
+async function sendWelcomeEmail(email: string, token: string) {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://craefto.com';
-  const confirmationUrl = `${baseUrl}/api/subscribe/confirm?token=${token}`;
+  const unsubscribeUrl = `${baseUrl}/api/subscribe/unsubscribe?token=${token}`;
 
   try {
     await resend.emails.send({
       from: EMAIL_FROM,
       to: email,
-      subject: getSubscriptionConfirmationSubject(),
-      html: SubscriptionConfirmationEmail({ confirmationUrl }),
+      subject: getSubscriptionWelcomeSubject(),
+      html: SubscriptionWelcomeEmail({ unsubscribeUrl }),
     });
   } catch (error) {
-    console.error('Failed to send confirmation email:', error);
+    console.error('Failed to send welcome email:', error);
   }
 }
 

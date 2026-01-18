@@ -80,11 +80,10 @@ function SubscriptionFormInner() {
           </svg>
         </div>
         <p className="text-[hsl(var(--color-foreground))] font-medium mb-2">
-          Check your inbox
+          You're subscribed!
         </p>
         <p className="text-[hsl(var(--color-foreground-muted))] text-sm">
-          We sent you a confirmation email. Click the link to complete your
-          subscription.
+          Welcome to the Craefto Lab Journal. Check your inbox for a welcome email.
         </p>
       </div>
     );
