@@ -3,13 +3,10 @@
 import * as React from "react";
 import Link from "next/link";
 
-interface PipelineStatus {
-  queued: number;
-  processing: number;
-  awaitingApproval: number;
-  completed: number;
-  failed: number;
-  byStage: Record<string, number>;
+interface PipelineStats {
+  insights: { new: number; approved: number; total: number };
+  briefs: { draft: number; approved: number; total: number };
+  drafts: { draft: number; approved: number; published: number; total: number };
 }
 
 interface QueueItem {
@@ -22,16 +19,6 @@ interface QueueItem {
   created_at: string;
 }
 
-const stages = [
-  { key: "trend_scan", label: "Trend Scan", icon: "M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" },
-  { key: "synthesize", label: "Synthesize", icon: "M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" },
-  { key: "seo_optimize", label: "SEO", icon: "M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" },
-  { key: "write", label: "Write", icon: "M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" },
-  { key: "review", label: "Review", icon: "M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" },
-  { key: "human_approval", label: "Approve", icon: "M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" },
-  { key: "publish", label: "Publish", icon: "M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" },
-];
-
 function formatDate(dateString: string) {
   return new Date(dateString).toLocaleDateString("en-US", {
     month: "short",
@@ -42,44 +29,71 @@ function formatDate(dateString: string) {
 }
 
 export default function PipelineDashboard() {
-  const [status, setStatus] = React.useState<PipelineStatus | null>(null);
+  const [stats, setStats] = React.useState<PipelineStats | null>(null);
   const [awaitingApproval, setAwaitingApproval] = React.useState<QueueItem[]>([]);
   const [loading, setLoading] = React.useState(true);
   const [scanning, setScanning] = React.useState(false);
-  const [processing, setProcessing] = React.useState(false);
 
-  const fetchStatus = React.useCallback(async () => {
+  const fetchData = React.useCallback(async () => {
     try {
-      const res = await fetch("/api/admin/pipeline");
-      if (res.ok) {
-        const data = await res.json();
-        setStatus(data.status);
+      // Fetch pipeline status
+      const pipelineRes = await fetch("/api/admin/pipeline");
+      if (pipelineRes.ok) {
+        const data = await pipelineRes.json();
         setAwaitingApproval(data.awaitingApproval || []);
       }
+
+      // Fetch counts for each stage
+      const [insightsRes, briefsRes, draftsRes] = await Promise.all([
+        fetch("/api/admin/pipeline/insights"),
+        fetch("/api/admin/pipeline/briefs"),
+        fetch("/api/admin/pipeline/drafts"),
+      ]);
+
+      const insights = insightsRes.ok ? await insightsRes.json() : [];
+      const briefs = briefsRes.ok ? await briefsRes.json() : [];
+      const drafts = draftsRes.ok ? await draftsRes.json() : [];
+
+      setStats({
+        insights: {
+          new: insights.filter((i: { status: string }) => i.status === "new").length,
+          approved: insights.filter((i: { status: string }) => i.status === "approved").length,
+          total: insights.length,
+        },
+        briefs: {
+          draft: briefs.filter((b: { status: string }) => b.status === "draft").length,
+          approved: briefs.filter((b: { status: string }) => b.status === "approved").length,
+          total: briefs.length,
+        },
+        drafts: {
+          draft: drafts.filter((d: { status: string }) => d.status === "draft" || d.status === "reviewing").length,
+          approved: drafts.filter((d: { status: string }) => d.status === "approved").length,
+          published: drafts.filter((d: { status: string }) => d.status === "published").length,
+          total: drafts.length,
+        },
+      });
     } catch (error) {
-      console.error("Failed to fetch pipeline status:", error);
+      console.error("Failed to fetch pipeline data:", error);
     } finally {
       setLoading(false);
     }
   }, []);
 
   React.useEffect(() => {
-    fetchStatus();
-    const interval = setInterval(fetchStatus, 10000); // Refresh every 10s
+    fetchData();
+    const interval = setInterval(fetchData, 30000);
     return () => clearInterval(interval);
-  }, [fetchStatus]);
+  }, [fetchData]);
 
   const runScan = async () => {
     setScanning(true);
     try {
-      const res = await fetch("/api/admin/pipeline", {
+      await fetch("/api/admin/pipeline/insights", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action: "scan" }),
       });
-      if (res.ok) {
-        await fetchStatus();
-      }
+      await fetchData();
     } catch (error) {
       console.error("Failed to run scan:", error);
     } finally {
@@ -87,235 +101,267 @@ export default function PipelineDashboard() {
     }
   };
 
-  const processNext = async () => {
-    setProcessing(true);
-    try {
-      const res = await fetch("/api/admin/pipeline", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "process_next" }),
-      });
-      if (res.ok) {
-        await fetchStatus();
-      }
-    } catch (error) {
-      console.error("Failed to process:", error);
-    } finally {
-      setProcessing(false);
-    }
-  };
-
-  const approveItem = async (itemId: string) => {
-    try {
-      const res = await fetch("/api/admin/pipeline", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "approve", itemId }),
-      });
-      if (res.ok) {
-        await fetchStatus();
-      }
-    } catch (error) {
-      console.error("Failed to approve:", error);
-    }
-  };
-
   if (loading) {
     return (
-      <div className="animate-pulse space-y-6">
-        <div className="flex justify-between items-center">
-          <div className="h-8 w-48 bg-[#222] rounded" />
-          <div className="h-10 w-32 bg-[#222] rounded" />
-        </div>
-        <div className="grid grid-cols-5 gap-4">
-          {[...Array(5)].map((_, i) => (
-            <div key={i} className="h-24 bg-[#18181b] rounded-lg" />
+      <div className="animate-pulse space-y-8">
+        <div className="h-8 w-48 bg-[#222] rounded" />
+        <div className="grid grid-cols-3 gap-6">
+          {[...Array(3)].map((_, i) => (
+            <div key={i} className="h-48 bg-[#18181b] rounded-xl" />
           ))}
         </div>
       </div>
     );
   }
 
+  const needsAttention = (stats?.insights.new || 0) + (stats?.briefs.draft || 0) + (stats?.drafts.draft || 0);
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Header */}
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-start">
         <div>
-          <h1 className="text-2xl font-semibold mb-1">Content Pipeline</h1>
-          <p className="text-[#a1a1aa]">AI-powered content creation with human oversight</p>
-        </div>
-        <div className="flex gap-3">
-          <button
-            onClick={processNext}
-            disabled={processing || (status?.queued === 0)}
-            className="px-4 py-2.5 bg-[#27272a] text-white font-medium rounded-lg hover:bg-[#3f3f46] transition-colors disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center gap-2"
-          >
-            {processing ? (
-              <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-              </svg>
+          <h1 className="text-2xl font-semibold mb-2">Content Pipeline</h1>
+          <p className="text-[#71717a]">
+            {needsAttention > 0 ? (
+              <span className="text-yellow-400">{needsAttention} items need your attention</span>
             ) : (
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
+              "All caught up"
             )}
-            Process Next
-          </button>
-          <button
-            onClick={runScan}
-            disabled={scanning}
-            className="px-4 py-2.5 bg-[#22c55e] text-black font-medium rounded-lg hover:bg-[#16a34a] transition-colors disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center gap-2"
-          >
-            {scanning ? (
-              <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-              </svg>
-            ) : (
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            )}
-            Scan Trends
-          </button>
+          </p>
         </div>
+        <button
+          onClick={runScan}
+          disabled={scanning}
+          className="px-5 py-2.5 bg-[#22c55e] text-black font-medium rounded-lg hover:bg-[#16a34a] transition-colors disabled:opacity-50 inline-flex items-center gap-2"
+        >
+          {scanning ? (
+            <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+            </svg>
+          ) : (
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+          )}
+          {scanning ? "Scanning..." : "New Scan"}
+        </button>
       </div>
 
-      {/* Status Overview */}
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-        <div className="bg-[#18181b] border border-[#27272a] rounded-lg p-4">
-          <p className="text-3xl font-semibold text-white">{status?.queued || 0}</p>
-          <p className="text-sm text-[#a1a1aa]">Queued</p>
-        </div>
-        <div className="bg-[#18181b] border border-[#27272a] rounded-lg p-4">
-          <p className="text-3xl font-semibold text-yellow-400">{status?.processing || 0}</p>
-          <p className="text-sm text-[#a1a1aa]">Processing</p>
-        </div>
-        <div className="bg-[#18181b] border border-[#27272a] rounded-lg p-4">
-          <p className="text-3xl font-semibold text-blue-400">{status?.awaitingApproval || 0}</p>
-          <p className="text-sm text-[#a1a1aa]">Awaiting Approval</p>
-        </div>
-        <div className="bg-[#18181b] border border-[#27272a] rounded-lg p-4">
-          <p className="text-3xl font-semibold text-green-400">{status?.completed || 0}</p>
-          <p className="text-sm text-[#a1a1aa]">Completed</p>
-        </div>
-        <div className="bg-[#18181b] border border-[#27272a] rounded-lg p-4">
-          <p className="text-3xl font-semibold text-red-400">{status?.failed || 0}</p>
-          <p className="text-sm text-[#a1a1aa]">Failed</p>
-        </div>
-      </div>
-
-      {/* Pipeline Stages */}
-      <div className="bg-[#18181b] border border-[#27272a] rounded-xl p-6">
-        <h2 className="text-lg font-semibold mb-4">Pipeline Stages</h2>
-        <div className="flex items-center justify-between gap-2 overflow-x-auto pb-2">
-          {stages.map((stage, index) => (
-            <React.Fragment key={stage.key}>
-              <div className="flex flex-col items-center min-w-[80px]">
-                <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
-                  (status?.byStage[stage.key] || 0) > 0
-                    ? "bg-[#22c55e]/20 text-[#22c55e]"
-                    : "bg-[#27272a] text-[#71717a]"
-                }`}>
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={stage.icon} />
-                  </svg>
-                </div>
-                <span className="text-xs text-[#a1a1aa] mt-2">{stage.label}</span>
-                <span className="text-sm font-medium text-white">{status?.byStage[stage.key] || 0}</span>
-              </div>
-              {index < stages.length - 1 && (
-                <div className="flex-1 h-px bg-[#27272a] min-w-[20px]" />
-              )}
-            </React.Fragment>
-          ))}
-        </div>
-      </div>
-
-      {/* Quick Links */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      {/* Pipeline Flow */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Insights */}
         <Link
           href="/admin/pipeline/insights"
-          className="bg-[#18181b] border border-[#27272a] rounded-xl p-6 hover:border-[#22c55e]/50 transition-colors group"
+          className="group bg-[#18181b] border border-[#27272a] rounded-xl p-6 hover:border-purple-500/50 transition-all"
         >
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-purple-500/20 text-purple-400 rounded-lg flex items-center justify-center">
+          <div className="flex items-center justify-between mb-6">
+            <div className="w-12 h-12 bg-purple-500/20 text-purple-400 rounded-xl flex items-center justify-center">
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
               </svg>
             </div>
-            <div>
-              <h3 className="font-semibold text-white group-hover:text-[#22c55e] transition-colors">Insights</h3>
-              <p className="text-sm text-[#a1a1aa]">Review discovered content opportunities</p>
+            <svg className="w-5 h-5 text-[#71717a] group-hover:text-purple-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </div>
+          <h3 className="text-lg font-semibold text-white mb-1">Insights</h3>
+          <p className="text-sm text-[#71717a] mb-4">Content opportunities discovered</p>
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-[#a1a1aa]">New to review</span>
+              <span className={`text-sm font-medium ${(stats?.insights.new || 0) > 0 ? "text-yellow-400" : "text-[#71717a]"}`}>
+                {stats?.insights.new || 0}
+              </span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-[#a1a1aa]">Ready for brief</span>
+              <span className={`text-sm font-medium ${(stats?.insights.approved || 0) > 0 ? "text-green-400" : "text-[#71717a]"}`}>
+                {stats?.insights.approved || 0}
+              </span>
             </div>
           </div>
         </Link>
+
+        {/* Briefs */}
         <Link
           href="/admin/pipeline/briefs"
-          className="bg-[#18181b] border border-[#27272a] rounded-xl p-6 hover:border-[#22c55e]/50 transition-colors group"
+          className="group bg-[#18181b] border border-[#27272a] rounded-xl p-6 hover:border-blue-500/50 transition-all"
         >
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-blue-500/20 text-blue-400 rounded-lg flex items-center justify-center">
+          <div className="flex items-center justify-between mb-6">
+            <div className="w-12 h-12 bg-blue-500/20 text-blue-400 rounded-xl flex items-center justify-center">
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
             </div>
-            <div>
-              <h3 className="font-semibold text-white group-hover:text-[#22c55e] transition-colors">Briefs</h3>
-              <p className="text-sm text-[#a1a1aa]">Manage content briefs and outlines</p>
+            <svg className="w-5 h-5 text-[#71717a] group-hover:text-blue-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </div>
+          <h3 className="text-lg font-semibold text-white mb-1">Briefs</h3>
+          <p className="text-sm text-[#71717a] mb-4">Content outlines and plans</p>
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-[#a1a1aa]">Draft to review</span>
+              <span className={`text-sm font-medium ${(stats?.briefs.draft || 0) > 0 ? "text-yellow-400" : "text-[#71717a]"}`}>
+                {stats?.briefs.draft || 0}
+              </span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-[#a1a1aa]">Ready to write</span>
+              <span className={`text-sm font-medium ${(stats?.briefs.approved || 0) > 0 ? "text-green-400" : "text-[#71717a]"}`}>
+                {stats?.briefs.approved || 0}
+              </span>
             </div>
           </div>
         </Link>
+
+        {/* Drafts */}
         <Link
           href="/admin/pipeline/drafts"
-          className="bg-[#18181b] border border-[#27272a] rounded-xl p-6 hover:border-[#22c55e]/50 transition-colors group"
+          className="group bg-[#18181b] border border-[#27272a] rounded-xl p-6 hover:border-green-500/50 transition-all"
         >
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-green-500/20 text-green-400 rounded-lg flex items-center justify-center">
+          <div className="flex items-center justify-between mb-6">
+            <div className="w-12 h-12 bg-green-500/20 text-green-400 rounded-xl flex items-center justify-center">
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
               </svg>
             </div>
-            <div>
-              <h3 className="font-semibold text-white group-hover:text-[#22c55e] transition-colors">Drafts</h3>
-              <p className="text-sm text-[#a1a1aa]">Review and publish content drafts</p>
+            <svg className="w-5 h-5 text-[#71717a] group-hover:text-green-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </div>
+          <h3 className="text-lg font-semibold text-white mb-1">Drafts</h3>
+          <p className="text-sm text-[#71717a] mb-4">Written content ready for review</p>
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-[#a1a1aa]">In review</span>
+              <span className={`text-sm font-medium ${(stats?.drafts.draft || 0) > 0 ? "text-yellow-400" : "text-[#71717a]"}`}>
+                {stats?.drafts.draft || 0}
+              </span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-[#a1a1aa]">Ready to publish</span>
+              <span className={`text-sm font-medium ${(stats?.drafts.approved || 0) > 0 ? "text-green-400" : "text-[#71717a]"}`}>
+                {stats?.drafts.approved || 0}
+              </span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-[#a1a1aa]">Published</span>
+              <span className="text-sm font-medium text-[#71717a]">{stats?.drafts.published || 0}</span>
             </div>
           </div>
         </Link>
       </div>
 
-      {/* Awaiting Approval */}
+      {/* Workflow Guide */}
+      <div className="bg-[#18181b] border border-[#27272a] rounded-xl p-6">
+        <h2 className="text-sm font-medium text-[#71717a] uppercase tracking-wider mb-4">Workflow</h2>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-full bg-purple-500/20 text-purple-400 flex items-center justify-center text-sm font-medium">1</div>
+            <span className="text-sm text-[#a1a1aa]">Scan for insights</span>
+          </div>
+          <svg className="w-4 h-4 text-[#3f3f46]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-full bg-purple-500/20 text-purple-400 flex items-center justify-center text-sm font-medium">2</div>
+            <span className="text-sm text-[#a1a1aa]">Approve insight</span>
+          </div>
+          <svg className="w-4 h-4 text-[#3f3f46]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center text-sm font-medium">3</div>
+            <span className="text-sm text-[#a1a1aa]">Create brief</span>
+          </div>
+          <svg className="w-4 h-4 text-[#3f3f46]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center text-sm font-medium">4</div>
+            <span className="text-sm text-[#a1a1aa]">Write draft</span>
+          </div>
+          <svg className="w-4 h-4 text-[#3f3f46]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-full bg-green-500/20 text-green-400 flex items-center justify-center text-sm font-medium">5</div>
+            <span className="text-sm text-[#a1a1aa]">Publish</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Awaiting Approval Queue */}
       {awaitingApproval.length > 0 && (
         <div className="bg-[#18181b] border border-[#27272a] rounded-xl overflow-hidden">
-          <div className="px-6 py-4 border-b border-[#27272a]">
-            <h2 className="text-lg font-semibold">Awaiting Your Approval</h2>
+          <div className="px-6 py-4 border-b border-[#27272a] flex items-center justify-between">
+            <h2 className="font-semibold">Awaiting Approval</h2>
+            <span className="px-2 py-0.5 bg-yellow-500/20 text-yellow-400 text-xs font-medium rounded">
+              {awaitingApproval.length}
+            </span>
           </div>
           <div className="divide-y divide-[#27272a]">
-            {awaitingApproval.map((item) => (
-              <div key={item.id} className="px-6 py-4 flex items-center justify-between">
-                <div>
-                  <p className="text-white font-medium capitalize">{item.item_type}</p>
-                  <p className="text-sm text-[#a1a1aa]">Stage: {item.current_stage.replace("_", " ")}</p>
-                  <p className="text-xs text-[#71717a]">{formatDate(item.created_at)}</p>
+            {awaitingApproval.slice(0, 5).map((item) => (
+              <div key={item.id} className="px-6 py-4 flex items-center justify-between hover:bg-[#1f1f23] transition-colors">
+                <div className="flex items-center gap-4">
+                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                    item.item_type === "insight" ? "bg-purple-500/20 text-purple-400" :
+                    item.item_type === "brief" ? "bg-blue-500/20 text-blue-400" :
+                    "bg-green-500/20 text-green-400"
+                  }`}>
+                    {item.item_type === "insight" ? (
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                      </svg>
+                    ) : item.item_type === "brief" ? (
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
+                    ) : (
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                      </svg>
+                    )}
+                  </div>
+                  <div>
+                    <p className="text-white font-medium capitalize">{item.item_type}</p>
+                    <p className="text-xs text-[#71717a]">{formatDate(item.created_at)}</p>
+                  </div>
                 </div>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => approveItem(item.id)}
-                    className="px-4 py-2 bg-[#22c55e] text-black text-sm font-medium rounded-lg hover:bg-[#16a34a] transition-colors"
-                  >
-                    Approve
-                  </button>
-                  <button
-                    className="px-4 py-2 bg-[#27272a] text-white text-sm font-medium rounded-lg hover:bg-[#3f3f46] transition-colors"
-                  >
-                    Review
-                  </button>
-                </div>
+                <Link
+                  href={`/admin/pipeline/${item.item_type}s`}
+                  className="px-4 py-2 bg-[#27272a] text-white text-sm font-medium rounded-lg hover:bg-[#3f3f46] transition-colors"
+                >
+                  Review
+                </Link>
               </div>
             ))}
           </div>
+        </div>
+      )}
+
+      {/* Empty State */}
+      {!loading && !stats?.insights.total && !stats?.briefs.total && !stats?.drafts.total && (
+        <div className="bg-[#18181b] border border-[#27272a] rounded-xl p-12 text-center">
+          <div className="w-16 h-16 bg-[#27272a] rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg className="w-8 h-8 text-[#71717a]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+            </svg>
+          </div>
+          <h3 className="text-lg font-semibold text-white mb-2">Start your content pipeline</h3>
+          <p className="text-[#71717a] mb-6 max-w-md mx-auto">
+            Click "New Scan" to discover content opportunities based on trends and your audience interests.
+          </p>
+          <button
+            onClick={runScan}
+            disabled={scanning}
+            className="px-6 py-3 bg-[#22c55e] text-black font-medium rounded-lg hover:bg-[#16a34a] transition-colors disabled:opacity-50"
+          >
+            {scanning ? "Scanning..." : "Start First Scan"}
+          </button>
         </div>
       )}
     </div>

@@ -21,42 +21,53 @@ interface Brief {
   created_at: string;
 }
 
+interface Stats {
+  total: number;
+  draft: number;
+  approved: number;
+  in_progress: number;
+  completed: number;
+  rejected: number;
+}
+
 function formatDate(dateString: string) {
   return new Date(dateString).toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",
-    year: "numeric",
   });
 }
 
-function getStatusStyles(status: string) {
-  const styles: Record<string, string> = {
-    draft: "bg-[#27272a] text-[#a1a1aa]",
-    approved: "bg-green-500/20 text-green-400",
-    rejected: "bg-red-500/20 text-red-400",
-    in_progress: "bg-blue-500/20 text-blue-400",
-    completed: "bg-purple-500/20 text-purple-400",
+function getStatusConfig(status: string) {
+  const config: Record<string, { bg: string; text: string; label: string }> = {
+    draft: { bg: "bg-[#27272a]", text: "text-[#a1a1aa]", label: "Draft" },
+    approved: { bg: "bg-green-500/15", text: "text-green-400", label: "Approved" },
+    rejected: { bg: "bg-red-500/15", text: "text-red-400", label: "Rejected" },
+    in_progress: { bg: "bg-blue-500/15", text: "text-blue-400", label: "In Progress" },
+    completed: { bg: "bg-purple-500/15", text: "text-purple-400", label: "Completed" },
   };
-  return styles[status] || styles.draft;
+  return config[status] || config.draft;
 }
 
-function getContentTypeLabel(type: string | null) {
-  const labels: Record<string, string> = {
-    article: "Article",
-    deep_dive: "Deep Dive",
-    case_study: "Case Study",
-    tutorial: "Tutorial",
-    opinion: "Opinion",
+function getContentTypeIcon(type: string | null) {
+  const icons: Record<string, { icon: string; label: string }> = {
+    article: { icon: "📝", label: "Article" },
+    deep_dive: { icon: "🔬", label: "Deep Dive" },
+    case_study: { icon: "📊", label: "Case Study" },
+    tutorial: { icon: "🎓", label: "Tutorial" },
+    opinion: { icon: "💭", label: "Opinion" },
   };
-  return type ? labels[type] || type : "Unknown";
+  return type ? icons[type] || { icon: "📄", label: type } : { icon: "📄", label: "Unknown" };
 }
 
 export default function BriefsPage() {
   const [briefs, setBriefs] = React.useState<Brief[]>([]);
+  const [stats, setStats] = React.useState<Stats>({ total: 0, draft: 0, approved: 0, in_progress: 0, completed: 0, rejected: 0 });
   const [loading, setLoading] = React.useState(true);
   const [statusFilter, setStatusFilter] = React.useState<string>("all");
   const [selectedBrief, setSelectedBrief] = React.useState<Brief | null>(null);
   const [actionLoading, setActionLoading] = React.useState<string | null>(null);
+  const [revisionFeedback, setRevisionFeedback] = React.useState("");
+  const [showRevisionModal, setShowRevisionModal] = React.useState(false);
 
   const fetchBriefs = React.useCallback(async () => {
     try {
@@ -67,6 +78,21 @@ export default function BriefsPage() {
       if (res.ok) {
         const data = await res.json();
         setBriefs(data);
+
+        // Calculate stats
+        const allRes = await fetch("/api/admin/pipeline/briefs");
+        if (allRes.ok) {
+          const allData = await allRes.json();
+          const newStats: Stats = { total: 0, draft: 0, approved: 0, in_progress: 0, completed: 0, rejected: 0 };
+          allData.forEach((brief: Brief) => {
+            newStats.total++;
+            const status = brief.status as keyof Omit<Stats, 'total'>;
+            if (status in newStats) {
+              newStats[status]++;
+            }
+          });
+          setStats(newStats);
+        }
       }
     } catch (error) {
       console.error("Failed to fetch briefs:", error);
@@ -96,6 +122,8 @@ export default function BriefsPage() {
       if (res.ok) {
         await fetchBriefs();
         setSelectedBrief(null);
+        setShowRevisionModal(false);
+        setRevisionFeedback("");
       }
     } catch (error) {
       console.error(`Failed to ${action}:`, error);
@@ -104,17 +132,24 @@ export default function BriefsPage() {
     }
   };
 
-  const statuses = ["all", "draft", "approved", "in_progress", "completed", "rejected"];
+  const handleRequestRevision = () => {
+    if (selectedBrief && revisionFeedback.trim()) {
+      handleAction("reject", selectedBrief.id, { feedback: revisionFeedback });
+    }
+  };
 
   if (loading) {
     return (
       <div className="animate-pulse space-y-6">
-        <div className="flex justify-between items-center">
-          <div className="h-8 w-32 bg-[#222] rounded" />
+        <div className="h-8 w-48 bg-[#222] rounded" />
+        <div className="grid grid-cols-4 gap-4">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="h-20 bg-[#18181b] rounded-xl" />
+          ))}
         </div>
-        <div className="space-y-2">
-          {[...Array(5)].map((_, i) => (
-            <div key={i} className="h-32 bg-[#18181b] rounded-lg" />
+        <div className="space-y-3">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="h-36 bg-[#18181b] rounded-xl" />
           ))}
         </div>
       </div>
@@ -125,24 +160,44 @@ export default function BriefsPage() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <div className="flex items-center gap-2 text-sm text-[#a1a1aa] mb-2">
-          <Link href="/admin/pipeline" className="hover:text-white">Pipeline</Link>
-          <span>/</span>
+        <div className="flex items-center gap-2 text-sm text-[#71717a] mb-1">
+          <Link href="/admin/pipeline" className="hover:text-white transition-colors">Pipeline</Link>
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5l7 7-7 7" />
+          </svg>
           <span className="text-white">Briefs</span>
         </div>
         <h1 className="text-2xl font-semibold">Content Briefs</h1>
+        <p className="text-[#71717a] text-sm mt-1">Structured outlines ready for writing</p>
+      </div>
+
+      {/* Stats */}
+      <div className="grid grid-cols-2 md:grid-cols-6 gap-3">
+        {[
+          { label: "Total", value: stats.total, color: "text-white" },
+          { label: "Draft", value: stats.draft, color: "text-[#a1a1aa]" },
+          { label: "Approved", value: stats.approved, color: "text-green-400" },
+          { label: "In Progress", value: stats.in_progress, color: "text-blue-400" },
+          { label: "Completed", value: stats.completed, color: "text-purple-400" },
+          { label: "Rejected", value: stats.rejected, color: "text-red-400" },
+        ].map((stat) => (
+          <div key={stat.label} className="bg-[#18181b] border border-[#27272a] rounded-xl p-4">
+            <p className="text-[#71717a] text-xs mb-1">{stat.label}</p>
+            <p className={`text-2xl font-semibold ${stat.color}`}>{stat.value}</p>
+          </div>
+        ))}
       </div>
 
       {/* Filters */}
-      <div className="flex gap-2 flex-wrap">
-        {statuses.map((status) => (
+      <div className="flex gap-2 border-b border-[#27272a] pb-4 overflow-x-auto">
+        {["all", "draft", "approved", "in_progress", "completed", "rejected"].map((status) => (
           <button
             key={status}
             onClick={() => setStatusFilter(status)}
-            className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
               statusFilter === status
-                ? "bg-[#22c55e] text-black"
-                : "bg-[#27272a] text-[#a1a1aa] hover:text-white"
+                ? "bg-[#27272a] text-white"
+                : "text-[#71717a] hover:text-white"
             }`}
           >
             {status === "all" ? "All" : status.replace("_", " ").replace(/\b\w/g, (c) => c.toUpperCase())}
@@ -150,107 +205,153 @@ export default function BriefsPage() {
         ))}
       </div>
 
-      {/* Briefs Grid */}
-      <div className="grid gap-4">
+      {/* Briefs List */}
+      <div className="space-y-3">
         {briefs.length === 0 ? (
           <div className="bg-[#18181b] border border-[#27272a] rounded-xl p-12 text-center">
-            <p className="text-lg text-[#a1a1aa] mb-2">No briefs found</p>
-            <p className="text-sm text-[#71717a]">Briefs are created from approved insights</p>
+            <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-[#27272a] flex items-center justify-center">
+              <svg className="w-6 h-6 text-[#71717a]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+            </div>
+            <p className="text-white font-medium mb-2">No briefs yet</p>
+            <p className="text-[#71717a] text-sm">Briefs are created from approved insights</p>
           </div>
         ) : (
-          briefs.map((brief) => (
-            <div
-              key={brief.id}
-              className="bg-[#18181b] border border-[#27272a] rounded-xl p-6 hover:border-[#3f3f46] transition-colors"
-            >
-              <div className="flex justify-between items-start gap-4">
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className={`px-2 py-0.5 rounded text-xs font-medium ${getStatusStyles(brief.status)}`}>
-                      {brief.status.replace("_", " ")}
-                    </span>
-                    <span className="px-2 py-0.5 rounded text-xs font-medium bg-[#27272a] text-[#a1a1aa]">
-                      {getContentTypeLabel(brief.content_type)}
-                    </span>
-                    {brief.target_word_count && (
-                      <span className="text-xs text-[#71717a]">
-                        ~{brief.target_word_count} words
+          briefs.map((brief) => {
+            const statusConfig = getStatusConfig(brief.status);
+            const contentType = getContentTypeIcon(brief.content_type);
+
+            return (
+              <div
+                key={brief.id}
+                className="bg-[#18181b] border border-[#27272a] rounded-xl p-5 hover:border-[#3f3f46] transition-colors"
+              >
+                <div className="flex justify-between items-start gap-4">
+                  <div className="flex-1 min-w-0">
+                    {/* Tags Row */}
+                    <div className="flex items-center gap-2 mb-3 flex-wrap">
+                      <span className={`px-2.5 py-1 rounded-md text-xs font-medium ${statusConfig.bg} ${statusConfig.text}`}>
+                        {statusConfig.label}
                       </span>
-                    )}
-                  </div>
-                  <h3 className="text-lg font-semibold text-white mb-2">{brief.working_title}</h3>
-                  <p className="text-[#a1a1aa] text-sm mb-3">{brief.angle}</p>
-                  {brief.thesis_statement && (
-                    <p className="text-sm text-[#71717a] italic mb-3">&ldquo;{brief.thesis_statement}&rdquo;</p>
-                  )}
-                  <div className="flex flex-wrap gap-1 mb-3">
-                    {brief.primary_keyword && (
-                      <span className="px-2 py-0.5 bg-[#22c55e]/20 text-[#22c55e] rounded text-xs">
-                        {brief.primary_keyword}
+                      <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs bg-[#27272a] text-[#a1a1aa]">
+                        <span>{contentType.icon}</span>
+                        {contentType.label}
                       </span>
-                    )}
-                    {brief.secondary_keywords.slice(0, 4).map((keyword, i) => (
-                      <span key={i} className="px-2 py-0.5 bg-[#27272a] rounded text-xs text-[#a1a1aa]">
-                        {keyword}
-                      </span>
-                    ))}
+                      {brief.target_word_count && (
+                        <span className="text-xs text-[#52525b]">~{brief.target_word_count} words</span>
+                      )}
+                    </div>
+
+                    {/* Title & Angle */}
+                    <h3 className="text-base font-medium text-white mb-2">{brief.working_title}</h3>
+                    <p className="text-[#a1a1aa] text-sm mb-3 line-clamp-2">{brief.angle}</p>
+
+                    {/* Keywords */}
+                    <div className="flex flex-wrap gap-1.5 mb-3">
+                      {brief.primary_keyword && (
+                        <span className="px-2.5 py-1 bg-[#22c55e]/15 text-[#22c55e] rounded-md text-xs font-medium">
+                          {brief.primary_keyword}
+                        </span>
+                      )}
+                      {brief.secondary_keywords.slice(0, 3).map((keyword, i) => (
+                        <span key={i} className="px-2 py-0.5 bg-[#0f0f11] rounded text-xs text-[#71717a]">
+                          {keyword}
+                        </span>
+                      ))}
+                      {brief.secondary_keywords.length > 3 && (
+                        <span className="text-xs text-[#52525b]">+{brief.secondary_keywords.length - 3} more</span>
+                      )}
+                    </div>
+
+                    {/* Meta */}
+                    <div className="flex items-center gap-4 text-xs text-[#52525b]">
+                      {brief.target_audience && (
+                        <span className="flex items-center gap-1">
+                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                          </svg>
+                          {brief.target_audience}
+                        </span>
+                      )}
+                      <span>{formatDate(brief.created_at)}</span>
+                      <span>{brief.outline.length} sections</span>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-4 text-xs text-[#71717a]">
-                    {brief.target_audience && <span>Audience: {brief.target_audience}</span>}
-                    <span>{formatDate(brief.created_at)}</span>
-                  </div>
-                </div>
-                <div className="flex flex-col gap-2">
-                  <button
-                    onClick={() => setSelectedBrief(brief)}
-                    className="px-3 py-1.5 bg-[#27272a] text-white text-sm font-medium rounded-lg hover:bg-[#3f3f46] transition-colors"
-                  >
-                    View Details
-                  </button>
-                  {brief.status === "draft" && (
-                    <>
-                      <button
-                        onClick={() => handleAction("seo_optimize", brief.id)}
-                        disabled={actionLoading === brief.id}
-                        className="px-3 py-1.5 bg-purple-500/20 text-purple-400 text-sm font-medium rounded-lg hover:bg-purple-500/30 transition-colors disabled:opacity-50"
-                      >
-                        SEO Optimize
-                      </button>
-                      <button
-                        onClick={() => handleAction("approve", brief.id)}
-                        disabled={actionLoading === brief.id}
-                        className="px-3 py-1.5 bg-[#22c55e] text-black text-sm font-medium rounded-lg hover:bg-[#16a34a] transition-colors disabled:opacity-50"
-                      >
-                        Approve
-                      </button>
-                    </>
-                  )}
-                  {brief.status === "approved" && (
+
+                  {/* Actions */}
+                  <div className="flex flex-col gap-2 flex-shrink-0">
                     <button
-                      onClick={() => handleAction("write", brief.id)}
-                      disabled={actionLoading === brief.id}
-                      className="px-3 py-1.5 bg-blue-500 text-white text-sm font-medium rounded-lg hover:bg-blue-600 transition-colors disabled:opacity-50"
+                      onClick={() => setSelectedBrief(brief)}
+                      className="px-4 py-2 bg-[#27272a] text-white text-sm font-medium rounded-lg hover:bg-[#3f3f46] transition-colors"
                     >
-                      Generate Draft
+                      View
                     </button>
-                  )}
+                    {brief.status === "draft" && (
+                      <>
+                        <button
+                          onClick={() => handleAction("seo_optimize", brief.id)}
+                          disabled={actionLoading === brief.id}
+                          className="px-4 py-2 bg-purple-500/15 text-purple-400 text-sm font-medium rounded-lg hover:bg-purple-500/25 transition-colors disabled:opacity-50"
+                        >
+                          SEO Optimize
+                        </button>
+                        <button
+                          onClick={() => handleAction("approve", brief.id)}
+                          disabled={actionLoading === brief.id}
+                          className="px-4 py-2 bg-[#22c55e] text-black text-sm font-medium rounded-lg hover:bg-[#16a34a] transition-colors disabled:opacity-50"
+                        >
+                          Approve
+                        </button>
+                      </>
+                    )}
+                    {brief.status === "approved" && (
+                      <button
+                        onClick={() => handleAction("write", brief.id)}
+                        disabled={actionLoading === brief.id}
+                        className="px-4 py-2 bg-blue-500 text-white text-sm font-medium rounded-lg hover:bg-blue-600 transition-colors disabled:opacity-50"
+                      >
+                        Generate Draft
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))
+            );
+          })
         )}
       </div>
 
       {/* Detail Modal */}
-      {selectedBrief && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-[#18181b] border border-[#27272a] rounded-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6 border-b border-[#27272a] sticky top-0 bg-[#18181b]">
-              <div className="flex items-center justify-between">
-                <h2 className="text-xl font-semibold">{selectedBrief.working_title}</h2>
+      {selectedBrief && !showRevisionModal && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
+          <div className="bg-[#18181b] border border-[#27272a] rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+            {/* Header */}
+            <div className="p-6 border-b border-[#27272a]">
+              <div className="flex items-start justify-between">
+                <div className="flex-1 min-w-0 pr-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    {(() => {
+                      const cfg = getStatusConfig(selectedBrief.status);
+                      const ct = getContentTypeIcon(selectedBrief.content_type);
+                      return (
+                        <>
+                          <span className={`px-2 py-0.5 rounded text-xs font-medium ${cfg.bg} ${cfg.text}`}>
+                            {cfg.label}
+                          </span>
+                          <span className="flex items-center gap-1 px-2 py-0.5 rounded text-xs bg-[#27272a] text-[#a1a1aa]">
+                            <span>{ct.icon}</span>
+                            {ct.label}
+                          </span>
+                        </>
+                      );
+                    })()}
+                  </div>
+                  <h2 className="text-xl font-semibold text-white">{selectedBrief.working_title}</h2>
+                </div>
                 <button
                   onClick={() => setSelectedBrief(null)}
-                  className="p-2 text-[#a1a1aa] hover:text-white hover:bg-[#27272a] rounded-lg transition-colors"
+                  className="p-2 text-[#71717a] hover:text-white hover:bg-[#27272a] rounded-lg transition-colors flex-shrink-0"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -258,72 +359,95 @@ export default function BriefsPage() {
                 </button>
               </div>
             </div>
-            <div className="p-6 space-y-6">
-              <div className="grid grid-cols-2 gap-4">
+
+            {/* Content */}
+            <div className="flex-1 overflow-y-auto p-6 space-y-6">
+              {/* Meta Grid */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 bg-[#0f0f11] rounded-xl">
                 <div>
-                  <p className="text-sm text-[#71717a] mb-1">Content Type</p>
-                  <p className="text-white">{getContentTypeLabel(selectedBrief.content_type)}</p>
+                  <p className="text-xs text-[#52525b] mb-1">Audience</p>
+                  <p className="text-sm text-white">{selectedBrief.target_audience || "Not specified"}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-[#71717a] mb-1">Target Audience</p>
-                  <p className="text-white">{selectedBrief.target_audience || "Not specified"}</p>
+                  <p className="text-xs text-[#52525b] mb-1">Word Count</p>
+                  <p className="text-sm text-white">{selectedBrief.target_word_count ? `~${selectedBrief.target_word_count}` : "Not set"}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-[#71717a] mb-1">Word Count</p>
-                  <p className="text-white">{selectedBrief.target_word_count || "Not specified"}</p>
+                  <p className="text-xs text-[#52525b] mb-1">Primary Keyword</p>
+                  <p className="text-sm text-[#22c55e] font-medium">{selectedBrief.primary_keyword || "Not set"}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-[#71717a] mb-1">Primary Keyword</p>
-                  <p className="text-[#22c55e]">{selectedBrief.primary_keyword || "Not specified"}</p>
+                  <p className="text-xs text-[#52525b] mb-1">Sections</p>
+                  <p className="text-sm text-white">{selectedBrief.outline.length}</p>
                 </div>
               </div>
 
+              {/* Angle */}
               <div>
-                <p className="text-sm text-[#71717a] mb-1">Angle</p>
-                <p className="text-[#a1a1aa]">{selectedBrief.angle}</p>
+                <h3 className="text-sm font-medium text-[#71717a] mb-2">Angle</h3>
+                <p className="text-[#e4e4e7]">{selectedBrief.angle}</p>
               </div>
 
+              {/* Thesis */}
               {selectedBrief.thesis_statement && (
-                <div>
-                  <p className="text-sm text-[#71717a] mb-1">Thesis Statement</p>
-                  <p className="text-[#a1a1aa] italic">&ldquo;{selectedBrief.thesis_statement}&rdquo;</p>
+                <div className="p-4 bg-[#22c55e]/5 border border-[#22c55e]/20 rounded-xl">
+                  <h3 className="text-xs font-medium text-[#22c55e] mb-2">Thesis Statement</h3>
+                  <p className="text-[#e4e4e7] italic">&ldquo;{selectedBrief.thesis_statement}&rdquo;</p>
                 </div>
               )}
 
+              {/* Outline */}
               <div>
-                <p className="text-sm text-[#71717a] mb-2">Outline</p>
-                <div className="space-y-4">
+                <h3 className="text-sm font-medium text-[#71717a] mb-3">Outline</h3>
+                <div className="space-y-3">
                   {selectedBrief.outline.map((section, i) => (
-                    <div key={i} className="bg-[#0f0f11] rounded-lg p-4">
-                      <h4 className="font-medium text-white mb-2">{section.heading}</h4>
-                      <ul className="list-disc list-inside text-sm text-[#a1a1aa] space-y-1">
-                        {section.points.map((point, j) => (
-                          <li key={j}>{point}</li>
-                        ))}
-                      </ul>
-                      {section.notes && (
-                        <p className="text-xs text-[#71717a] mt-2 italic">Note: {section.notes}</p>
-                      )}
+                    <div key={i} className="p-4 bg-[#0f0f11] rounded-xl border border-[#27272a]">
+                      <div className="flex items-start gap-3">
+                        <span className="w-6 h-6 rounded-full bg-[#27272a] flex items-center justify-center text-xs text-[#71717a] flex-shrink-0">
+                          {i + 1}
+                        </span>
+                        <div className="flex-1">
+                          <h4 className="font-medium text-white mb-2">{section.heading}</h4>
+                          <ul className="space-y-1.5">
+                            {section.points.map((point, j) => (
+                              <li key={j} className="flex gap-2 text-sm text-[#a1a1aa]">
+                                <span className="text-[#52525b]">•</span>
+                                {point}
+                              </li>
+                            ))}
+                          </ul>
+                          {section.notes && (
+                            <p className="mt-2 text-xs text-[#52525b] italic">Note: {section.notes}</p>
+                          )}
+                        </div>
+                      </div>
                     </div>
                   ))}
                 </div>
               </div>
 
-              <div>
-                <p className="text-sm text-[#71717a] mb-2">Key Takeaways</p>
-                <ul className="list-disc list-inside text-[#a1a1aa] space-y-1">
-                  {selectedBrief.key_takeaways.map((takeaway, i) => (
-                    <li key={i}>{takeaway}</li>
-                  ))}
-                </ul>
-              </div>
+              {/* Key Takeaways */}
+              {selectedBrief.key_takeaways.length > 0 && (
+                <div>
+                  <h3 className="text-sm font-medium text-[#71717a] mb-2">Key Takeaways</h3>
+                  <ul className="space-y-2">
+                    {selectedBrief.key_takeaways.map((takeaway, i) => (
+                      <li key={i} className="flex gap-3 text-[#a1a1aa]">
+                        <span className="text-[#22c55e] flex-shrink-0">✓</span>
+                        {takeaway}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
 
+              {/* Secondary Keywords */}
               {selectedBrief.secondary_keywords.length > 0 && (
                 <div>
-                  <p className="text-sm text-[#71717a] mb-2">Secondary Keywords</p>
-                  <div className="flex flex-wrap gap-1">
+                  <h3 className="text-sm font-medium text-[#71717a] mb-2">Secondary Keywords</h3>
+                  <div className="flex flex-wrap gap-2">
                     {selectedBrief.secondary_keywords.map((keyword, i) => (
-                      <span key={i} className="px-2 py-0.5 bg-[#27272a] rounded text-xs text-[#a1a1aa]">
+                      <span key={i} className="px-3 py-1.5 bg-[#27272a] rounded-lg text-sm text-[#a1a1aa]">
                         {keyword}
                       </span>
                     ))}
@@ -331,35 +455,79 @@ export default function BriefsPage() {
                 </div>
               )}
             </div>
-            <div className="p-6 border-t border-[#27272a] flex justify-end gap-3 sticky bottom-0 bg-[#18181b]">
+
+            {/* Footer */}
+            <div className="p-6 border-t border-[#27272a] flex justify-end gap-3 bg-[#18181b]">
               <button
                 onClick={() => setSelectedBrief(null)}
-                className="px-4 py-2 bg-[#27272a] text-white font-medium rounded-lg hover:bg-[#3f3f46] transition-colors"
+                className="px-4 py-2.5 bg-[#27272a] text-white font-medium rounded-lg hover:bg-[#3f3f46] transition-colors"
               >
                 Close
               </button>
               {selectedBrief.status === "draft" && (
                 <>
                   <button
-                    onClick={() => {
-                      const feedback = prompt("Feedback for revisions:");
-                      if (feedback) {
-                        handleAction("reject", selectedBrief.id, { feedback });
-                      }
-                    }}
-                    className="px-4 py-2 bg-red-500/20 text-red-400 font-medium rounded-lg hover:bg-red-500/30 transition-colors"
+                    onClick={() => setShowRevisionModal(true)}
+                    className="px-4 py-2.5 bg-orange-500/15 text-orange-400 font-medium rounded-lg hover:bg-orange-500/25 transition-colors"
                   >
                     Request Revisions
                   </button>
                   <button
                     onClick={() => handleAction("approve", selectedBrief.id)}
                     disabled={actionLoading === selectedBrief.id}
-                    className="px-4 py-2 bg-[#22c55e] text-black font-medium rounded-lg hover:bg-[#16a34a] transition-colors disabled:opacity-50"
+                    className="px-4 py-2.5 bg-[#22c55e] text-black font-medium rounded-lg hover:bg-[#16a34a] transition-colors disabled:opacity-50"
                   >
                     Approve Brief
                   </button>
                 </>
               )}
+              {selectedBrief.status === "approved" && (
+                <button
+                  onClick={() => handleAction("write", selectedBrief.id)}
+                  disabled={actionLoading === selectedBrief.id}
+                  className="px-4 py-2.5 bg-blue-500 text-white font-medium rounded-lg hover:bg-blue-600 transition-colors disabled:opacity-50"
+                >
+                  Generate Draft
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Revision Modal */}
+      {showRevisionModal && selectedBrief && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
+          <div className="bg-[#18181b] border border-[#27272a] rounded-2xl max-w-md w-full">
+            <div className="p-6 border-b border-[#27272a]">
+              <h2 className="text-lg font-semibold text-white">Request Revisions</h2>
+              <p className="text-sm text-[#71717a] mt-1">What changes would improve this brief?</p>
+            </div>
+            <div className="p-6">
+              <textarea
+                value={revisionFeedback}
+                onChange={(e) => setRevisionFeedback(e.target.value)}
+                placeholder="Describe the revisions needed..."
+                className="w-full h-32 px-4 py-3 bg-[#0f0f11] border border-[#27272a] rounded-lg text-white placeholder-[#52525b] focus:outline-none focus:border-[#3f3f46] resize-none"
+              />
+            </div>
+            <div className="p-6 border-t border-[#27272a] flex justify-end gap-3">
+              <button
+                onClick={() => {
+                  setShowRevisionModal(false);
+                  setRevisionFeedback("");
+                }}
+                className="px-4 py-2 bg-[#27272a] text-white font-medium rounded-lg hover:bg-[#3f3f46] transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleRequestRevision}
+                disabled={!revisionFeedback.trim() || actionLoading === selectedBrief.id}
+                className="px-4 py-2 bg-orange-500 text-white font-medium rounded-lg hover:bg-orange-600 transition-colors disabled:opacity-50"
+              >
+                Send Feedback
+              </button>
             </div>
           </div>
         </div>
