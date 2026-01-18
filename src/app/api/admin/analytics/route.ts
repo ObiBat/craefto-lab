@@ -10,24 +10,30 @@ export async function GET(request: NextRequest) {
     const startDate = new Date();
     startDate.setDate(startDate.getDate() - days);
 
-    // Get page views over time
-    const { data: pageViews } = await supabase
+    // Get total page views count (using count query, not fetching all rows)
+    const { count: totalViews } = await supabase
       .from('page_views')
-      .select('created_at, path')
-      .gte('created_at', startDate.toISOString())
-      .order('created_at', { ascending: true });
-
-    // Get unique sessions
-    const { data: sessions } = await supabase
-      .from('page_views')
-      .select('session_id')
+      .select('*', { count: 'exact', head: true })
       .gte('created_at', startDate.toISOString());
 
-    const uniqueSessions = new Set(sessions?.map(s => s.session_id)).size;
+    // Get unique sessions count using RPC or distinct query
+    const { data: sessionData } = await supabase
+      .from('page_views')
+      .select('session_id')
+      .gte('created_at', startDate.toISOString())
+      .limit(50000);
 
-    // Get page view counts by path
+    const uniqueSessions = new Set(sessionData?.map(s => s.session_id)).size;
+
+    // Get top pages with counts (limit to recent data for performance)
+    const { data: recentPageViews } = await supabase
+      .from('page_views')
+      .select('path')
+      .gte('created_at', startDate.toISOString())
+      .limit(50000);
+
     const pathCounts: Record<string, number> = {};
-    pageViews?.forEach(pv => {
+    recentPageViews?.forEach(pv => {
       pathCounts[pv.path] = (pathCounts[pv.path] || 0) + 1;
     });
 
@@ -36,22 +42,38 @@ export async function GET(request: NextRequest) {
       .sort((a, b) => b.views - a.views)
       .slice(0, 10);
 
-    // Get leads over time
+    // Get leads count and data
+    const { count: totalLeads } = await supabase
+      .from('leads')
+      .select('*', { count: 'exact', head: true })
+      .gte('created_at', startDate.toISOString());
+
     const { data: leads } = await supabase
       .from('leads')
-      .select('created_at, source, score')
+      .select('created_at, score')
       .gte('created_at', startDate.toISOString())
-      .order('created_at', { ascending: true });
+      .order('created_at', { ascending: true })
+      .limit(10000);
 
     // Get traffic sources
     const { data: sources } = await supabase
       .from('page_views')
       .select('utm_source, referrer')
-      .gte('created_at', startDate.toISOString());
+      .gte('created_at', startDate.toISOString())
+      .limit(50000);
 
     const sourceCounts: Record<string, number> = {};
     sources?.forEach(s => {
-      const source = s.utm_source || (s.referrer ? new URL(s.referrer).hostname : 'direct');
+      let source = 'direct';
+      if (s.utm_source) {
+        source = s.utm_source;
+      } else if (s.referrer) {
+        try {
+          source = new URL(s.referrer).hostname;
+        } catch {
+          source = 'direct';
+        }
+      }
       sourceCounts[source] = (sourceCounts[source] || 0) + 1;
     });
 
@@ -60,11 +82,18 @@ export async function GET(request: NextRequest) {
       .sort((a, b) => b.visits - a.visits)
       .slice(0, 10);
 
+    // Get daily views for chart (separate query with limit)
+    const { data: dailyPageViews } = await supabase
+      .from('page_views')
+      .select('created_at')
+      .gte('created_at', startDate.toISOString())
+      .limit(50000);
+
     // Group data by day for charts
     const viewsByDay: Record<string, number> = {};
     const leadsByDay: Record<string, number> = {};
 
-    pageViews?.forEach(pv => {
+    dailyPageViews?.forEach(pv => {
       const day = new Date(pv.created_at).toISOString().split('T')[0];
       viewsByDay[day] = (viewsByDay[day] || 0) + 1;
     });
@@ -88,18 +117,16 @@ export async function GET(request: NextRequest) {
     }
 
     // Calculate averages
-    const totalViews = pageViews?.length || 0;
-    const totalLeads = leads?.length || 0;
     const avgScore = leads?.length
       ? Math.round(leads.reduce((sum, l) => sum + (l.score || 0), 0) / leads.length)
       : 0;
-    const conversionRate = totalViews > 0 ? ((totalLeads / uniqueSessions) * 100).toFixed(2) : '0';
+    const conversionRate = uniqueSessions > 0 ? (((totalLeads || 0) / uniqueSessions) * 100).toFixed(2) : '0';
 
     return NextResponse.json({
       summary: {
-        totalViews,
+        totalViews: totalViews || 0,
         uniqueVisitors: uniqueSessions,
-        totalLeads,
+        totalLeads: totalLeads || 0,
         avgLeadScore: avgScore,
         conversionRate: `${conversionRate}%`,
       },
