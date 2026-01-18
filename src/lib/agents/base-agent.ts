@@ -183,7 +183,7 @@ async function callGemini(
 ): Promise<{ content: string; tokensUsed: number }> {
   const {
     model = "gemini-3-pro-preview", // Gemini 3 Pro
-    temperature = 1.0, // Gemini recommends 1.0
+    temperature = 1.0,
     maxTokens = 8192,
   } = options;
 
