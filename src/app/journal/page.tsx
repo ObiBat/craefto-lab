@@ -5,6 +5,7 @@ import { Header, Footer, Section, Container } from "@/components/layout";
 import { HeroText, AnimatedSection, Separator } from "@/components/ui";
 import { ArticleCard } from "@/components/journal/article-card";
 import { JournalSearchInline } from "@/components/journal/search-inline";
+import { SubscriptionForm } from "@/components/journal/subscription-form";
 import type { ArticleCard as ArticleCardType, Pillar } from "@/lib/journal-types";
 
 // ISR: Revalidate every 60 seconds
@@ -236,23 +237,9 @@ export default async function JournalPage({ searchParams }: JournalPageProps) {
                   Get our latest insights on AI, product strategy, and creative
                   technology delivered to your inbox.
                 </p>
-                <form className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-                  <input
-                    type="email"
-                    placeholder="your@email.com"
-                    className="flex-1 px-5 py-3.5 rounded-xl border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] text-[hsl(var(--color-foreground))] placeholder:text-[hsl(var(--color-foreground-muted))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-accent))] focus:border-transparent shadow-sm transition-shadow"
-                    required
-                  />
-                  <button
-                    type="submit"
-                    className="px-7 py-3.5 rounded-xl bg-[hsl(var(--color-accent))] text-white font-medium hover:opacity-90 transition-all shadow-sm hover:shadow-md"
-                  >
-                    Subscribe
-                  </button>
-                </form>
-                <p className="text-xs text-[hsl(var(--color-foreground-subtle))] mt-4">
-                  No spam, unsubscribe anytime.
-                </p>
+                <Suspense fallback={<SubscriptionFormSkeleton />}>
+                  <SubscriptionForm />
+                </Suspense>
               </div>
             </AnimatedSection>
           </Container>
@@ -290,6 +277,15 @@ function PillarTab({
       )}
       {children}
     </Link>
+  );
+}
+
+function SubscriptionFormSkeleton() {
+  return (
+    <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto animate-pulse">
+      <div className="flex-1 h-[52px] rounded-xl bg-[hsl(var(--color-background))]" />
+      <div className="w-32 h-[52px] rounded-xl bg-[hsl(var(--color-accent))]/50" />
+    </div>
   );
 }
 

@@ -102,6 +102,19 @@ export const contentTypeLabels: Record<Article['content_type'], string> = {
   opinion: 'Opinion',
 };
 
+// Subscriber types
+export interface Subscriber {
+  id: string;
+  email: string;
+  status: 'pending' | 'confirmed' | 'unsubscribed';
+  confirmation_token: string;
+  confirmed_at: string | null;
+  unsubscribed_at: string | null;
+  source: string;
+  created_at: string;
+  updated_at: string;
+}
+
 // Pillar color mappings
 export const pillarColors: Record<string, { bg: string; text: string; border: string }> = {
   'systems-thinking': {
