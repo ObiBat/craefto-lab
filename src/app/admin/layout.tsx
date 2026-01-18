@@ -70,6 +70,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [isLoading, setIsLoading] = React.useState(true);
   const [password, setPassword] = React.useState("");
   const [error, setError] = React.useState("");
+  const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
 
   React.useEffect(() => {
     const authToken = sessionStorage.getItem("admin_auth");
@@ -78,6 +79,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     }
     setIsLoading(false);
   }, []);
+
+  // Close mobile menu on route change
+  React.useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [pathname]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -153,14 +159,62 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   return (
     <div className="admin-theme min-h-screen">
-      {/* Sidebar */}
-      <aside className="fixed left-0 top-0 bottom-0 w-64 p-4 flex flex-col" style={{ backgroundColor: '#0f0f11', borderRight: '1px solid #27272a' }}>
-        <div className="mb-8">
+      {/* Mobile Header */}
+      <header className="lg:hidden fixed top-0 left-0 right-0 z-50 h-14 px-4 flex items-center justify-between" style={{ backgroundColor: '#0f0f11', borderBottom: '1px solid #27272a' }}>
+        <span className="text-lg font-semibold">Craefto Admin</span>
+        <button
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          className="p-2 rounded-lg hover:bg-[#18181b] transition-colors"
+          aria-label="Toggle menu"
+        >
+          {mobileMenuOpen ? (
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          ) : (
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          )}
+        </button>
+      </header>
+
+      {/* Mobile Menu Overlay */}
+      {mobileMenuOpen && (
+        <div
+          className="lg:hidden fixed inset-0 z-40 bg-black/50"
+          onClick={() => setMobileMenuOpen(false)}
+        />
+      )}
+
+      {/* Sidebar - Desktop always visible, Mobile slides in */}
+      <aside
+        className={`fixed left-0 top-0 bottom-0 w-64 p-4 flex flex-col z-50 transform transition-transform duration-300 ease-in-out lg:translate-x-0 ${
+          mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
+        }`}
+        style={{ backgroundColor: '#0f0f11', borderRight: '1px solid #27272a' }}
+      >
+        {/* Mobile close button area */}
+        <div className="lg:hidden h-14 flex items-center justify-between mb-4">
+          <span className="text-lg font-semibold">Craefto Admin</span>
+          <button
+            onClick={() => setMobileMenuOpen(false)}
+            className="p-2 rounded-lg hover:bg-[#18181b] transition-colors"
+            aria-label="Close menu"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        {/* Desktop header */}
+        <div className="hidden lg:block mb-8">
           <span className="text-lg font-semibold block">Craefto Admin</span>
           <span className="text-sm text-[#71717a] block">CRM & Analytics</span>
         </div>
 
-        <nav className="flex-1 space-y-1">
+        <nav className="flex-1 space-y-1 overflow-y-auto">
           {NAV_ITEMS.map((item) => {
             const isActive = pathname === item.href ||
               (item.href !== "/admin" && pathname.startsWith(item.href));
@@ -168,6 +222,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <Link
                 key={item.href}
                 href={item.href}
+                onClick={() => setMobileMenuOpen(false)}
                 className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${
                   isActive
                     ? "bg-[#22c55e]/15 text-[#4ade80]"
@@ -195,8 +250,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       </aside>
 
       {/* Main content */}
-      <main className="ml-64 p-8">
-        {children}
+      <main className="lg:ml-64 min-h-screen">
+        {/* Spacer for mobile header */}
+        <div className="h-14 lg:hidden" />
+        <div className="p-4 md:p-6 lg:p-8">
+          {children}
+        </div>
       </main>
     </div>
   );
