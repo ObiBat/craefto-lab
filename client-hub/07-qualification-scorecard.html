@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Qualification Scorecard | Craefto Lab</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Page-specific styles for Qualification Scorecard */
+        .header {
+            margin-bottom: 3rem;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .header-text h1 {
+            font-size: clamp(1.75rem, 4vw, 2.5rem);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .header-text p {
+            color: var(--text-secondary);
+            font-size: 1.125rem;
+        }
+
+        .score-display {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem 2rem;
+            text-align: center;
+            min-width: 200px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .score-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .score-value {
+            font-size: 3rem;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+            transition: color 0.3s;
+        }
+
+        .score-value.excellent { color: var(--success); }
+        .score-value.good { color: var(--accent); }
+        .score-value.moderate { color: var(--warning); }
+        .score-value.poor { color: var(--error); }
+
+        .score-rating {
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-top: 0.25rem;
+            transition: color 0.3s;
+        }
+
+        /* Score Legend */
+        .score-legend {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+            padding: 1rem 1.5rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .legend-dot.excellent { background: var(--success); }
+        .legend-dot.good { background: var(--accent); }
+        .legend-dot.moderate { background: var(--warning); }
+        .legend-dot.poor { background: var(--error); }
+
+        /* Scorecard Sections */
+        .scorecard-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .score-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .score-section .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.25rem 1.5rem;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .score-section .section-title {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .score-section .section-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .score-section .section-icon svg {
+            width: 20px;
+            height: 20px;
+            stroke-width: 2;
+        }
+
+        .section-icon.budget { background: var(--success-dim); }
+        .section-icon.budget svg { stroke: var(--success); }
+        .section-icon.timeline { background: var(--accent-dim); }
+        .section-icon.timeline svg { stroke: var(--accent); }
+        .section-icon.service { background: var(--info-dim); }
+        .section-icon.service svg { stroke: var(--info); }
+        .section-icon.company { background: var(--warning-dim); }
+        .section-icon.company svg { stroke: var(--warning); }
+        .section-icon.engagement { background: var(--error-dim); }
+        .section-icon.engagement svg { stroke: var(--error); }
+
+        .score-section .section-title h2 {
+            font-size: 1.125rem;
+            font-weight: 600;
+        }
+
+        .score-section .section-title span {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .section-score {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-score-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .section-score-max {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .section-body {
+            padding: 1.5rem;
+        }
+
+        .criteria-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .criteria-item {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 1rem;
+            align-items: center;
+            padding: 1rem;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            transition: background var(--transition-normal);
+        }
+
+        .criteria-item:hover {
+            background: var(--bg-muted);
+        }
+
+        .criteria-info h3 {
+            font-size: 0.9375rem;
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .criteria-info p {
+            font-size: 0.8125rem;
+            color: var(--text-secondary);
+        }
+
+        .criteria-options {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        /* Action Buttons */
+        .actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .actions .btn svg {
+            width: 18px;
+            height: 18px;
+            stroke: currentColor;
+        }
+
+        /* Result Panel */
+        .result-panel {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            margin-top: 2rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .result-header h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .result-header h2 svg {
+            width: 20px;
+            height: 20px;
+            stroke: var(--accent);
+        }
+
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .result-card {
+            padding: 1.25rem;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+        }
+
+        .result-card h3 {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+        }
+
+        .result-card p {
+            font-size: 0.9375rem;
+            line-height: 1.5;
+        }
+
+        .result-card.recommendation {
+            border-left: 3px solid var(--accent);
+        }
+
+        .result-card.action {
+            border-left: 3px solid var(--success);
+        }
+
+        .result-card.warning {
+            border-left: 3px solid var(--warning);
+        }
+
+        .result-card.risk {
+            border-left: 3px solid var(--error);
+        }
+
+        /* Quick Reference */
+        .quick-reference {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            margin-top: 2rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .quick-reference h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .quick-reference h2 svg {
+            width: 20px;
+            height: 20px;
+            stroke: var(--accent);
+        }
+
+        .reference-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .reference-card {
+            padding: 1.25rem;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+        }
+
+        .reference-card h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .reference-card h3::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .reference-card.excellent h3::before { background: var(--success); }
+        .reference-card.good h3::before { background: var(--accent); }
+        .reference-card.moderate h3::before { background: var(--warning); }
+        .reference-card.poor h3::before { background: var(--error); }
+
+        .reference-card ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .reference-card li {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            padding-left: 1rem;
+            position: relative;
+        }
+
+        .reference-card li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--text-muted);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+            }
+
+            .score-display {
+                width: 100%;
+            }
+
+            .criteria-item {
+                grid-template-columns: 1fr;
+            }
+
+            .criteria-options {
+                justify-content: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <a href="index.html" class="back-link">
+                ← Back to Hub
+            </a>
+            <div class="header-content">
+                <div class="header-text">
+                    <h1>Client Qualification Scorecard</h1>
+                    <p>100-point scoring system to assess lead quality and fit</p>
+                </div>
+                <div class="score-display">
+                    <div class="score-label">Total Score</div>
+                    <div class="score-value" id="totalScore">0</div>
+                    <div class="score-rating" id="scoreRating">Not Scored</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Score Legend -->
+        <div class="score-legend">
+            <div class="legend-item">
+                <span class="legend-dot excellent"></span>
+                <span>80-100: Excellent Fit</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-dot good"></span>
+                <span>60-79: Good Fit</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-dot moderate"></span>
+                <span>40-59: Moderate Fit</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-dot poor"></span>
+                <span>0-39: Poor Fit</span>
+            </div>
+        </div>
+
+        <!-- Scorecard Sections -->
+        <div class="scorecard-grid">
+            <!-- Budget Section (40 points) -->
+            <section class="score-section" data-section="budget" data-max="40">
+                <div class="section-header">
+                    <div class="section-title">
+                        <div class="section-icon budget"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg></div>
+                        <div>
+                            <h2>Budget Alignment</h2>
+                            <span>Weight: 40%</span>
+                        </div>
+                    </div>
+                    <div class="section-score">
+                        <span class="section-score-value" data-score="0">0</span>
+                        <span class="section-score-max">/ 40</span>
+                    </div>
+                </div>
+                <div class="section-body">
+                    <div class="criteria-list">
+                        <div class="criteria-item" data-criteria="budget-range">
+                            <div class="criteria-info">
+                                <h3>Budget Range</h3>
+                                <p>Does their stated budget align with project scope?</p>
+                            </div>
+                            <div class="criteria-options">
+                                <label class="score-option">
+                                    <input type="radio" name="budget-range" value="20">
+                                    <span class="option-points">20</span>
+                                    <span class="option-label">$50K+</span>
+                                </label>
+                                <label class="score-option">
+                                    <input type="radio" name="budget-range" value="15">
+                                    <span class="option-points">15</span>
+                                    <span class="option-label">$25-50K</span>
+                                </label>
+                                <label class="score-option">
+                                    <input type="radio" name="budget-range" value="10">
+                                    <span class="option-points">10</span>
+                                    <span class="option-label">$10-25K</span>
+                                </label>
+                                <label class="score-option">
+                                    <input type="radio" name="budget-range" value="5">
+                                    <span class="option-points">5</span>
+                                    <span class="option-label">$5-10K</span>
+                                </label>
+                                <label class="score-option">
+                                    <input type="radio" name="budget-range" value="0">
+                                    <span class="option-points">0</span>
+                                    <span class="option-label">&lt;$5K</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="criteria-item" data-criteria="budget-clarity">
+                            <div class="criteria-info">
+                                <h3>Budget Clarity</h3>
+                                <p>How clearly defined is their budget?</p>
+                            </div>
+                            <div class="criteria-options">
+                                <label class="score-option">
+                                    <input type="radio" name="budget-clarity" value="10">
+                                    <span class="option-points">10</span>
+                                    <span class="option-label">Approved</span>
+                                </label>
+                                <label class="score-option">
+                                    <input type="radio" name="budget-clarity" value="7">
+                                    <span class="option-points">7</span>
+                                    <span class="option-label">Estimated</span>
+                                </label>
+                                <label class="score-option">
+                                    <input type="radio" name="budget-clarity" value="3">
+                                    <span class="option-points">3</span>
+                                    <span class="option-label">Flexible</span>
+                                </label>
+                                <label class="score-option">
+                                    <input type="radio" name="budget-clarity" value="0">
+                                    <span class="option-points">0</span>
+                                    <span class="option-label">Unknown</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="criteria-item" data-criteria="budget-authority">
+                            <div class="criteria-info">
+                                <h3>Budget Authority</h3>
+                                <p>Does contact have budget approval authority?</p>
+                            </div>
+                            <div class="criteria-options">
+                                <label class="score-option">
+                                    <input type="radio" name="budget-authority" value="10">
+                                    <span class="option-points">10</span>
+                                    <span class="option-label">Yes</span>
+                                </label>
+                                <label class="score-option">
+                                    <input type="radio" name="budget-authority" value="5">
+                                    <span class="option-points">5</span>
+                                    <span class="option-label">Partial</span>
+                                </label>
+                                <label class="score-option">
+                                    <input type="radio" name="budget-authority" value="0">
+                                    <span class="option-points">0</span>
+                                    <span class="option-label">No</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Timeline Section (25 points) -->
+            <section class="score-section" data-section="timeline" data-max="25">
+                <div class="section-header">
+                    <div class="section-title">
+                        <div class="section-icon timeline"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></div>
+                        <div>
+                            <h2>Timeline & Urgency</h2>
+                            <span>Weight: 25%</span>
+                        </div>
+                    </div>
+                    <div class="section-score">
+                        <span class="section-score-value" data-score="0">0</span>
+                        <span class="section-score-max">/ 25</span>
+                    </div>
+                </div>
+                <div class="section-body">
+                    <div class="criteria-list">
+                        <div class="criteria-item" data-criteria="timeline-start">
+                            <div class="criteria-info">
+                                <h3>Project Start</h3>
+                                <p>When do they want to begin the project?</p>
+                            </div>
+                            <div class="criteria-options">
+                                <label class="score-option">
+                                    <input type="radio" name="timeline-start" value="15">
+                                    <span class="option-points">15</span>
+                                    <span class="option-label">Immediate</span>
+                                </label>
+                                <label class="score-option">
+                                    <input type="radio" name="timeline-start" value="12">
+                                    <span class="option-points">12</span>
+                                    <span class="option-label">1-2 weeks</span>
+                                </label>
+                                <label class="score-option">
+                                    <input type="radio" name="timeline-start" value="8">
+                                    <span class="option-points">8</span>
+                                    <span class="option-label">1 month</span>
+                                </label>
+                                <label class="score-option">
+                                    <input type="radio" name="timeline-start" value="4">
+                                    <span class="option-points">4</span>
+                                    <span class="option-label">2-3 months</span>
+                                </label>
+                                <label class="score-option">
+                                    <input type="radio" name="timeline-start" value="0">
+                                    <span class="option-points">0</span>
+                                    <span class="option-label">Exploring</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="criteria-item" data-criteria="timeline-realistic">
+                            <div class="criteria-info">
+                                <h3>Realistic Expectations</h3>
+                                <p>Is their timeline realistic for the scope?</p>
+                            </div>
+                            <div class="criteria-options">
+                                <label class="score-option">
+                                    <input type="radio" name="timeline-realistic" value="10">
+                                    <span class="option-points">10</span>
+                                    <span class="option-label">Yes</span>
+                                </label>
+                                <label class="score-option">
+                                    <input type="radio" name="timeline-realistic" value="5">
+                                    <span class="option-points">5</span>
+                                    <span class="option-label">Somewhat</span>
+                                </label>
+                                <label class="score-option">
+                                    <input type="radio" name="timeline-realistic" value="0">
+                                    <span class="option-points">0</span>
+                                    <span class="option-label">No</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Service Fit Section (15 points) -->
+            <section class="score-section" data-section="service" data-max="15">
+                <div class="section-header">
+                    <div class="section-title">
+                        <div class="section-icon service"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg></div>
+                        <div>
+                            <h2>Service Fit</h2>
+                            <span>Weight: 15%</span>
+                        </div>
+                    </div>
+                    <div class="section-score">
+                        <span class="section-score-value" data-score="0">0</span>
+                        <span class="section-score-max">/ 15</span>
+                    </div>
+                </div>
+                <div class="section-body">
+                    <div class="criteria-list">
+                        <div class="criteria-item" data-criteria="service-match">
+                            <div class="criteria-info">
+                                <h3>Service Match</h3>
+                                <p>How well does the project match our core services?</p>
+                            </div>
+                            <div class="criteria-options">
+                                <label class="score-option">
+                                    <input type="radio" name="service-match" value="10">
+                                    <span class="option-points">10</span>
+                                    <span class="option-label">Perfect</span>
+                                </label>
+                                <label class="score-option">
+                                    <input type="radio" name="service-match" value="7">
+                                    <span class="option-points">7</span>
+                                    <span class="option-label">Good</span>
+                                </label>
+                                <label class="score-option">
+                                    <input type="radio" name="service-match" value="4">
+                                    <span class="option-points">4</span>
+                                    <span class="option-label">Partial</span>
+                                </label>
+                                <label class="score-option">
+                                    <input type="radio" name="service-match" value="0">
+                                    <span class="option-points">0</span>
+                                    <span class="option-label">Poor</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="criteria-item" data-criteria="service-complexity">
+                            <div class="criteria-info">
+                                <h3>Complexity Level</h3>
+                                <p>Is the project complexity a good fit for our team?</p>
+                            </div>
+                            <div class="criteria-options">
+                                <label class="score-option">
+                                    <input type="radio" name="service-complexity" value="5">
+                                    <span class="option-points">5</span>
+                                    <span class="option-label">Ideal</span>
+                                </label>
+                                <label class="score-option">
+                                    <input type="radio" name="service-complexity" value="3">
+                                    <span class="option-points">3</span>
+                                    <span class="option-label">Manageable</span>
+                                </label>
+                                <label class="score-option">
+                                    <input type="radio" name="service-complexity" value="0">
+                                    <span class="option-points">0</span>
+                                    <span class="option-label">Mismatch</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Company Fit Section (10 points) -->
+            <section class="score-section" data-section="company" data-max="10">
+                <div class="section-header">
+                    <div class="section-title">
+                        <div class="section-icon company"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg></div>
+                        <div>
+                            <h2>Company Fit</h2>
+                            <span>Weight: 10%</span>
+                        </div>
+                    </div>
+                    <div class="section-score">
+                        <span class="section-score-value" data-score="0">0</span>
+                        <span class="section-score-max">/ 10</span>
+                    </div>
+                </div>
+                <div class="section-body">
+                    <div class="criteria-list">
+                        <div class="criteria-item" data-criteria="company-size">
+                            <div class="criteria-info">
+                                <h3>Company Size</h3>
+                                <p>What is the company size/stage?</p>
+                            </div>
+                            <div class="criteria-options">
+                                <label class="score-option">
+                                    <input type="radio" name="company-size" value="5">
+                                    <span class="option-points">5</span>
+                                    <span class="option-label">Growth</span>
+                                </label>
+                                <label class="score-option">
+                                    <input type="radio" name="company-size" value="4">
+                                    <span class="option-points">4</span>
+                                    <span class="option-label">Enterprise</span>
+                                </label>
+                                <label class="score-option">
+                                    <input type="radio" name="company-size" value="3">
+                                    <span class="option-points">3</span>
+                                    <span class="option-label">Startup</span>
+                                </label>
+                                <label class="score-option">
+                                    <input type="radio" name="company-size" value="2">
+                                    <span class="option-points">2</span>
+                                    <span class="option-label">SMB</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="criteria-item" data-criteria="company-industry">
+                            <div class="criteria-info">
+                                <h3>Industry Experience</h3>
+                                <p>Do we have experience in their industry?</p>
+                            </div>
+                            <div class="criteria-options">
+                                <label class="score-option">
+                                    <input type="radio" name="company-industry" value="5">
+                                    <span class="option-points">5</span>
+                                    <span class="option-label">Yes</span>
+                                </label>
+                                <label class="score-option">
+                                    <input type="radio" name="company-industry" value="3">
+                                    <span class="option-points">3</span>
+                                    <span class="option-label">Similar</span>
+                                </label>
+                                <label class="score-option">
+                                    <input type="radio" name="company-industry" value="1">
+                                    <span class="option-points">1</span>
+                                    <span class="option-label">New</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Engagement Quality Section (10 points) -->
+            <section class="score-section" data-section="engagement" data-max="10">
+                <div class="section-header">
+                    <div class="section-title">
+                        <div class="section-icon engagement"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></div>
+                        <div>
+                            <h2>Engagement Quality</h2>
+                            <span>Weight: 10%</span>
+                        </div>
+                    </div>
+                    <div class="section-score">
+                        <span class="section-score-value" data-score="0">0</span>
+                        <span class="section-score-max">/ 10</span>
+                    </div>
+                </div>
+                <div class="section-body">
+                    <div class="criteria-list">
+                        <div class="criteria-item" data-criteria="engagement-communication">
+                            <div class="criteria-info">
+                                <h3>Communication Quality</h3>
+                                <p>How responsive and clear is their communication?</p>
+                            </div>
+                            <div class="criteria-options">
+                                <label class="score-option">
+                                    <input type="radio" name="engagement-communication" value="5">
+                                    <span class="option-points">5</span>
+                                    <span class="option-label">Excellent</span>
+                                </label>
+                                <label class="score-option">
+                                    <input type="radio" name="engagement-communication" value="3">
+                                    <span class="option-points">3</span>
+                                    <span class="option-label">Good</span>
+                                </label>
+                                <label class="score-option">
+                                    <input type="radio" name="engagement-communication" value="1">
+                                    <span class="option-points">1</span>
+                                    <span class="option-label">Poor</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="criteria-item" data-criteria="engagement-referral">
+                            <div class="criteria-info">
+                                <h3>Referral Source</h3>
+                                <p>How did they find us?</p>
+                            </div>
+                            <div class="criteria-options">
+                                <label class="score-option">
+                                    <input type="radio" name="engagement-referral" value="5">
+                                    <span class="option-points">5</span>
+                                    <span class="option-label">Referral</span>
+                                </label>
+                                <label class="score-option">
+                                    <input type="radio" name="engagement-referral" value="3">
+                                    <span class="option-points">3</span>
+                                    <span class="option-label">Portfolio</span>
+                                </label>
+                                <label class="score-option">
+                                    <input type="radio" name="engagement-referral" value="2">
+                                    <span class="option-points">2</span>
+                                    <span class="option-label">Search</span>
+                                </label>
+                                <label class="score-option">
+                                    <input type="radio" name="engagement-referral" value="1">
+                                    <span class="option-points">1</span>
+                                    <span class="option-label">Cold</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="actions">
+            <button class="btn btn-primary" onclick="calculateScore()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                Calculate Score
+            </button>
+            <button class="btn btn-secondary" onclick="resetScorecard()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"></polyline><polyline points="23 20 23 14 17 14"></polyline><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"></path></svg>
+                Reset Scorecard
+            </button>
+            <button class="btn btn-secondary" onclick="window.print()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+                Print Results
+            </button>
+        </div>
+
+        <!-- Result Panel -->
+        <div class="result-panel" id="resultPanel" style="display: none;">
+            <div class="result-header">
+                <h2><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg> Assessment Results</h2>
+                <span id="assessmentDate"></span>
+            </div>
+            <div class="result-grid">
+                <div class="result-card recommendation">
+                    <h3>Recommendation</h3>
+                    <p id="resultRecommendation">Complete the scorecard to see recommendation.</p>
+                </div>
+                <div class="result-card action">
+                    <h3>Suggested Action</h3>
+                    <p id="resultAction">Complete the scorecard to see suggested action.</p>
+                </div>
+                <div class="result-card warning" id="warningCard" style="display: none;">
+                    <h3>Areas of Concern</h3>
+                    <p id="resultWarning"></p>
+                </div>
+                <div class="result-card" id="strengthCard" style="display: none;">
+                    <h3>Key Strengths</h3>
+                    <p id="resultStrength"></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Reference -->
+        <div class="quick-reference">
+            <h2><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg> Score Interpretation Guide</h2>
+            <div class="reference-grid">
+                <div class="reference-card excellent">
+                    <h3>Excellent Fit (80-100)</h3>
+                    <ul>
+                        <li>Prioritize and fast-track this lead</li>
+                        <li>Schedule discovery call within 24-48 hours</li>
+                        <li>Prepare customized proposal immediately</li>
+                        <li>Consider premium pricing tier</li>
+                        <li>Assign senior team members</li>
+                    </ul>
+                </div>
+                <div class="reference-card good">
+                    <h3>Good Fit (60-79)</h3>
+                    <ul>
+                        <li>Proceed with standard qualification process</li>
+                        <li>Schedule discovery call within 1 week</li>
+                        <li>Address any yellow flags proactively</li>
+                        <li>Use standard pricing structure</li>
+                        <li>Clarify expectations early</li>
+                    </ul>
+                </div>
+                <div class="reference-card moderate">
+                    <h3>Moderate Fit (40-59)</h3>
+                    <ul>
+                        <li>Proceed with caution</li>
+                        <li>Identify and address concerns before proposal</li>
+                        <li>Consider if scope can be adjusted</li>
+                        <li>May require additional discovery</li>
+                        <li>Set clear boundaries and expectations</li>
+                    </ul>
+                </div>
+                <div class="reference-card poor">
+                    <h3>Poor Fit (0-39)</h3>
+                    <ul>
+                        <li>Politely decline or refer to better-suited partner</li>
+                        <li>Document why it's not a fit for future reference</li>
+                        <li>Offer helpful resources or alternatives</li>
+                        <li>Keep relationship positive for future</li>
+                        <li>Don't invest significant time</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bonus Factors -->
+        <div class="quick-reference" style="margin-top: 1.5rem;">
+            <h2><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> Bonus Considerations (Not Scored)</h2>
+            <div class="reference-grid">
+                <div class="reference-card">
+                    <h3>Portfolio Value</h3>
+                    <ul>
+                        <li>Would this project enhance our portfolio?</li>
+                        <li>Is the brand/company recognizable?</li>
+                        <li>Could we showcase this publicly?</li>
+                        <li>Does it demonstrate new capabilities?</li>
+                    </ul>
+                </div>
+                <div class="reference-card">
+                    <h3>Long-term Potential</h3>
+                    <ul>
+                        <li>Is there potential for ongoing work?</li>
+                        <li>Does the client have multiple projects?</li>
+                        <li>Are they in a growing industry?</li>
+                        <li>Could they become a retainer client?</li>
+                    </ul>
+                </div>
+                <div class="reference-card">
+                    <h3>Learning Opportunity</h3>
+                    <ul>
+                        <li>Will this expand our team's skills?</li>
+                        <li>Is it an interesting technical challenge?</li>
+                        <li>Does it align with strategic goals?</li>
+                        <li>Would team members be excited?</li>
+                    </ul>
+                </div>
+                <div class="reference-card">
+                    <h3>Referral Potential</h3>
+                    <ul>
+                        <li>Are they well-connected in their industry?</li>
+                        <li>Have they worked with agencies before?</li>
+                        <li>Do they openly share recommendations?</li>
+                        <li>Is their network our target market?</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize event listeners
+        document.querySelectorAll('.score-option input').forEach(input => {
+            input.addEventListener('change', function() {
+                // Update visual selection
+                const parent = this.closest('.criteria-options');
+                parent.querySelectorAll('.score-option').forEach(opt => opt.classList.remove('selected'));
+                this.closest('.score-option').classList.add('selected');
+
+                // Update section score
+                updateSectionScore(this.closest('.score-section'));
+            });
+        });
+
+        function updateSectionScore(section) {
+            let sectionTotal = 0;
+            section.querySelectorAll('.criteria-options input:checked').forEach(input => {
+                sectionTotal += parseInt(input.value);
+            });
+            section.querySelector('.section-score-value').textContent = sectionTotal;
+            section.querySelector('.section-score-value').dataset.score = sectionTotal;
+
+            // Update total
+            updateTotalScore();
+        }
+
+        function updateTotalScore() {
+            let total = 0;
+            document.querySelectorAll('.section-score-value').forEach(el => {
+                total += parseInt(el.dataset.score || 0);
+            });
+
+            const scoreEl = document.getElementById('totalScore');
+            const ratingEl = document.getElementById('scoreRating');
+
+            scoreEl.textContent = total;
+
+            // Remove all classes
+            scoreEl.classList.remove('excellent', 'good', 'moderate', 'poor');
+
+            if (total >= 80) {
+                scoreEl.classList.add('excellent');
+                ratingEl.textContent = 'Excellent Fit';
+                ratingEl.style.color = 'var(--success)';
+            } else if (total >= 60) {
+                scoreEl.classList.add('good');
+                ratingEl.textContent = 'Good Fit';
+                ratingEl.style.color = 'var(--accent)';
+            } else if (total >= 40) {
+                scoreEl.classList.add('moderate');
+                ratingEl.textContent = 'Moderate Fit';
+                ratingEl.style.color = 'var(--warning)';
+            } else {
+                scoreEl.classList.add('poor');
+                ratingEl.textContent = total > 0 ? 'Poor Fit' : 'Not Scored';
+                ratingEl.style.color = total > 0 ? 'var(--error)' : 'var(--text-muted)';
+            }
+        }
+
+        function calculateScore() {
+            const total = parseInt(document.getElementById('totalScore').textContent);
+            const resultPanel = document.getElementById('resultPanel');
+
+            // Show result panel
+            resultPanel.style.display = 'block';
+            resultPanel.scrollIntoView({ behavior: 'smooth' });
+
+            // Set date
+            document.getElementById('assessmentDate').textContent = new Date().toLocaleDateString('en-AU', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+
+            // Calculate section scores
+            const sections = {};
+            document.querySelectorAll('.score-section').forEach(section => {
+                const name = section.dataset.section;
+                const max = parseInt(section.dataset.max);
+                const score = parseInt(section.querySelector('.section-score-value').dataset.score);
+                sections[name] = { score, max, percentage: (score / max) * 100 };
+            });
+
+            // Generate recommendation
+            let recommendation = '';
+            let action = '';
+            let warnings = [];
+            let strengths = [];
+
+            if (total >= 80) {
+                recommendation = 'This is an excellent fit! The lead shows strong alignment across budget, timeline, and service requirements.';
+                action = 'Fast-track this opportunity. Schedule a discovery call within 24-48 hours and begin preparing a customized proposal.';
+            } else if (total >= 60) {
+                recommendation = 'This is a good fit with some areas to address. The fundamentals are solid for a successful engagement.';
+                action = 'Proceed with standard qualification. Schedule a discovery call within 1 week and prepare to address any concerns proactively.';
+            } else if (total >= 40) {
+                recommendation = 'This is a moderate fit. There are significant areas that need clarification before proceeding.';
+                action = 'Proceed with caution. Conduct additional discovery to address concerns before investing significant time in a proposal.';
+            } else {
+                recommendation = 'This does not appear to be a good fit at this time. Consider declining or referring to a better-suited partner.';
+                action = 'Politely decline the opportunity. Offer helpful alternatives or resources, and maintain the relationship for potential future opportunities.';
+            }
+
+            // Identify warnings and strengths
+            Object.entries(sections).forEach(([name, data]) => {
+                const label = name.charAt(0).toUpperCase() + name.slice(1);
+                if (data.percentage < 50) {
+                    warnings.push(`${label}: ${data.score}/${data.max} points (${Math.round(data.percentage)}%)`);
+                } else if (data.percentage >= 80) {
+                    strengths.push(`${label}: ${data.score}/${data.max} points (${Math.round(data.percentage)}%)`);
+                }
+            });
+
+            document.getElementById('resultRecommendation').textContent = recommendation;
+            document.getElementById('resultAction').textContent = action;
+
+            const warningCard = document.getElementById('warningCard');
+            const strengthCard = document.getElementById('strengthCard');
+
+            if (warnings.length > 0) {
+                warningCard.style.display = 'block';
+                document.getElementById('resultWarning').textContent = warnings.join(' • ');
+            } else {
+                warningCard.style.display = 'none';
+            }
+
+            if (strengths.length > 0) {
+                strengthCard.style.display = 'block';
+                document.getElementById('resultStrength').textContent = strengths.join(' • ');
+            } else {
+                strengthCard.style.display = 'none';
+            }
+        }
+
+        function resetScorecard() {
+            // Clear all selections
+            document.querySelectorAll('.score-option input').forEach(input => {
+                input.checked = false;
+            });
+            document.querySelectorAll('.score-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+
+            // Reset section scores
+            document.querySelectorAll('.section-score-value').forEach(el => {
+                el.textContent = '0';
+                el.dataset.score = '0';
+            });
+
+            // Reset total
+            const scoreEl = document.getElementById('totalScore');
+            scoreEl.textContent = '0';
+            scoreEl.classList.remove('excellent', 'good', 'moderate', 'poor');
+            document.getElementById('scoreRating').textContent = 'Not Scored';
+            document.getElementById('scoreRating').style.color = 'var(--text-muted)';
+
+            // Hide result panel
+            document.getElementById('resultPanel').style.display = 'none';
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
