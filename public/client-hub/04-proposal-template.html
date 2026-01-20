@@ -7,29 +7,10 @@
     <link rel="stylesheet" href="styles.css">
     <style>
         /* Page-specific styles for Proposal Template */
-        .header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 64px;
-            background: rgba(250, 247, 242, 0.9);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border-color);
-            z-index: 100;
-            display: flex;
-            align-items: center;
-            padding: 0 2rem;
-        }
-        .header-title {
-            margin-left: 1.5rem;
-            font-family: 'Space Grotesk', sans-serif;
-            font-weight: 600;
-            font-size: 0.9375rem;
-        }
-        .page-header { margin-bottom: 3rem; }
-        .page-header h1 { font-family: 'Space Grotesk', sans-serif; }
-        .page-header p { color: var(--text-secondary); }
+        /* Page-specific styles */
+        .page-title-section { margin-bottom: 3rem; }
+        .page-title-section h1 { font-family: 'Space Grotesk', sans-serif; }
+        .page-title-section p { color: var(--text-secondary); }
 
         /* Proposal Document */
         .proposal-document {
@@ -382,14 +363,14 @@
             .timeline { flex-direction: column; }
         }
         @media print {
-            .header, .actions, .page-header { display: none; }
+            .page-header, .actions, .page-title-section { display: none; }
             .main { padding: 0; max-width: none; }
             .proposal-document { box-shadow: none; }
         }
     </style>
 </head>
 <body>
-    <header class="header">
+    <header class="page-header">
         <a href="index.html" class="back-link">
             <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -400,7 +381,7 @@
     </header>
 
     <main class="main">
-        <div class="page-header">
+        <div class="page-title-section">
             <div class="page-number">04 / 08</div>
             <h1>Proposal Template</h1>
             <p>A beautifully structured proposal with tiered pricing, clear scope, and compelling presentation. Send within 24-48 hours of discovery call for best results.</p>
