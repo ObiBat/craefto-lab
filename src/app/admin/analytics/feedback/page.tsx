@@ -55,17 +55,17 @@ function formatDate(dateString: string) {
 function ScoreDisplay({ score }: { score: number }) {
   const color =
     score >= 4
-      ? "text-green-400"
+      ? "text-green-600"
       : score >= 3
-        ? "text-yellow-400"
-        : "text-red-400";
+        ? "text-yellow-600"
+        : "text-red-600";
 
   return (
     <div className="flex items-center gap-1">
       {[1, 2, 3, 4, 5].map((i) => (
         <span
           key={i}
-          className={`text-sm ${i <= score ? color : "text-[#3f3f46]"}`}
+          className={`text-sm ${i <= score ? color : "text-[hsl(var(--color-border))]"}`}
         >
           ★
         </span>
@@ -79,9 +79,9 @@ function ScoreDisplay({ score }: { score: number }) {
 
 function TrendBadge({ trend }: { trend: "improving" | "declining" | "stable" }) {
   const styles: Record<string, { bg: string; text: string; icon: string }> = {
-    improving: { bg: "bg-green-500/10", text: "text-green-400", icon: "↑" },
-    declining: { bg: "bg-red-500/10", text: "text-red-400", icon: "↓" },
-    stable: { bg: "bg-[#71717a]/10", text: "text-[#71717a]", icon: "→" },
+    improving: { bg: "bg-green-500/10", text: "text-green-600", icon: "↑" },
+    declining: { bg: "bg-red-500/10", text: "text-red-600", icon: "↓" },
+    stable: { bg: "bg-[#71717a]/10", text: "text-[hsl(var(--color-foreground-subtle))]", icon: "→" },
   };
 
   const style = styles[trend];
@@ -183,10 +183,10 @@ export default function FeedbackDashboardPage() {
   if (loading) {
     return (
       <div className="animate-pulse space-y-6">
-        <div className="h-8 w-48 bg-[#222] rounded" />
+        <div className="h-8 w-48 bg-[hsl(var(--color-border))] rounded" />
         <div className="grid grid-cols-5 gap-4">
           {[...Array(5)].map((_, i) => (
-            <div key={i} className="h-32 bg-[#18181b] rounded-lg" />
+            <div key={i} className="h-32 bg-[hsl(var(--color-background-muted))] rounded-xl" />
           ))}
         </div>
       </div>
@@ -197,23 +197,23 @@ export default function FeedbackDashboardPage() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <div className="flex items-center gap-2 text-sm text-[#a1a1aa] mb-2">
-          <Link href="/admin/analytics" className="hover:text-white">
+        <div className="flex items-center gap-2 text-sm text-[hsl(var(--color-foreground-muted))] mb-2">
+          <Link href="/admin/analytics" className="hover:text-[hsl(var(--color-foreground))]">
             Analytics
           </Link>
           <span>/</span>
-          <span className="text-white">Agent Feedback</span>
+          <span className="text-[hsl(var(--color-foreground))]">Agent Feedback</span>
         </div>
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-semibold">Agent Feedback Loop</h1>
-            <p className="text-sm text-[#71717a] mt-1">
+            <p className="text-sm text-[hsl(var(--color-foreground-subtle))] mt-1">
               Track AI agent performance and improve content generation
             </p>
           </div>
           <button
             onClick={() => setShowSubmitModal(true)}
-            className="px-4 py-2 bg-[#22c55e] text-black rounded-lg font-medium hover:bg-[#16a34a] transition-colors"
+            className="px-4 py-2 bg-[hsl(var(--color-accent))] text-black rounded-xl font-medium hover:bg-[hsl(var(--color-accent-hover))] transition-colors"
           >
             Submit Feedback
           </button>
@@ -221,11 +221,11 @@ export default function FeedbackDashboardPage() {
       </div>
 
       {/* Overall Stats */}
-      <div className="bg-[#18181b] border border-[#27272a] rounded-xl p-6">
+      <div className="bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl p-6">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-lg font-semibold">Overall Performance</h2>
           <div className="flex items-center gap-4">
-            <span className="text-sm text-[#71717a]">{feedback.length} feedback entries</span>
+            <span className="text-sm text-[hsl(var(--color-foreground-subtle))]">{feedback.length} feedback entries</span>
             <ScoreDisplay score={overallAvg} />
           </div>
         </div>
@@ -240,15 +240,15 @@ export default function FeedbackDashboardPage() {
               <button
                 key={key}
                 onClick={() => setSelectedAgent(isSelected ? null : key)}
-                className={`p-4 rounded-lg border transition-colors text-left ${
+                className={`p-4 rounded-xl border transition-colors text-left ${
                   isSelected
-                    ? "bg-[#22c55e]/10 border-[#22c55e]/30"
-                    : "bg-[#0f0f11] border-[#27272a] hover:border-[#3f3f46]"
+                    ? "bg-[hsl(var(--color-accent))]/10 border-[hsl(var(--color-accent))]/30"
+                    : "bg-[hsl(var(--color-background-subtle))] border-[hsl(var(--color-border))] hover:border-[hsl(var(--color-border))]"
                 }`}
               >
                 <div className="flex items-center gap-2 mb-3">
                   <span className="text-2xl">{icon}</span>
-                  <span className="font-medium text-white text-sm">{name}</span>
+                  <span className="font-medium text-[hsl(var(--color-foreground))] text-sm">{name}</span>
                 </div>
 
                 {agentStats ? (
@@ -257,14 +257,14 @@ export default function FeedbackDashboardPage() {
                       <ScoreDisplay score={agentStats.avgScore} />
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-xs text-[#71717a]">
+                      <span className="text-xs text-[hsl(var(--color-foreground-subtle))]">
                         {agentStats.totalFeedback} entries
                       </span>
                       <TrendBadge trend={agentStats.recentTrend} />
                     </div>
                   </>
                 ) : (
-                  <p className="text-sm text-[#71717a]">No feedback yet</p>
+                  <p className="text-sm text-[hsl(var(--color-foreground-subtle))]">No feedback yet</p>
                 )}
               </button>
             );
@@ -274,20 +274,20 @@ export default function FeedbackDashboardPage() {
 
       {/* Feedback by Type (for selected agent) */}
       {selectedAgent && stats[selectedAgent] && (
-        <div className="bg-[#18181b] border border-[#27272a] rounded-xl p-6">
+        <div className="bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl p-6">
           <h2 className="text-lg font-semibold mb-4">
             {AGENT_LABELS[selectedAgent].icon} {AGENT_LABELS[selectedAgent].name} - Feedback by Type
           </h2>
           <div className="grid md:grid-cols-7 gap-3">
             {Object.entries(stats[selectedAgent].byType).map(([type, data]) => (
-              <div key={type} className="bg-[#0f0f11] rounded-lg p-3">
-                <p className="text-xs text-[#71717a] mb-1">{FEEDBACK_TYPE_LABELS[type]}</p>
+              <div key={type} className="bg-[hsl(var(--color-background-subtle))] rounded-xl p-3">
+                <p className="text-xs text-[hsl(var(--color-foreground-subtle))] mb-1">{FEEDBACK_TYPE_LABELS[type]}</p>
                 <p className={`text-lg font-semibold ${
-                  data.avgScore >= 4 ? "text-green-400" : data.avgScore >= 3 ? "text-yellow-400" : "text-red-400"
+                  data.avgScore >= 4 ? "text-green-600" : data.avgScore >= 3 ? "text-yellow-600" : "text-red-600"
                 }`}>
                   {data.avgScore.toFixed(1)}
                 </p>
-                <p className="text-xs text-[#71717a]">{data.count} entries</p>
+                <p className="text-xs text-[hsl(var(--color-foreground-subtle))]">{data.count} entries</p>
               </div>
             ))}
           </div>
@@ -295,15 +295,15 @@ export default function FeedbackDashboardPage() {
       )}
 
       {/* Recent Feedback */}
-      <div className="bg-[#18181b] border border-[#27272a] rounded-xl overflow-hidden">
-        <div className="px-6 py-4 border-b border-[#27272a] flex items-center justify-between">
+      <div className="bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl overflow-hidden">
+        <div className="px-6 py-4 border-b border-[hsl(var(--color-border))] flex items-center justify-between">
           <h2 className="text-lg font-semibold">
             {selectedAgent ? `${AGENT_LABELS[selectedAgent].name} Feedback` : "Recent Feedback"}
           </h2>
           {selectedAgent && (
             <button
               onClick={() => setSelectedAgent(null)}
-              className="text-sm text-[#71717a] hover:text-white transition-colors"
+              className="text-sm text-[hsl(var(--color-foreground-subtle))] hover:text-[hsl(var(--color-foreground))] transition-colors"
             >
               Show all
             </button>
@@ -311,7 +311,7 @@ export default function FeedbackDashboardPage() {
         </div>
 
         {filteredFeedback.length === 0 ? (
-          <div className="px-6 py-12 text-center text-[#71717a]">
+          <div className="px-6 py-12 text-center text-[hsl(var(--color-foreground-subtle))]">
             <p className="text-lg mb-2">No feedback yet</p>
             <p className="text-sm">Submit feedback to help improve AI agent performance.</p>
           </div>
@@ -325,23 +325,23 @@ export default function FeedbackDashboardPage() {
                       <span className="text-lg">
                         {AGENT_LABELS[entry.agent_type]?.icon || "🤖"}
                       </span>
-                      <span className="font-medium text-white">
+                      <span className="font-medium text-[hsl(var(--color-foreground))]">
                         {AGENT_LABELS[entry.agent_type]?.name || entry.agent_type}
                       </span>
-                      <span className="px-2 py-0.5 rounded bg-[#27272a] text-xs text-[#a1a1aa]">
+                      <span className="px-2 py-0.5 rounded bg-[hsl(var(--color-background-subtle))] text-xs text-[hsl(var(--color-foreground-muted))]">
                         {FEEDBACK_TYPE_LABELS[entry.feedback_type] || entry.feedback_type}
                       </span>
                     </div>
-                    <p className="text-sm text-[#71717a] truncate">
+                    <p className="text-sm text-[hsl(var(--color-foreground-subtle))] truncate">
                       {entry.journal_articles?.title || "Unknown article"}
                     </p>
                     {entry.feedback_text && (
-                      <p className="text-sm text-[#a1a1aa] mt-2">{entry.feedback_text}</p>
+                      <p className="text-sm text-[hsl(var(--color-foreground-muted))] mt-2">{entry.feedback_text}</p>
                     )}
                   </div>
                   <div className="text-right shrink-0">
                     <ScoreDisplay score={entry.feedback_score} />
-                    <p className="text-xs text-[#71717a] mt-1">
+                    <p className="text-xs text-[hsl(var(--color-foreground-subtle))] mt-1">
                       {formatDate(entry.created_at)}
                     </p>
                   </div>
@@ -355,12 +355,12 @@ export default function FeedbackDashboardPage() {
       {/* Submit Feedback Modal */}
       {showSubmitModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-[#18181b] border border-[#27272a] rounded-xl max-w-lg w-full">
-            <div className="p-6 border-b border-[#27272a] flex items-center justify-between">
+          <div className="bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl max-w-lg w-full">
+            <div className="p-6 border-b border-[hsl(var(--color-border))] flex items-center justify-between">
               <h2 className="text-xl font-semibold">Submit Feedback</h2>
               <button
                 onClick={() => setShowSubmitModal(false)}
-                className="p-2 text-[#a1a1aa] hover:text-white hover:bg-[#27272a] rounded-lg transition-colors"
+                className="p-2 text-[hsl(var(--color-foreground-muted))] hover:text-[hsl(var(--color-foreground))] hover:bg-[hsl(var(--color-background-subtle))] rounded-xl transition-colors"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -370,13 +370,13 @@ export default function FeedbackDashboardPage() {
 
             <form onSubmit={handleSubmitFeedback} className="p-6 space-y-4">
               <div>
-                <label className="block text-sm font-medium text-[#a1a1aa] mb-2">
+                <label className="block text-sm font-medium text-[hsl(var(--color-foreground-muted))] mb-2">
                   Article
                 </label>
                 <select
                   value={formArticle}
                   onChange={(e) => setFormArticle(e.target.value)}
-                  className="w-full px-3 py-2 bg-[#0f0f11] border border-[#27272a] rounded-lg text-white focus:border-[#22c55e] focus:outline-none"
+                  className="w-full px-3 py-2 bg-[hsl(var(--color-background-subtle))] border border-[hsl(var(--color-border))] rounded-xl text-[hsl(var(--color-foreground))] focus:border-[hsl(var(--color-accent))] focus:outline-none"
                   required
                 >
                   <option value="">Select an article...</option>
@@ -390,13 +390,13 @@ export default function FeedbackDashboardPage() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-[#a1a1aa] mb-2">
+                  <label className="block text-sm font-medium text-[hsl(var(--color-foreground-muted))] mb-2">
                     Agent
                   </label>
                   <select
                     value={formAgent}
                     onChange={(e) => setFormAgent(e.target.value)}
-                    className="w-full px-3 py-2 bg-[#0f0f11] border border-[#27272a] rounded-lg text-white focus:border-[#22c55e] focus:outline-none"
+                    className="w-full px-3 py-2 bg-[hsl(var(--color-background-subtle))] border border-[hsl(var(--color-border))] rounded-xl text-[hsl(var(--color-foreground))] focus:border-[hsl(var(--color-accent))] focus:outline-none"
                   >
                     {Object.entries(AGENT_LABELS).map(([key, { name, icon }]) => (
                       <option key={key} value={key}>
@@ -407,13 +407,13 @@ export default function FeedbackDashboardPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-[#a1a1aa] mb-2">
+                  <label className="block text-sm font-medium text-[hsl(var(--color-foreground-muted))] mb-2">
                     Feedback Type
                   </label>
                   <select
                     value={formType}
                     onChange={(e) => setFormType(e.target.value)}
-                    className="w-full px-3 py-2 bg-[#0f0f11] border border-[#27272a] rounded-lg text-white focus:border-[#22c55e] focus:outline-none"
+                    className="w-full px-3 py-2 bg-[hsl(var(--color-background-subtle))] border border-[hsl(var(--color-border))] rounded-xl text-[hsl(var(--color-foreground))] focus:border-[hsl(var(--color-accent))] focus:outline-none"
                   >
                     {Object.entries(FEEDBACK_TYPE_LABELS).map(([key, label]) => (
                       <option key={key} value={key}>
@@ -425,7 +425,7 @@ export default function FeedbackDashboardPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-[#a1a1aa] mb-2">
+                <label className="block text-sm font-medium text-[hsl(var(--color-foreground-muted))] mb-2">
                   Score
                 </label>
                 <div className="flex items-center gap-2">
@@ -434,16 +434,16 @@ export default function FeedbackDashboardPage() {
                       key={score}
                       type="button"
                       onClick={() => setFormScore(score)}
-                      className={`p-3 rounded-lg border transition-colors ${
+                      className={`p-3 rounded-xl border transition-colors ${
                         formScore >= score
-                          ? "bg-[#22c55e]/10 border-[#22c55e] text-[#22c55e]"
-                          : "bg-[#0f0f11] border-[#27272a] text-[#3f3f46] hover:border-[#3f3f46]"
+                          ? "bg-[hsl(var(--color-accent))]/10 border-[hsl(var(--color-accent))] text-[hsl(var(--color-accent))]"
+                          : "bg-[hsl(var(--color-background-subtle))] border-[hsl(var(--color-border))] text-[hsl(var(--color-border))] hover:border-[hsl(var(--color-border))]"
                       }`}
                     >
                       <span className="text-xl">★</span>
                     </button>
                   ))}
-                  <span className="ml-4 text-sm text-[#71717a]">
+                  <span className="ml-4 text-sm text-[hsl(var(--color-foreground-subtle))]">
                     {formScore === 1 && "Poor"}
                     {formScore === 2 && "Below Average"}
                     {formScore === 3 && "Average"}
@@ -454,13 +454,13 @@ export default function FeedbackDashboardPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-[#a1a1aa] mb-2">
+                <label className="block text-sm font-medium text-[hsl(var(--color-foreground-muted))] mb-2">
                   Comments (Optional)
                 </label>
                 <textarea
                   value={formText}
                   onChange={(e) => setFormText(e.target.value)}
-                  className="w-full px-3 py-2 bg-[#0f0f11] border border-[#27272a] rounded-lg text-white focus:border-[#22c55e] focus:outline-none resize-none"
+                  className="w-full px-3 py-2 bg-[hsl(var(--color-background-subtle))] border border-[hsl(var(--color-border))] rounded-xl text-[hsl(var(--color-foreground))] focus:border-[hsl(var(--color-accent))] focus:outline-none resize-none"
                   rows={3}
                   placeholder="What could be improved? What worked well?"
                 />
@@ -470,14 +470,14 @@ export default function FeedbackDashboardPage() {
                 <button
                   type="button"
                   onClick={() => setShowSubmitModal(false)}
-                  className="px-4 py-2 text-[#a1a1aa] hover:text-white transition-colors"
+                  className="px-4 py-2 text-[hsl(var(--color-foreground-muted))] hover:text-[hsl(var(--color-foreground))] transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="px-4 py-2 bg-[#22c55e] text-black rounded-lg font-medium hover:bg-[#16a34a] transition-colors disabled:opacity-50"
+                  className="px-4 py-2 bg-[hsl(var(--color-accent))] text-black rounded-xl font-medium hover:bg-[hsl(var(--color-accent-hover))] transition-colors disabled:opacity-50"
                 >
                   {submitting ? "Submitting..." : "Submit Feedback"}
                 </button>

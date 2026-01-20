@@ -55,11 +55,11 @@ function getStageColor(color: string | null) {
   const colors: Record<string, string> = {
     blue: "bg-blue-500/20 text-blue-400 border-blue-500/30",
     cyan: "bg-cyan-500/20 text-cyan-400 border-cyan-500/30",
-    yellow: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
+    yellow: "bg-yellow-500/20 text-yellow-600 border-yellow-500/30",
     purple: "bg-purple-500/20 text-purple-400 border-purple-500/30",
     orange: "bg-orange-500/20 text-orange-400 border-orange-500/30",
-    green: "bg-green-500/20 text-green-400 border-green-500/30",
-    red: "bg-red-500/20 text-red-400 border-red-500/30",
+    green: "bg-green-500/20 text-green-600 border-green-500/30",
+    red: "bg-red-500/20 text-red-600 border-red-500/30",
   };
   return colors[color || "blue"] || colors.blue;
 }
@@ -290,10 +290,10 @@ export default function LeadDetailPage() {
   if (loading) {
     return (
       <div className="animate-pulse space-y-6">
-        <div className="h-8 w-32 bg-[#222] rounded" />
+        <div className="h-8 w-32 bg-[hsl(var(--color-border))] rounded" />
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 h-96 bg-[#18181b] rounded-xl" />
-          <div className="h-96 bg-[#18181b] rounded-xl" />
+          <div className="lg:col-span-2 h-96 bg-[hsl(var(--color-background-muted))] rounded-xl" />
+          <div className="h-96 bg-[hsl(var(--color-background-muted))] rounded-xl" />
         </div>
       </div>
     );
@@ -302,8 +302,8 @@ export default function LeadDetailPage() {
   if (!lead) {
     return (
       <div className="text-center py-12">
-        <p className="text-[#71717a]">Lead not found</p>
-        <Link href="/admin/leads" className="text-[#22c55e] hover:underline mt-2 inline-block">
+        <p className="text-[hsl(var(--color-foreground-subtle))]">Lead not found</p>
+        <Link href="/admin/leads" className="text-[hsl(var(--color-accent))] hover:underline mt-2 inline-block">
           Back to leads
         </Link>
       </div>
@@ -317,14 +317,14 @@ export default function LeadDetailPage() {
         <div className="flex items-center gap-4">
           <Link
             href="/admin/leads"
-            className="p-2 hover:bg-[#27272a] rounded-lg transition-colors"
+            className="p-2 hover:bg-[hsl(var(--color-background-subtle))] rounded-xl transition-colors"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 19l-7-7 7-7" />
             </svg>
           </Link>
           <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-full bg-[#22c55e]/20 flex items-center justify-center text-[#22c55e] font-semibold text-xl">
+            <div className="w-14 h-14 rounded-full bg-[hsl(var(--color-accent))]/20 flex items-center justify-center text-[hsl(var(--color-accent))] font-semibold text-xl">
               {lead.name.charAt(0).toUpperCase()}
             </div>
             <div>
@@ -335,17 +335,17 @@ export default function LeadDetailPage() {
         </div>
 
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2 px-3 py-1.5 bg-[#27272a] rounded-lg">
-            <span className="text-[#a1a1aa] text-sm">Score:</span>
-            <span className="font-semibold text-white">{lead.score}</span>
+          <div className="flex items-center gap-2 px-3 py-1.5 bg-[hsl(var(--color-background-subtle))] rounded-xl">
+            <span className="text-[hsl(var(--color-foreground-muted))] text-sm">Score:</span>
+            <span className="font-semibold text-[hsl(var(--color-foreground))]">{lead.score}</span>
           </div>
           <select
             value={lead.stage?.id || ""}
             onChange={(e) => handleStageChange(e.target.value)}
-            className={`px-4 py-2 rounded-lg text-sm font-medium border cursor-pointer focus:outline-none ${getStageColor(lead.stage?.color || null)}`}
+            className={`px-4 py-2 rounded-xl text-sm font-medium border cursor-pointer focus:outline-none ${getStageColor(lead.stage?.color || null)}`}
           >
             {stages.map((stage) => (
-              <option key={stage.id} value={stage.id} className="bg-[#18181b] text-white">
+              <option key={stage.id} value={stage.id} className="bg-[hsl(var(--color-background-muted))] text-[hsl(var(--color-foreground))]">
                 {stage.name}
               </option>
             ))}
@@ -357,77 +357,77 @@ export default function LeadDetailPage() {
         {/* Main Content */}
         <div className="lg:col-span-2 space-y-6">
           {/* Message */}
-          <div className="bg-[#18181b] border border-[#27272a] rounded-xl p-6">
+          <div className="bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl p-6">
             <h2 className="text-lg font-semibold mb-4">Project Details</h2>
             <div className="prose prose-invert max-w-none">
-              <p className="text-[#ccc] whitespace-pre-wrap">{lead.message || "No message provided"}</p>
+              <p className="text-[hsl(var(--color-foreground-muted))] whitespace-pre-wrap">{lead.message || "No message provided"}</p>
             </div>
           </div>
 
           {/* Details Grid */}
-          <div className="bg-[#18181b] border border-[#27272a] rounded-xl p-6">
+          <div className="bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl p-6">
             <h2 className="text-lg font-semibold mb-4">Lead Information</h2>
             <div className="grid grid-cols-2 gap-6">
               <div>
-                <p className="text-[#71717a] text-sm mb-1">Email</p>
-                <a href={`mailto:${lead.email}`} className="text-[#22c55e] hover:underline">
+                <p className="text-[hsl(var(--color-foreground-subtle))] text-sm mb-1">Email</p>
+                <a href={`mailto:${lead.email}`} className="text-[hsl(var(--color-accent))] hover:underline">
                   {lead.email}
                 </a>
               </div>
               {lead.phone && (
                 <div>
-                  <p className="text-[#71717a] text-sm mb-1">Phone</p>
-                  <a href={`tel:${lead.phone}`} className="hover:text-[#22c55e]">
+                  <p className="text-[hsl(var(--color-foreground-subtle))] text-sm mb-1">Phone</p>
+                  <a href={`tel:${lead.phone}`} className="hover:text-[hsl(var(--color-accent))]">
                     {lead.phone}
                   </a>
                 </div>
               )}
               <div>
-                <p className="text-[#71717a] text-sm mb-1">Service Interest</p>
-                <p className="text-white">{formatService(lead.service_interest)}</p>
+                <p className="text-[hsl(var(--color-foreground-subtle))] text-sm mb-1">Service Interest</p>
+                <p className="text-[hsl(var(--color-foreground))]">{formatService(lead.service_interest)}</p>
               </div>
               <div>
-                <p className="text-[#71717a] text-sm mb-1">Budget Range</p>
-                <p className="text-white">{formatBudget(lead.budget_range)}</p>
+                <p className="text-[hsl(var(--color-foreground-subtle))] text-sm mb-1">Budget Range</p>
+                <p className="text-[hsl(var(--color-foreground))]">{formatBudget(lead.budget_range)}</p>
               </div>
               <div>
-                <p className="text-[#71717a] text-sm mb-1">Timeline</p>
-                <p className="text-white">{formatTimeline(lead.timeline)}</p>
+                <p className="text-[hsl(var(--color-foreground-subtle))] text-sm mb-1">Timeline</p>
+                <p className="text-[hsl(var(--color-foreground))]">{formatTimeline(lead.timeline)}</p>
               </div>
               <div>
-                <p className="text-[#71717a] text-sm mb-1">Submitted</p>
-                <p className="text-white">{formatDate(lead.created_at)}</p>
+                <p className="text-[hsl(var(--color-foreground-subtle))] text-sm mb-1">Submitted</p>
+                <p className="text-[hsl(var(--color-foreground))]">{formatDate(lead.created_at)}</p>
               </div>
             </div>
           </div>
 
           {/* Attribution */}
           {(lead.utm_source || lead.landing_page) && (
-            <div className="bg-[#18181b] border border-[#27272a] rounded-xl p-6">
+            <div className="bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl p-6">
               <h2 className="text-lg font-semibold mb-4">Attribution</h2>
               <div className="grid grid-cols-2 gap-6">
                 {lead.utm_source && (
                   <div>
-                    <p className="text-[#71717a] text-sm mb-1">Source</p>
-                    <p className="text-white">{lead.utm_source}</p>
+                    <p className="text-[hsl(var(--color-foreground-subtle))] text-sm mb-1">Source</p>
+                    <p className="text-[hsl(var(--color-foreground))]">{lead.utm_source}</p>
                   </div>
                 )}
                 {lead.utm_medium && (
                   <div>
-                    <p className="text-[#71717a] text-sm mb-1">Medium</p>
-                    <p className="text-white">{lead.utm_medium}</p>
+                    <p className="text-[hsl(var(--color-foreground-subtle))] text-sm mb-1">Medium</p>
+                    <p className="text-[hsl(var(--color-foreground))]">{lead.utm_medium}</p>
                   </div>
                 )}
                 {lead.utm_campaign && (
                   <div>
-                    <p className="text-[#71717a] text-sm mb-1">Campaign</p>
-                    <p className="text-white">{lead.utm_campaign}</p>
+                    <p className="text-[hsl(var(--color-foreground-subtle))] text-sm mb-1">Campaign</p>
+                    <p className="text-[hsl(var(--color-foreground))]">{lead.utm_campaign}</p>
                   </div>
                 )}
                 {lead.landing_page && (
                   <div>
-                    <p className="text-[#71717a] text-sm mb-1">Landing Page</p>
-                    <p className="text-white">{lead.landing_page}</p>
+                    <p className="text-[hsl(var(--color-foreground-subtle))] text-sm mb-1">Landing Page</p>
+                    <p className="text-[hsl(var(--color-foreground))]">{lead.landing_page}</p>
                   </div>
                 )}
               </div>
@@ -435,14 +435,14 @@ export default function LeadDetailPage() {
           )}
 
           {/* AI Intelligence */}
-          <div className="bg-[#18181b] border border-[#27272a] rounded-xl p-6">
+          <div className="bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl p-6">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-semibold">AI Intelligence</h2>
               {!analysis && (
                 <button
                   onClick={handleAnalyze}
                   disabled={analyzing}
-                  className="px-4 py-2 bg-[#22c55e] text-black text-sm font-medium rounded-lg hover:bg-[#16a34a] transition-colors disabled:opacity-50"
+                  className="px-4 py-2 bg-[hsl(var(--color-accent))] text-black text-sm font-medium rounded-xl hover:bg-[hsl(var(--color-accent-hover))] transition-colors disabled:opacity-50"
                 >
                   {analyzing ? (
                     <span className="flex items-center gap-2">
@@ -463,15 +463,15 @@ export default function LeadDetailPage() {
               <div className="space-y-6">
                 {/* Score Cards */}
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="p-4 bg-[#27272a] rounded-lg">
-                    <p className="text-[#71717a] text-sm mb-1">Fit Score</p>
-                    <p className={`text-2xl font-semibold ${analysis.fit_score >= 0.7 ? 'text-green-400' : analysis.fit_score >= 0.4 ? 'text-yellow-400' : 'text-red-400'}`}>
+                  <div className="p-4 bg-[hsl(var(--color-background-subtle))] rounded-xl">
+                    <p className="text-[hsl(var(--color-foreground-subtle))] text-sm mb-1">Fit Score</p>
+                    <p className={`text-2xl font-semibold ${analysis.fit_score >= 0.7 ? 'text-green-600' : analysis.fit_score >= 0.4 ? 'text-yellow-600' : 'text-red-600'}`}>
                       {Math.round(analysis.fit_score * 100)}%
                     </p>
                   </div>
-                  <div className="p-4 bg-[#27272a] rounded-lg">
-                    <p className="text-[#71717a] text-sm mb-1">Scope Risk</p>
-                    <p className={`text-2xl font-semibold ${analysis.scope_creep_risk < 0.3 ? 'text-green-400' : analysis.scope_creep_risk < 0.7 ? 'text-yellow-400' : 'text-red-400'}`}>
+                  <div className="p-4 bg-[hsl(var(--color-background-subtle))] rounded-xl">
+                    <p className="text-[hsl(var(--color-foreground-subtle))] text-sm mb-1">Scope Risk</p>
+                    <p className={`text-2xl font-semibold ${analysis.scope_creep_risk < 0.3 ? 'text-green-600' : analysis.scope_creep_risk < 0.7 ? 'text-yellow-600' : 'text-red-600'}`}>
                       {Math.round(analysis.scope_creep_risk * 100)}%
                     </p>
                   </div>
@@ -480,22 +480,22 @@ export default function LeadDetailPage() {
                 {/* Classification */}
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <p className="text-[#71717a] text-sm mb-1">Project Type</p>
-                    <p className="text-white font-medium">{analysis.project_type}</p>
+                    <p className="text-[hsl(var(--color-foreground-subtle))] text-sm mb-1">Project Type</p>
+                    <p className="text-[hsl(var(--color-foreground))] font-medium">{analysis.project_type}</p>
                   </div>
                   <div>
-                    <p className="text-[#71717a] text-sm mb-1">Complexity</p>
-                    <p className="text-white font-medium">{analysis.complexity}</p>
+                    <p className="text-[hsl(var(--color-foreground-subtle))] text-sm mb-1">Complexity</p>
+                    <p className="text-[hsl(var(--color-foreground))] font-medium">{analysis.complexity}</p>
                   </div>
                 </div>
 
                 {/* Recommended Stack */}
                 {analysis.recommended_stack && analysis.recommended_stack.length > 0 && (
                   <div>
-                    <p className="text-[#71717a] text-sm mb-2">Recommended Stack</p>
+                    <p className="text-[hsl(var(--color-foreground-subtle))] text-sm mb-2">Recommended Stack</p>
                     <div className="flex flex-wrap gap-2">
                       {analysis.recommended_stack.map((tech) => (
-                        <span key={tech} className="px-3 py-1 bg-[#27272a] text-[#a1a1aa] text-sm rounded-full">
+                        <span key={tech} className="px-3 py-1 bg-[hsl(var(--color-background-subtle))] text-[hsl(var(--color-foreground-muted))] text-sm rounded-full">
                           {tech}
                         </span>
                       ))}
@@ -507,10 +507,10 @@ export default function LeadDetailPage() {
                 <div className="grid grid-cols-2 gap-4">
                   {analysis.green_flags && analysis.green_flags.length > 0 && (
                     <div>
-                      <p className="text-[#71717a] text-sm mb-2">Green Flags</p>
+                      <p className="text-[hsl(var(--color-foreground-subtle))] text-sm mb-2">Green Flags</p>
                       <div className="space-y-1">
                         {analysis.green_flags.map((flag, i) => (
-                          <div key={i} className="flex items-center gap-2 text-green-400 text-sm">
+                          <div key={i} className="flex items-center gap-2 text-green-600 text-sm">
                             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                             </svg>
@@ -522,10 +522,10 @@ export default function LeadDetailPage() {
                   )}
                   {analysis.red_flags && analysis.red_flags.length > 0 && (
                     <div>
-                      <p className="text-[#71717a] text-sm mb-2">Red Flags</p>
+                      <p className="text-[hsl(var(--color-foreground-subtle))] text-sm mb-2">Red Flags</p>
                       <div className="space-y-1">
                         {analysis.red_flags.map((flag, i) => (
-                          <div key={i} className="flex items-center gap-2 text-red-400 text-sm">
+                          <div key={i} className="flex items-center gap-2 text-red-600 text-sm">
                             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                             </svg>
@@ -539,7 +539,7 @@ export default function LeadDetailPage() {
 
                 {/* Review Status */}
                 {analysis.requires_review && (
-                  <div className="p-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg flex items-center gap-2 text-yellow-400">
+                  <div className="p-3 bg-yellow-500/10 border border-yellow-500/30 rounded-xl flex items-center gap-2 text-yellow-600">
                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                     </svg>
@@ -548,13 +548,13 @@ export default function LeadDetailPage() {
                 )}
 
                 {/* Analysis Mode */}
-                <p className="text-xs text-[#71717a]">
+                <p className="text-xs text-[hsl(var(--color-foreground-subtle))]">
                   Analyzed via {analysis.analysis_mode === 'ml_service' ? 'ML Service' : 'Rule-based Engine'}
                   {analysis.analyzed_at && ` • ${formatDate(analysis.analyzed_at)}`}
                 </p>
               </div>
             ) : (
-              <div className="text-center py-8 text-[#71717a]">
+              <div className="text-center py-8 text-[hsl(var(--color-foreground-subtle))]">
                 <svg className="w-12 h-12 mx-auto mb-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                 </svg>
@@ -567,19 +567,19 @@ export default function LeadDetailPage() {
         {/* Activity Timeline */}
         <div className="space-y-6">
           {/* Add Note */}
-          <div className="bg-[#18181b] border border-[#27272a] rounded-xl p-4">
+          <div className="bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl p-4">
             <textarea
               value={note}
               onChange={(e) => setNote(e.target.value)}
               placeholder="Add a note..."
               rows={3}
-              className="w-full bg-transparent border-none resize-none text-white placeholder-[#666] focus:outline-none"
+              className="w-full bg-transparent border-none resize-none text-[hsl(var(--color-foreground))] placeholder-[hsl(var(--color-foreground-subtle))] focus:outline-none"
             />
             <div className="flex justify-end">
               <button
                 onClick={handleAddNote}
                 disabled={!note.trim() || addingNote}
-                className="px-4 py-2 bg-[#22c55e] text-black font-medium rounded-lg hover:bg-[#16a34a] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-4 py-2 bg-[hsl(var(--color-accent))] text-black font-medium rounded-xl hover:bg-[hsl(var(--color-accent-hover))] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {addingNote ? "Adding..." : "Add Note"}
               </button>
@@ -587,43 +587,43 @@ export default function LeadDetailPage() {
           </div>
 
           {/* Timeline */}
-          <div className="bg-[#18181b] border border-[#27272a] rounded-xl p-6">
+          <div className="bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl p-6">
             <h2 className="text-lg font-semibold mb-4">Activity</h2>
             <div className="space-y-4">
               {activities.length > 0 ? (
                 activities.map((activity, index) => (
                   <div key={activity.id} className="flex gap-3">
                     <div className="relative">
-                      <div className="w-8 h-8 rounded-full bg-[#27272a] flex items-center justify-center text-[#a1a1aa]">
+                      <div className="w-8 h-8 rounded-full bg-[hsl(var(--color-background-subtle))] flex items-center justify-center text-[hsl(var(--color-foreground-muted))]">
                         {getActivityIcon(activity.type)}
                       </div>
                       {index < activities.length - 1 && (
-                        <div className="absolute top-8 left-1/2 -translate-x-1/2 w-px h-full bg-[#222]" />
+                        <div className="absolute top-8 left-1/2 -translate-x-1/2 w-px h-full bg-[hsl(var(--color-border))]" />
                       )}
                     </div>
                     <div className="flex-1 pb-4">
-                      <p className="text-sm text-[#e4e4e7]">{activity.description}</p>
-                      <p className="text-xs text-[#71717a] mt-1">
+                      <p className="text-sm text-[hsl(var(--color-foreground))]">{activity.description}</p>
+                      <p className="text-xs text-[hsl(var(--color-foreground-subtle))] mt-1">
                         {formatDate(activity.created_at)}
                       </p>
                     </div>
                   </div>
                 ))
               ) : (
-                <p className="text-[#71717a] text-sm">No activity yet</p>
+                <p className="text-[hsl(var(--color-foreground-subtle))] text-sm">No activity yet</p>
               )}
             </div>
           </div>
 
           {/* Quick Actions */}
-          <div className="bg-[#18181b] border border-[#27272a] rounded-xl p-6">
+          <div className="bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl p-6">
             <h2 className="text-lg font-semibold mb-4">Quick Actions</h2>
             <div className="space-y-2">
               <a
                 href={`mailto:${lead.email}`}
-                className="flex items-center gap-3 px-4 py-3 bg-[#27272a] hover:bg-[#222] rounded-lg transition-colors"
+                className="flex items-center gap-3 px-4 py-3 bg-[hsl(var(--color-background-subtle))] hover:bg-[hsl(var(--color-border))] rounded-xl transition-colors"
               >
-                <svg className="w-5 h-5 text-[#a1a1aa]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 text-[hsl(var(--color-foreground-muted))]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                 </svg>
                 <span>Send Email</span>
@@ -631,9 +631,9 @@ export default function LeadDetailPage() {
               {lead.phone && (
                 <a
                   href={`tel:${lead.phone}`}
-                  className="flex items-center gap-3 px-4 py-3 bg-[#27272a] hover:bg-[#222] rounded-lg transition-colors"
+                  className="flex items-center gap-3 px-4 py-3 bg-[hsl(var(--color-background-subtle))] hover:bg-[hsl(var(--color-border))] rounded-xl transition-colors"
                 >
-                  <svg className="w-5 h-5 text-[#a1a1aa]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 text-[hsl(var(--color-foreground-muted))]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                   </svg>
                   <span>Call</span>

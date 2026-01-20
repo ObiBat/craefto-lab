@@ -253,18 +253,6 @@ export default function AnalyticsPage() {
         />
       </div>
 
-      {/* Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl p-6">
-          <h2 className="text-lg font-semibold mb-6">Page Views</h2>
-          <SimpleChart data={data?.dailyData || []} dataKey="views" color="bg-[hsl(var(--color-accent))]" />
-        </div>
-        <div className="bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl p-6">
-          <h2 className="text-lg font-semibold mb-6">Leads</h2>
-          <SimpleChart data={data?.dailyData || []} dataKey="leads" color="bg-blue-500" />
-        </div>
-      </div>
-
       {/* Tables */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Top Pages */}

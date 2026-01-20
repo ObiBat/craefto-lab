@@ -230,10 +230,10 @@ export default function ArticleEditorPage() {
   if (loading) {
     return (
       <div className="animate-pulse space-y-6">
-        <div className="h-8 w-48 bg-[#222] rounded" />
+        <div className="h-8 w-48 bg-[hsl(var(--color-border))] rounded" />
         <div className="space-y-4">
           {[...Array(6)].map((_, i) => (
-            <div key={i} className="h-12 bg-[#18181b] rounded-lg" />
+            <div key={i} className="h-12 bg-[hsl(var(--color-background-muted))] rounded-xl" />
           ))}
         </div>
       </div>
@@ -247,7 +247,7 @@ export default function ArticleEditorPage() {
         <div className="flex items-center gap-4">
           <Link
             href="/admin/journal"
-            className="p-2 text-[#a1a1aa] hover:text-white hover:bg-[#27272a] rounded-lg transition-colors"
+            className="p-2 text-[hsl(var(--color-foreground-muted))] hover:text-[hsl(var(--color-foreground))] hover:bg-[hsl(var(--color-background-subtle))] rounded-xl transition-colors"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -260,7 +260,7 @@ export default function ArticleEditorPage() {
         {!isNew && (
           <button
             onClick={handleDelete}
-            className="px-4 py-2 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg transition-colors"
+            className="px-4 py-2 text-red-600 hover:text-red-300 hover:bg-red-500/10 rounded-xl transition-colors"
           >
             Delete
           </button>
@@ -269,12 +269,12 @@ export default function ArticleEditorPage() {
 
       {/* Alerts */}
       {error && (
-        <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400">
+        <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-600">
           {error}
         </div>
       )}
       {success && (
-        <div className="mb-6 p-4 bg-green-500/10 border border-green-500/20 rounded-lg text-green-400">
+        <div className="mb-6 p-4 bg-green-500/10 border border-green-500/20 rounded-xl text-green-600">
           {success}
         </div>
       )}
@@ -282,7 +282,7 @@ export default function ArticleEditorPage() {
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Title */}
         <div>
-          <label className="block text-sm font-medium text-[#a1a1aa] mb-2">
+          <label className="block text-sm font-medium text-[hsl(var(--color-foreground-muted))] mb-2">
             Title *
           </label>
           <input
@@ -291,14 +291,14 @@ export default function ArticleEditorPage() {
             value={formData.title}
             onChange={handleChange}
             required
-            className="w-full px-4 py-3 bg-[#18181b] border border-[#27272a] rounded-lg text-white focus:outline-none focus:border-[#22c55e]"
+            className="w-full px-4 py-3 bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl text-[hsl(var(--color-foreground))] focus:outline-none focus:border-[hsl(var(--color-accent))]"
             placeholder="Article title"
           />
         </div>
 
         {/* Slug */}
         <div>
-          <label className="block text-sm font-medium text-[#a1a1aa] mb-2">
+          <label className="block text-sm font-medium text-[hsl(var(--color-foreground-muted))] mb-2">
             Slug *
           </label>
           <input
@@ -307,14 +307,14 @@ export default function ArticleEditorPage() {
             value={formData.slug}
             onChange={handleChange}
             required
-            className="w-full px-4 py-3 bg-[#18181b] border border-[#27272a] rounded-lg text-white focus:outline-none focus:border-[#22c55e]"
+            className="w-full px-4 py-3 bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl text-[hsl(var(--color-foreground))] focus:outline-none focus:border-[hsl(var(--color-accent))]"
             placeholder="article-slug"
           />
         </div>
 
         {/* Subtitle */}
         <div>
-          <label className="block text-sm font-medium text-[#a1a1aa] mb-2">
+          <label className="block text-sm font-medium text-[hsl(var(--color-foreground-muted))] mb-2">
             Subtitle
           </label>
           <input
@@ -322,7 +322,7 @@ export default function ArticleEditorPage() {
             name="subtitle"
             value={formData.subtitle || ""}
             onChange={handleChange}
-            className="w-full px-4 py-3 bg-[#18181b] border border-[#27272a] rounded-lg text-white focus:outline-none focus:border-[#22c55e]"
+            className="w-full px-4 py-3 bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl text-[hsl(var(--color-foreground))] focus:outline-none focus:border-[hsl(var(--color-accent))]"
             placeholder="A brief subtitle for the article"
           />
         </div>
@@ -330,7 +330,7 @@ export default function ArticleEditorPage() {
         {/* Author & Pillar */}
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-[#a1a1aa] mb-2">
+            <label className="block text-sm font-medium text-[hsl(var(--color-foreground-muted))] mb-2">
               Author *
             </label>
             <select
@@ -338,7 +338,7 @@ export default function ArticleEditorPage() {
               value={formData.author_id}
               onChange={handleChange}
               required
-              className="w-full px-4 py-3 bg-[#18181b] border border-[#27272a] rounded-lg text-white focus:outline-none focus:border-[#22c55e]"
+              className="w-full px-4 py-3 bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl text-[hsl(var(--color-foreground))] focus:outline-none focus:border-[hsl(var(--color-accent))]"
             >
               <option value="">Select author</option>
               {authors.map((author) => (
@@ -349,7 +349,7 @@ export default function ArticleEditorPage() {
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-[#a1a1aa] mb-2">
+            <label className="block text-sm font-medium text-[hsl(var(--color-foreground-muted))] mb-2">
               Pillar *
             </label>
             <select
@@ -357,7 +357,7 @@ export default function ArticleEditorPage() {
               value={formData.pillar_id}
               onChange={handleChange}
               required
-              className="w-full px-4 py-3 bg-[#18181b] border border-[#27272a] rounded-lg text-white focus:outline-none focus:border-[#22c55e]"
+              className="w-full px-4 py-3 bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl text-[hsl(var(--color-foreground))] focus:outline-none focus:border-[hsl(var(--color-accent))]"
             >
               <option value="">Select pillar</option>
               {pillars.map((pillar) => (
@@ -372,14 +372,14 @@ export default function ArticleEditorPage() {
         {/* Content Type & Status */}
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-[#a1a1aa] mb-2">
+            <label className="block text-sm font-medium text-[hsl(var(--color-foreground-muted))] mb-2">
               Content Type
             </label>
             <select
               name="content_type"
               value={formData.content_type}
               onChange={handleChange}
-              className="w-full px-4 py-3 bg-[#18181b] border border-[#27272a] rounded-lg text-white focus:outline-none focus:border-[#22c55e]"
+              className="w-full px-4 py-3 bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl text-[hsl(var(--color-foreground))] focus:outline-none focus:border-[hsl(var(--color-accent))]"
             >
               <option value="article">Article</option>
               <option value="deep_dive">Deep Dive</option>
@@ -389,14 +389,14 @@ export default function ArticleEditorPage() {
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-[#a1a1aa] mb-2">
+            <label className="block text-sm font-medium text-[hsl(var(--color-foreground-muted))] mb-2">
               Status
             </label>
             <select
               name="status"
               value={formData.status}
               onChange={handleChange}
-              className="w-full px-4 py-3 bg-[#18181b] border border-[#27272a] rounded-lg text-white focus:outline-none focus:border-[#22c55e]"
+              className="w-full px-4 py-3 bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl text-[hsl(var(--color-foreground))] focus:outline-none focus:border-[hsl(var(--color-accent))]"
             >
               <option value="draft">Draft</option>
               <option value="review">Review</option>
@@ -410,7 +410,7 @@ export default function ArticleEditorPage() {
         {/* Featured Image */}
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-[#a1a1aa] mb-2">
+            <label className="block text-sm font-medium text-[hsl(var(--color-foreground-muted))] mb-2">
               Featured Image URL
             </label>
             <input
@@ -418,12 +418,12 @@ export default function ArticleEditorPage() {
               name="featured_image_url"
               value={formData.featured_image_url || ""}
               onChange={handleChange}
-              className="w-full px-4 py-3 bg-[#18181b] border border-[#27272a] rounded-lg text-white focus:outline-none focus:border-[#22c55e]"
+              className="w-full px-4 py-3 bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl text-[hsl(var(--color-foreground))] focus:outline-none focus:border-[hsl(var(--color-accent))]"
               placeholder="https://..."
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-[#a1a1aa] mb-2">
+            <label className="block text-sm font-medium text-[hsl(var(--color-foreground-muted))] mb-2">
               Image Alt Text
             </label>
             <input
@@ -431,7 +431,7 @@ export default function ArticleEditorPage() {
               name="featured_image_alt"
               value={formData.featured_image_alt || ""}
               onChange={handleChange}
-              className="w-full px-4 py-3 bg-[#18181b] border border-[#27272a] rounded-lg text-white focus:outline-none focus:border-[#22c55e]"
+              className="w-full px-4 py-3 bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl text-[hsl(var(--color-foreground))] focus:outline-none focus:border-[hsl(var(--color-accent))]"
               placeholder="Describe the image"
             />
           </div>
@@ -439,7 +439,7 @@ export default function ArticleEditorPage() {
 
         {/* Excerpt */}
         <div>
-          <label className="block text-sm font-medium text-[#a1a1aa] mb-2">
+          <label className="block text-sm font-medium text-[hsl(var(--color-foreground-muted))] mb-2">
             Excerpt
           </label>
           <textarea
@@ -447,16 +447,16 @@ export default function ArticleEditorPage() {
             value={formData.excerpt || ""}
             onChange={handleChange}
             rows={3}
-            className="w-full px-4 py-3 bg-[#18181b] border border-[#27272a] rounded-lg text-white focus:outline-none focus:border-[#22c55e] resize-none"
+            className="w-full px-4 py-3 bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl text-[hsl(var(--color-foreground))] focus:outline-none focus:border-[hsl(var(--color-accent))] resize-none"
             placeholder="A brief summary of the article"
           />
         </div>
 
         {/* Content */}
         <div>
-          <label className="block text-sm font-medium text-[#a1a1aa] mb-2">
+          <label className="block text-sm font-medium text-[hsl(var(--color-foreground-muted))] mb-2">
             Content (MDX)
-            <span className="text-[#71717a] ml-2">
+            <span className="text-[hsl(var(--color-foreground-subtle))] ml-2">
               {formData.reading_time} min read
             </span>
           </label>
@@ -465,17 +465,17 @@ export default function ArticleEditorPage() {
             value={formData.content || ""}
             onChange={handleChange}
             rows={20}
-            className="w-full px-4 py-3 bg-[#18181b] border border-[#27272a] rounded-lg text-white font-mono text-sm focus:outline-none focus:border-[#22c55e] resize-y"
+            className="w-full px-4 py-3 bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl text-[hsl(var(--color-foreground))] font-mono text-sm focus:outline-none focus:border-[hsl(var(--color-accent))] resize-y"
             placeholder="Write your article content in MDX format..."
           />
         </div>
 
         {/* SEO */}
-        <div className="border-t border-[#27272a] pt-6">
+        <div className="border-t border-[hsl(var(--color-border))] pt-6">
           <h3 className="text-lg font-medium mb-4">SEO Settings</h3>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-[#a1a1aa] mb-2">
+              <label className="block text-sm font-medium text-[hsl(var(--color-foreground-muted))] mb-2">
                 Meta Title
               </label>
               <input
@@ -483,12 +483,12 @@ export default function ArticleEditorPage() {
                 name="meta_title"
                 value={formData.meta_title || ""}
                 onChange={handleChange}
-                className="w-full px-4 py-3 bg-[#18181b] border border-[#27272a] rounded-lg text-white focus:outline-none focus:border-[#22c55e]"
+                className="w-full px-4 py-3 bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl text-[hsl(var(--color-foreground))] focus:outline-none focus:border-[hsl(var(--color-accent))]"
                 placeholder="SEO title (defaults to article title)"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-[#a1a1aa] mb-2">
+              <label className="block text-sm font-medium text-[hsl(var(--color-foreground-muted))] mb-2">
                 Meta Description
               </label>
               <textarea
@@ -496,7 +496,7 @@ export default function ArticleEditorPage() {
                 value={formData.meta_description || ""}
                 onChange={handleChange}
                 rows={2}
-                className="w-full px-4 py-3 bg-[#18181b] border border-[#27272a] rounded-lg text-white focus:outline-none focus:border-[#22c55e] resize-none"
+                className="w-full px-4 py-3 bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl text-[hsl(var(--color-foreground))] focus:outline-none focus:border-[hsl(var(--color-accent))] resize-none"
                 placeholder="SEO description (defaults to excerpt)"
               />
             </div>
@@ -504,17 +504,17 @@ export default function ArticleEditorPage() {
         </div>
 
         {/* Submit */}
-        <div className="flex items-center justify-end gap-4 pt-6 border-t border-[#27272a]">
+        <div className="flex items-center justify-end gap-4 pt-6 border-t border-[hsl(var(--color-border))]">
           <Link
             href="/admin/journal"
-            className="px-6 py-3 text-[#a1a1aa] hover:text-white transition-colors"
+            className="px-6 py-3 text-[hsl(var(--color-foreground-muted))] hover:text-[hsl(var(--color-foreground))] transition-colors"
           >
             Cancel
           </Link>
           <button
             type="submit"
             disabled={saving}
-            className="px-6 py-3 bg-[#22c55e] text-black font-medium rounded-lg hover:bg-[#16a34a] transition-colors disabled:opacity-50"
+            className="px-6 py-3 bg-[hsl(var(--color-accent))] text-black font-medium rounded-xl hover:bg-[hsl(var(--color-accent-hover))] transition-colors disabled:opacity-50"
           >
             {saving ? "Saving..." : isNew ? "Create Article" : "Save Changes"}
           </button>
