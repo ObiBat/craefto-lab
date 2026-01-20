@@ -111,19 +111,19 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-[#22c55e] border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-[hsl(var(--color-background))] flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-[hsl(var(--color-accent))] border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
   if (!isAuthenticated) {
     return (
-      <div className="admin-theme min-h-screen flex items-center justify-center p-4">
+      <div className="min-h-screen bg-[hsl(var(--color-background))] flex items-center justify-center p-4">
         <div className="w-full max-w-sm">
           <div className="text-center mb-8">
-            <h1 className="text-2xl font-semibold mb-2">Craefto Admin</h1>
-            <p className="text-[#71717a]">Enter password to continue</p>
+            <h1 className="text-2xl font-semibold mb-2 text-[hsl(var(--color-foreground))]">Craefto Admin</h1>
+            <p className="text-[hsl(var(--color-foreground-muted))]">Enter password to continue</p>
           </div>
           <form onSubmit={handleLogin} className="space-y-4">
             <input
@@ -131,24 +131,19 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Password"
-              className="w-full px-4 py-3 rounded-lg focus:outline-none transition-colors"
-              style={{
-                backgroundColor: '#18181b',
-                border: '1px solid #3f3f46',
-                color: '#fafafa'
-              }}
+              className="w-full px-4 py-3 rounded-xl bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground))] placeholder:text-[hsl(var(--color-foreground-subtle))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-ring))] transition-colors"
               autoFocus
             />
-            {error && <p className="text-red-400 text-sm">{error}</p>}
+            {error && <p className="text-[hsl(var(--color-error))] text-sm">{error}</p>}
             <button
               type="submit"
-              className="w-full py-3 bg-[#22c55e] text-black font-medium rounded-lg hover:bg-[#16a34a] transition-colors"
+              className="w-full py-3 bg-[hsl(var(--color-primary))] text-[hsl(var(--color-primary-foreground))] font-medium rounded-xl hover:bg-[hsl(var(--color-primary-hover))] transition-colors"
             >
               Login
             </button>
           </form>
           <p className="text-center mt-6">
-            <Link href="/" className="text-sm transition-colors" style={{ color: '#a1a1aa' }}>
+            <Link href="/" className="text-sm text-[hsl(var(--color-foreground-muted))] hover:text-[hsl(var(--color-foreground))] transition-colors">
               ← Back to site
             </Link>
           </p>
@@ -158,13 +153,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }
 
   return (
-    <div className="admin-theme min-h-screen">
+    <div className="min-h-screen bg-[hsl(var(--color-background))]">
       {/* Mobile Header */}
-      <header className="lg:hidden fixed top-0 left-0 right-0 z-50 h-14 px-4 flex items-center justify-between" style={{ backgroundColor: '#0f0f11', borderBottom: '1px solid #27272a' }}>
-        <span className="text-lg font-semibold">Craefto Admin</span>
+      <header className="lg:hidden fixed top-0 left-0 right-0 z-50 h-14 px-4 flex items-center justify-between bg-[hsl(var(--color-background-subtle))] border-b border-[hsl(var(--color-border))]">
+        <span className="text-lg font-semibold text-[hsl(var(--color-foreground))]">Craefto Admin</span>
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="p-2 rounded-lg hover:bg-[#18181b] transition-colors"
+          className="p-2 rounded-lg hover:bg-[hsl(var(--color-background-muted))] transition-colors text-[hsl(var(--color-foreground))]"
           aria-label="Toggle menu"
         >
           {mobileMenuOpen ? (
@@ -182,24 +177,23 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {/* Mobile Menu Overlay */}
       {mobileMenuOpen && (
         <div
-          className="lg:hidden fixed inset-0 z-40 bg-black/50"
+          className="lg:hidden fixed inset-0 z-40 bg-[hsl(var(--color-foreground))]/20"
           onClick={() => setMobileMenuOpen(false)}
         />
       )}
 
       {/* Sidebar - Desktop always visible, Mobile slides in */}
       <aside
-        className={`fixed left-0 top-0 bottom-0 w-64 p-4 flex flex-col z-50 transform transition-transform duration-300 ease-in-out lg:translate-x-0 ${
+        className={`fixed left-0 top-0 bottom-0 w-64 p-4 flex flex-col z-50 transform transition-transform duration-300 ease-in-out lg:translate-x-0 bg-[hsl(var(--color-background-subtle))] border-r border-[hsl(var(--color-border))] ${
           mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
-        style={{ backgroundColor: '#0f0f11', borderRight: '1px solid #27272a' }}
       >
         {/* Mobile close button area */}
         <div className="lg:hidden h-14 flex items-center justify-between mb-4">
-          <span className="text-lg font-semibold">Craefto Admin</span>
+          <span className="text-lg font-semibold text-[hsl(var(--color-foreground))]">Craefto Admin</span>
           <button
             onClick={() => setMobileMenuOpen(false)}
-            className="p-2 rounded-lg hover:bg-[#18181b] transition-colors"
+            className="p-2 rounded-lg hover:bg-[hsl(var(--color-background-muted))] transition-colors text-[hsl(var(--color-foreground))]"
             aria-label="Close menu"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -210,8 +204,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
         {/* Desktop header */}
         <div className="hidden lg:block mb-8">
-          <span className="text-lg font-semibold block">Craefto Admin</span>
-          <span className="text-sm text-[#71717a] block">CRM & Analytics</span>
+          <span className="text-lg font-semibold block text-[hsl(var(--color-foreground))]">Craefto Admin</span>
+          <span className="text-sm text-[hsl(var(--color-foreground-muted))] block">CRM & Analytics</span>
         </div>
 
         <nav className="flex-1 space-y-1 overflow-y-auto">
@@ -223,10 +217,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 key={item.href}
                 href={item.href}
                 onClick={() => setMobileMenuOpen(false)}
-                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors ${
                   isActive
-                    ? "bg-[#22c55e]/15 text-[#4ade80]"
-                    : "text-[#a1a1aa] hover:text-[#fafafa] hover:bg-[#18181b]"
+                    ? "bg-[hsl(var(--color-accent))] text-[hsl(var(--color-accent-foreground))]"
+                    : "text-[hsl(var(--color-foreground-muted))] hover:text-[hsl(var(--color-foreground))] hover:bg-[hsl(var(--color-background-muted))]"
                 }`}
               >
                 <NavIcon icon={item.icon} />
@@ -236,10 +230,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           })}
         </nav>
 
-        <div className="pt-4" style={{ borderTop: '1px solid #27272a' }}>
+        <div className="pt-4 border-t border-[hsl(var(--color-border))]">
           <button
             onClick={handleLogout}
-            className="flex items-center gap-3 px-3 py-2.5 w-full text-[#a1a1aa] hover:text-[#fafafa] hover:bg-[#18181b] rounded-lg transition-colors"
+            className="flex items-center gap-3 px-3 py-2.5 w-full text-[hsl(var(--color-foreground-muted))] hover:text-[hsl(var(--color-foreground))] hover:bg-[hsl(var(--color-background-muted))] rounded-xl transition-colors"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
