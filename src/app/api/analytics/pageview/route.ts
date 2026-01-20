@@ -26,7 +26,12 @@ export async function POST(request: NextRequest) {
                'unknown';
 
     // Generate session ID based on IP and user agent (simple session tracking)
-    const sessionId = Buffer.from(`${ip}-${userAgent}-${new Date().toDateString()}`).toString('base64').slice(0, 32);
+    // Use crypto hash to avoid collisions from truncation
+    const crypto = await import('crypto');
+    const sessionId = crypto.createHash('sha256')
+      .update(`${ip}-${userAgent}-${new Date().toDateString()}`)
+      .digest('hex')
+      .slice(0, 32);
 
     // Insert page view
     const { error } = await supabase.from('page_views').insert({

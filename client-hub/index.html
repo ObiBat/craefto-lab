@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Operations Hub | Craefto Lab</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Craefto Brand Colors */
+            --bg-primary: #FAF7F2;
+            --bg-secondary: #F3EDE5;
+            --bg-muted: #EAE4DB;
+            --bg-card: #FFFFFF;
+            --bg-dark: #1A1714;
+
+            --text-primary: #1A1714;
+            --text-secondary: #5E5246;
+            --text-muted: #807870;
+
+            --border-color: #E5DFD6;
+            --border-subtle: #EBE6DE;
+            --border-strong: #CCC3B8;
+
+            --accent-sage: #4A7C59;
+            --accent-sage-dim: rgba(74, 124, 89, 0.1);
+            --accent-sage-hover: #3D6B4A;
+
+            --success: #4E8462;
+            --success-dim: rgba(78, 132, 98, 0.1);
+            --warning: #D68A0A;
+            --warning-dim: rgba(214, 138, 10, 0.1);
+            --error: #B83C32;
+            --error-dim: rgba(184, 60, 50, 0.1);
+
+            --shadow-sm: 0 1px 2px rgba(26, 23, 20, 0.05);
+            --shadow-md: 0 4px 12px rgba(26, 23, 20, 0.08);
+            --shadow-lg: 0 8px 24px rgba(26, 23, 20, 0.12);
+
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 14px;
+            --radius-xl: 18px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Space Grotesk', sans-serif;
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .logo {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .logo svg {
+            height: 40px;
+            width: auto;
+        }
+
+        .header h1 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 1.125rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-bottom: 4rem;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.2s ease;
+        }
+
+        .stat-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 1rem;
+            background: var(--accent-sage-dim);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .stat-icon svg {
+            width: 24px;
+            height: 24px;
+            stroke: var(--accent-sage);
+        }
+
+        .stat-value {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+
+        /* Journey Section */
+        .journey-section {
+            margin-bottom: 4rem;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+        }
+
+        .section-header-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--accent-sage-dim);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .section-header-icon svg {
+            width: 20px;
+            height: 20px;
+            stroke: var(--accent-sage);
+        }
+
+        .section-header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .journey-timeline {
+            display: flex;
+            gap: 0;
+            overflow-x: auto;
+            padding: 1rem 0;
+        }
+
+        .journey-step {
+            flex: 1;
+            min-width: 140px;
+            position: relative;
+            text-align: center;
+            padding: 0 1rem;
+        }
+
+        .journey-step::after {
+            content: '';
+            position: absolute;
+            top: 24px;
+            left: 50%;
+            width: 100%;
+            height: 2px;
+            background: var(--border-color);
+        }
+
+        .journey-step:last-child::after {
+            display: none;
+        }
+
+        .step-number {
+            width: 48px;
+            height: 48px;
+            background: var(--bg-card);
+            border: 2px solid var(--accent-sage);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            position: relative;
+            z-index: 1;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 600;
+            color: var(--accent-sage);
+        }
+
+        .step-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        /* Template Cards */
+        .templates-section {
+            margin-bottom: 4rem;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .template-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .template-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--accent-sage);
+        }
+
+        .card-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .card-icon svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .card-icon.sage { background: var(--accent-sage-dim); }
+        .card-icon.sage svg { stroke: var(--accent-sage); }
+
+        .card-icon.success { background: var(--success-dim); }
+        .card-icon.success svg { stroke: var(--success); }
+
+        .card-icon.warning { background: var(--warning-dim); }
+        .card-icon.warning svg { stroke: var(--warning); }
+
+        .card-icon.error { background: var(--error-dim); }
+        .card-icon.error svg { stroke: var(--error); }
+
+        .card-title-area h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .card-title-area span {
+            font-size: 0.8125rem;
+            color: var(--text-muted);
+        }
+
+        .card-body {
+            padding: 1.5rem;
+            flex: 1;
+        }
+
+        .card-body p {
+            font-size: 0.9375rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .card-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .tag {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.625rem;
+            background: var(--bg-secondary);
+            border-radius: 20px;
+            color: var(--text-muted);
+        }
+
+        .card-footer {
+            padding: 1rem 1.5rem;
+            background: var(--bg-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .view-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--accent-sage);
+            text-decoration: none;
+        }
+
+        .view-link svg {
+            width: 16px;
+            height: 16px;
+            stroke: currentColor;
+            transition: transform 0.2s;
+        }
+
+        .template-card:hover .view-link svg {
+            transform: translateX(4px);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding-top: 3rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .footer p {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .footer a {
+            color: var(--accent-sage);
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Print Styles */
+        @media print {
+            .container {
+                padding: 1rem;
+            }
+
+            .template-card {
+                break-inside: avoid;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 2rem 1rem;
+            }
+
+            .header h1 {
+                font-size: 1.75rem;
+            }
+
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .journey-timeline {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .journey-step::after {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <svg width="140" height="100" viewBox="0 0 1054 752" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M749.676 71.1953C726.914 71.1953 704.151 79.1059 681.389 94.927C658.626 109.759 638.833 134.48 622.008 169.089C606.174 203.698 596.277 250.667 592.318 309.996H795.696C830.334 309.996 853.592 303.074 865.468 289.231C877.344 274.398 883.282 253.139 883.282 225.452C883.282 179.966 870.416 142.885 844.685 114.209C818.953 85.5332 787.284 71.1953 749.676 71.1953ZM751.161 752C689.801 752 634.379 740.134 584.896 716.402C536.402 692.671 496.815 658.062 466.135 612.576C432.486 649.162 401.312 677.838 372.611 698.604C344.9 718.38 317.685 732.224 290.963 740.134C264.242 748.045 235.047 752 203.377 752C144.987 752 96.493 735.684 57.8958 703.053C19.2986 670.422 0 623.453 0 562.146C0 530.504 7.42253 501.828 22.2676 476.118C37.1127 450.409 63.339 425.688 100.946 401.957C139.544 378.225 194.47 354.988 265.727 332.245C285.52 325.323 307.788 318.401 332.53 311.479C357.271 304.558 382.508 297.636 408.239 290.714V247.7C408.239 178.483 398.343 132.008 378.549 108.276C359.746 83.5556 327.086 71.1953 280.572 71.1953C262.758 71.1953 241.975 72.6785 218.223 75.645L200.408 163.156C196.45 198.753 185.563 224.957 167.749 241.767C150.925 258.577 130.142 266.982 105.4 266.982C82.6376 266.982 63.8338 261.049 48.9887 249.183C35.1333 236.329 26.2263 219.024 22.2676 197.27C31.1746 138.93 62.8441 91.4661 117.276 54.8797C172.698 18.2932 245.438 0 335.499 0C382.013 0 422.095 7.91059 455.744 23.7318C490.382 38.5641 517.598 62.7903 537.392 96.4103C599.741 32.1368 674.461 0 761.552 0C849.633 0 920.394 27.1926 973.837 81.5779C1027.28 135.963 1054 208.642 1054 299.613C1054 330.267 1051.03 356.965 1045.09 379.708H590.834C593.803 463.758 615.576 527.537 656.152 571.045C697.718 613.565 749.676 634.824 812.025 634.824C855.571 634.824 892.684 626.42 923.363 609.61C954.043 591.811 981.754 569.068 1006.5 541.381L1049.55 579.945C1020.85 634.33 981.259 676.849 930.786 707.503C881.302 737.168 821.427 752 751.161 752ZM173.687 532.481C173.687 572.034 184.574 600.71 206.346 618.509C228.119 635.319 252.861 643.724 280.572 643.724C297.396 643.724 312.736 641.746 326.592 637.791C340.447 633.836 355.787 625.925 372.611 614.059C390.425 602.193 412.693 585.383 439.414 563.629C414.672 509.244 402.301 447.937 402.301 379.708C402.301 374.764 402.301 369.82 402.301 364.876C402.301 359.932 402.796 355.482 403.786 351.527C383.992 357.46 365.189 363.887 347.375 370.809C330.55 376.742 315.705 382.18 302.839 387.124C253.356 406.901 219.212 429.149 200.408 453.87C182.594 477.602 173.687 503.805 173.687 532.481Z" fill="#1A1714"/>
+                </svg>
+            </div>
+            <h1>Client Operations Hub</h1>
+            <p>Your complete toolkit for client acquisition, qualification, and onboarding — built on industry-leading practices.</p>
+        </header>
+
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <polyline points="10 9 9 9 8 9"></polyline>
+                    </svg>
+                </div>
+                <div class="stat-value">8</div>
+                <div class="stat-label">Template Systems</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                        <polyline points="22,6 12,13 2,6"></polyline>
+                    </svg>
+                </div>
+                <div class="stat-value">45+</div>
+                <div class="stat-label">Email Templates</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                </div>
+                <div class="stat-value">60%</div>
+                <div class="stat-label">Time Saved</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                </div>
+                <div class="stat-value">100</div>
+                <div class="stat-label">Point Scoring</div>
+            </div>
+        </div>
+
+        <!-- Journey -->
+        <section class="journey-section">
+            <div class="section-header">
+                <div class="section-header-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+                    </svg>
+                </div>
+                <h2>Client Journey</h2>
+            </div>
+            <div class="journey-timeline">
+                <div class="journey-step">
+                    <div class="step-number">1</div>
+                    <div class="step-label">Lead Response</div>
+                </div>
+                <div class="journey-step">
+                    <div class="step-number">2</div>
+                    <div class="step-label">Discovery</div>
+                </div>
+                <div class="journey-step">
+                    <div class="step-number">3</div>
+                    <div class="step-label">Qualification</div>
+                </div>
+                <div class="journey-step">
+                    <div class="step-number">4</div>
+                    <div class="step-label">Proposal</div>
+                </div>
+                <div class="journey-step">
+                    <div class="step-number">5</div>
+                    <div class="step-label">Contract</div>
+                </div>
+                <div class="journey-step">
+                    <div class="step-number">6</div>
+                    <div class="step-label">Onboarding</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Templates -->
+        <section class="templates-section">
+            <div class="section-header">
+                <div class="section-header-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="14" width="7" height="7"></rect>
+                        <rect x="3" y="14" width="7" height="7"></rect>
+                    </svg>
+                </div>
+                <h2>Templates & Tools</h2>
+            </div>
+
+            <div class="card-grid">
+                <!-- Lead Response Templates -->
+                <a href="01-response-templates.html" class="template-card">
+                    <div class="card-header">
+                        <div class="card-icon sage">
+                            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                <polyline points="22,6 12,13 2,6"></polyline>
+                            </svg>
+                        </div>
+                        <div class="card-title-area">
+                            <h3>Lead Response Templates</h3>
+                            <span>12 templates</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p>Ready-to-use email templates for responding to hot leads, warm inquiries, and follow-ups.</p>
+                        <div class="card-tags">
+                            <span class="tag">Hot Leads</span>
+                            <span class="tag">Warm Leads</span>
+                            <span class="tag">Follow-ups</span>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <span class="view-link">
+                            View templates
+                            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                <polyline points="12 5 19 12 12 19"></polyline>
+                            </svg>
+                        </span>
+                    </div>
+                </a>
+
+                <!-- Discovery Framework -->
+                <a href="02-discovery-framework.html" class="template-card">
+                    <div class="card-header">
+                        <div class="card-icon sage">
+                            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                            </svg>
+                        </div>
+                        <div class="card-title-area">
+                            <h3>Discovery Call Framework</h3>
+                            <span>60-minute structure</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p>Structured discovery call guide with 45+ questions, scripts, and a pre-call checklist.</p>
+                        <div class="card-tags">
+                            <span class="tag">Questions</span>
+                            <span class="tag">Scripts</span>
+                            <span class="tag">Checklist</span>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <span class="view-link">
+                            View framework
+                            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                <polyline points="12 5 19 12 12 19"></polyline>
+                            </svg>
+                        </span>
+                    </div>
+                </a>
+
+                <!-- Intake Questionnaire -->
+                <a href="03-intake-questionnaire.html" class="template-card">
+                    <div class="card-header">
+                        <div class="card-icon sage">
+                            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M9 11l3 3L22 4"></path>
+                                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                            </svg>
+                        </div>
+                        <div class="card-title-area">
+                            <h3>Intake Questionnaire</h3>
+                            <span>17 questions</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p>Comprehensive client intake form covering business context, project scope, and success criteria.</p>
+                        <div class="card-tags">
+                            <span class="tag">Business Info</span>
+                            <span class="tag">Project Scope</span>
+                            <span class="tag">Goals</span>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <span class="view-link">
+                            View questionnaire
+                            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                <polyline points="12 5 19 12 12 19"></polyline>
+                            </svg>
+                        </span>
+                    </div>
+                </a>
+
+                <!-- Proposal Template -->
+                <a href="04-proposal-template.html" class="template-card">
+                    <div class="card-header">
+                        <div class="card-icon success">
+                            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                            </svg>
+                        </div>
+                        <div class="card-title-area">
+                            <h3>Proposal Template</h3>
+                            <span>7 sections</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p>Professional proposal with tiered pricing, timeline visualization, and payment schedules.</p>
+                        <div class="card-tags">
+                            <span class="tag">Pricing Tiers</span>
+                            <span class="tag">Timeline</span>
+                            <span class="tag">Scope</span>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <span class="view-link">
+                            View template
+                            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                <polyline points="12 5 19 12 12 19"></polyline>
+                            </svg>
+                        </span>
+                    </div>
+                </a>
+
+                <!-- SOW & Contract -->
+                <a href="05-sow-contract.html" class="template-card">
+                    <div class="card-header">
+                        <div class="card-icon success">
+                            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                                <polyline points="9 12 11 14 15 10"></polyline>
+                            </svg>
+                        </div>
+                        <div class="card-title-area">
+                            <h3>SOW & Contract Templates</h3>
+                            <span>3 documents</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p>Statement of Work, Terms & Conditions, and Change Order templates with legal clauses.</p>
+                        <div class="card-tags">
+                            <span class="tag">SOW</span>
+                            <span class="tag">Terms</span>
+                            <span class="tag">Change Orders</span>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <span class="view-link">
+                            View contracts
+                            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                <polyline points="12 5 19 12 12 19"></polyline>
+                            </svg>
+                        </span>
+                    </div>
+                </a>
+
+                <!-- Onboarding Sequence -->
+                <a href="06-onboarding-sequence.html" class="template-card">
+                    <div class="card-header">
+                        <div class="card-icon success">
+                            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="8.5" cy="7" r="4"></circle>
+                                <polyline points="17 11 19 13 23 9"></polyline>
+                            </svg>
+                        </div>
+                        <div class="card-title-area">
+                            <h3>Onboarding Sequence</h3>
+                            <span>5 emails + checklist</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p>Welcome emails, kickoff meeting agenda, and client onboarding checklist.</p>
+                        <div class="card-tags">
+                            <span class="tag">Welcome</span>
+                            <span class="tag">Kickoff</span>
+                            <span class="tag">Setup</span>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <span class="view-link">
+                            View sequence
+                            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                <polyline points="12 5 19 12 12 19"></polyline>
+                            </svg>
+                        </span>
+                    </div>
+                </a>
+
+                <!-- Qualification Scorecard -->
+                <a href="07-qualification-scorecard.html" class="template-card">
+                    <div class="card-header">
+                        <div class="card-icon warning">
+                            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="12" y1="20" x2="12" y2="10"></line>
+                                <line x1="18" y1="20" x2="18" y2="4"></line>
+                                <line x1="6" y1="20" x2="6" y2="16"></line>
+                            </svg>
+                        </div>
+                        <div class="card-title-area">
+                            <h3>Qualification Scorecard</h3>
+                            <span>100-point system</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p>Interactive scoring tool to assess lead quality across budget, timeline, and fit criteria.</p>
+                        <div class="card-tags">
+                            <span class="tag">Budget</span>
+                            <span class="tag">Timeline</span>
+                            <span class="tag">Fit</span>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <span class="view-link">
+                            View scorecard
+                            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                <polyline points="12 5 19 12 12 19"></polyline>
+                            </svg>
+                        </span>
+                    </div>
+                </a>
+
+                <!-- Red Flags -->
+                <a href="08-red-flags-scripts.html" class="template-card">
+                    <div class="card-header">
+                        <div class="card-icon error">
+                            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
+                                <line x1="4" y1="22" x2="4" y2="15"></line>
+                            </svg>
+                        </div>
+                        <div class="card-title-area">
+                            <h3>Red Flags & Scripts</h3>
+                            <span>Warning guide</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p>Identify warning signs early and handle difficult situations with proven scripts.</p>
+                        <div class="card-tags">
+                            <span class="tag">Red Flags</span>
+                            <span class="tag">Scripts</span>
+                            <span class="tag">Decline</span>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <span class="view-link">
+                            View guide
+                            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                <polyline points="12 5 19 12 12 19"></polyline>
+                            </svg>
+                        </span>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Built for <a href="https://craefto.com" target="_blank">Craefto Lab</a> — Creative Technology Studio</p>
+        </footer>
+    </div>
+</body>
+</html>

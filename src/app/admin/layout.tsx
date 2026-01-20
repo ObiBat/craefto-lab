@@ -10,7 +10,6 @@ const NAV_ITEMS = [
   { href: "/admin/subscribers", label: "Subscribers", icon: "mail" },
   { href: "/admin/journal", label: "Journal", icon: "document" },
   { href: "/admin/pipeline", label: "Pipeline", icon: "pipeline" },
-  { href: "/admin/intelligence", label: "Intelligence", icon: "brain" },
   { href: "/admin/analytics", label: "Analytics", icon: "chart" },
 ];
 

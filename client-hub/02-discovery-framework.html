@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discovery Call Framework — Craefto Lab</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Page-specific styles for Discovery Framework */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 64px;
+            background: rgba(250, 247, 242, 0.9);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-color);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            padding: 0 2rem;
+        }
+        .header-title {
+            margin-left: 1.5rem;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 600;
+            font-size: 0.9375rem;
+        }
+        .page-header { margin-bottom: 3rem; }
+        .page-header h1 { font-family: 'Space Grotesk', sans-serif; }
+        .page-header p { color: var(--text-secondary); }
+
+        /* Timeline Overview */
+        .timeline-overview {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 4px;
+            margin: 2.5rem 0;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            overflow-x: auto;
+            box-shadow: var(--shadow-sm);
+        }
+        .timeline-block {
+            text-align: center;
+            padding: 1rem 0.5rem;
+            border-radius: var(--radius-md);
+            transition: all var(--transition-normal);
+            cursor: pointer;
+        }
+        .timeline-block:hover { background: var(--bg-secondary); }
+        .timeline-block.active { background: var(--accent); color: white; }
+        .timeline-time {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+        .timeline-block.active .timeline-time { color: rgba(255,255,255,0.7); }
+        .timeline-title { font-size: 0.8125rem; font-weight: 600; margin-bottom: 0.25rem; }
+        .timeline-subtitle { font-size: 0.6875rem; color: var(--text-muted); }
+        .timeline-block.active .timeline-subtitle { color: rgba(255,255,255,0.7); }
+
+        /* Section */
+        .section { margin-bottom: 3rem; }
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .section-number {
+            width: 48px;
+            height: 48px;
+            background: var(--accent);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.125rem;
+            color: white;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        .section-info h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.375rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        .section-info p { font-size: 0.875rem; color: var(--text-muted); }
+        .section-time {
+            margin-left: auto;
+            background: var(--bg-secondary);
+            padding: 0.375rem 0.875rem;
+            border-radius: var(--radius-full);
+            font-size: 0.8125rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Content Card */
+        .content-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 1.75rem;
+            box-shadow: var(--shadow-sm);
+        }
+        .content-card h3 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.625rem;
+        }
+        .content-card h3 .icon {
+            width: 20px;
+            height: 20px;
+            stroke: var(--accent);
+        }
+
+        /* Question List */
+        .question-list { list-style: none; }
+        .question-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+        .question-item:last-child { border-bottom: none; padding-bottom: 0; }
+        .question-number {
+            width: 28px;
+            height: 28px;
+            background: var(--bg-secondary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            flex-shrink: 0;
+        }
+        .question-content { flex-grow: 1; }
+        .question-text { font-size: 0.9375rem; font-weight: 500; margin-bottom: 0.375rem; }
+        .question-note { font-size: 0.8125rem; color: var(--text-muted); font-style: italic; }
+        .question-type {
+            font-size: 0.6875rem;
+            padding: 0.1875rem 0.5rem;
+            border-radius: var(--radius-full);
+            font-weight: 500;
+            flex-shrink: 0;
+        }
+        .question-type.essential { background: var(--success-dim); color: var(--success); }
+        .question-type.optional { background: var(--warning-dim); color: var(--warning); }
+        .question-type.deep-dive { background: var(--accent-dim); color: var(--accent); }
+
+        /* Script Box */
+        .script-box {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 1.25rem;
+            margin-top: 1.25rem;
+        }
+        .script-label {
+            font-size: 0.6875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--accent);
+            margin-bottom: 0.75rem;
+        }
+        .script-text {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            line-height: 1.8;
+            white-space: pre-wrap;
+        }
+
+        /* Tips Grid */
+        .tips-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-top: 1.25rem;
+        }
+        .tip-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 1rem;
+        }
+        .tip-icon {
+            width: 24px;
+            height: 24px;
+            margin-bottom: 0.5rem;
+            stroke: var(--accent);
+        }
+        .tip-title { font-size: 0.875rem; font-weight: 600; margin-bottom: 0.25rem; }
+        .tip-text { font-size: 0.8125rem; color: var(--text-muted); }
+
+        /* Checklist */
+        .checklist { list-style: none; }
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+        .checklist-item:last-child { border-bottom: none; }
+        .checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--border-strong);
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition-normal);
+        }
+        .checkbox.checked { background: var(--success); border-color: var(--success); }
+        .checkbox svg { width: 12px; height: 12px; stroke: white; opacity: 0; transition: all var(--transition-normal); }
+        .checkbox.checked svg { opacity: 1; }
+        .checklist-text { font-size: 0.875rem; }
+
+        /* Print Section */
+        .print-section { display: flex; gap: 0.75rem; margin-top: 2rem; }
+        .action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            text-decoration: none;
+        }
+        .action-btn:hover { background: var(--accent-hover); color: white; }
+        .action-btn.secondary {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+        .action-btn.secondary:hover { background: var(--bg-muted); }
+
+        /* Pro Tip Banner */
+        .pro-tip-banner {
+            background: var(--accent-dim);
+            border: 1px solid rgba(74, 124, 89, 0.2);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        .pro-tip-banner h4 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.9375rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .pro-tip-banner h4 svg { width: 18px; height: 18px; stroke: var(--accent); }
+        .pro-tip-banner p { font-size: 0.875rem; color: var(--text-secondary); line-height: 1.7; }
+
+        @media (max-width: 768px) {
+            .main { padding: 100px 1rem 60px; }
+            .timeline-overview { grid-template-columns: repeat(3, 1fr); }
+            .tips-grid { grid-template-columns: 1fr; }
+            .section-header { flex-wrap: wrap; }
+            .section-time { margin-left: 0; margin-top: 0.75rem; }
+        }
+        @media print {
+            .header, .back-link, .print-section { display: none; }
+            .main { padding: 20px; }
+            .content-card { break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <a href="index.html" class="back-link">
+            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Back to Hub
+        </a>
+        <span class="header-title">Discovery Call Framework</span>
+    </header>
+
+    <main class="main">
+        <div class="page-header">
+            <div class="page-number">02 / 08</div>
+            <h1>Discovery Call Framework</h1>
+            <p>A structured 60-minute framework with exact questions, timing, and talking points. The 70/30 rule: let prospects talk 70% of the time. Your job is to listen, understand, and guide.</p>
+        </div>
+
+        <!-- Timeline Overview -->
+        <div class="timeline-overview">
+            <div class="timeline-block active">
+                <div class="timeline-time">0-5 min</div>
+                <div class="timeline-title">Intro</div>
+                <div class="timeline-subtitle">Build rapport</div>
+            </div>
+            <div class="timeline-block">
+                <div class="timeline-time">5-25 min</div>
+                <div class="timeline-title">Their Story</div>
+                <div class="timeline-subtitle">Listen deeply</div>
+            </div>
+            <div class="timeline-block">
+                <div class="timeline-time">25-45 min</div>
+                <div class="timeline-title">Deep Dive</div>
+                <div class="timeline-subtitle">Uncover needs</div>
+            </div>
+            <div class="timeline-block">
+                <div class="timeline-time">45-55 min</div>
+                <div class="timeline-title">Your Value</div>
+                <div class="timeline-subtitle">Show relevance</div>
+            </div>
+            <div class="timeline-block">
+                <div class="timeline-time">55-60 min</div>
+                <div class="timeline-title">Next Steps</div>
+                <div class="timeline-subtitle">Close strong</div>
+            </div>
+        </div>
+
+        <!-- Section 1: Introduction -->
+        <section class="section">
+            <div class="section-header">
+                <div class="section-number">1</div>
+                <div class="section-info">
+                    <h2>Introduction & Rapport</h2>
+                    <p>Set the tone and build initial connection</p>
+                </div>
+                <span class="section-time">5 minutes</span>
+            </div>
+
+            <div class="content-card">
+                <h3><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg> Objectives</h3>
+                <ul class="question-list">
+                    <li class="question-item">
+                        <div class="question-number">1</div>
+                        <div class="question-content">
+                            <div class="question-text">Warm welcome and thanks for their time</div>
+                            <div class="question-note">First impressions matter — be genuine and energetic</div>
+                        </div>
+                    </li>
+                    <li class="question-item">
+                        <div class="question-number">2</div>
+                        <div class="question-content">
+                            <div class="question-text">Brief personal connection</div>
+                            <div class="question-note">"Tell me a bit about yourself and your role at [Company]"</div>
+                        </div>
+                    </li>
+                    <li class="question-item">
+                        <div class="question-number">3</div>
+                        <div class="question-content">
+                            <div class="question-text">Set the agenda</div>
+                            <div class="question-note">Give them a roadmap of what to expect</div>
+                        </div>
+                    </li>
+                </ul>
+
+                <div class="script-box">
+                    <div class="script-label">Opening Script</div>
+                    <div class="script-text">"Thanks so much for taking the time today, [Name]. I'm excited to learn more about what you're building.
+
+Here's what I'm thinking for our time together:
+• First, I'd love to hear about your business and what's driving this project
+• Then I'll ask some questions to make sure I understand your needs
+• I'll share a bit about how we might approach this
+• And we'll figure out next steps together
+
+Sound good? Great — so tell me a bit about yourself and [Company]..."</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Their Story -->
+        <section class="section">
+            <div class="section-header">
+                <div class="section-number">2</div>
+                <div class="section-info">
+                    <h2>Their Story</h2>
+                    <p>Understand their business, context, and motivation</p>
+                </div>
+                <span class="section-time">20 minutes</span>
+            </div>
+
+            <div class="content-card">
+                <h3><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/><path d="M9 9v.01"/><path d="M9 12v.01"/><path d="M9 15v.01"/><path d="M9 18v.01"/></svg> Business Understanding Questions</h3>
+                <ul class="question-list">
+                    <li class="question-item">
+                        <div class="question-number">1</div>
+                        <div class="question-content">
+                            <div class="question-text">"Walk me through your business — what do you do and what makes you different?"</div>
+                            <div class="question-note">Let them explain in their own words. Take notes on exact phrases they use.</div>
+                        </div>
+                        <span class="question-type essential">Essential</span>
+                    </li>
+                    <li class="question-item">
+                        <div class="question-number">2</div>
+                        <div class="question-content">
+                            <div class="question-text">"Who's your ideal customer? Describe them to me."</div>
+                            <div class="question-note">Understanding their audience helps you understand their needs.</div>
+                        </div>
+                        <span class="question-type essential">Essential</span>
+                    </li>
+                    <li class="question-item">
+                        <div class="question-number">3</div>
+                        <div class="question-content">
+                            <div class="question-text">"Who do you see as your main competitors? What do they do well? Where do they fall short?"</div>
+                            <div class="question-note">Reveals market positioning and differentiation opportunities.</div>
+                        </div>
+                        <span class="question-type optional">Optional</span>
+                    </li>
+                    <li class="question-item">
+                        <div class="question-number">4</div>
+                        <div class="question-content">
+                            <div class="question-text">"What's working well in your business right now?"</div>
+                            <div class="question-note">Positive framing builds rapport and reveals strengths to leverage.</div>
+                        </div>
+                        <span class="question-type optional">Optional</span>
+                    </li>
+                    <li class="question-item">
+                        <div class="question-number">5</div>
+                        <div class="question-content">
+                            <div class="question-text">"What's your biggest challenge right now?"</div>
+                            <div class="question-note">Core pain point — listen carefully here.</div>
+                        </div>
+                        <span class="question-type essential">Essential</span>
+                    </li>
+                </ul>
+
+                <div class="tips-grid">
+                    <div class="tip-card">
+                        <svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8.5a6.5 6.5 0 1 1 13 0c0 6-6 6-6 10.5"/><path d="M12 22v.01"/></svg>
+                        <div class="tip-title">Listen Actively</div>
+                        <div class="tip-text">Use their exact words back to them. "So what I'm hearing is..."</div>
+                    </div>
+                    <div class="tip-card">
+                        <svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
+                        <div class="tip-title">Take Notes</div>
+                        <div class="tip-text">Write down specific phrases and terms they use — use these in your proposal.</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Deep Dive -->
+        <section class="section">
+            <div class="section-header">
+                <div class="section-number">3</div>
+                <div class="section-info">
+                    <h2>Project Deep Dive</h2>
+                    <p>Uncover specific needs, constraints, and decision factors</p>
+                </div>
+                <span class="section-time">20 minutes</span>
+            </div>
+
+            <div class="content-card">
+                <h3><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg> Project-Specific Questions</h3>
+                <ul class="question-list">
+                    <li class="question-item">
+                        <div class="question-number">1</div>
+                        <div class="question-content">
+                            <div class="question-text">"What specifically are you hoping to achieve with this project?"</div>
+                            <div class="question-note">Get concrete outcomes, not vague goals.</div>
+                        </div>
+                        <span class="question-type essential">Essential</span>
+                    </li>
+                    <li class="question-item">
+                        <div class="question-number">2</div>
+                        <div class="question-content">
+                            <div class="question-text">"If this project is wildly successful, what does that look like in 6 months? In a year?"</div>
+                            <div class="question-note">Paints a picture of success you can reference in your proposal.</div>
+                        </div>
+                        <span class="question-type essential">Essential</span>
+                    </li>
+                    <li class="question-item">
+                        <div class="question-number">3</div>
+                        <div class="question-content">
+                            <div class="question-text">"What happens if you don't do this project? What's at stake?"</div>
+                            <div class="question-note">Reveals urgency and helps you understand true priority level.</div>
+                        </div>
+                        <span class="question-type deep-dive">Deep Dive</span>
+                    </li>
+                    <li class="question-item">
+                        <div class="question-number">4</div>
+                        <div class="question-content">
+                            <div class="question-text">"Have you tried to solve this before? What happened?"</div>
+                            <div class="question-note">Learn from past attempts. Avoid repeating mistakes.</div>
+                        </div>
+                        <span class="question-type optional">Optional</span>
+                    </li>
+                    <li class="question-item">
+                        <div class="question-number">5</div>
+                        <div class="question-content">
+                            <div class="question-text">"Have you worked with agencies or studios before? What worked and what didn't?"</div>
+                            <div class="question-note">Critical for understanding expectations and potential red flags.</div>
+                        </div>
+                        <span class="question-type essential">Essential</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="content-card" style="margin-top: 20px;">
+                <h3><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> Budget & Decision Questions</h3>
+                <ul class="question-list">
+                    <li class="question-item">
+                        <div class="question-number">1</div>
+                        <div class="question-content">
+                            <div class="question-text">"What budget range have you allocated for this project?"</div>
+                            <div class="question-note">Ask directly. If they deflect, use the alternatives below.</div>
+                        </div>
+                        <span class="question-type essential">Essential</span>
+                    </li>
+                    <li class="question-item">
+                        <div class="question-number">2</div>
+                        <div class="question-content">
+                            <div class="question-text">"Have you done similar projects before? What did you invest?"</div>
+                            <div class="question-note">Alternative if they won't share budget directly.</div>
+                        </div>
+                        <span class="question-type optional">Optional</span>
+                    </li>
+                    <li class="question-item">
+                        <div class="question-number">3</div>
+                        <div class="question-content">
+                            <div class="question-text">"Who else is involved in making this decision?"</div>
+                            <div class="question-note">Identify all stakeholders. Multiple decision-makers = longer timeline.</div>
+                        </div>
+                        <span class="question-type essential">Essential</span>
+                    </li>
+                    <li class="question-item">
+                        <div class="question-number">4</div>
+                        <div class="question-content">
+                            <div class="question-text">"What's your timeline for making a decision on this?"</div>
+                            <div class="question-note">Helps you prioritize and plan follow-up.</div>
+                        </div>
+                        <span class="question-type essential">Essential</span>
+                    </li>
+                    <li class="question-item">
+                        <div class="question-number">5</div>
+                        <div class="question-content">
+                            <div class="question-text">"Are you evaluating other studios? What criteria are most important to you?"</div>
+                            <div class="question-note">Understand competition and decision factors.</div>
+                        </div>
+                        <span class="question-type deep-dive">Deep Dive</span>
+                    </li>
+                </ul>
+
+                <div class="pro-tip-banner">
+                    <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/></svg> If They Won't Share Budget</h4>
+                    <p>Say: "I understand budget can be sensitive. Let me share some context — our projects typically range from A$10k for focused brand sprints to A$50k+ for full product builds. Does that range align with what you're thinking, or should we be looking at a different scale?"</p>
+                </div>
+            </div>
+
+            <div class="content-card" style="margin-top: 20px;">
+                <h3><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Timeline & Logistics Questions</h3>
+                <ul class="question-list">
+                    <li class="question-item">
+                        <div class="question-number">1</div>
+                        <div class="question-content">
+                            <div class="question-text">"What's driving your timeline? Any hard deadlines we should know about?"</div>
+                            <div class="question-note">External deadlines (launches, events) are harder to move.</div>
+                        </div>
+                        <span class="question-type essential">Essential</span>
+                    </li>
+                    <li class="question-item">
+                        <div class="question-number">2</div>
+                        <div class="question-content">
+                            <div class="question-text">"Who on your team will we be working with day-to-day?"</div>
+                            <div class="question-note">Understand the internal team structure.</div>
+                        </div>
+                        <span class="question-type optional">Optional</span>
+                    </li>
+                    <li class="question-item">
+                        <div class="question-number">3</div>
+                        <div class="question-content">
+                            <div class="question-text">"What's your preferred way to communicate? Email, Slack, calls?"</div>
+                            <div class="question-note">Align on communication early to set expectations.</div>
+                        </div>
+                        <span class="question-type optional">Optional</span>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Section 4: Your Value -->
+        <section class="section">
+            <div class="section-header">
+                <div class="section-number">4</div>
+                <div class="section-info">
+                    <h2>Your Value</h2>
+                    <p>Show relevant experience and initial thinking</p>
+                </div>
+                <span class="section-time">10 minutes</span>
+            </div>
+
+            <div class="content-card">
+                <h3><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l4 6-10 13L2 9Z"/><path d="M11 3 8 9l4 13 4-13-3-6"/><path d="M2 9h20"/></svg> What to Cover</h3>
+                <ul class="question-list">
+                    <li class="question-item">
+                        <div class="question-number">1</div>
+                        <div class="question-content">
+                            <div class="question-text">Share 1-2 relevant case studies</div>
+                            <div class="question-note">Choose examples most similar to their situation. Less is more.</div>
+                        </div>
+                    </li>
+                    <li class="question-item">
+                        <div class="question-number">2</div>
+                        <div class="question-content">
+                            <div class="question-text">Initial thoughts on approach</div>
+                            <div class="question-note">"Based on what you've shared, here's how I'd think about this..."</div>
+                        </div>
+                    </li>
+                    <li class="question-item">
+                        <div class="question-number">3</div>
+                        <div class="question-content">
+                            <div class="question-text">What makes Craefto different</div>
+                            <div class="question-note">Systems thinking, compound value, craft + strategy.</div>
+                        </div>
+                    </li>
+                </ul>
+
+                <div class="script-box">
+                    <div class="script-label">Positioning Script</div>
+                    <div class="script-text">"Based on what you've shared, this sounds like a [type of project] challenge. We've helped companies like [relevant example] with similar situations.
+
+What I'm thinking is [high-level approach]. The outcome was [specific result].
+
+What sets us apart is our focus on building systems that compound — we don't just solve the immediate problem, we create foundations that continue to deliver value as you grow.
+
+Does that approach resonate with what you're looking for?"</div>
+                </div>
+
+                <div class="tips-grid">
+                    <div class="tip-card">
+                        <svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+                        <div class="tip-title">Be Specific</div>
+                        <div class="tip-text">Reference their exact situation, not generic capabilities.</div>
+                    </div>
+                    <div class="tip-card">
+                        <svg class="tip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 21 9-9"/><path d="M12.22 6.22 15 9l-2.78 2.78a2.83 2.83 0 0 1-4-4l2.78-2.78a2.83 2.83 0 0 1 4 4Z"/><path d="M21 3v9l-9-9h9Z"/></svg>
+                        <div class="tip-title">Don't Oversell</div>
+                        <div class="tip-text">Confidence, not desperation. You're evaluating fit too.</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 5: Next Steps -->
+        <section class="section">
+            <div class="section-header">
+                <div class="section-number">5</div>
+                <div class="section-info">
+                    <h2>Next Steps</h2>
+                    <p>Summarize, align on next actions, and close strong</p>
+                </div>
+                <span class="section-time">5 minutes</span>
+            </div>
+
+            <div class="content-card">
+                <h3><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Closing Checklist</h3>
+                <ul class="checklist">
+                    <li class="checklist-item">
+                        <div class="checkbox" onclick="this.classList.toggle('checked')">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                            </svg>
+                        </div>
+                        <span class="checklist-text">Summarize what you heard — "Let me make sure I understood correctly..."</span>
+                    </li>
+                    <li class="checklist-item">
+                        <div class="checkbox" onclick="this.classList.toggle('checked')">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                            </svg>
+                        </div>
+                        <span class="checklist-text">Confirm budget range and timeline alignment</span>
+                    </li>
+                    <li class="checklist-item">
+                        <div class="checkbox" onclick="this.classList.toggle('checked')">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                            </svg>
+                        </div>
+                        <span class="checklist-text">Propose clear next step — "I'll send you a proposal by [day]"</span>
+                    </li>
+                    <li class="checklist-item">
+                        <div class="checkbox" onclick="this.classList.toggle('checked')">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                            </svg>
+                        </div>
+                        <span class="checklist-text">Ask for any final questions</span>
+                    </li>
+                    <li class="checklist-item">
+                        <div class="checkbox" onclick="this.classList.toggle('checked')">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                            </svg>
+                        </div>
+                        <span class="checklist-text">Thank them genuinely for their time</span>
+                    </li>
+                </ul>
+
+                <div class="script-box">
+                    <div class="script-label">Closing Script</div>
+                    <div class="script-text">"This has been really helpful, [Name]. Let me summarize what I heard:
+
+[Summarize their situation and goals]
+
+Based on this, I think we could really help you [specific outcome].
+
+Here's what I suggest for next steps: I'll put together a proposal that outlines our recommended approach, timeline, and investment. I can have that to you by [day — within 48 hours].
+
+Does that work? Any other questions before we wrap up?
+
+Great — thanks again for your time today. I'm excited about the possibility of working together."</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pre-Call Checklist -->
+        <section class="section">
+            <div class="section-header">
+                <div class="section-number"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:24px;height:24px;"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg></div>
+                <div class="section-info">
+                    <h2>Pre-Call Checklist</h2>
+                    <p>Prepare before every discovery call</p>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <ul class="checklist">
+                    <li class="checklist-item">
+                        <div class="checkbox" onclick="this.classList.toggle('checked')">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                            </svg>
+                        </div>
+                        <span class="checklist-text">Review their website and any materials they shared</span>
+                    </li>
+                    <li class="checklist-item">
+                        <div class="checkbox" onclick="this.classList.toggle('checked')">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                            </svg>
+                        </div>
+                        <span class="checklist-text">Review their intake form responses (if they completed one)</span>
+                    </li>
+                    <li class="checklist-item">
+                        <div class="checkbox" onclick="this.classList.toggle('checked')">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                            </svg>
+                        </div>
+                        <span class="checklist-text">Check their LinkedIn profile</span>
+                    </li>
+                    <li class="checklist-item">
+                        <div class="checkbox" onclick="this.classList.toggle('checked')">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                            </svg>
+                        </div>
+                        <span class="checklist-text">Identify 2-3 relevant case studies to reference</span>
+                    </li>
+                    <li class="checklist-item">
+                        <div class="checkbox" onclick="this.classList.toggle('checked')">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                            </svg>
+                        </div>
+                        <span class="checklist-text">Prepare note-taking setup (Notion, paper, etc.)</span>
+                    </li>
+                    <li class="checklist-item">
+                        <div class="checkbox" onclick="this.classList.toggle('checked')">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                            </svg>
+                        </div>
+                        <span class="checklist-text">Test audio/video if it's a video call</span>
+                    </li>
+                    <li class="checklist-item">
+                        <div class="checkbox" onclick="this.classList.toggle('checked')">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                            </svg>
+                        </div>
+                        <span class="checklist-text">Block 15 minutes after the call for immediate follow-up notes</span>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <div class="print-section">
+            <button class="action-btn" onclick="window.print()">
+                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                </svg>
+                Print Framework
+            </button>
+            <a href="03-intake-questionnaire.html" class="action-btn secondary">
+                Next: Intake Questionnaire →
+            </a>
+        </div>
+    </main>
+</body>
+</html>

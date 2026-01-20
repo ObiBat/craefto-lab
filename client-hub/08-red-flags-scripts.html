@@ -1,0 +1,1580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Red Flags & Handling Scripts | Craefto Lab</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Page-specific styles for Red Flags & Scripts */
+        .header {
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            font-size: clamp(1.75rem, 4vw, 2.5rem);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 1.125rem;
+            max-width: 600px;
+        }
+
+        /* Section Tabs */
+        .section-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .section-tabs .tab-btn.active {
+            background: var(--error-dim);
+            color: var(--error);
+        }
+
+        .section-tabs .tab-btn svg {
+            width: 16px;
+            height: 16px;
+            stroke: currentColor;
+        }
+
+        /* Flag Categories */
+        .flag-category {
+            margin-bottom: 2rem;
+        }
+
+        .category-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .category-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .category-icon svg {
+            width: 24px;
+            height: 24px;
+            stroke-width: 2;
+        }
+
+        .category-icon.critical { background: var(--error-dim); }
+        .category-icon.critical svg { stroke: var(--error); }
+        .category-icon.warning { background: var(--warning-dim); }
+        .category-icon.warning svg { stroke: var(--warning); }
+        .category-icon.positive { background: var(--success-dim); }
+        .category-icon.positive svg { stroke: var(--success); }
+
+        .category-header h2 {
+            font-size: 1.375rem;
+            font-weight: 600;
+        }
+
+        .category-header span {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        /* Flag Cards */
+        .flag-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .flag-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .flag-card.critical { border-left: 4px solid var(--error); }
+        .flag-card.warning { border-left: 4px solid var(--warning); }
+        .flag-card.positive { border-left: 4px solid var(--success); }
+
+        .flag-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.25rem;
+            cursor: pointer;
+            transition: background var(--transition-normal);
+        }
+
+        .flag-header:hover {
+            background: var(--bg-secondary);
+        }
+
+        .flag-title {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .flag-icon {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-sm);
+        }
+
+        .flag-icon svg {
+            width: 18px;
+            height: 18px;
+            stroke-width: 2;
+        }
+
+        .flag-card.critical .flag-icon svg { stroke: var(--error); }
+        .flag-card.warning .flag-icon svg { stroke: var(--warning); }
+        .flag-card.positive .flag-icon svg { stroke: var(--success); }
+
+        .flag-title h3 {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .flag-severity {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: var(--radius-full);
+            font-weight: 500;
+        }
+
+        .flag-severity.critical {
+            background: var(--error-dim);
+            color: var(--error);
+        }
+
+        .flag-severity.warning {
+            background: var(--warning-dim);
+            color: var(--warning);
+        }
+
+        .flag-toggle {
+            color: var(--text-muted);
+            transition: transform var(--transition-normal);
+        }
+
+        .flag-toggle svg {
+            width: 18px;
+            height: 18px;
+            stroke: currentColor;
+        }
+
+        .flag-card.expanded .flag-toggle {
+            transform: rotate(180deg);
+        }
+
+        .flag-body {
+            display: none;
+            padding: 0 1.25rem 1.25rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .flag-card.expanded .flag-body {
+            display: block;
+        }
+
+        .flag-section {
+            margin-top: 1rem;
+        }
+
+        .flag-section-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .flag-section p {
+            font-size: 0.9375rem;
+            color: var(--text-secondary);
+        }
+
+        /* Script Box */
+        .script-box {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            padding: 1rem;
+            position: relative;
+            margin-top: 0.5rem;
+        }
+
+        .script-box p {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+            line-height: 1.7;
+            color: var(--text-primary);
+        }
+
+        .script-box .highlight {
+            background: var(--accent-dim);
+            padding: 0.125rem 0.375rem;
+            border-radius: var(--radius-xs);
+            color: var(--accent);
+        }
+
+        .script-box .copy-btn {
+            position: absolute;
+            top: 0.75rem;
+            right: 0.75rem;
+            padding: 0.375rem 0.75rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            margin-top: 0;
+        }
+
+        .script-box .copy-btn:hover {
+            background: var(--bg-muted);
+            color: var(--text-primary);
+        }
+
+        /* Alternative Actions */
+        .alternatives {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 0.5rem;
+        }
+
+        .alternative-tag {
+            font-size: 0.8125rem;
+            padding: 0.375rem 0.75rem;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-sm);
+            color: var(--text-secondary);
+        }
+
+        /* Scenario Cards */
+        .scenario-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .scenario-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .scenario-card h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .scenario-card h3 svg {
+            width: 20px;
+            height: 20px;
+            stroke: var(--accent);
+        }
+
+        .scenario-card .description {
+            font-size: 0.9375rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.25rem;
+        }
+
+        .scenario-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .step {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .step-number {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--accent-dim);
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .step-content {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            padding-top: 2px;
+        }
+
+        /* Quick Reference */
+        .quick-ref {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            margin-top: 2rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .quick-ref h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .quick-ref h2 svg {
+            width: 20px;
+            height: 20px;
+            stroke: var(--accent);
+        }
+
+        .ref-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .ref-card {
+            padding: 1.25rem;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+        }
+
+        .ref-card h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .ref-card h3 svg {
+            width: 18px;
+            height: 18px;
+            stroke-width: 2;
+        }
+
+        .ref-card ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .ref-card li {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            padding-left: 1.25rem;
+            position: relative;
+        }
+
+        .ref-card li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--text-muted);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .scenario-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <a href="index.html" class="back-link">
+                ← Back to Hub
+            </a>
+            <h1>Red Flags & Handling Scripts</h1>
+            <p>Identify warning signs early and respond professionally with proven scripts</p>
+        </header>
+
+        <!-- Section Tabs -->
+        <div class="section-tabs">
+            <button class="tab-btn active" data-tab="critical">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                Critical Red Flags
+            </button>
+            <button class="tab-btn" data-tab="warning">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                Warning Signs
+            </button>
+            <button class="tab-btn" data-tab="green">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                Green Flags
+            </button>
+            <button class="tab-btn" data-tab="scenarios">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                Common Scenarios
+            </button>
+            <button class="tab-btn" data-tab="decline">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18"></path><path d="M6 6l12 12"></path></svg>
+                Decline Templates
+            </button>
+        </div>
+
+        <!-- Critical Red Flags Tab -->
+        <div class="tab-content active" id="critical">
+            <div class="flag-category">
+                <div class="category-header">
+                    <div class="category-icon critical"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
+                    <div>
+                        <h2>Critical Red Flags</h2>
+                        <span>Stop immediately - these indicate high risk of project failure or payment issues</span>
+                    </div>
+                </div>
+
+                <div class="flag-grid">
+                    <!-- Budget Deception -->
+                    <div class="flag-card critical">
+                        <div class="flag-header" onclick="toggleFlag(this)">
+                            <div class="flag-title">
+                                <div class="flag-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg></div>
+                                <h3>"We'll have more budget after launch"</h3>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                <span class="flag-severity critical">Critical</span>
+                                <span class="flag-toggle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+                            </div>
+                        </div>
+                        <div class="flag-body">
+                            <div class="flag-section">
+                                <div class="flag-section-title">Why This Is a Red Flag</div>
+                                <p>This almost always means they don't have budget now and are hoping the project will generate enough revenue to pay you. You become an unpaid investor in their venture with zero equity.</p>
+                            </div>
+                            <div class="flag-section">
+                                <div class="flag-section-title">Handling Script</div>
+                                <div class="script-box">
+                                    <button class="copy-btn" onclick="copyScript(this)">Copy</button>
+                                    <p>"I appreciate you sharing your vision! To ensure we can deliver the quality you deserve, we work on a <span class="highlight">payment-for-work</span> model rather than revenue-sharing arrangements. This protects both of us and ensures we're fully focused on building the best possible product. What budget do you have confirmed for the initial phase?"</p>
+                                </div>
+                            </div>
+                            <div class="flag-section">
+                                <div class="flag-section-title">Alternative Actions</div>
+                                <div class="alternatives">
+                                    <span class="alternative-tag">Offer reduced MVP scope</span>
+                                    <span class="alternative-tag">Suggest phased approach</span>
+                                    <span class="alternative-tag">Decline politely</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Ownership Confusion -->
+                    <div class="flag-card critical">
+                        <div class="flag-header" onclick="toggleFlag(this)">
+                            <div class="flag-title">
+                                <div class="flag-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path></svg></div>
+                                <h3>Unclear ownership or multiple decision makers</h3>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                <span class="flag-severity critical">Critical</span>
+                                <span class="flag-toggle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+                            </div>
+                        </div>
+                        <div class="flag-body">
+                            <div class="flag-section">
+                                <div class="flag-section-title">Why This Is a Red Flag</div>
+                                <p>Projects with unclear decision-making authority lead to endless revision cycles, conflicting feedback, and delayed approvals. You'll spend more time managing stakeholder politics than building.</p>
+                            </div>
+                            <div class="flag-section">
+                                <div class="flag-section-title">Handling Script</div>
+                                <div class="script-box">
+                                    <button class="copy-btn" onclick="copyScript(this)">Copy</button>
+                                    <p>"To ensure smooth collaboration, could you help me understand your decision-making process? <span class="highlight">Who will be the single point of contact</span> for approvals and feedback? In our experience, projects move fastest when we have one person who can make final decisions on design and functionality."</p>
+                                </div>
+                            </div>
+                            <div class="flag-section">
+                                <div class="flag-section-title">Alternative Actions</div>
+                                <div class="alternatives">
+                                    <span class="alternative-tag">Request RACI matrix</span>
+                                    <span class="alternative-tag">Add stakeholder meeting clause</span>
+                                    <span class="alternative-tag">Build in revision limits</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Rush Without Reason -->
+                    <div class="flag-card critical">
+                        <div class="flag-header" onclick="toggleFlag(this)">
+                            <div class="flag-title">
+                                <div class="flag-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></div>
+                                <h3>"We need this yesterday" with no flexibility</h3>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                <span class="flag-severity critical">Critical</span>
+                                <span class="flag-toggle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+                            </div>
+                        </div>
+                        <div class="flag-body">
+                            <div class="flag-section">
+                                <div class="flag-section-title">Why This Is a Red Flag</div>
+                                <p>Artificial urgency often indicates poor planning, unrealistic expectations, or a client who will blame you when their arbitrary deadline isn't met. Rush jobs also have higher defect rates and lower satisfaction.</p>
+                            </div>
+                            <div class="flag-section">
+                                <div class="flag-section-title">Handling Script</div>
+                                <div class="script-box">
+                                    <button class="copy-btn" onclick="copyScript(this)">Copy</button>
+                                    <p>"I want to help you hit your deadline! To do that well, I need to understand: <span class="highlight">what's driving this specific date?</span> Is it a product launch, investor meeting, or market opportunity? Understanding the 'why' helps us identify what's truly essential for that date versus what could come in a fast-follow release."</p>
+                                </div>
+                            </div>
+                            <div class="flag-section">
+                                <div class="flag-section-title">Alternative Actions</div>
+                                <div class="alternatives">
+                                    <span class="alternative-tag">Propose MVP for deadline</span>
+                                    <span class="alternative-tag">Add rush fee (50-100%)</span>
+                                    <span class="alternative-tag">Define non-negotiable scope cut</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Spec Shopping -->
+                    <div class="flag-card critical">
+                        <div class="flag-header" onclick="toggleFlag(this)">
+                            <div class="flag-title">
+                                <div class="flag-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg></div>
+                                <h3>Asking for detailed spec before signing</h3>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                <span class="flag-severity critical">Critical</span>
+                                <span class="flag-toggle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+                            </div>
+                        </div>
+                        <div class="flag-body">
+                            <div class="flag-section">
+                                <div class="flag-section-title">Why This Is a Red Flag</div>
+                                <p>They may be collecting free consulting to either do it themselves, share with a cheaper competitor, or use your thinking without compensation. Detailed specs are work product that has value.</p>
+                            </div>
+                            <div class="flag-section">
+                                <div class="flag-section-title">Handling Script</div>
+                                <div class="script-box">
+                                    <button class="copy-btn" onclick="copyScript(this)">Copy</button>
+                                    <p>"I'd love to provide a detailed specification! That level of detail is actually part of our <span class="highlight">Discovery & Strategy phase</span>, which is a separate engagement. This typically takes 1-2 weeks and results in a comprehensive technical specification, architecture plan, and accurate project estimate. Would you like me to send over the Discovery proposal?"</p>
+                                </div>
+                            </div>
+                            <div class="flag-section">
+                                <div class="flag-section-title">Alternative Actions</div>
+                                <div class="alternatives">
+                                    <span class="alternative-tag">Offer paid discovery phase</span>
+                                    <span class="alternative-tag">Provide high-level scope only</span>
+                                    <span class="alternative-tag">Share case study instead</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- NDA Before Talking -->
+                    <div class="flag-card critical">
+                        <div class="flag-header" onclick="toggleFlag(this)">
+                            <div class="flag-title">
+                                <div class="flag-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></div>
+                                <h3>Demanding NDA before sharing the idea</h3>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                <span class="flag-severity critical">Critical</span>
+                                <span class="flag-toggle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+                            </div>
+                        </div>
+                        <div class="flag-body">
+                            <div class="flag-section">
+                                <div class="flag-section-title">Why This Is a Red Flag</div>
+                                <p>This usually indicates either paranoia, inexperience with how tech projects work, or an idea that's not actually defensible. Ideas are worthless; execution is everything. They may also have unrealistic expectations about IP.</p>
+                            </div>
+                            <div class="flag-section">
+                                <div class="flag-section-title">Handling Script</div>
+                                <div class="script-box">
+                                    <button class="copy-btn" onclick="copyScript(this)">Copy</button>
+                                    <p>"I understand wanting to protect your idea! In my experience working with hundreds of clients, <span class="highlight">I've never shared or stolen an idea</span> — my reputation depends on trust. For initial conversations, I'm happy to keep things confidential without a formal NDA. If we move forward, we'll include confidentiality clauses in our standard agreement. Would you be comfortable sharing a high-level overview?"</p>
+                                </div>
+                            </div>
+                            <div class="flag-section">
+                                <div class="flag-section-title">Alternative Actions</div>
+                                <div class="alternatives">
+                                    <span class="alternative-tag">Use your standard NDA</span>
+                                    <span class="alternative-tag">Ask them to share high-level only</span>
+                                    <span class="alternative-tag">Decline if they insist on complex NDA</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bad-mouthing Previous Agency -->
+                    <div class="flag-card critical">
+                        <div class="flag-header" onclick="toggleFlag(this)">
+                            <div class="flag-title">
+                                <div class="flag-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"></path></svg></div>
+                                <h3>Bad-mouthing previous agencies/developers</h3>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                <span class="flag-severity critical">Critical</span>
+                                <span class="flag-toggle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+                            </div>
+                        </div>
+                        <div class="flag-body">
+                            <div class="flag-section">
+                                <div class="flag-section-title">Why This Is a Red Flag</div>
+                                <p>If every previous partner was "incompetent" or "didn't understand," the common denominator is the client. They'll likely say the same about you eventually. This often indicates unclear requirements, scope creep tolerance, or unrealistic expectations.</p>
+                            </div>
+                            <div class="flag-section">
+                                <div class="flag-section-title">Handling Script</div>
+                                <div class="script-box">
+                                    <button class="copy-btn" onclick="copyScript(this)">Copy</button>
+                                    <p>"I'm sorry you had a frustrating experience. To make sure we don't repeat those issues, could you help me understand: <span class="highlight">what specifically went wrong?</span> Was it communication, quality, timeline, or something else? And what would 'success' look like differently with us?"</p>
+                                </div>
+                            </div>
+                            <div class="flag-section">
+                                <div class="flag-section-title">Alternative Actions</div>
+                                <div class="alternatives">
+                                    <span class="alternative-tag">Document concerns in contract</span>
+                                    <span class="alternative-tag">Build in extra review cycles</span>
+                                    <span class="alternative-tag">Add change request premium</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Warning Signs Tab -->
+        <div class="tab-content" id="warning">
+            <div class="flag-category">
+                <div class="category-header">
+                    <div class="category-icon warning"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg></div>
+                    <div>
+                        <h2>Warning Signs</h2>
+                        <span>Proceed with caution - address these before signing</span>
+                    </div>
+                </div>
+
+                <div class="flag-grid">
+                    <!-- Scope Creep Tendency -->
+                    <div class="flag-card warning">
+                        <div class="flag-header" onclick="toggleFlag(this)">
+                            <div class="flag-title">
+                                <div class="flag-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"></line><line x1="18" y1="20" x2="18" y2="4"></line><line x1="6" y1="20" x2="6" y2="16"></line></svg></div>
+                                <h3>"While you're at it, can you also..."</h3>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                <span class="flag-severity warning">Warning</span>
+                                <span class="flag-toggle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+                            </div>
+                        </div>
+                        <div class="flag-body">
+                            <div class="flag-section">
+                                <div class="flag-section-title">Why This Is a Warning</div>
+                                <p>Scope creep tendencies in discovery predict scope creep in the project. If they're adding requests before you've even started, expect constant additions throughout. This needs to be addressed with clear boundaries and change order processes.</p>
+                            </div>
+                            <div class="flag-section">
+                                <div class="flag-section-title">Handling Script</div>
+                                <div class="script-box">
+                                    <button class="copy-btn" onclick="copyScript(this)">Copy</button>
+                                    <p>"Great idea! I'm noting that for <span class="highlight">Phase 2</span>. For this initial engagement, let's focus on [original scope] to ensure we deliver something valuable within your timeline and budget. Once that's solid, we can absolutely discuss adding those features. Does that work for you?"</p>
+                                </div>
+                            </div>
+                            <div class="flag-section">
+                                <div class="flag-section-title">Mitigation Strategies</div>
+                                <div class="alternatives">
+                                    <span class="alternative-tag">Fixed-scope contract</span>
+                                    <span class="alternative-tag">Defined change order process</span>
+                                    <span class="alternative-tag">Buffer in estimate</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Decision by Committee -->
+                    <div class="flag-card warning">
+                        <div class="flag-header" onclick="toggleFlag(this)">
+                            <div class="flag-title">
+                                <div class="flag-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></div>
+                                <h3>"I need to run this by my partner/board/team"</h3>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                <span class="flag-severity warning">Warning</span>
+                                <span class="flag-toggle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+                            </div>
+                        </div>
+                        <div class="flag-body">
+                            <div class="flag-section">
+                                <div class="flag-section-title">Why This Is a Warning</div>
+                                <p>Not necessarily bad, but indicates you're not talking to the decision maker. Decisions will take longer, and their partner/board may have different priorities. You may need to re-sell the project to someone you haven't met.</p>
+                            </div>
+                            <div class="flag-section">
+                                <div class="flag-section-title">Handling Script</div>
+                                <div class="script-box">
+                                    <button class="copy-btn" onclick="copyScript(this)">Copy</button>
+                                    <p>"Of course! To help you make the case, <span class="highlight">would it be helpful if I joined that conversation?</span> I can answer any technical or strategic questions directly. Alternatively, I can prepare a one-pager summary that addresses the key points decision-makers typically care about. What would be most useful?"</p>
+                                </div>
+                            </div>
+                            <div class="flag-section">
+                                <div class="flag-section-title">Mitigation Strategies</div>
+                                <div class="alternatives">
+                                    <span class="alternative-tag">Request decision-maker meeting</span>
+                                    <span class="alternative-tag">Prepare executive summary</span>
+                                    <span class="alternative-tag">Set decision timeline</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Comparing to Cheap Alternatives -->
+                    <div class="flag-card warning">
+                        <div class="flag-header" onclick="toggleFlag(this)">
+                            <div class="flag-title">
+                                <div class="flag-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg></div>
+                                <h3>"Another agency quoted half your price"</h3>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                <span class="flag-severity warning">Warning</span>
+                                <span class="flag-toggle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+                            </div>
+                        </div>
+                        <div class="flag-body">
+                            <div class="flag-section">
+                                <div class="flag-section-title">Why This Is a Warning</div>
+                                <p>Price-focused clients often undervalue quality and become difficult when issues arise. They may also be bluffing to negotiate, or comparing apples to oranges (offshore vs. onshore, junior vs. senior team).</p>
+                            </div>
+                            <div class="flag-section">
+                                <div class="flag-section-title">Handling Script</div>
+                                <div class="script-box">
+                                    <button class="copy-btn" onclick="copyScript(this)">Copy</button>
+                                    <p>"I appreciate you sharing that! Price differences usually come down to three things: <span class="highlight">scope, quality, or team seniority</span>. Could you share what's included in their quote? I want to make sure we're comparing the same thing. If budget is a primary concern, I can suggest ways to reduce scope while still achieving your core goals."</p>
+                                </div>
+                            </div>
+                            <div class="flag-section">
+                                <div class="flag-section-title">Mitigation Strategies</div>
+                                <div class="alternatives">
+                                    <span class="alternative-tag">Stand firm on value</span>
+                                    <span class="alternative-tag">Offer reduced scope option</span>
+                                    <span class="alternative-tag">Walk away if needed</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Vague Requirements -->
+                    <div class="flag-card warning">
+                        <div class="flag-header" onclick="toggleFlag(this)">
+                            <div class="flag-title">
+                                <div class="flag-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"></path></svg></div>
+                                <h3>"You're the expert, just make it great"</h3>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                <span class="flag-severity warning">Warning</span>
+                                <span class="flag-toggle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+                            </div>
+                        </div>
+                        <div class="flag-body">
+                            <div class="flag-section">
+                                <div class="flag-section-title">Why This Is a Warning</div>
+                                <p>Flattering, but dangerous. "Great" is subjective. Without clear success criteria, you'll never know when you're done, and they'll keep requesting changes because it's not matching their undefined vision.</p>
+                            </div>
+                            <div class="flag-section">
+                                <div class="flag-section-title">Handling Script</div>
+                                <div class="script-box">
+                                    <button class="copy-btn" onclick="copyScript(this)">Copy</button>
+                                    <p>"I appreciate the trust! To deliver 'great,' I need to understand what that means for your specific situation. <span class="highlight">Let's define 3-5 measurable success criteria</span>. For example: 'The site loads in under 2 seconds,' 'Users complete checkout in under 3 clicks,' or 'We launch by March 1st.' What metrics matter most to you?"</p>
+                                </div>
+                            </div>
+                            <div class="flag-section">
+                                <div class="flag-section-title">Mitigation Strategies</div>
+                                <div class="alternatives">
+                                    <span class="alternative-tag">Define success metrics</span>
+                                    <span class="alternative-tag">Get design approval in writing</span>
+                                    <span class="alternative-tag">Limit revision rounds</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Slow Response -->
+                    <div class="flag-card warning">
+                        <div class="flag-header" onclick="toggleFlag(this)">
+                            <div class="flag-title">
+                                <div class="flag-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 8 14"></polyline></svg></div>
+                                <h3>Taking weeks to respond during sales</h3>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                <span class="flag-severity warning">Warning</span>
+                                <span class="flag-toggle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+                            </div>
+                        </div>
+                        <div class="flag-body">
+                            <div class="flag-section">
+                                <div class="flag-section-title">Why This Is a Warning</div>
+                                <p>Slow communication during the sales phase predicts slow communication during the project. This leads to delayed approvals, blocked progress, and frustration. If they can't prioritize now, they won't prioritize later.</p>
+                            </div>
+                            <div class="flag-section">
+                                <div class="flag-section-title">Handling Script</div>
+                                <div class="script-box">
+                                    <button class="copy-btn" onclick="copyScript(this)">Copy</button>
+                                    <p>"I want to make sure we're set up for success! <span class="highlight">What's a realistic response time</span> I can expect during the project? For smooth progress, we typically need feedback within 48-72 hours on deliverables. Does that align with your team's availability?"</p>
+                                </div>
+                            </div>
+                            <div class="flag-section">
+                                <div class="flag-section-title">Mitigation Strategies</div>
+                                <div class="alternatives">
+                                    <span class="alternative-tag">Add response SLA to contract</span>
+                                    <span class="alternative-tag">Build delays into timeline</span>
+                                    <span class="alternative-tag">Auto-approval clause</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Fixated on Technology -->
+                    <div class="flag-card warning">
+                        <div class="flag-header" onclick="toggleFlag(this)">
+                            <div class="flag-title">
+                                <div class="flag-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg></div>
+                                <h3>"It HAS to be built in [specific tech]"</h3>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                <span class="flag-severity warning">Warning</span>
+                                <span class="flag-toggle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+                            </div>
+                        </div>
+                        <div class="flag-body">
+                            <div class="flag-section">
+                                <div class="flag-section-title">Why This Is a Warning</div>
+                                <p>Technology requirements without business justification suggest either a technically-minded client who will micromanage, someone influenced by a friend's opinion, or an existing developer who's lobbying for their preferred stack.</p>
+                            </div>
+                            <div class="flag-section">
+                                <div class="flag-section-title">Handling Script</div>
+                                <div class="script-box">
+                                    <button class="copy-btn" onclick="copyScript(this)">Copy</button>
+                                    <p>"I'm familiar with [tech]! Just so I understand the full picture: <span class="highlight">what's driving that requirement?</span> Is it team expertise, existing infrastructure, or a specific capability? Sometimes there are alternatives that might better serve your needs, but I want to understand the constraints before suggesting anything."</p>
+                                </div>
+                            </div>
+                            <div class="flag-section">
+                                <div class="flag-section-title">Mitigation Strategies</div>
+                                <div class="alternatives">
+                                    <span class="alternative-tag">Document tech decisions</span>
+                                    <span class="alternative-tag">Explain trade-offs clearly</span>
+                                    <span class="alternative-tag">Get sign-off on limitations</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Green Flags Tab -->
+        <div class="tab-content" id="green">
+            <div class="flag-category">
+                <div class="category-header">
+                    <div class="category-icon positive"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg></div>
+                    <div>
+                        <h2>Green Flags</h2>
+                        <span>Positive indicators that suggest a great fit</span>
+                    </div>
+                </div>
+
+                <div class="flag-grid">
+                    <div class="flag-card positive">
+                        <div class="flag-header" onclick="toggleFlag(this)">
+                            <div class="flag-title">
+                                <div class="flag-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg></div>
+                                <h3>Clear problem definition and success metrics</h3>
+                            </div>
+                            <span class="flag-toggle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+                        </div>
+                        <div class="flag-body">
+                            <div class="flag-section">
+                                <div class="flag-section-title">Why This Is Positive</div>
+                                <p>Clients who can articulate their problem clearly and define what success looks like have done their homework. They'll be easier to work with because everyone's aligned on the goal.</p>
+                            </div>
+                            <div class="flag-section">
+                                <div class="flag-section-title">How to Reinforce</div>
+                                <p>Acknowledge their clarity and document their success criteria in the proposal. Reference these metrics throughout the project to maintain alignment.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flag-card positive">
+                        <div class="flag-header" onclick="toggleFlag(this)">
+                            <div class="flag-title">
+                                <div class="flag-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg></div>
+                                <h3>Budget approved and realistic for scope</h3>
+                            </div>
+                            <span class="flag-toggle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+                        </div>
+                        <div class="flag-body">
+                            <div class="flag-section">
+                                <div class="flag-section-title">Why This Is Positive</div>
+                                <p>Pre-approved budgets mean faster decision-making and less back-and-forth with finance teams. Realistic budgets indicate they value quality and understand market rates.</p>
+                            </div>
+                            <div class="flag-section">
+                                <div class="flag-section-title">How to Reinforce</div>
+                                <p>Thank them for their transparency and provide a detailed breakdown showing value for their investment. Consider offering a small bonus or additional value add.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flag-card positive">
+                        <div class="flag-header" onclick="toggleFlag(this)">
+                            <div class="flag-title">
+                                <div class="flag-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></div>
+                                <h3>Single decision-maker with authority</h3>
+                            </div>
+                            <span class="flag-toggle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+                        </div>
+                        <div class="flag-body">
+                            <div class="flag-section">
+                                <div class="flag-section-title">Why This Is Positive</div>
+                                <p>Clear decision-making authority means faster approvals, consistent feedback, and no "design by committee" syndrome. Projects move smoothly when one person owns the outcome.</p>
+                            </div>
+                            <div class="flag-section">
+                                <div class="flag-section-title">How to Reinforce</div>
+                                <p>Confirm their authority early and direct all major decisions through them. Create clear escalation paths for edge cases.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flag-card positive">
+                        <div class="flag-header" onclick="toggleFlag(this)">
+                            <div class="flag-title">
+                                <div class="flag-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg></div>
+                                <h3>Previous agency experience (good or learning)</h3>
+                            </div>
+                            <span class="flag-toggle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+                        </div>
+                        <div class="flag-body">
+                            <div class="flag-section">
+                                <div class="flag-section-title">Why This Is Positive</div>
+                                <p>Clients who've worked with agencies before understand the process, know how to provide feedback, and have realistic expectations. Even bad experiences mean they've learned what they don't want.</p>
+                            </div>
+                            <div class="flag-section">
+                                <div class="flag-section-title">How to Reinforce</div>
+                                <p>Ask what worked well and what they'd want different. Use their past experience to customize your process and address their specific concerns proactively.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flag-card positive">
+                        <div class="flag-header" onclick="toggleFlag(this)">
+                            <div class="flag-title">
+                                <div class="flag-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg></div>
+                                <h3>Quick, thoughtful responses</h3>
+                            </div>
+                            <span class="flag-toggle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+                        </div>
+                        <div class="flag-body">
+                            <div class="flag-section">
+                                <div class="flag-section-title">Why This Is Positive</div>
+                                <p>Fast communicators during sales will be fast communicators during the project. This indicates they're prioritizing the project and have bandwidth to engage properly.</p>
+                            </div>
+                            <div class="flag-section">
+                                <div class="flag-section-title">How to Reinforce</div>
+                                <p>Match their responsiveness. Thank them for their engagement and set expectations that you'll maintain this pace throughout the project.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flag-card positive">
+                        <div class="flag-header" onclick="toggleFlag(this)">
+                            <div class="flag-title">
+                                <div class="flag-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></div>
+                                <h3>Referred by a past client</h3>
+                            </div>
+                            <span class="flag-toggle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+                        </div>
+                        <div class="flag-body">
+                            <div class="flag-section">
+                                <div class="flag-section-title">Why This Is Positive</div>
+                                <p>Referrals come pre-sold on your value and have realistic expectations set by someone who's worked with you. They're also more likely to trust your process and recommendations.</p>
+                            </div>
+                            <div class="flag-section">
+                                <div class="flag-section-title">How to Reinforce</div>
+                                <p>Thank the referrer (and offer a referral bonus if you have one). Ask the new client what specifically prompted them to reach out based on the referral.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flag-card positive">
+                        <div class="flag-header" onclick="toggleFlag(this)">
+                            <div class="flag-title">
+                                <div class="flag-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"></path><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path><path d="M2 2l7.586 7.586"></path><circle cx="11" cy="11" r="2"></circle></svg></div>
+                                <h3>Has examples/references of what they like</h3>
+                            </div>
+                            <span class="flag-toggle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+                        </div>
+                        <div class="flag-body">
+                            <div class="flag-section">
+                                <div class="flag-section-title">Why This Is Positive</div>
+                                <p>Clients who bring references have thought about their preferences and can articulate direction. This accelerates design exploration and reduces subjective back-and-forth.</p>
+                            </div>
+                            <div class="flag-section">
+                                <div class="flag-section-title">How to Reinforce</div>
+                                <p>Dig into why they like specific examples. Identify patterns across their references to understand their underlying preferences and aesthetic sensibilities.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flag-card positive">
+                        <div class="flag-header" onclick="toggleFlag(this)">
+                            <div class="flag-title">
+                                <div class="flag-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg></div>
+                                <h3>Long-term vision with growth potential</h3>
+                            </div>
+                            <span class="flag-toggle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+                        </div>
+                        <div class="flag-body">
+                            <div class="flag-section">
+                                <div class="flag-section-title">Why This Is Positive</div>
+                                <p>Clients with a roadmap beyond this project are thinking strategically. This often leads to ongoing work, retainer relationships, and the opportunity to see your work grow over time.</p>
+                            </div>
+                            <div class="flag-section">
+                                <div class="flag-section-title">How to Reinforce</div>
+                                <p>Ask about their 6-12 month vision. Build the initial project with extensibility in mind and document decisions that support future phases.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Common Scenarios Tab -->
+        <div class="tab-content" id="scenarios">
+            <div class="flag-category">
+                <div class="category-header">
+                    <div class="category-icon" style="background: var(--accent-dim);"><svg viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></div>
+                    <div>
+                        <h2>Common Scenarios & Playbooks</h2>
+                        <span>Step-by-step guides for handling tricky situations</span>
+                    </div>
+                </div>
+
+                <div class="scenario-grid">
+                    <div class="scenario-card">
+                        <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg> The Price Negotiator</h3>
+                        <p class="description">They love your work but keep pushing back on price, asking for discounts or trying to reduce scope to hit an arbitrary budget.</p>
+                        <div class="scenario-steps">
+                            <div class="step">
+                                <span class="step-number">1</span>
+                                <span class="step-content">Acknowledge their budget constraint without apologizing for your price</span>
+                            </div>
+                            <div class="step">
+                                <span class="step-number">2</span>
+                                <span class="step-content">Ask what's driving the budget number — is it a hard limit or a preference?</span>
+                            </div>
+                            <div class="step">
+                                <span class="step-number">3</span>
+                                <span class="step-content">Offer scope reduction options rather than price reduction</span>
+                            </div>
+                            <div class="step">
+                                <span class="step-number">4</span>
+                                <span class="step-content">If they still push, stand firm: "This is our best price for this scope"</span>
+                            </div>
+                            <div class="step">
+                                <span class="step-number">5</span>
+                                <span class="step-content">Be willing to walk away — discount clients rarely become good clients</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="scenario-card">
+                        <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"></polyline><polyline points="23 20 23 14 17 14"></polyline><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"></path></svg> The Scope Creeper</h3>
+                        <p class="description">Every meeting includes "one more thing" and they keep adding features while expecting the same price and timeline.</p>
+                        <div class="scenario-steps">
+                            <div class="step">
+                                <span class="step-number">1</span>
+                                <span class="step-content">Acknowledge the new idea enthusiastically: "That's a great feature!"</span>
+                            </div>
+                            <div class="step">
+                                <span class="step-number">2</span>
+                                <span class="step-content">Immediately frame it as additive: "Let me add that to the Phase 2 list"</span>
+                            </div>
+                            <div class="step">
+                                <span class="step-number">3</span>
+                                <span class="step-content">If they push for Phase 1, explain the trade-off clearly</span>
+                            </div>
+                            <div class="step">
+                                <span class="step-number">4</span>
+                                <span class="step-content">Pull out the change order process: cost + timeline impact</span>
+                            </div>
+                            <div class="step">
+                                <span class="step-number">5</span>
+                                <span class="step-content">Document everything — email confirmation of any scope changes</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="scenario-card">
+                        <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg> The Ghoster</h3>
+                        <p class="description">They were super excited, said they wanted to move forward, then disappeared. No response to emails or calls.</p>
+                        <div class="scenario-steps">
+                            <div class="step">
+                                <span class="step-number">1</span>
+                                <span class="step-content">Send a brief check-in after 3-5 business days</span>
+                            </div>
+                            <div class="step">
+                                <span class="step-number">2</span>
+                                <span class="step-content">Follow up once more after another week with a clear CTA</span>
+                            </div>
+                            <div class="step">
+                                <span class="step-number">3</span>
+                                <span class="step-content">Send a "closing the loop" email after 2 weeks of silence</span>
+                            </div>
+                            <div class="step">
+                                <span class="step-number">4</span>
+                                <span class="step-content">Move them to nurture list — they may return later</span>
+                            </div>
+                            <div class="step">
+                                <span class="step-number">5</span>
+                                <span class="step-content">Don't take it personally — priorities shift, budgets change</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="scenario-card">
+                        <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><line x1="23" y1="11" x2="17" y2="11"></line></svg> The Competitor Bluffer</h3>
+                        <p class="description">"We have three other proposals and need to decide by Friday" — using competitive pressure to rush your decision or get a discount.</p>
+                        <div class="scenario-steps">
+                            <div class="step">
+                                <span class="step-number">1</span>
+                                <span class="step-content">Acknowledge without panic: "I understand you're evaluating options"</span>
+                            </div>
+                            <div class="step">
+                                <span class="step-number">2</span>
+                                <span class="step-content">Don't match arbitrary deadlines — quality proposals take time</span>
+                            </div>
+                            <div class="step">
+                                <span class="step-number">3</span>
+                                <span class="step-content">Ask what criteria they're using to decide (hint: it's rarely just price)</span>
+                            </div>
+                            <div class="step">
+                                <span class="step-number">4</span>
+                                <span class="step-content">Focus on your unique value, not competing on their terms</span>
+                            </div>
+                            <div class="step">
+                                <span class="step-number">5</span>
+                                <span class="step-content">If they choose someone else, wish them well and stay in touch</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="scenario-card">
+                        <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> The Spec Fisher</h3>
+                        <p class="description">Asking for detailed technical specifications, wireframes, or strategy documents before committing to any paid engagement.</p>
+                        <div class="scenario-steps">
+                            <div class="step">
+                                <span class="step-number">1</span>
+                                <span class="step-content">Explain that detailed specs are valuable work product</span>
+                            </div>
+                            <div class="step">
+                                <span class="step-number">2</span>
+                                <span class="step-content">Offer a paid Discovery phase (smaller commitment, clear deliverable)</span>
+                            </div>
+                            <div class="step">
+                                <span class="step-number">3</span>
+                                <span class="step-content">Provide high-level scope and estimate without detailed specs</span>
+                            </div>
+                            <div class="step">
+                                <span class="step-number">4</span>
+                                <span class="step-content">Share case studies and past work as proof of capability</span>
+                            </div>
+                            <div class="step">
+                                <span class="step-number">5</span>
+                                <span class="step-content">If they insist on free specs, politely decline</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="scenario-card">
+                        <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg> The Emergency Project</h3>
+                        <p class="description">"Our developer quit / our launch is in 2 weeks / we just got funding and need to move NOW" — genuine urgency with real constraints.</p>
+                        <div class="scenario-steps">
+                            <div class="step">
+                                <span class="step-number">1</span>
+                                <span class="step-content">Assess if the urgency is real or manufactured</span>
+                            </div>
+                            <div class="step">
+                                <span class="step-number">2</span>
+                                <span class="step-content">If real, determine what's actually needed by the deadline</span>
+                            </div>
+                            <div class="step">
+                                <span class="step-number">3</span>
+                                <span class="step-content">Apply rush pricing (typically 25-100% premium)</span>
+                            </div>
+                            <div class="step">
+                                <span class="step-number">4</span>
+                                <span class="step-content">Get faster approval cycles and decision authority in writing</span>
+                            </div>
+                            <div class="step">
+                                <span class="step-number">5</span>
+                                <span class="step-content">Define a realistic MVP scope — cut ruthlessly</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Decline Templates Tab -->
+        <div class="tab-content" id="decline">
+            <div class="flag-category">
+                <div class="category-header">
+                    <div class="category-icon" style="background: var(--accent-dim);"><svg viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18"></path><path d="M6 6l12 12"></path></svg></div>
+                    <div>
+                        <h2>Graceful Decline Templates</h2>
+                        <span>Professional ways to say "no" while maintaining relationships</span>
+                    </div>
+                </div>
+
+                <div class="flag-grid">
+                    <div class="flag-card" style="border-left: 4px solid var(--accent);">
+                        <div class="flag-header" onclick="toggleFlag(this)">
+                            <div class="flag-title">
+                                <div class="flag-icon" style="background: var(--accent-dim);"><svg viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg></div>
+                                <h3>Budget Mismatch</h3>
+                            </div>
+                            <span class="flag-toggle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+                        </div>
+                        <div class="flag-body">
+                            <div class="flag-section">
+                                <div class="flag-section-title">When to Use</div>
+                                <p>Their budget is significantly below your minimum or what the project requires.</p>
+                            </div>
+                            <div class="flag-section">
+                                <div class="flag-section-title">Template</div>
+                                <div class="script-box">
+                                    <button class="copy-btn" onclick="copyScript(this)">Copy</button>
+                                    <p>Hi [Name],
+
+Thank you for considering Craefto Lab for your project. After reviewing the scope and your budget, I don't think we're the right fit for this engagement — our approach and team structure work best with projects in the $[X]+ range.
+
+That said, I don't want to leave you without options:
+
+• <span class="highlight">[Freelancer/agency name]</span> does great work at a more accessible price point
+• [Platform] has vetted freelancers for projects like yours
+• Consider a phased approach starting with [critical feature]
+
+I'd love to stay connected — please reach out when your budget aligns with a larger engagement.
+
+Best,
+[Your name]</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flag-card" style="border-left: 4px solid var(--accent);">
+                        <div class="flag-header" onclick="toggleFlag(this)">
+                            <div class="flag-title">
+                                <div class="flag-icon" style="background: var(--accent-dim);"><svg viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg></div>
+                                <h3>Scope Mismatch</h3>
+                            </div>
+                            <span class="flag-toggle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+                        </div>
+                        <div class="flag-body">
+                            <div class="flag-section">
+                                <div class="flag-section-title">When to Use</div>
+                                <p>The project doesn't align with your core services or expertise.</p>
+                            </div>
+                            <div class="flag-section">
+                                <div class="flag-section-title">Template</div>
+                                <div class="script-box">
+                                    <button class="copy-btn" onclick="copyScript(this)">Copy</button>
+                                    <p>Hi [Name],
+
+Thanks for reaching out about your [project type]. While it sounds like an interesting challenge, it's outside our core expertise in <span class="highlight">[your specialty]</span>.
+
+You'd be better served by a team that specializes in [their need]. A few recommendations:
+
+• [Agency/freelancer 1] — they're great at [specialty]
+• [Agency/freelancer 2] — strong portfolio in [related area]
+
+If you have future projects involving [your specialty], I'd love to chat.
+
+Best,
+[Your name]</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flag-card" style="border-left: 4px solid var(--accent);">
+                        <div class="flag-header" onclick="toggleFlag(this)">
+                            <div class="flag-title">
+                                <div class="flag-icon" style="background: var(--accent-dim);"><svg viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></div>
+                                <h3>Timeline/Capacity</h3>
+                            </div>
+                            <span class="flag-toggle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+                        </div>
+                        <div class="flag-body">
+                            <div class="flag-section">
+                                <div class="flag-section-title">When to Use</div>
+                                <p>You're at capacity or their timeline doesn't work with your availability.</p>
+                            </div>
+                            <div class="flag-section">
+                                <div class="flag-section-title">Template</div>
+                                <div class="script-box">
+                                    <button class="copy-btn" onclick="copyScript(this)">Copy</button>
+                                    <p>Hi [Name],
+
+Thank you for thinking of Craefto Lab! Unfortunately, our current project load means we couldn't give your project the attention it deserves within your timeline.
+
+<span class="highlight">Our next availability opens up in [timeframe].</span> If your timeline is flexible, I'd love to reconnect then.
+
+In the meantime, here are some trusted colleagues who might have availability:
+• [Referral 1]
+• [Referral 2]
+
+Let me know if that later timeline could work, or if you'd like an introduction to either of those teams.
+
+Best,
+[Your name]</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flag-card" style="border-left: 4px solid var(--accent);">
+                        <div class="flag-header" onclick="toggleFlag(this)">
+                            <div class="flag-title">
+                                <div class="flag-icon" style="background: var(--accent-dim);"><svg viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg></div>
+                                <h3>Red Flags / Bad Fit</h3>
+                            </div>
+                            <span class="flag-toggle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+                        </div>
+                        <div class="flag-body">
+                            <div class="flag-section">
+                                <div class="flag-section-title">When to Use</div>
+                                <p>You've identified red flags that make this a risky engagement (without saying that directly).</p>
+                            </div>
+                            <div class="flag-section">
+                                <div class="flag-section-title">Template</div>
+                                <div class="script-box">
+                                    <button class="copy-btn" onclick="copyScript(this)">Copy</button>
+                                    <p>Hi [Name],
+
+After our conversations, I've been reflecting on whether Craefto Lab is the best fit for your project. <span class="highlight">I want to be honest: I don't think we're the right partner for this one.</span>
+
+To deliver our best work, we need [specific thing missing — clear requirements, single decision maker, etc.]. Without that alignment, I'm concerned we wouldn't meet your expectations.
+
+I'd recommend looking for a partner who [has different strengths/structure]. [Optional referral]
+
+I wish you the best with the project. If circumstances change, don't hesitate to reach out.
+
+Best,
+[Your name]</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flag-card" style="border-left: 4px solid var(--accent);">
+                        <div class="flag-header" onclick="toggleFlag(this)">
+                            <div class="flag-title">
+                                <div class="flag-icon" style="background: var(--accent-dim);"><svg viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></div>
+                                <h3>Already Committed Elsewhere</h3>
+                            </div>
+                            <span class="flag-toggle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+                        </div>
+                        <div class="flag-body">
+                            <div class="flag-section">
+                                <div class="flag-section-title">When to Use</div>
+                                <p>You're already in talks with a competitor or the project conflicts with existing client relationships.</p>
+                            </div>
+                            <div class="flag-section">
+                                <div class="flag-section-title">Template</div>
+                                <div class="script-box">
+                                    <button class="copy-btn" onclick="copyScript(this)">Copy</button>
+                                    <p>Hi [Name],
+
+Thank you for reaching out about your project. I need to be transparent: <span class="highlight">we have an existing relationship that would create a conflict</span> if we were to work together.
+
+I take these commitments seriously, which is why I'm being upfront rather than proceeding and potentially compromising either engagement.
+
+I'm happy to recommend some excellent alternatives:
+• [Referral 1]
+• [Referral 2]
+
+If your situation changes or you have projects in other areas, I'd welcome the opportunity to work together.
+
+Best,
+[Your name]</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flag-card" style="border-left: 4px solid var(--accent);">
+                        <div class="flag-header" onclick="toggleFlag(this)">
+                            <div class="flag-title">
+                                <div class="flag-icon" style="background: var(--accent-dim);"><svg viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></svg></div>
+                                <h3>Simple "Not Right Now"</h3>
+                            </div>
+                            <span class="flag-toggle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+                        </div>
+                        <div class="flag-body">
+                            <div class="flag-section">
+                                <div class="flag-section-title">When to Use</div>
+                                <p>A general decline when you don't need to give specific reasons.</p>
+                            </div>
+                            <div class="flag-section">
+                                <div class="flag-section-title">Template</div>
+                                <div class="script-box">
+                                    <button class="copy-btn" onclick="copyScript(this)">Copy</button>
+                                    <p>Hi [Name],
+
+Thank you for considering Craefto Lab! After reviewing your project, <span class="highlight">I don't think we're the right fit at this time</span>.
+
+I appreciate you reaching out and wish you the best finding the perfect partner for this work. If things change on our end, I'll reach out.
+
+Best,
+[Your name]</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Reference -->
+        <div class="quick-ref">
+            <h2><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg> Quick Decision Framework</h2>
+            <div class="ref-grid">
+                <div class="ref-card">
+                    <h3><svg viewBox="0 0 24 24" fill="none" stroke="var(--error)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg> Always Decline If</h3>
+                    <ul>
+                        <li>No budget / "we'll pay after launch"</li>
+                        <li>Requests free detailed specifications</li>
+                        <li>Multiple failed agency relationships</li>
+                        <li>Refuses to define success criteria</li>
+                        <li>Demands you work for equity only</li>
+                        <li>Red flags significantly outweigh green</li>
+                    </ul>
+                </div>
+                <div class="ref-card">
+                    <h3><svg viewBox="0 0 24 24" fill="none" stroke="var(--warning)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg> Proceed with Caution If</h3>
+                    <ul>
+                        <li>Budget is tight but confirmed</li>
+                        <li>Timeline is aggressive but achievable</li>
+                        <li>Multiple stakeholders (get SPOC assigned)</li>
+                        <li>Vague requirements (scope with buffer)</li>
+                        <li>Slow communication (add response SLA)</li>
+                        <li>First time working with agencies</li>
+                    </ul>
+                </div>
+                <div class="ref-card">
+                    <h3><svg viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> Fast-Track If</h3>
+                    <ul>
+                        <li>Referral from past successful client</li>
+                        <li>Clear requirements and success metrics</li>
+                        <li>Approved budget matching scope</li>
+                        <li>Single decision-maker identified</li>
+                        <li>Quick, thoughtful communication</li>
+                        <li>Long-term vision and growth potential</li>
+                    </ul>
+                </div>
+                <div class="ref-card">
+                    <h3><svg viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Key Phrases to Use</h3>
+                    <ul>
+                        <li>"To ensure success, I need to understand..."</li>
+                        <li>"Let me add that to the Phase 2 list"</li>
+                        <li>"What's driving that specific requirement?"</li>
+                        <li>"In my experience, projects succeed when..."</li>
+                        <li>"I don't think we're the right fit, but..."</li>
+                        <li>"Here's what that would require..."</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab functionality
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Remove active from all tabs and content
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+                // Add active to clicked tab and corresponding content
+                btn.classList.add('active');
+                document.getElementById(btn.dataset.tab).classList.add('active');
+            });
+        });
+
+        // Flag toggle functionality
+        function toggleFlag(header) {
+            const card = header.closest('.flag-card');
+            card.classList.toggle('expanded');
+        }
+
+        // Copy script functionality
+        function copyScript(btn) {
+            const scriptBox = btn.closest('.script-box');
+            const text = scriptBox.querySelector('p').innerText;
+
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = btn.textContent;
+                btn.textContent = 'Copied!';
+                btn.style.background = 'var(--accent-green-dim)';
+                btn.style.color = 'var(--accent-green)';
+
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '';
+                    btn.style.color = '';
+                }, 2000);
+            });
+        }
+
+        // Expand all for print
+        window.addEventListener('beforeprint', () => {
+            document.querySelectorAll('.flag-card').forEach(card => {
+                card.classList.add('expanded');
+            });
+        });
+    </script>
+</body>
+</html>

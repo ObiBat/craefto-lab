@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOW & Contract Template — Craefto Lab</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Page-specific styles for legal documents */
+        .legal-warning {
+            background: var(--warning-dim);
+            border: 1px solid rgba(214, 138, 10, 0.3);
+            border-radius: var(--radius-md);
+            padding: 20px 24px;
+            margin-bottom: 32px;
+            display: flex;
+            gap: 16px;
+        }
+
+        .legal-warning-icon {
+            width: 24px;
+            height: 24px;
+            flex-shrink: 0;
+        }
+
+        .legal-warning-icon svg {
+            width: 24px;
+            height: 24px;
+            stroke: var(--warning);
+        }
+
+        .legal-warning-content h4 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--warning);
+            margin-bottom: 4px;
+        }
+
+        .legal-warning-content p {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        /* Document */
+        .legal-document {
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border-color);
+        }
+
+        .doc-header {
+            padding: 48px;
+            border-bottom: 2px solid var(--border-color);
+            text-align: center;
+        }
+
+        .doc-logo {
+            width: 48px;
+            height: 48px;
+            background: var(--accent);
+            color: white;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 20px;
+            margin: 0 auto 24px;
+        }
+
+        .doc-header h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+
+        .doc-header .subtitle {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .doc-body {
+            padding: 48px;
+        }
+
+        /* Section */
+        .doc-section {
+            margin-bottom: 40px;
+        }
+
+        .doc-section h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .doc-section p, .doc-section li {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 12px;
+        }
+
+        .doc-section ul, .doc-section ol {
+            margin-left: 20px;
+        }
+
+        .placeholder {
+            background: var(--accent-dim);
+            color: var(--accent);
+            padding: 2px 8px;
+            border-radius: var(--radius-xs);
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        /* Info Box */
+        .info-box {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin: 16px 0;
+        }
+
+        .info-box h4 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .info-item {
+            font-size: 13px;
+        }
+
+        .info-label {
+            color: var(--text-muted);
+            margin-bottom: 2px;
+        }
+
+        .info-value {
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        /* Deliverables Table */
+        .deliverables-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+        }
+
+        .deliverables-table th {
+            background: var(--bg-secondary);
+            padding: 12px 16px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+        }
+
+        .deliverables-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 14px;
+        }
+
+        /* Payment Table */
+        .payment-table {
+            width: 100%;
+            margin: 16px 0;
+        }
+
+        .payment-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 14px;
+        }
+
+        .payment-row:last-child {
+            border-bottom: none;
+            padding-top: 16px;
+            font-weight: 600;
+        }
+
+        /* Clause Highlight */
+        .clause-highlight {
+            background: var(--error-dim);
+            border-left: 4px solid var(--error);
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-size: 14px;
+        }
+
+        .clause-highlight.warning {
+            background: var(--warning-dim);
+            border-left-color: var(--warning);
+        }
+
+        .clause-highlight.info {
+            background: var(--info-dim);
+            border-left-color: var(--info);
+        }
+
+        .clause-highlight strong {
+            color: var(--text-primary);
+        }
+
+        /* Signature Block */
+        .signature-block {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 48px;
+            margin-top: 48px;
+            padding-top: 32px;
+            border-top: 2px solid var(--border-color);
+        }
+
+        .signature-party h4 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+        }
+
+        .signature-field {
+            margin-bottom: 20px;
+        }
+
+        .signature-line {
+            border-bottom: 1px solid var(--border-strong);
+            padding-bottom: 8px;
+            margin-bottom: 4px;
+            min-height: 32px;
+        }
+
+        .signature-label {
+            font-size: 11px;
+            color: var(--text-light);
+        }
+
+        /* Actions */
+        .actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 32px;
+        }
+
+        .action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            text-decoration: none;
+        }
+
+        .action-btn:hover { background: var(--accent-hover); }
+
+        .action-btn.secondary {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .action-btn.secondary:hover {
+            background: var(--bg-muted);
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            color: var(--text-muted);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+        }
+
+        .tab:hover {
+            border-color: var(--border-strong);
+        }
+
+        .tab.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Page Title Section - override for this page */
+        .page-title-section {
+            margin-bottom: 48px;
+        }
+
+        .page-title-section h1 {
+            font-size: 36px;
+            margin-bottom: 16px;
+        }
+
+        .page-title-section p {
+            font-size: 18px;
+            max-width: 700px;
+        }
+
+        @media (max-width: 768px) {
+            .doc-body { padding: 24px; }
+            .signature-block { grid-template-columns: 1fr; gap: 32px; }
+            .info-grid { grid-template-columns: 1fr; }
+        }
+
+        @media print {
+            .page-header, .actions, .page-title-section, .tabs, .legal-warning { display: none; }
+            .main { padding: 0; max-width: none; }
+            .legal-document { box-shadow: none; }
+            .tab-content { display: block !important; }
+        }
+    </style>
+</head>
+<body>
+    <header class="page-header">
+        <a href="index.html" class="back-link">
+            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Back to Hub
+        </a>
+        <span class="header-title">SOW & Contract Template</span>
+    </header>
+
+    <main class="main">
+        <div class="page-title-section">
+            <div class="page-number">05 / 08</div>
+            <h1>SOW & Contract Template</h1>
+            <p>Professional Statement of Work and contract terms with essential clauses for scope, payment, IP, and change management. Protect yourself while staying client-friendly.</p>
+        </div>
+
+        <div class="legal-warning">
+            <div class="legal-warning-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+                    <line x1="12" y1="9" x2="12" y2="13"/>
+                    <line x1="12" y1="17" x2="12.01" y2="17"/>
+                </svg>
+            </div>
+            <div class="legal-warning-content">
+                <h4>Important Legal Notice</h4>
+                <p>This template is provided for reference only and does not constitute legal advice. Have a qualified lawyer review and customize these documents for your specific situation and jurisdiction before use.</p>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('sow')">Statement of Work</button>
+            <button class="tab" onclick="showTab('terms')">Terms & Conditions</button>
+            <button class="tab" onclick="showTab('change')">Change Order</button>
+        </div>
+
+        <!-- SOW Tab -->
+        <div id="sow" class="tab-content active">
+            <div class="legal-document">
+                <div class="doc-header">
+                    <div class="doc-logo">C</div>
+                    <h1>Statement of Work</h1>
+                    <p class="subtitle">Agreement between Craefto Lab and <span class="placeholder">[Client Company]</span></p>
+                </div>
+
+                <div class="doc-body">
+                    <section class="doc-section">
+                        <h2>1. Project Overview</h2>
+                        <div class="info-box">
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <div class="info-label">Project Name</div>
+                                    <div class="info-value"><span class="placeholder">[Project Name]</span></div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-label">Client</div>
+                                    <div class="info-value"><span class="placeholder">[Client Company Name]</span></div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-label">SOW Number</div>
+                                    <div class="info-value"><span class="placeholder">[SOW-2025-XXX]</span></div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-label">Effective Date</div>
+                                    <div class="info-value"><span class="placeholder">[Date]</span></div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-label">Project Duration</div>
+                                    <div class="info-value"><span class="placeholder">[X]</span> weeks</div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-label">Estimated Completion</div>
+                                    <div class="info-value"><span class="placeholder">[Date]</span></div>
+                                </div>
+                            </div>
+                        </div>
+                        <p><span class="placeholder">[2-3 sentence description of the project and its primary objectives. Reference the agreed-upon goals from the proposal.]</span></p>
+                    </section>
+
+                    <section class="doc-section">
+                        <h2>2. Scope of Work</h2>
+                        <p>Craefto Lab ("Provider") agrees to provide the following services to <span class="placeholder">[Client Company]</span> ("Client"):</p>
+
+                        <h4 style="font-size: 14px; font-weight: 600; margin: 20px 0 12px;">Phase 1: Discovery & Strategy</h4>
+                        <ul>
+                            <li><span class="placeholder">[Deliverable 1.1 — e.g., "Brand strategy workshop (half-day facilitated session)"]</span></li>
+                            <li><span class="placeholder">[Deliverable 1.2 — e.g., "Competitive analysis and market positioning document"]</span></li>
+                            <li><span class="placeholder">[Deliverable 1.3]</span></li>
+                        </ul>
+
+                        <h4 style="font-size: 14px; font-weight: 600; margin: 20px 0 12px;">Phase 2: Design</h4>
+                        <ul>
+                            <li><span class="placeholder">[Deliverable 2.1 — e.g., "Visual identity system including logo, color palette, typography"]</span></li>
+                            <li><span class="placeholder">[Deliverable 2.2 — e.g., "Website design mockups for X pages"]</span></li>
+                            <li><span class="placeholder">[Deliverable 2.3]</span></li>
+                        </ul>
+
+                        <h4 style="font-size: 14px; font-weight: 600; margin: 20px 0 12px;">Phase 3: Development</h4>
+                        <ul>
+                            <li><span class="placeholder">[Deliverable 3.1 — e.g., "Fully responsive website built on Next.js"]</span></li>
+                            <li><span class="placeholder">[Deliverable 3.2 — e.g., "CMS integration for content management"]</span></li>
+                            <li><span class="placeholder">[Deliverable 3.3]</span></li>
+                        </ul>
+
+                        <h4 style="font-size: 14px; font-weight: 600; margin: 20px 0 12px;">Phase 4: Launch & Support</h4>
+                        <ul>
+                            <li><span class="placeholder">[Deliverable 4.1 — e.g., "Deployment to production environment"]</span></li>
+                            <li><span class="placeholder">[Deliverable 4.2 — e.g., "X weeks post-launch support and bug fixes"]</span></li>
+                        </ul>
+                    </section>
+
+                    <section class="doc-section">
+                        <h2>3. Exclusions</h2>
+                        <p>The following items are explicitly NOT included in this Statement of Work:</p>
+                        <ul>
+                            <li>Copywriting and content creation (to be provided by Client)</li>
+                            <li>Stock photography, illustration, or video production</li>
+                            <li>Ongoing hosting, domain registration, and maintenance</li>
+                            <li>Third-party software licenses or subscriptions</li>
+                            <li>Search engine optimization (SEO) services</li>
+                            <li>Social media management or marketing</li>
+                            <li>Revisions beyond the specified rounds per deliverable</li>
+                            <li><span class="placeholder">[Any other specific exclusions]</span></li>
+                        </ul>
+                        <div class="clause-highlight info">
+                            <strong>Note:</strong> Any work outside this scope will require a separate Change Order with associated costs and timeline impact.
+                        </div>
+                    </section>
+
+                    <section class="doc-section">
+                        <h2>4. Assumptions</h2>
+                        <p>This SOW is based on the following assumptions:</p>
+                        <ul>
+                            <li>Client will provide all required content, assets, and materials within <span class="placeholder">[X]</span> business days of request</li>
+                            <li>Client will provide consolidated feedback within <span class="placeholder">[X]</span> business days of deliverable submission</li>
+                            <li>Client has designated <span class="placeholder">[Name/Role]</span> as the primary decision-maker with authority to approve deliverables</li>
+                            <li>All necessary platform access and credentials will be provided by project start</li>
+                            <li>Client stakeholders will be available for scheduled meetings and reviews</li>
+                        </ul>
+                    </section>
+
+                    <section class="doc-section">
+                        <h2>5. Timeline & Milestones</h2>
+                        <table class="deliverables-table">
+                            <thead>
+                                <tr>
+                                    <th>Milestone</th>
+                                    <th>Deliverables</th>
+                                    <th>Target Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Project Kickoff</strong></td>
+                                    <td>Kickoff call, access setup</td>
+                                    <td><span class="placeholder">[Date]</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Discovery Complete</strong></td>
+                                    <td>Strategy document, research findings</td>
+                                    <td><span class="placeholder">[Date]</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Design Approval</strong></td>
+                                    <td>Final design mockups approved</td>
+                                    <td><span class="placeholder">[Date]</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Development Complete</strong></td>
+                                    <td>Staging site ready for review</td>
+                                    <td><span class="placeholder">[Date]</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Project Launch</strong></td>
+                                    <td>Live deployment, handover</td>
+                                    <td><span class="placeholder">[Date]</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="clause-highlight warning">
+                            <strong>Timeline Note:</strong> Delays in Client deliverables (content, feedback, approvals) will extend the project timeline by an equivalent duration.
+                        </div>
+                    </section>
+
+                    <section class="doc-section">
+                        <h2>6. Investment & Payment</h2>
+                        <div class="info-box">
+                            <h4>Payment Schedule</h4>
+                            <div class="payment-table">
+                                <div class="payment-row">
+                                    <span>50% Deposit (upon signing)</span>
+                                    <span>A$<span class="placeholder">[Amount]</span></span>
+                                </div>
+                                <div class="payment-row">
+                                    <span>25% Milestone (design approval)</span>
+                                    <span>A$<span class="placeholder">[Amount]</span></span>
+                                </div>
+                                <div class="payment-row">
+                                    <span>25% Final (upon completion)</span>
+                                    <span>A$<span class="placeholder">[Amount]</span></span>
+                                </div>
+                                <div class="payment-row">
+                                    <span><strong>Total Project Investment</strong></span>
+                                    <span><strong>A$<span class="placeholder">[Total]</span></strong></span>
+                                </div>
+                            </div>
+                        </div>
+                        <p>Payment terms: Net 14 days from invoice date. A late fee of 2% per month will apply to overdue balances.</p>
+                    </section>
+
+                    <section class="doc-section">
+                        <h2>7. Revisions</h2>
+                        <p>This SOW includes <span class="placeholder">[X]</span> rounds of revisions per major deliverable. A "round" consists of consolidated feedback provided in a single communication.</p>
+                        <ul>
+                            <li>Revision requests must be submitted within <span class="placeholder">[X]</span> business days of deliverable presentation</li>
+                            <li>Feedback must be consolidated from all stakeholders before submission</li>
+                            <li>Additional revision rounds will be billed at A$<span class="placeholder">[rate]</span> per hour</li>
+                        </ul>
+                    </section>
+
+                    <section class="doc-section">
+                        <h2>8. Client Responsibilities</h2>
+                        <p>Client agrees to:</p>
+                        <ul>
+                            <li>Provide timely access to necessary systems, platforms, and credentials</li>
+                            <li>Designate a single point of contact with decision-making authority</li>
+                            <li>Provide all required content and assets by agreed-upon dates</li>
+                            <li>Review and provide consolidated feedback within specified timeframes</li>
+                            <li>Attend scheduled meetings and make stakeholders available as needed</li>
+                            <li>Obtain necessary internal approvals in a timely manner</li>
+                        </ul>
+                    </section>
+
+                    <section class="doc-section">
+                        <h2>9. Acceptance</h2>
+                        <p>By signing below, both parties agree to the terms outlined in this Statement of Work. This SOW, together with the attached Terms & Conditions, constitutes the complete agreement between the parties.</p>
+                    </section>
+
+                    <div class="signature-block">
+                        <div class="signature-party">
+                            <h4>Craefto Lab (Provider)</h4>
+                            <div class="signature-field">
+                                <div class="signature-line"></div>
+                                <div class="signature-label">Authorized Signature</div>
+                            </div>
+                            <div class="signature-field">
+                                <div class="signature-line"></div>
+                                <div class="signature-label">Printed Name</div>
+                            </div>
+                            <div class="signature-field">
+                                <div class="signature-line"></div>
+                                <div class="signature-label">Date</div>
+                            </div>
+                        </div>
+                        <div class="signature-party">
+                            <h4><span class="placeholder">[Client Company]</span> (Client)</h4>
+                            <div class="signature-field">
+                                <div class="signature-line"></div>
+                                <div class="signature-label">Authorized Signature</div>
+                            </div>
+                            <div class="signature-field">
+                                <div class="signature-line"></div>
+                                <div class="signature-label">Printed Name & Title</div>
+                            </div>
+                            <div class="signature-field">
+                                <div class="signature-line"></div>
+                                <div class="signature-label">Date</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Terms Tab -->
+        <div id="terms" class="tab-content">
+            <div class="legal-document">
+                <div class="doc-header">
+                    <div class="doc-logo">C</div>
+                    <h1>Terms & Conditions</h1>
+                    <p class="subtitle">Standard Terms for Creative Services</p>
+                </div>
+
+                <div class="doc-body">
+                    <section class="doc-section">
+                        <h2>1. Payment Terms</h2>
+                        <p><strong>1.1 Deposit.</strong> A 50% deposit is required before work begins. Work will not commence until deposit is received.</p>
+                        <p><strong>1.2 Payment Schedule.</strong> Payments are due Net 14 from invoice date unless otherwise specified in the SOW.</p>
+                        <p><strong>1.3 Late Payments.</strong> Overdue invoices will incur a late fee of 2% per month. Provider reserves the right to suspend work on accounts more than 30 days overdue.</p>
+                        <p><strong>1.4 Expenses.</strong> Any pre-approved expenses (stock photography, fonts, third-party services) will be billed at cost plus 15% administrative fee.</p>
+                    </section>
+
+                    <section class="doc-section">
+                        <h2>2. Intellectual Property</h2>
+                        <p><strong>2.1 Work Product.</strong> Upon receipt of full payment, Client shall own all rights, title, and interest in the final deliverables created specifically for Client under the SOW.</p>
+                        <p><strong>2.2 Pre-existing Materials.</strong> Provider retains all rights to pre-existing materials, tools, and methodologies. Client is granted a perpetual, non-exclusive license to use such materials as incorporated in the deliverables.</p>
+                        <p><strong>2.3 Work in Progress.</strong> All work in progress, concepts, and rejected designs remain the property of Provider until full payment is received.</p>
+                        <div class="clause-highlight">
+                            <strong>Important:</strong> Intellectual property rights transfer ONLY upon full payment. If payment is not completed, Provider retains all rights to the work.
+                        </div>
+                        <p><strong>2.4 Portfolio Rights.</strong> Provider reserves the right to display work in portfolios, case studies, and marketing materials unless otherwise agreed in writing.</p>
+                    </section>
+
+                    <section class="doc-section">
+                        <h2>3. Scope Changes</h2>
+                        <p><strong>3.1 Change Orders.</strong> Any changes to the agreed scope must be documented in a written Change Order signed by both parties before additional work begins.</p>
+                        <p><strong>3.2 Impact.</strong> Changes may affect project timeline and budget. Provider will provide estimates before proceeding with any change.</p>
+                        <p><strong>3.3 Out-of-Scope Requests.</strong> Requests outside the SOW scope will be quoted separately as new work items or Change Orders.</p>
+                    </section>
+
+                    <section class="doc-section">
+                        <h2>4. Timeline & Delays</h2>
+                        <p><strong>4.1 Client Delays.</strong> Delays caused by Client (late content, feedback, approvals, or access) will extend the project timeline by an equivalent period.</p>
+                        <p><strong>4.2 Provider Delays.</strong> Provider will communicate any anticipated delays promptly and work to minimize impact on the overall schedule.</p>
+                        <p><strong>4.3 Force Majeure.</strong> Neither party shall be liable for delays caused by circumstances beyond their reasonable control.</p>
+                    </section>
+
+                    <section class="doc-section">
+                        <h2>5. Confidentiality</h2>
+                        <p><strong>5.1 Confidential Information.</strong> Both parties agree to keep confidential any proprietary or sensitive information shared during the project.</p>
+                        <p><strong>5.2 Exceptions.</strong> Confidentiality obligations do not apply to information that: (a) is publicly available, (b) was known prior to disclosure, or (c) is required to be disclosed by law.</p>
+                    </section>
+
+                    <section class="doc-section">
+                        <h2>6. Termination</h2>
+                        <p><strong>6.1 By Client.</strong> Client may terminate this agreement with 14 days written notice. Client will be invoiced for all work completed to date.</p>
+                        <p><strong>6.2 By Provider.</strong> Provider may terminate if Client fails to make payment within 30 days of due date, or materially breaches this agreement.</p>
+                        <p><strong>6.3 Kill Fee.</strong> If Client terminates for convenience (not due to Provider breach), a kill fee equal to 25% of the remaining contract value applies.</p>
+                        <p><strong>6.4 Deposits.</strong> All deposits are non-refundable except in cases of Provider breach.</p>
+                    </section>
+
+                    <section class="doc-section">
+                        <h2>7. Liability</h2>
+                        <p><strong>7.1 Limitation.</strong> Provider's total liability under this agreement shall not exceed the total fees paid by Client under the relevant SOW.</p>
+                        <p><strong>7.2 Exclusions.</strong> Provider shall not be liable for any indirect, incidental, consequential, or punitive damages.</p>
+                        <p><strong>7.3 Third-Party Services.</strong> Provider is not responsible for the performance, reliability, or actions of third-party services, platforms, or vendors.</p>
+                        <p><strong>7.4 Client Content.</strong> Client is responsible for ensuring they have rights to all content, materials, and assets provided to Provider.</p>
+                    </section>
+
+                    <section class="doc-section">
+                        <h2>8. General Provisions</h2>
+                        <p><strong>8.1 Independent Contractor.</strong> Provider is an independent contractor. Nothing in this agreement creates an employment, partnership, or agency relationship.</p>
+                        <p><strong>8.2 Entire Agreement.</strong> The SOW and these Terms constitute the entire agreement and supersede all prior discussions or agreements.</p>
+                        <p><strong>8.3 Amendments.</strong> Changes to this agreement must be made in writing and signed by both parties.</p>
+                        <p><strong>8.4 Governing Law.</strong> This agreement shall be governed by the laws of <span class="placeholder">[State/Territory]</span>, Australia.</p>
+                        <p><strong>8.5 Dispute Resolution.</strong> Any disputes shall first be addressed through good-faith negotiation. If unresolved, disputes shall be submitted to mediation before any legal action.</p>
+                    </section>
+                </div>
+            </div>
+        </div>
+
+        <!-- Change Order Tab -->
+        <div id="change" class="tab-content">
+            <div class="legal-document">
+                <div class="doc-header">
+                    <div class="doc-logo">C</div>
+                    <h1>Change Order</h1>
+                    <p class="subtitle">Amendment to Statement of Work</p>
+                </div>
+
+                <div class="doc-body">
+                    <section class="doc-section">
+                        <div class="info-box">
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <div class="info-label">Change Order Number</div>
+                                    <div class="info-value"><span class="placeholder">[CO-XXX]</span></div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-label">Original SOW</div>
+                                    <div class="info-value"><span class="placeholder">[SOW-2025-XXX]</span></div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-label">Project</div>
+                                    <div class="info-value"><span class="placeholder">[Project Name]</span></div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-label">Date</div>
+                                    <div class="info-value"><span class="placeholder">[Date]</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="doc-section">
+                        <h2>Change Requested</h2>
+                        <p><span class="placeholder">[Detailed description of the requested change — be specific about what is being added, modified, or removed from the original scope]</span></p>
+                    </section>
+
+                    <section class="doc-section">
+                        <h2>Requested By</h2>
+                        <p><span class="placeholder">[Client contact name]</span> on <span class="placeholder">[Date of request]</span></p>
+                        <p>Request method: <span class="placeholder">[Email / Call / Meeting]</span></p>
+                    </section>
+
+                    <section class="doc-section">
+                        <h2>Impact Assessment</h2>
+
+                        <h4 style="font-size: 14px; font-weight: 600; margin: 16px 0 8px;">Scope Impact</h4>
+                        <p><span class="placeholder">[Description of how this change affects the project scope]</span></p>
+
+                        <h4 style="font-size: 14px; font-weight: 600; margin: 16px 0 8px;">Timeline Impact</h4>
+                        <p><span class="placeholder">[+X days/weeks to the project schedule — OR "No impact"]</span></p>
+
+                        <h4 style="font-size: 14px; font-weight: 600; margin: 16px 0 8px;">Budget Impact</h4>
+                        <p><span class="placeholder">[+A$X,XXX — OR "No additional cost"]</span></p>
+
+                        <div class="info-box" style="margin-top: 20px;">
+                            <h4>Summary</h4>
+                            <div class="payment-table">
+                                <div class="payment-row">
+                                    <span>Additional Cost</span>
+                                    <span>A$<span class="placeholder">[Amount]</span></span>
+                                </div>
+                                <div class="payment-row">
+                                    <span>Timeline Extension</span>
+                                    <span><span class="placeholder">[X]</span> days</span>
+                                </div>
+                                <div class="payment-row">
+                                    <span>New Completion Date</span>
+                                    <span><span class="placeholder">[Date]</span></span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="doc-section">
+                        <h2>Approval</h2>
+                        <p>By signing below, both parties agree to amend the original SOW as described in this Change Order.</p>
+
+                        <div style="display: flex; gap: 24px; margin-top: 24px;">
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                <input type="checkbox" style="width: 20px; height: 20px;">
+                                <span>Approved</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                <input type="checkbox" style="width: 20px; height: 20px;">
+                                <span>Rejected</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                <input type="checkbox" style="width: 20px; height: 20px;">
+                                <span>Needs Modification</span>
+                            </label>
+                        </div>
+                    </section>
+
+                    <div class="signature-block">
+                        <div class="signature-party">
+                            <h4>Client Approval</h4>
+                            <div class="signature-field">
+                                <div class="signature-line"></div>
+                                <div class="signature-label">Signature</div>
+                            </div>
+                            <div class="signature-field">
+                                <div class="signature-line"></div>
+                                <div class="signature-label">Date</div>
+                            </div>
+                        </div>
+                        <div class="signature-party">
+                            <h4>Provider Acknowledgment</h4>
+                            <div class="signature-field">
+                                <div class="signature-line"></div>
+                                <div class="signature-label">Signature</div>
+                            </div>
+                            <div class="signature-field">
+                                <div class="signature-line"></div>
+                                <div class="signature-label">Date</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="actions">
+            <button class="action-btn" onclick="window.print()">
+                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                </svg>
+                Print / Save as PDF
+            </button>
+            <a href="06-onboarding-sequence.html" class="action-btn secondary">
+                Next: Onboarding Sequence →
+            </a>
+        </div>
+    </main>
+
+    <script>
+        function showTab(tabId) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            // Remove active from all tabs
+            document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+
+            // Show selected tab content
+            document.getElementById(tabId).classList.add('active');
+            // Add active to clicked tab
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>
