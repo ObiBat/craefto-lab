@@ -33,16 +33,16 @@ function StatCard({
   icon: React.ReactNode;
 }) {
   return (
-    <div className="bg-[#18181b] border border-[#27272a] rounded-xl p-6">
+    <div className="bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl p-6">
       <div className="flex items-start justify-between">
         <div>
-          <p className="text-[#a1a1aa] text-sm mb-1">{label}</p>
-          <p className="text-3xl font-semibold text-white">{value}</p>
+          <p className="text-[hsl(var(--color-foreground-muted))] text-sm mb-1">{label}</p>
+          <p className="text-3xl font-semibold text-[hsl(var(--color-foreground))]">{value}</p>
           {change && (
-            <p className="text-[#22c55e] text-sm mt-1">{change}</p>
+            <p className="text-[hsl(var(--color-accent))] text-sm mt-1">{change}</p>
           )}
         </div>
-        <div className="p-3 bg-[#27272a] rounded-lg text-[#a1a1aa]">
+        <div className="p-3 bg-[hsl(var(--color-background-subtle))] rounded-xl text-[hsl(var(--color-foreground-muted))]">
           {icon}
         </div>
       </div>
@@ -101,13 +101,13 @@ export default function AdminDashboard() {
   if (loading) {
     return (
       <div className="animate-pulse space-y-8">
-        <div className="h-8 w-48 bg-[#222] rounded" />
+        <div className="h-8 w-48 bg-[hsl(var(--color-border))] rounded" />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {[...Array(4)].map((_, i) => (
-            <div key={i} className="h-32 bg-[#18181b] rounded-xl" />
+            <div key={i} className="h-32 bg-[hsl(var(--color-background-muted))] rounded-xl" />
           ))}
         </div>
-        <div className="h-96 bg-[#18181b] rounded-xl" />
+        <div className="h-96 bg-[hsl(var(--color-background-muted))] rounded-xl" />
       </div>
     );
   }
@@ -161,34 +161,34 @@ export default function AdminDashboard() {
       </div>
 
       {/* Recent Leads */}
-      <div className="bg-[#18181b] border border-[#27272a] rounded-xl">
-        <div className="p-6 border-b border-[#27272a] flex items-center justify-between">
+      <div className="bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl">
+        <div className="p-6 border-b border-[hsl(var(--color-border))] flex items-center justify-between">
           <div>
             <h2 className="text-lg font-semibold">Recent Leads</h2>
-            <p className="text-[#a1a1aa] text-sm">Latest inquiries from your website</p>
+            <p className="text-[hsl(var(--color-foreground-muted))] text-sm">Latest inquiries from your website</p>
           </div>
           <Link
             href="/admin/leads"
-            className="text-sm text-[#22c55e] hover:underline"
+            className="text-sm text-[hsl(var(--color-accent))] hover:underline"
           >
             View all →
           </Link>
         </div>
-        <div className="divide-y divide-[#222]">
+        <div className="divide-y divide-[hsl(var(--color-border))]">
           {stats?.recentLeads && stats.recentLeads.length > 0 ? (
             stats.recentLeads.map((lead) => (
               <Link
                 key={lead.id}
                 href={`/admin/leads/${lead.id}`}
-                className="flex items-center justify-between p-4 hover:bg-[#27272a] transition-colors"
+                className="flex items-center justify-between p-4 hover:bg-[hsl(var(--color-background-subtle))] transition-colors"
               >
                 <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-full bg-[#22c55e]/20 flex items-center justify-center text-[#22c55e] font-medium">
+                  <div className="w-10 h-10 rounded-full bg-[hsl(var(--color-accent))]/20 flex items-center justify-center text-[hsl(var(--color-accent))] font-medium">
                     {lead.name.charAt(0).toUpperCase()}
                   </div>
                   <div>
-                    <p className="font-medium text-white">{lead.name}</p>
-                    <p className="text-sm text-[#a1a1aa]">
+                    <p className="font-medium text-[hsl(var(--color-foreground))]">{lead.name}</p>
+                    <p className="text-sm text-[hsl(var(--color-foreground-muted))]">
                       {lead.company || lead.email}
                     </p>
                   </div>
@@ -199,14 +199,14 @@ export default function AdminDashboard() {
                       {lead.stage.name}
                     </span>
                   )}
-                  <span className="text-sm text-[#71717a]">
+                  <span className="text-sm text-[hsl(var(--color-foreground-subtle))]">
                     {formatDate(lead.created_at)}
                   </span>
                 </div>
               </Link>
             ))
           ) : (
-            <div className="p-8 text-center text-[#71717a]">
+            <div className="p-8 text-center text-[hsl(var(--color-foreground-subtle))]">
               <p>No leads yet</p>
               <p className="text-sm mt-1">Leads will appear here when someone submits the contact form</p>
             </div>

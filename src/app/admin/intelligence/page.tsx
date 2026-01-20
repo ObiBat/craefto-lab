@@ -39,15 +39,15 @@ function formatDate(dateString: string) {
 }
 
 function getRiskColor(risk: number) {
-  if (risk < 0.3) return "text-green-400";
-  if (risk < 0.7) return "text-yellow-400";
-  return "text-red-400";
+  if (risk < 0.3) return "text-green-600";
+  if (risk < 0.7) return "text-yellow-600";
+  return "text-red-600";
 }
 
 function getFitColor(score: number) {
-  if (score >= 0.7) return "text-green-400";
-  if (score >= 0.4) return "text-yellow-400";
-  return "text-red-400";
+  if (score >= 0.7) return "text-green-600";
+  if (score >= 0.4) return "text-yellow-600";
+  return "text-red-600";
 }
 
 export default function IntelligencePage() {
@@ -109,13 +109,13 @@ export default function IntelligencePage() {
   if (loading) {
     return (
       <div className="animate-pulse space-y-8">
-        <div className="h-8 w-48 bg-[#222] rounded" />
+        <div className="h-8 w-48 bg-[hsl(var(--color-border))] rounded" />
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           {[...Array(4)].map((_, i) => (
-            <div key={i} className="h-24 bg-[#18181b] rounded-xl" />
+            <div key={i} className="h-24 bg-[hsl(var(--color-background-muted))] rounded-xl" />
           ))}
         </div>
-        <div className="h-96 bg-[#18181b] rounded-xl" />
+        <div className="h-96 bg-[hsl(var(--color-background-muted))] rounded-xl" />
       </div>
     );
   }
@@ -124,61 +124,61 @@ export default function IntelligencePage() {
     <div className="space-y-8">
       <div>
         <h1 className="text-2xl font-semibold mb-1">Client Intelligence</h1>
-        <p className="text-[#a1a1aa]">AI-powered analysis of incoming leads</p>
+        <p className="text-[hsl(var(--color-foreground-muted))]">AI-powered analysis of incoming leads</p>
       </div>
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="bg-[#18181b] border border-[#27272a] rounded-xl p-6">
-          <p className="text-[#a1a1aa] text-sm mb-1">Total Leads</p>
-          <p className="text-3xl font-semibold text-white">{stats.total}</p>
+        <div className="bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl p-6">
+          <p className="text-[hsl(var(--color-foreground-muted))] text-sm mb-1">Total Leads</p>
+          <p className="text-3xl font-semibold text-[hsl(var(--color-foreground))]">{stats.total}</p>
         </div>
-        <div className="bg-[#18181b] border border-[#27272a] rounded-xl p-6">
-          <p className="text-[#a1a1aa] text-sm mb-1">Analyzed</p>
-          <p className="text-3xl font-semibold text-white">{stats.analyzed}</p>
+        <div className="bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl p-6">
+          <p className="text-[hsl(var(--color-foreground-muted))] text-sm mb-1">Analyzed</p>
+          <p className="text-3xl font-semibold text-[hsl(var(--color-foreground))]">{stats.analyzed}</p>
         </div>
-        <div className="bg-[#18181b] border border-[#27272a] rounded-xl p-6">
-          <p className="text-[#a1a1aa] text-sm mb-1">Avg Fit Score</p>
+        <div className="bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl p-6">
+          <p className="text-[hsl(var(--color-foreground-muted))] text-sm mb-1">Avg Fit Score</p>
           <p className={`text-3xl font-semibold ${getFitColor(stats.avgFit)}`}>
             {stats.avgFit > 0 ? `${Math.round(stats.avgFit * 100)}%` : "—"}
           </p>
         </div>
-        <div className="bg-[#18181b] border border-[#27272a] rounded-xl p-6">
-          <p className="text-[#a1a1aa] text-sm mb-1">High Risk</p>
-          <p className="text-3xl font-semibold text-red-400">{stats.highRisk}</p>
+        <div className="bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl p-6">
+          <p className="text-[hsl(var(--color-foreground-muted))] text-sm mb-1">High Risk</p>
+          <p className="text-3xl font-semibold text-red-600">{stats.highRisk}</p>
         </div>
       </div>
 
       {/* Leads Table */}
-      <div className="bg-[#18181b] border border-[#27272a] rounded-xl overflow-hidden">
-        <div className="p-6 border-b border-[#27272a]">
+      <div className="bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl overflow-hidden">
+        <div className="p-6 border-b border-[hsl(var(--color-border))]">
           <h2 className="text-lg font-semibold">Lead Analysis</h2>
-          <p className="text-[#a1a1aa] text-sm">Click analyze to run AI assessment</p>
+          <p className="text-[hsl(var(--color-foreground-muted))] text-sm">Click analyze to run AI assessment</p>
         </div>
 
         {leads.length > 0 ? (
-          <div className="divide-y divide-[#222]">
+          <div className="divide-y divide-[hsl(var(--color-border))]">
             {leads.map((lead) => (
               <div
                 key={lead.id}
-                className="p-4 hover:bg-[#1a1a1d] transition-colors"
+                className="p-4 hover:bg-[hsl(var(--color-background-subtle))] transition-colors"
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex items-center gap-4 min-w-0">
-                    <div className="w-10 h-10 rounded-full bg-[#22c55e]/20 flex items-center justify-center text-[#22c55e] font-medium shrink-0">
+                    <div className="w-10 h-10 rounded-full bg-[hsl(var(--color-accent))]/20 flex items-center justify-center text-[hsl(var(--color-accent))] font-medium shrink-0">
                       {lead.name.charAt(0).toUpperCase()}
                     </div>
                     <div className="min-w-0">
                       <Link
                         href={`/admin/leads/${lead.id}`}
-                        className="font-medium text-white hover:text-[#22c55e] transition-colors"
+                        className="font-medium text-[hsl(var(--color-foreground))] hover:text-[hsl(var(--color-accent))] transition-colors"
                       >
                         {lead.name}
                       </Link>
-                      <p className="text-sm text-[#a1a1aa] truncate">
+                      <p className="text-sm text-[hsl(var(--color-foreground-muted))] truncate">
                         {lead.company || lead.email}
                       </p>
-                      <p className="text-xs text-[#71717a] mt-1">
+                      <p className="text-xs text-[hsl(var(--color-foreground-subtle))] mt-1">
                         {formatDate(lead.created_at)}
                       </p>
                     </div>
@@ -187,27 +187,27 @@ export default function IntelligencePage() {
                   {lead.analysis ? (
                     <div className="flex items-center gap-6 text-sm shrink-0">
                       <div className="text-center">
-                        <p className="text-[#71717a] text-xs mb-1">Fit</p>
+                        <p className="text-[hsl(var(--color-foreground-subtle))] text-xs mb-1">Fit</p>
                         <p className={`font-semibold ${getFitColor(lead.analysis.fit_score)}`}>
                           {Math.round(lead.analysis.fit_score * 100)}%
                         </p>
                       </div>
                       <div className="text-center">
-                        <p className="text-[#71717a] text-xs mb-1">Risk</p>
+                        <p className="text-[hsl(var(--color-foreground-subtle))] text-xs mb-1">Risk</p>
                         <p className={`font-semibold ${getRiskColor(lead.analysis.scope_creep_risk)}`}>
                           {Math.round(lead.analysis.scope_creep_risk * 100)}%
                         </p>
                       </div>
                       <div className="text-center">
-                        <p className="text-[#71717a] text-xs mb-1">Type</p>
-                        <p className="font-medium text-white">{lead.analysis.project_type}</p>
+                        <p className="text-[hsl(var(--color-foreground-subtle))] text-xs mb-1">Type</p>
+                        <p className="font-medium text-[hsl(var(--color-foreground))]">{lead.analysis.project_type}</p>
                       </div>
                       <div className="text-center">
-                        <p className="text-[#71717a] text-xs mb-1">Complexity</p>
-                        <p className="font-medium text-white">{lead.analysis.complexity}</p>
+                        <p className="text-[hsl(var(--color-foreground-subtle))] text-xs mb-1">Complexity</p>
+                        <p className="font-medium text-[hsl(var(--color-foreground))]">{lead.analysis.complexity}</p>
                       </div>
                       {lead.analysis.requires_review && (
-                        <span className="px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded-full">
+                        <span className="px-2 py-1 bg-yellow-500/20 text-yellow-600 text-xs rounded-full">
                           Needs Review
                         </span>
                       )}
@@ -216,7 +216,7 @@ export default function IntelligencePage() {
                     <button
                       onClick={() => analyzeLead(lead.id)}
                       disabled={analyzing === lead.id}
-                      className="px-4 py-2 bg-[#22c55e] text-black text-sm font-medium rounded-lg hover:bg-[#16a34a] transition-colors disabled:opacity-50 disabled:cursor-wait shrink-0"
+                      className="px-4 py-2 bg-[hsl(var(--color-accent))] text-black text-sm font-medium rounded-xl hover:bg-[hsl(var(--color-accent-hover))] transition-colors disabled:opacity-50 disabled:cursor-wait shrink-0"
                     >
                       {analyzing === lead.id ? (
                         <span className="flex items-center gap-2">
@@ -235,12 +235,12 @@ export default function IntelligencePage() {
 
                 {lead.analysis && lead.analysis.recommended_stack.length > 0 && (
                   <div className="mt-3 ml-14 flex items-center gap-2">
-                    <span className="text-[#71717a] text-xs">Stack:</span>
+                    <span className="text-[hsl(var(--color-foreground-subtle))] text-xs">Stack:</span>
                     <div className="flex flex-wrap gap-1">
                       {lead.analysis.recommended_stack.map((tech) => (
                         <span
                           key={tech}
-                          className="px-2 py-0.5 bg-[#27272a] text-[#a1a1aa] text-xs rounded"
+                          className="px-2 py-0.5 bg-[hsl(var(--color-background-subtle))] text-[hsl(var(--color-foreground-muted))] text-xs rounded"
                         >
                           {tech}
                         </span>
@@ -252,7 +252,7 @@ export default function IntelligencePage() {
             ))}
           </div>
         ) : (
-          <div className="p-8 text-center text-[#71717a]">
+          <div className="p-8 text-center text-[hsl(var(--color-foreground-subtle))]">
             <svg className="w-12 h-12 mx-auto mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
             </svg>

@@ -34,11 +34,11 @@ function formatDate(dateString: string) {
 
 function getStatusStyles(status: string) {
   const styles: Record<string, string> = {
-    draft: "bg-[#27272a] text-[#a1a1aa]",
-    review: "bg-yellow-500/20 text-yellow-400",
-    approved: "bg-blue-500/20 text-blue-400",
-    published: "bg-green-500/20 text-green-400",
-    archived: "bg-red-500/20 text-red-400",
+    draft: "bg-[hsl(var(--color-background-subtle))] text-[hsl(var(--color-foreground-muted))]",
+    review: "bg-yellow-500/20 text-yellow-600",
+    approved: "bg-blue-500/20 text-blue-600",
+    published: "bg-green-500/20 text-green-600",
+    archived: "bg-red-500/20 text-red-600",
   };
   return styles[status] || styles.draft;
 }
@@ -88,13 +88,13 @@ export default function JournalAdminPage() {
     return (
       <div className="animate-pulse space-y-6">
         <div className="flex justify-between items-center">
-          <div className="h-8 w-32 bg-[#222] rounded" />
-          <div className="h-10 w-32 bg-[#222] rounded" />
+          <div className="h-8 w-32 bg-[hsl(var(--color-border))] rounded" />
+          <div className="h-10 w-32 bg-[hsl(var(--color-border))] rounded" />
         </div>
-        <div className="h-12 bg-[#18181b] rounded-lg" />
+        <div className="h-12 bg-[hsl(var(--color-background-muted))] rounded-xl" />
         <div className="space-y-2">
           {[...Array(5)].map((_, i) => (
-            <div key={i} className="h-16 bg-[#18181b] rounded-lg" />
+            <div key={i} className="h-16 bg-[hsl(var(--color-background-muted))] rounded-xl" />
           ))}
         </div>
       </div>
@@ -107,11 +107,11 @@ export default function JournalAdminPage() {
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-2xl font-semibold mb-1">Journal</h1>
-          <p className="text-[#a1a1aa]">Manage your articles and content</p>
+          <p className="text-[hsl(var(--color-foreground-muted))]">Manage your articles and content</p>
         </div>
         <Link
           href="/admin/journal/new"
-          className="px-4 py-2.5 bg-[#22c55e] text-black font-medium rounded-lg hover:bg-[#16a34a] transition-colors inline-flex items-center gap-2"
+          className="px-4 py-2.5 bg-[hsl(var(--color-accent))] text-black font-medium rounded-xl hover:bg-[hsl(var(--color-accent-hover))] transition-colors inline-flex items-center gap-2"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -123,11 +123,11 @@ export default function JournalAdminPage() {
       {/* Filters */}
       <div className="flex gap-4 flex-wrap">
         <div className="flex items-center gap-2">
-          <label className="text-sm text-[#a1a1aa]">Status:</label>
+          <label className="text-sm text-[hsl(var(--color-foreground-muted))]">Status:</label>
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-3 py-2 bg-[#18181b] border border-[#27272a] rounded-lg text-white text-sm focus:outline-none focus:border-[#22c55e]"
+            className="px-3 py-2 bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl text-[hsl(var(--color-foreground))] text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-ring))]"
           >
             {statuses.map((status) => (
               <option key={status} value={status}>
@@ -137,11 +137,11 @@ export default function JournalAdminPage() {
           </select>
         </div>
         <div className="flex items-center gap-2">
-          <label className="text-sm text-[#a1a1aa]">Pillar:</label>
+          <label className="text-sm text-[hsl(var(--color-foreground-muted))]">Pillar:</label>
           <select
             value={pillarFilter}
             onChange={(e) => setPillarFilter(e.target.value)}
-            className="px-3 py-2 bg-[#18181b] border border-[#27272a] rounded-lg text-white text-sm focus:outline-none focus:border-[#22c55e]"
+            className="px-3 py-2 bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl text-[hsl(var(--color-foreground))] text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-ring))]"
           >
             <option value="all">All Pillars</option>
             {pillars.map((pillar) => (
@@ -154,37 +154,37 @@ export default function JournalAdminPage() {
       </div>
 
       {/* Articles Table */}
-      <div className="bg-[#18181b] border border-[#27272a] rounded-xl overflow-hidden">
+      <div className="bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl overflow-hidden">
         <table className="w-full">
-          <thead className="bg-[#0f0f11] border-b border-[#27272a]">
+          <thead className="bg-[hsl(var(--color-background-subtle))] border-b border-[hsl(var(--color-border))]">
             <tr>
-              <th className="text-left px-6 py-4 text-sm font-medium text-[#a1a1aa]">Title</th>
-              <th className="text-left px-6 py-4 text-sm font-medium text-[#a1a1aa]">Pillar</th>
-              <th className="text-left px-6 py-4 text-sm font-medium text-[#a1a1aa]">Type</th>
-              <th className="text-left px-6 py-4 text-sm font-medium text-[#a1a1aa]">Status</th>
-              <th className="text-left px-6 py-4 text-sm font-medium text-[#a1a1aa]">Date</th>
-              <th className="text-right px-6 py-4 text-sm font-medium text-[#a1a1aa]">Actions</th>
+              <th className="text-left px-6 py-4 text-sm font-medium text-[hsl(var(--color-foreground-muted))]">Title</th>
+              <th className="text-left px-6 py-4 text-sm font-medium text-[hsl(var(--color-foreground-muted))]">Pillar</th>
+              <th className="text-left px-6 py-4 text-sm font-medium text-[hsl(var(--color-foreground-muted))]">Type</th>
+              <th className="text-left px-6 py-4 text-sm font-medium text-[hsl(var(--color-foreground-muted))]">Status</th>
+              <th className="text-left px-6 py-4 text-sm font-medium text-[hsl(var(--color-foreground-muted))]">Date</th>
+              <th className="text-right px-6 py-4 text-sm font-medium text-[hsl(var(--color-foreground-muted))]">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-[#27272a]">
             {filteredArticles.length === 0 ? (
               <tr>
-                <td colSpan={6} className="px-6 py-12 text-center text-[#71717a]">
+                <td colSpan={6} className="px-6 py-12 text-center text-[hsl(var(--color-foreground-subtle))]">
                   <p className="text-lg mb-2">No articles found</p>
                   <p className="text-sm">Create your first article to get started</p>
                 </td>
               </tr>
             ) : (
               filteredArticles.map((article) => (
-                <tr key={article.id} className="hover:bg-[#1f1f23] transition-colors">
+                <tr key={article.id} className="hover:bg-[hsl(var(--color-background-subtle))] transition-colors">
                   <td className="px-6 py-4">
                     <Link
                       href={`/admin/journal/${article.id}`}
-                      className="font-medium text-white hover:text-[#22c55e] transition-colors"
+                      className="font-medium text-[hsl(var(--color-foreground))] hover:text-[hsl(var(--color-accent))] transition-colors"
                     >
                       {article.title}
                     </Link>
-                    <p className="text-sm text-[#71717a] mt-0.5">{article.author_name}</p>
+                    <p className="text-sm text-[hsl(var(--color-foreground-subtle))] mt-0.5">{article.author_name}</p>
                   </td>
                   <td className="px-6 py-4">
                     <span
@@ -198,7 +198,7 @@ export default function JournalAdminPage() {
                       {article.pillar_name}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-sm text-[#a1a1aa] capitalize">
+                  <td className="px-6 py-4 text-sm text-[hsl(var(--color-foreground-muted))] capitalize">
                     {article.content_type.replace("_", " ")}
                   </td>
                   <td className="px-6 py-4">
@@ -208,7 +208,7 @@ export default function JournalAdminPage() {
                       {article.status}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-sm text-[#a1a1aa]">
+                  <td className="px-6 py-4 text-sm text-[hsl(var(--color-foreground-muted))]">
                     {article.published_at
                       ? formatDate(article.published_at)
                       : formatDate(article.updated_at)}
@@ -217,7 +217,7 @@ export default function JournalAdminPage() {
                     <div className="flex items-center justify-end gap-2">
                       <Link
                         href={`/admin/journal/${article.id}`}
-                        className="p-2 text-[#a1a1aa] hover:text-white hover:bg-[#27272a] rounded-lg transition-colors"
+                        className="p-2 text-[hsl(var(--color-foreground-muted))] hover:text-[hsl(var(--color-foreground))] hover:bg-[hsl(var(--color-background-subtle))] rounded-xl transition-colors"
                         title="Edit"
                       >
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -229,7 +229,7 @@ export default function JournalAdminPage() {
                           href={`/journal/${article.slug}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="p-2 text-[#a1a1aa] hover:text-white hover:bg-[#27272a] rounded-lg transition-colors"
+                          className="p-2 text-[hsl(var(--color-foreground-muted))] hover:text-[hsl(var(--color-foreground))] hover:bg-[hsl(var(--color-background-subtle))] rounded-xl transition-colors"
                           title="View"
                         >
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -253,10 +253,10 @@ export default function JournalAdminPage() {
           return (
             <div
               key={status}
-              className="bg-[#18181b] border border-[#27272a] rounded-lg p-4 text-center"
+              className="bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl p-4 text-center"
             >
-              <p className="text-2xl font-semibold text-white">{count}</p>
-              <p className="text-sm text-[#a1a1aa] capitalize">{status}</p>
+              <p className="text-2xl font-semibold text-[hsl(var(--color-foreground))]">{count}</p>
+              <p className="text-sm text-[hsl(var(--color-foreground-muted))] capitalize">{status}</p>
             </div>
           );
         })}

@@ -136,9 +136,9 @@ export default function LeadsPage() {
   if (loading) {
     return (
       <div className="animate-pulse space-y-6">
-        <div className="h-8 w-32 bg-[#222] rounded" />
-        <div className="h-12 bg-[#18181b] rounded-lg" />
-        <div className="h-96 bg-[#18181b] rounded-xl" />
+        <div className="h-8 w-32 bg-[hsl(var(--color-border))] rounded" />
+        <div className="h-12 bg-[hsl(var(--color-background-muted))] rounded-xl" />
+        <div className="h-96 bg-[hsl(var(--color-background-muted))] rounded-xl" />
       </div>
     );
   }
@@ -156,7 +156,7 @@ export default function LeadsPage() {
       <div className="flex flex-wrap items-center gap-4">
         <div className="relative flex-1 max-w-sm">
           <svg
-            className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#71717a]"
+            className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[hsl(var(--color-foreground-subtle))]"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -173,17 +173,17 @@ export default function LeadsPage() {
             placeholder="Search leads..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 bg-[#18181b] border border-[#27272a] rounded-lg text-white placeholder-[#666] focus:outline-none focus:border-[#3f3f46]"
+            className="w-full pl-10 pr-4 py-2.5 bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl text-[hsl(var(--color-foreground))] placeholder-[hsl(var(--color-foreground-subtle))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-ring))]"
           />
         </div>
 
         <div className="flex items-center gap-2">
           <button
             onClick={() => setFilter("all")}
-            className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+            className={`px-3 py-2 rounded-xl text-sm font-medium transition-colors ${
               filter === "all"
-                ? "bg-[#22c55e]/20 text-[#22c55e]"
-                : "text-[#a1a1aa] hover:text-white hover:bg-[#27272a]"
+                ? "bg-[hsl(var(--color-accent))]/20 text-[hsl(var(--color-accent))]"
+                : "text-[hsl(var(--color-foreground-muted))] hover:text-[hsl(var(--color-foreground))] hover:bg-[hsl(var(--color-background-muted))]"
             }`}
           >
             All
@@ -192,10 +192,10 @@ export default function LeadsPage() {
             <button
               key={stage.id}
               onClick={() => setFilter(stage.id)}
-              className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+              className={`px-3 py-2 rounded-xl text-sm font-medium transition-colors ${
                 filter === stage.id
                   ? getStageColor(stage.color)
-                  : "text-[#a1a1aa] hover:text-white hover:bg-[#27272a]"
+                  : "text-[hsl(var(--color-foreground-muted))] hover:text-[hsl(var(--color-foreground))] hover:bg-[hsl(var(--color-background-muted))]"
               }`}
             >
               {stage.name}
@@ -205,38 +205,38 @@ export default function LeadsPage() {
       </div>
 
       {/* Leads Table */}
-      <div className="bg-[#18181b] border border-[#27272a] rounded-xl overflow-hidden">
+      <div className="bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl overflow-hidden">
         <table className="w-full">
           <thead>
-            <tr className="border-b border-[#27272a]">
-              <th className="text-left px-6 py-4 text-sm font-medium text-[#a1a1aa]">Lead</th>
-              <th className="text-left px-6 py-4 text-sm font-medium text-[#a1a1aa]">Service</th>
-              <th className="text-left px-6 py-4 text-sm font-medium text-[#a1a1aa]">Budget</th>
-              <th className="text-left px-6 py-4 text-sm font-medium text-[#a1a1aa]">Score</th>
-              <th className="text-left px-6 py-4 text-sm font-medium text-[#a1a1aa]">Stage</th>
-              <th className="text-left px-6 py-4 text-sm font-medium text-[#a1a1aa]">Date</th>
+            <tr className="border-b border-[hsl(var(--color-border))]">
+              <th className="text-left px-6 py-4 text-sm font-medium text-[hsl(var(--color-foreground-muted))]">Lead</th>
+              <th className="text-left px-6 py-4 text-sm font-medium text-[hsl(var(--color-foreground-muted))]">Service</th>
+              <th className="text-left px-6 py-4 text-sm font-medium text-[hsl(var(--color-foreground-muted))]">Budget</th>
+              <th className="text-left px-6 py-4 text-sm font-medium text-[hsl(var(--color-foreground-muted))]">Score</th>
+              <th className="text-left px-6 py-4 text-sm font-medium text-[hsl(var(--color-foreground-muted))]">Stage</th>
+              <th className="text-left px-6 py-4 text-sm font-medium text-[hsl(var(--color-foreground-muted))]">Date</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-[#222]">
+          <tbody className="divide-y divide-[hsl(var(--color-border))]">
             {filteredLeads.length > 0 ? (
               filteredLeads.map((lead) => (
-                <tr key={lead.id} className="hover:bg-[#27272a] transition-colors">
+                <tr key={lead.id} className="hover:bg-[hsl(var(--color-background-subtle))] transition-colors">
                   <td className="px-6 py-4">
                     <Link href={`/admin/leads/${lead.id}`} className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-full bg-[#22c55e]/20 flex items-center justify-center text-[#22c55e] font-medium text-sm">
+                      <div className="w-9 h-9 rounded-full bg-[hsl(var(--color-accent))]/20 flex items-center justify-center text-[hsl(var(--color-accent))] font-medium text-sm">
                         {lead.name.charAt(0).toUpperCase()}
                       </div>
                       <div>
-                        <p className="font-medium text-white hover:text-[#22c55e] transition-colors">{lead.name}</p>
-                        <p className="text-sm text-[#71717a]">{lead.company || lead.email}</p>
+                        <p className="font-medium text-[hsl(var(--color-foreground))] hover:text-[hsl(var(--color-accent))] transition-colors">{lead.name}</p>
+                        <p className="text-sm text-[hsl(var(--color-foreground-subtle))]">{lead.company || lead.email}</p>
                       </div>
                     </Link>
                   </td>
-                  <td className="px-6 py-4 text-[#a1a1aa]">{formatService(lead.service_interest)}</td>
-                  <td className="px-6 py-4 text-[#a1a1aa]">{formatBudget(lead.budget_range)}</td>
+                  <td className="px-6 py-4 text-[hsl(var(--color-foreground-muted))]">{formatService(lead.service_interest)}</td>
+                  <td className="px-6 py-4 text-[hsl(var(--color-foreground-muted))]">{formatBudget(lead.budget_range)}</td>
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-full bg-[#27272a] flex items-center justify-center text-sm font-medium">
+                      <div className="w-8 h-8 rounded-full bg-[hsl(var(--color-background-subtle))] flex items-center justify-center text-sm font-medium">
                         {lead.score}
                       </div>
                     </div>
@@ -245,21 +245,21 @@ export default function LeadsPage() {
                     <select
                       value={lead.stage?.id || ""}
                       onChange={(e) => handleStageChange(lead.id, e.target.value)}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-medium border cursor-pointer focus:outline-none ${getStageColor(lead.stage?.color || null)}`}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-medium border cursor-pointer focus:outline-none ${getStageColor(lead.stage?.color || null)}`}
                     >
                       {stages.map((stage) => (
-                        <option key={stage.id} value={stage.id} className="bg-[#18181b] text-white">
+                        <option key={stage.id} value={stage.id} className="bg-[hsl(var(--color-background))] text-[hsl(var(--color-foreground))]">
                           {stage.name}
                         </option>
                       ))}
                     </select>
                   </td>
-                  <td className="px-6 py-4 text-[#71717a] text-sm">{formatDate(lead.created_at)}</td>
+                  <td className="px-6 py-4 text-[hsl(var(--color-foreground-subtle))] text-sm">{formatDate(lead.created_at)}</td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan={6} className="px-6 py-12 text-center text-[#71717a]">
+                <td colSpan={6} className="px-6 py-12 text-center text-[hsl(var(--color-foreground-subtle))]">
                   {search || filter !== "all" ? "No leads match your filters" : "No leads yet"}
                 </td>
               </tr>
