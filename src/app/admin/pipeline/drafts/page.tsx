@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
+import { AdminLoader } from "@/components/admin/AdminLoader";
 
 interface Draft {
   id: string;
@@ -183,21 +184,7 @@ export default function DraftsPage() {
   };
 
   if (loading) {
-    return (
-      <div className="animate-pulse space-y-6">
-        <div className="h-8 w-48 bg-[hsl(var(--color-border))] rounded" />
-        <div className="grid grid-cols-4 gap-4">
-          {[...Array(4)].map((_, i) => (
-            <div key={i} className="h-20 bg-[hsl(var(--color-background-muted))] rounded-xl" />
-          ))}
-        </div>
-        <div className="space-y-3">
-          {[...Array(4)].map((_, i) => (
-            <div key={i} className="h-36 bg-[hsl(var(--color-background-muted))] rounded-xl" />
-          ))}
-        </div>
-      </div>
-    );
+    return <AdminLoader message="Loading drafts..." />;
   }
 
   return (

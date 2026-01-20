@@ -3,6 +3,7 @@
 import * as React from "react";
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
+import { AdminLoader } from "@/components/admin/AdminLoader";
 
 interface Author {
   id: string;
@@ -228,16 +229,7 @@ export default function ArticleEditorPage() {
   };
 
   if (loading) {
-    return (
-      <div className="animate-pulse space-y-6">
-        <div className="h-8 w-48 bg-[hsl(var(--color-border))] rounded" />
-        <div className="space-y-4">
-          {[...Array(6)].map((_, i) => (
-            <div key={i} className="h-12 bg-[hsl(var(--color-background-muted))] rounded-xl" />
-          ))}
-        </div>
-      </div>
-    );
+    return <AdminLoader message="Loading article..." />;
   }
 
   return (

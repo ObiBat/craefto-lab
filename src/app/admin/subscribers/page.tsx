@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import type { Subscriber } from "@/lib/journal-types";
+import { AdminLoader } from "@/components/admin/AdminLoader";
 
 interface Stats {
   total: number;
@@ -98,18 +99,7 @@ export default function SubscribersPage() {
   };
 
   if (loading) {
-    return (
-      <div className="animate-pulse space-y-6">
-        <div className="h-8 w-48 bg-[hsl(var(--color-border))] rounded" />
-        <div className="grid grid-cols-4 gap-4">
-          {[...Array(4)].map((_, i) => (
-            <div key={i} className="h-24 bg-[hsl(var(--color-background-muted))] rounded-xl" />
-          ))}
-        </div>
-        <div className="h-12 bg-[hsl(var(--color-background-muted))] rounded-xl" />
-        <div className="h-96 bg-[hsl(var(--color-background-muted))] rounded-xl" />
-      </div>
-    );
+    return <AdminLoader message="Loading subscribers..." />;
   }
 
   return (

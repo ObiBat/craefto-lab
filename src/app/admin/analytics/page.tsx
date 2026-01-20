@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
+import { AdminLoader } from "@/components/admin/AdminLoader";
 
 interface AnalyticsData {
   summary: {
@@ -106,17 +107,7 @@ export default function AnalyticsPage() {
   }, [days]);
 
   if (loading) {
-    return (
-      <div className="animate-pulse space-y-8">
-        <div className="h-8 w-48 bg-[hsl(var(--color-border))] rounded" />
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {[...Array(4)].map((_, i) => (
-            <div key={i} className="h-32 bg-[hsl(var(--color-background-muted))] rounded-xl" />
-          ))}
-        </div>
-        <div className="h-64 bg-[hsl(var(--color-background-muted))] rounded-xl" />
-      </div>
-    );
+    return <AdminLoader message="Loading analytics..." />;
   }
 
   return (

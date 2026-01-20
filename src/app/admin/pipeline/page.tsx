@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
+import { AdminLoader } from "@/components/admin/AdminLoader";
 
 interface PipelineStats {
   insights: { new: number; approved: number; total: number };
@@ -102,16 +103,7 @@ export default function PipelineDashboard() {
   };
 
   if (loading) {
-    return (
-      <div className="animate-pulse space-y-8">
-        <div className="h-8 w-48 bg-[hsl(var(--color-border))] rounded" />
-        <div className="grid grid-cols-3 gap-6">
-          {[...Array(3)].map((_, i) => (
-            <div key={i} className="h-48 bg-[hsl(var(--color-background-muted))] rounded-xl" />
-          ))}
-        </div>
-      </div>
-    );
+    return <AdminLoader message="Loading pipeline..." />;
   }
 
   const needsAttention = (stats?.insights.new || 0) + (stats?.briefs.draft || 0) + (stats?.drafts.draft || 0);

@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
+import { AdminLoader } from "@/components/admin/AdminLoader";
 
 interface Article {
   id: string;
@@ -85,20 +86,7 @@ export default function JournalAdminPage() {
   const statuses = ["all", "draft", "review", "approved", "published", "archived"];
 
   if (loading) {
-    return (
-      <div className="animate-pulse space-y-6">
-        <div className="flex justify-between items-center">
-          <div className="h-8 w-32 bg-[hsl(var(--color-border))] rounded" />
-          <div className="h-10 w-32 bg-[hsl(var(--color-border))] rounded" />
-        </div>
-        <div className="h-12 bg-[hsl(var(--color-background-muted))] rounded-xl" />
-        <div className="space-y-2">
-          {[...Array(5)].map((_, i) => (
-            <div key={i} className="h-16 bg-[hsl(var(--color-background-muted))] rounded-xl" />
-          ))}
-        </div>
-      </div>
-    );
+    return <AdminLoader message="Loading journal..." />;
   }
 
   return (

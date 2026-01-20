@@ -3,6 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
+import { AdminLoader } from "@/components/admin/AdminLoader";
 
 interface Lead {
   id: string;
@@ -288,15 +289,7 @@ export default function LeadDetailPage() {
   };
 
   if (loading) {
-    return (
-      <div className="animate-pulse space-y-6">
-        <div className="h-8 w-32 bg-[hsl(var(--color-border))] rounded" />
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 h-96 bg-[hsl(var(--color-background-muted))] rounded-xl" />
-          <div className="h-96 bg-[hsl(var(--color-background-muted))] rounded-xl" />
-        </div>
-      </div>
-    );
+    return <AdminLoader message="Loading lead details..." />;
   }
 
   if (!lead) {

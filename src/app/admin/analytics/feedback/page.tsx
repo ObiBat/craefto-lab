@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
+import { AdminLoader } from "@/components/admin/AdminLoader";
 
 interface FeedbackEntry {
   id: string;
@@ -181,16 +182,7 @@ export default function FeedbackDashboardPage() {
     : 0;
 
   if (loading) {
-    return (
-      <div className="animate-pulse space-y-6">
-        <div className="h-8 w-48 bg-[hsl(var(--color-border))] rounded" />
-        <div className="grid grid-cols-5 gap-4">
-          {[...Array(5)].map((_, i) => (
-            <div key={i} className="h-32 bg-[hsl(var(--color-background-muted))] rounded-xl" />
-          ))}
-        </div>
-      </div>
-    );
+    return <AdminLoader message="Loading feedback..." />;
   }
 
   return (

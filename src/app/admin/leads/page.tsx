@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
+import { AdminLoader } from "@/components/admin/AdminLoader";
 
 interface Lead {
   id: string;
@@ -134,13 +135,7 @@ export default function LeadsPage() {
   };
 
   if (loading) {
-    return (
-      <div className="animate-pulse space-y-6">
-        <div className="h-8 w-32 bg-[hsl(var(--color-border))] rounded" />
-        <div className="h-12 bg-[hsl(var(--color-background-muted))] rounded-xl" />
-        <div className="h-96 bg-[hsl(var(--color-background-muted))] rounded-xl" />
-      </div>
-    );
+    return <AdminLoader message="Loading leads..." />;
   }
 
   return (
