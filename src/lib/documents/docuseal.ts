@@ -109,7 +109,7 @@ export async function createTemplate(
   formData.append('name', name);
   formData.append(
     'documents[]',
-    new Blob([documentBuffer], { type: 'application/pdf' }),
+    new Blob([new Uint8Array(documentBuffer)], { type: 'application/pdf' }),
     fileName
   );
 
@@ -220,7 +220,7 @@ export async function createSubmissionWithDocument(
 
   formData.append(
     'documents[]',
-    new Blob([documentBuffer], { type: 'application/pdf' }),
+    new Blob([new Uint8Array(documentBuffer)], { type: 'application/pdf' }),
     fileName
   );
 

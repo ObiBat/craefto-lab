@@ -327,7 +327,7 @@ export async function generateDocument(
   const templateHtml = await loadTemplate(documentType);
 
   // Flatten content for placeholder replacement
-  const flatContent = flattenContent(content);
+  const flatContent = flattenContent(content as unknown as Record<string, unknown>);
 
   // Replace placeholders
   let html = populatePlaceholders(templateHtml, flatContent);
@@ -420,7 +420,7 @@ export function generatePreviewContent(
   content: ProposalContent | SOWContent | InvoiceContent | ChangeOrderContent
 ): Record<string, string> {
   const preview: Record<string, string> = {};
-  const flat = flattenContent(content as Record<string, unknown>);
+  const flat = flattenContent(content as unknown as Record<string, unknown>);
 
   for (const [key, value] of Object.entries(flat)) {
     if (value === null || value === undefined || value === '') {
