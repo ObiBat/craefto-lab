@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice — Craefto Lab</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Invoice-specific styles */
+        .invoice-document {
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border-color);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .invoice-header {
+            padding: 48px;
+            border-bottom: 2px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .invoice-logo {
+            width: 48px;
+            height: 48px;
+        }
+
+        .invoice-logo svg {
+            width: 48px;
+            height: auto;
+        }
+
+        .invoice-title-section {
+            text-align: right;
+        }
+
+        .invoice-title-section h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            letter-spacing: -0.02em;
+        }
+
+        .invoice-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            color: var(--accent);
+            font-weight: 500;
+        }
+
+        .invoice-body {
+            padding: 48px;
+        }
+
+        /* Parties Section */
+        .invoice-parties {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 48px;
+            margin-bottom: 40px;
+        }
+
+        .party-section h3 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+        }
+
+        .party-section .company-name {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .party-section p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 4px;
+        }
+
+        .party-section .abn {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 8px;
+        }
+
+        /* Invoice Details Box */
+        .invoice-details-box {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            padding: 24px;
+            margin-bottom: 40px;
+        }
+
+        .invoice-details-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+        }
+
+        .detail-item {
+            text-align: center;
+        }
+
+        .detail-item .label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .detail-item .value {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .detail-item .value.due-date {
+            color: var(--warning);
+        }
+
+        .detail-item .value.status-paid {
+            color: var(--success);
+        }
+
+        .detail-item .value.status-unpaid {
+            color: var(--warning);
+        }
+
+        .detail-item .value.status-overdue {
+            color: var(--error);
+        }
+
+        /* Project Reference */
+        .project-reference {
+            background: var(--accent-dim);
+            border-radius: var(--radius-md);
+            padding: 16px 20px;
+            margin-bottom: 32px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .project-reference .icon {
+            width: 20px;
+            height: 20px;
+            color: var(--accent);
+        }
+
+        .project-reference .text {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .project-reference .text strong {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        /* Line Items Table */
+        .line-items-section h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+        }
+
+        .line-items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 32px;
+        }
+
+        .line-items-table thead {
+            background: var(--bg-secondary);
+        }
+
+        .line-items-table th {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .line-items-table th:last-child,
+        .line-items-table td:last-child {
+            text-align: right;
+        }
+
+        .line-items-table th:nth-child(2),
+        .line-items-table td:nth-child(2),
+        .line-items-table th:nth-child(3),
+        .line-items-table td:nth-child(3) {
+            text-align: center;
+        }
+
+        .line-items-table td {
+            padding: 16px;
+            font-size: 14px;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .line-items-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .line-items-table .item-description {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .line-items-table .item-amount {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        /* Totals Section */
+        .totals-section {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 40px;
+        }
+
+        .totals-box {
+            width: 320px;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .total-row:last-child {
+            border-bottom: none;
+        }
+
+        .total-row .label {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .total-row .value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .total-row.grand-total {
+            background: var(--bg-secondary);
+            margin: 12px -16px 0;
+            padding: 16px;
+            border-radius: var(--radius-md);
+        }
+
+        .total-row.grand-total .label {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .total-row.grand-total .value {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        /* Payment Details */
+        .payment-section {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            padding: 24px;
+            margin-bottom: 32px;
+        }
+
+        .payment-section h3 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .payment-section h3 svg {
+            width: 18px;
+            height: 18px;
+            color: var(--accent);
+        }
+
+        .bank-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .bank-detail-item {
+            font-size: 14px;
+        }
+
+        .bank-detail-item .label {
+            color: var(--text-muted);
+            font-size: 12px;
+            margin-bottom: 2px;
+        }
+
+        .bank-detail-item .value {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        /* Notes Section */
+        .notes-section {
+            border-top: 1px solid var(--border-color);
+            padding-top: 24px;
+        }
+
+        .notes-section h3 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+        }
+
+        .notes-section p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        /* Invoice Footer */
+        .invoice-footer {
+            background: var(--bg-secondary);
+            padding: 24px 48px;
+            text-align: center;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .invoice-footer p {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .invoice-footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .invoice-footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Placeholder styling */
+        .placeholder {
+            background: var(--accent-dim);
+            color: var(--accent);
+            padding: 2px 8px;
+            border-radius: var(--radius-xs);
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        /* Status Badge */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: var(--radius-full);
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .status-badge.paid {
+            background: var(--success-dim);
+            color: var(--success);
+        }
+
+        .status-badge.unpaid {
+            background: var(--warning-dim);
+            color: var(--warning);
+        }
+
+        .status-badge.overdue {
+            background: var(--error-dim);
+            color: var(--error);
+        }
+
+        /* Print styles */
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            .page-header,
+            .back-link,
+            .print-button {
+                display: none !important;
+            }
+
+            .invoice-document {
+                box-shadow: none;
+                border: none;
+                max-width: none;
+            }
+
+            .invoice-header,
+            .invoice-body,
+            .invoice-footer {
+                padding: 32px;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .invoice-header {
+                flex-direction: column;
+                gap: 24px;
+                text-align: center;
+            }
+
+            .invoice-title-section {
+                text-align: center;
+            }
+
+            .invoice-parties {
+                grid-template-columns: 1fr;
+                gap: 32px;
+            }
+
+            .invoice-details-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .bank-details {
+                grid-template-columns: 1fr;
+            }
+
+            .line-items-table {
+                font-size: 13px;
+            }
+
+            .line-items-table th,
+            .line-items-table td {
+                padding: 12px 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Page Header -->
+    <header class="page-header">
+        <div class="page-title-section">
+            <a href="index.html" class="back-link">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+                Back to Hub
+            </a>
+            <div class="page-title">
+                <span class="template-number">/ 09</span>
+                <h1>Invoice Template</h1>
+            </div>
+        </div>
+        <div class="page-meta">
+            <span class="category-badge">Financial</span>
+            <button class="print-button" onclick="window.print()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M6 9V2h12v7"/>
+                    <path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/>
+                    <rect x="6" y="14" width="12" height="8"/>
+                </svg>
+                Print / Save PDF
+            </button>
+        </div>
+    </header>
+
+    <main class="template-content">
+        <!-- Invoice Document -->
+        <div class="invoice-document">
+            <!-- Header -->
+            <div class="invoice-header">
+                <div class="invoice-logo">
+                    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M50 5C25.147 5 5 25.147 5 50s20.147 45 45 45 45-20.147 45-45S74.853 5 50 5z" fill="#1A1714"/>
+                        <path d="M65.5 35.5c0-8.56-6.94-15.5-15.5-15.5S34.5 26.94 34.5 35.5c0 6.21 3.66 11.56 8.94 14.03L35 65h30l-8.44-15.47c5.28-2.47 8.94-7.82 8.94-14.03zM50 45c-5.25 0-9.5-4.25-9.5-9.5S44.75 26 50 26s9.5 4.25 9.5 9.5S55.25 45 50 45z" fill="#FAF7F2"/>
+                        <path d="M42 70h16v10H42z" fill="#4A7C59"/>
+                    </svg>
+                </div>
+                <div class="invoice-title-section">
+                    <h1>INVOICE</h1>
+                    <div class="invoice-number"><span class="placeholder">[Invoice Number]</span></div>
+                </div>
+            </div>
+
+            <!-- Body -->
+            <div class="invoice-body">
+                <!-- Parties -->
+                <div class="invoice-parties">
+                    <div class="party-section">
+                        <h3>From</h3>
+                        <p class="company-name">Craefto Lab</p>
+                        <p>Creative-Tech Studio</p>
+                        <p>Melbourne, Victoria</p>
+                        <p>Australia</p>
+                        <p class="abn">ABN: <span class="placeholder">[ABN]</span></p>
+                    </div>
+                    <div class="party-section">
+                        <h3>Bill To</h3>
+                        <p class="company-name"><span class="placeholder">[Client Company]</span></p>
+                        <p><span class="placeholder">[Client Name]</span></p>
+                        <p><span class="placeholder">[Client Address]</span></p>
+                        <p><span class="placeholder">[Client Email]</span></p>
+                        <p class="abn">ABN: <span class="placeholder">[Client ABN]</span></p>
+                    </div>
+                </div>
+
+                <!-- Invoice Details -->
+                <div class="invoice-details-box">
+                    <div class="invoice-details-grid">
+                        <div class="detail-item">
+                            <div class="label">Issue Date</div>
+                            <div class="value"><span class="placeholder">[Issue Date]</span></div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="label">Due Date</div>
+                            <div class="value due-date"><span class="placeholder">[Due Date]</span></div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="label">Payment Terms</div>
+                            <div class="value"><span class="placeholder">[Payment Terms]</span></div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="label">Status</div>
+                            <div class="value">
+                                <span class="status-badge unpaid">Unpaid</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project Reference -->
+                <div class="project-reference">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                        <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/>
+                    </svg>
+                    <span class="text">
+                        Project: <strong><span class="placeholder">[Project Name]</span></strong>
+                        &nbsp;•&nbsp; SOW: <strong><span class="placeholder">[SOW Number]</span></strong>
+                        &nbsp;•&nbsp; <span class="placeholder">[Milestone Description]</span>
+                    </span>
+                </div>
+
+                <!-- Line Items -->
+                <div class="line-items-section">
+                    <h2>Line Items</h2>
+                    <table class="line-items-table">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Qty</th>
+                                <th>Unit Price</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="item-description"><span class="placeholder">[Line Item 1 Description]</span></td>
+                                <td><span class="placeholder">[Qty]</span></td>
+                                <td class="item-amount"><span class="placeholder">[Unit Price]</span></td>
+                                <td class="item-amount"><span class="placeholder">[Amount]</span></td>
+                            </tr>
+                            <tr>
+                                <td class="item-description"><span class="placeholder">[Line Item 2 Description]</span></td>
+                                <td><span class="placeholder">[Qty]</span></td>
+                                <td class="item-amount"><span class="placeholder">[Unit Price]</span></td>
+                                <td class="item-amount"><span class="placeholder">[Amount]</span></td>
+                            </tr>
+                            <tr>
+                                <td class="item-description"><span class="placeholder">[Line Item 3 Description]</span></td>
+                                <td><span class="placeholder">[Qty]</span></td>
+                                <td class="item-amount"><span class="placeholder">[Unit Price]</span></td>
+                                <td class="item-amount"><span class="placeholder">[Amount]</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Totals -->
+                <div class="totals-section">
+                    <div class="totals-box">
+                        <div class="total-row">
+                            <span class="label">Subtotal</span>
+                            <span class="value"><span class="placeholder">[Subtotal]</span></span>
+                        </div>
+                        <div class="total-row">
+                            <span class="label">GST (<span class="placeholder">[Tax Rate]</span>%)</span>
+                            <span class="value"><span class="placeholder">[Tax Amount]</span></span>
+                        </div>
+                        <div class="total-row grand-total">
+                            <span class="label">Total Due</span>
+                            <span class="value"><span class="placeholder">[Total]</span></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment Details -->
+                <div class="payment-section">
+                    <h3>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
+                            <line x1="1" y1="10" x2="23" y2="10"/>
+                        </svg>
+                        Payment Details
+                    </h3>
+                    <div class="bank-details">
+                        <div class="bank-detail-item">
+                            <div class="label">Bank</div>
+                            <div class="value"><span class="placeholder">[Bank Name]</span></div>
+                        </div>
+                        <div class="bank-detail-item">
+                            <div class="label">Account Name</div>
+                            <div class="value"><span class="placeholder">[Account Name]</span></div>
+                        </div>
+                        <div class="bank-detail-item">
+                            <div class="label">BSB</div>
+                            <div class="value"><span class="placeholder">[BSB]</span></div>
+                        </div>
+                        <div class="bank-detail-item">
+                            <div class="label">Account Number</div>
+                            <div class="value"><span class="placeholder">[Account Number]</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notes -->
+                <div class="notes-section">
+                    <h3>Notes</h3>
+                    <p><span class="placeholder">[Payment Instructions / Notes]</span></p>
+                    <p style="margin-top: 12px; font-size: 13px; color: var(--text-muted);">
+                        Please include the invoice number (<span class="placeholder">[Invoice Number]</span>) as payment reference.
+                        Late payments may incur a 2% monthly fee as per our terms and conditions.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="invoice-footer">
+                <p>Thank you for your business!</p>
+                <p style="margin-top: 8px;">
+                    Questions? Contact us at <a href="mailto:hello@craeftolab.com">hello@craeftolab.com</a>
+                </p>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Print functionality
+        document.addEventListener('keydown', function(e) {
+            if ((e.metaKey || e.ctrlKey) && e.key === 'p') {
+                e.preventDefault();
+                window.print();
+            }
+        });
+    </script>
+</body>
+</html>

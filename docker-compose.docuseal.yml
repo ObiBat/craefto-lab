@@ -1,0 +1,80 @@
+# DocuSeal Self-Hosted E-Signature Service
+# https://www.docuseal.com
+#
+# Usage:
+#   docker-compose -f docker-compose.docuseal.yml up -d
+#
+# Access DocuSeal at: http://localhost:3001
+# First run: Create admin account at the setup page
+
+version: '3.8'
+
+services:
+  docuseal:
+    image: docuseal/docuseal:latest
+    container_name: craefto-docuseal
+    ports:
+      - "3001:3000"
+    environment:
+      # Required: Generate with `openssl rand -hex 64`
+      - SECRET_KEY_BASE=${DOCUSEAL_SECRET_KEY:-your_64_character_secret_key_here_generate_with_openssl_rand_hex_64}
+
+      # Database connection (uses the db service below)
+      - DATABASE_URL=postgres://docuseal:docuseal_password@docuseal-db:5432/docuseal
+
+      # Host configuration (for email links)
+      - HOST=${DOCUSEAL_HOST:-http://localhost:3001}
+
+      # Force SSL in production
+      - FORCE_SSL=${DOCUSEAL_FORCE_SSL:-false}
+
+      # Webhook URL for signing events (your Next.js app)
+      - WEBHOOK_URL=${NEXT_PUBLIC_APP_URL:-http://host.docker.internal:3000}/api/webhooks/docuseal
+
+      # Email configuration (optional - DocuSeal can send emails)
+      # - SMTP_ADDRESS=smtp.example.com
+      # - SMTP_PORT=587
+      # - SMTP_USERNAME=your_smtp_user
+      # - SMTP_PASSWORD=your_smtp_password
+      # - SMTP_DOMAIN=example.com
+      # - SMTP_FROM=noreply@example.com
+    volumes:
+      # Persist uploaded documents and data
+      - docuseal_data:/data
+    depends_on:
+      docuseal-db:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  docuseal-db:
+    image: postgres:15-alpine
+    container_name: craefto-docuseal-db
+    environment:
+      - POSTGRES_DB=docuseal
+      - POSTGRES_USER=docuseal
+      - POSTGRES_PASSWORD=docuseal_password
+    volumes:
+      - docuseal_postgres:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U docuseal -d docuseal"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  docuseal_data:
+    name: craefto_docuseal_data
+  docuseal_postgres:
+    name: craefto_docuseal_postgres
+
+# Network configuration (optional - for production)
+# networks:
+#   default:
+#     name: craefto_network
