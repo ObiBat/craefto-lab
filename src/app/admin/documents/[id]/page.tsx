@@ -230,6 +230,17 @@ export default function DocumentDetailPage() {
         </div>
 
         <div className="flex items-center gap-3">
+          {canSend && (
+            <Link
+              href={`/admin/documents/${documentId}/edit`}
+              className="inline-flex items-center gap-2 px-4 py-2.5 border border-[hsl(var(--color-border))] rounded-xl font-medium hover:bg-[hsl(var(--color-background-muted))] transition-colors"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+              </svg>
+              Edit
+            </Link>
+          )}
           <a
             href={`/api/admin/documents/${documentId}/pdf`}
             target="_blank"
@@ -240,7 +251,7 @@ export default function DocumentDetailPage() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
             </svg>
-            Preview
+            Preview PDF
           </a>
           <a
             href={`/api/admin/documents/${documentId}/pdf?download=true`}
@@ -404,6 +415,17 @@ export default function DocumentDetailPage() {
           <div className="bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl p-6">
             <h2 className="text-lg font-medium mb-4">Actions</h2>
             <div className="space-y-2">
+              {canSend && (
+                <Link
+                  href={`/admin/documents/${documentId}/edit`}
+                  className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left hover:bg-[hsl(var(--color-background-subtle))] transition-colors"
+                >
+                  <svg className="w-5 h-5 text-[hsl(var(--color-foreground-muted))]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                  </svg>
+                  <span>Edit Document</span>
+                </Link>
+              )}
               {canSend && (
                 <button
                   onClick={() => setShowSendModal(true)}

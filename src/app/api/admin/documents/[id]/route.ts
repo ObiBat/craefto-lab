@@ -21,7 +21,7 @@ export async function GET(
         *,
         lead:leads(id, name, email, company, phone, service_interest, budget_range, timeline, message, score),
         signatures:document_signatures(*),
-        invoice:invoices(*)
+        invoice:invoices!invoices_document_id_fkey(*)
       `)
       .eq('id', id)
       .single();
