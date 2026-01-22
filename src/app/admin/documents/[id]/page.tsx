@@ -268,6 +268,26 @@ export default function DocumentDetailPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Main Content */}
         <div className="lg:col-span-2 space-y-6">
+          {/* Document Preview */}
+          <div className="bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl overflow-hidden">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-[hsl(var(--color-border))]">
+              <h2 className="text-lg font-medium">Document Preview</h2>
+              <a
+                href={`/api/admin/documents/${document.id}/preview`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-[hsl(var(--color-accent))] hover:underline"
+              >
+                Open in new tab
+              </a>
+            </div>
+            <iframe
+              src={`/api/admin/documents/${document.id}/preview`}
+              className="w-full h-[600px] bg-white"
+              title="Document Preview"
+            />
+          </div>
+
           {/* Document Details */}
           <div className="bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl p-6">
             <h2 className="text-lg font-medium mb-4">Document Details</h2>
