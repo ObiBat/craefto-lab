@@ -69,6 +69,19 @@ function processTemplateForPreview(html: string, css: string): string {
     ''
   );
 
+  // Remove the entire page-title-section block (contains page-number div, h1, p)
+  // Structure: <div class="page-title-section"><div class="page-number">...</div><h1>...</h1><p>...</p></div>
+  processed = processed.replace(
+    /<div[^>]*class=["'][^"']*page-title-section[^"']*["'][^>]*>[\s\S]*?<\/p>\s*<\/div>/gi,
+    ''
+  );
+
+  // Fallback: Remove just the page-number div if page-title-section structure was different
+  processed = processed.replace(
+    /<div[^>]*class=["'][^"']*page-number[^"']*["'][^>]*>[^<]*<\/div>/gi,
+    ''
+  );
+
   // Remove legal warning about template usage (not needed for actual documents)
   processed = processed.replace(
     /<div[^>]*class=["'][^"']*legal-warning[^"']*["'][^>]*>[\s\S]*?<\/div>/gi,
