@@ -140,15 +140,8 @@ export async function GET(
     // Load shared CSS
     const sharedCss = await getSharedStyles();
 
-    // If we already have processed HTML content, return it
+    // If we already have HTML content, process and return it
     if (document.html_content) {
-      // Check if already processed (has inline styles)
-      if (document.html_content.includes('<style>') && !document.html_content.includes('href="styles.css"')) {
-        return new NextResponse(document.html_content, {
-          headers: { 'Content-Type': 'text/html; charset=utf-8' },
-        });
-      }
-      // Process existing HTML
       const processedHtml = processTemplateForPreview(document.html_content, sharedCss);
       return new NextResponse(processedHtml, {
         headers: { 'Content-Type': 'text/html; charset=utf-8' },
