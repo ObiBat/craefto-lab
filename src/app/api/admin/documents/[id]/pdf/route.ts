@@ -7,6 +7,9 @@ import {
 } from '@/lib/documents';
 import type { DocumentType } from '@/lib/documents/types';
 
+// Vercel serverless function config - Chromium needs more time and memory
+export const maxDuration = 30;
+
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!

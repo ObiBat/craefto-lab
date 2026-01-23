@@ -1,6 +1,7 @@
-// PDF Generation Utility using Puppeteer
+// PDF Generation Utility using Puppeteer Core + Chromium (serverless compatible)
 
-import puppeteer, { type Browser, type PDFOptions } from 'puppeteer';
+import puppeteer, { type Browser, type PDFOptions } from 'puppeteer-core';
+import chromium from '@sparticuz/chromium';
 import { promises as fs } from 'fs';
 import path from 'path';
 
@@ -20,7 +21,7 @@ const PDF_OPTIONS: PDFOptions = {
   displayHeaderFooter: false,
 };
 
-// Browser instance for reuse
+// Browser instance for reuse (within single invocation)
 let browserInstance: Browser | null = null;
 
 // ============================================
@@ -28,26 +29,59 @@ let browserInstance: Browser | null = null;
 // ============================================
 
 /**
- * Get or create a browser instance
+ * Get or create a browser instance.
+ * Uses @sparticuz/chromium on serverless (Vercel/Lambda),
+ * and local Chrome/Chromium for development.
  */
 async function getBrowser(): Promise<Browser> {
   if (browserInstance && browserInstance.connected) {
     return browserInstance;
   }
 
-  browserInstance = await puppeteer.launch({
-    headless: true,
-    args: [
-      '--no-sandbox',
-      '--disable-setuid-sandbox',
-      '--disable-dev-shm-usage',
-      '--disable-gpu',
-      '--disable-web-security',
-      '--font-render-hinting=none',
-    ],
-  });
+  const isProduction = process.env.NODE_ENV === 'production' || process.env.VERCEL;
+
+  if (isProduction) {
+    // Serverless: use @sparticuz/chromium
+    browserInstance = await puppeteer.launch({
+      args: chromium.args,
+      executablePath: await chromium.executablePath(),
+      headless: true,
+      defaultViewport: { width: 1200, height: 1600 },
+    });
+  } else {
+    // Local development: find system Chrome
+    const localChromePath = getLocalChromePath();
+
+    browserInstance = await puppeteer.launch({
+      headless: true,
+      executablePath: localChromePath,
+      args: [
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-dev-shm-usage',
+        '--disable-gpu',
+      ],
+    });
+  }
 
   return browserInstance;
+}
+
+/**
+ * Find local Chrome/Chromium installation for development
+ */
+function getLocalChromePath(): string {
+  const platform = process.platform;
+
+  if (platform === 'darwin') {
+    return '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
+  } else if (platform === 'linux') {
+    return '/usr/bin/google-chrome';
+  } else if (platform === 'win32') {
+    return 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
+  }
+
+  throw new Error('Unable to find Chrome. Install Google Chrome for local PDF generation.');
 }
 
 /**
