@@ -227,8 +227,8 @@ export default function LabPage() {
             </Container>
           </Section>
 
-          {/* Team */}
-          <Team sectionNumber="04" />
+          {/* Team - hidden until further notice */}
+          {/* <Team sectionNumber="04" /> */}
 
           {/* Newsletter / Stay Updated */}
           <Section spacing="lg" className="pt-8 md:pt-12">
