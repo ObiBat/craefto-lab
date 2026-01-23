@@ -40,6 +40,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }));
 
+  // Fetch dynamic routes from Supabase (skip if not configured)
+  if (!supabase) {
+    return [...routes, ...projectRoutes];
+  }
+
   // Fetch journal articles
   const { data: articles } = await supabase
     .from("journal_published_articles")
