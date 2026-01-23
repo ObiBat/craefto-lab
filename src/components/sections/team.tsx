@@ -175,6 +175,7 @@ const TEAM: TeamMember[] = [
     name: "Sara Chinzorig",
     role: "Creative",
     detail: "Visual thinker. Always exploring.",
+    image: "/team/sara.jpg",
     socials: {},
   },
 ];
