@@ -124,6 +124,9 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "https://craefto.com",
   },
+  verification: {
+    google: "kXrPFgynaTLHeof1J6rY-uZKVo6dYXXQYbKU71lbfpg",
+  },
   category: "technology",
 };
 
