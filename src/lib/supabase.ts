@@ -10,14 +10,12 @@ export const supabase: SupabaseClient = supabaseUrl && supabaseAnonKey
 
 // Server-side Supabase client (uses service role key)
 export function createServerClient() {
-  if (!supabaseUrl) {
-    throw new Error('NEXT_PUBLIC_SUPABASE_URL is not configured');
-  }
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!serviceRoleKey) {
-    throw new Error('SUPABASE_SERVICE_ROLE_KEY is not configured');
+  if (!url || !serviceRoleKey) {
+    return null as unknown as SupabaseClient;
   }
-  return createClient(supabaseUrl, serviceRoleKey, {
+  return createClient(url, serviceRoleKey, {
     auth: {
       autoRefreshToken: false,
       persistSession: false,
