@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Header, Footer, Container, Section } from "@/components/layout";
 import { Separator, PageTransition, AnimatedSection, StaggeredGrid, StaggeredItem, HeroText, SectionLabel } from "@/components/ui";
 import { Button } from "@/components/ui/button";
+import { Team } from "@/components/sections/team";
 
 const upcomingExperiments = [
   {
@@ -225,6 +226,9 @@ export default function LabPage() {
               </div>
             </Container>
           </Section>
+
+          {/* Team */}
+          <Team sectionNumber="04" />
 
           {/* Newsletter / Stay Updated */}
           <Section spacing="lg" className="pt-8 md:pt-12">

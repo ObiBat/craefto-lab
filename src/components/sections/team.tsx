@@ -304,7 +304,7 @@ function TeamCard({ member }: { member: TeamMember }) {
 // MAIN COMPONENTS
 // ============================================================================
 
-export function Team() {
+export function Team({ sectionNumber = "05" }: { sectionNumber?: string }) {
   return (
     <Section spacing="md">
       <Container>
@@ -312,7 +312,7 @@ export function Team() {
           {/* Header */}
           <AnimatedSection>
             <div className="flex flex-col gap-4">
-              <SectionLabel number="05" label="Our team" />
+              <SectionLabel number={sectionNumber} label="Our team" />
               <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
                 <div>
                   <h2 className="font-semibold tracking-tight">
