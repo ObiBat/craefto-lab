@@ -140,12 +140,16 @@ export async function GET(
     // Load shared CSS
     const sharedCss = await getSharedStyles();
 
+    const previewHeaders = {
+      'Content-Type': 'text/html; charset=utf-8',
+      'Cache-Control': 'no-store, no-cache, must-revalidate',
+      'Pragma': 'no-cache',
+    };
+
     // If we already have HTML content, process and return it
     if (document.html_content) {
       const processedHtml = processTemplateForPreview(document.html_content, sharedCss);
-      return new NextResponse(processedHtml, {
-        headers: { 'Content-Type': 'text/html; charset=utf-8' },
-      });
+      return new NextResponse(processedHtml, { headers: previewHeaders });
     }
 
     // Otherwise, generate HTML from template
@@ -159,15 +163,7 @@ export async function GET(
       // Process the template for preview
       const processedHtml = processTemplateForPreview(populatedHtml, sharedCss);
 
-      // Save the processed HTML back to the document
-      await supabase
-        .from('documents')
-        .update({ html_content: processedHtml })
-        .eq('id', id);
-
-      return new NextResponse(processedHtml, {
-        headers: { 'Content-Type': 'text/html; charset=utf-8' },
-      });
+      return new NextResponse(processedHtml, { headers: previewHeaders });
     } catch (genError) {
       console.error('Error generating HTML preview:', genError);
 

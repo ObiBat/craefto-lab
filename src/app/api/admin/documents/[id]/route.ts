@@ -101,11 +101,8 @@ export async function PATCH(
     }
 
     if (body.content_json !== undefined) {
-      // Merge with existing content
-      updates.content_json = {
-        ...(currentDoc.content_json as object),
-        ...body.content_json,
-      };
+      // Full replace of content (edit page sends complete content object)
+      updates.content_json = body.content_json;
       changes.push('content');
 
       // Create version snapshot before updating
