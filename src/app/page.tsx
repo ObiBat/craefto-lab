@@ -1,9 +1,9 @@
-import { Header, Footer } from "@/components/layout";
+import { Header, Footer, Container } from "@/components/layout";
 import {
   Hero,
   ServicesOverview,
   SelectedWork,
-  Team,
+  StackMarquee,
   CTABlock,
 } from "@/components/sections";
 
@@ -15,7 +15,9 @@ export default function Home() {
         <Hero />
         <ServicesOverview />
         <SelectedWork />
-        <Team />
+        <Container>
+          <StackMarquee />
+        </Container>
         <CTABlock />
       </main>
       <Footer />

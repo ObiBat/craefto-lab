@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Header, Footer, Container, Section } from "@/components/layout";
 import { Separator, PageTransition, AnimatedSection, StaggeredGrid, StaggeredItem, HeroText, SectionLabel } from "@/components/ui";
 import { Button } from "@/components/ui/button";
+import { Team } from "@/components/sections/team";
 
 const values = [
   {
@@ -299,6 +300,9 @@ export default function AboutPage() {
               </div>
             </Container>
           </Section>
+
+          {/* Team */}
+          <Team />
 
           {/* CTA */}
           <Section spacing="xl">

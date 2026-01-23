@@ -301,7 +301,7 @@ function TeamCard({ member }: { member: TeamMember }) {
 }
 
 // ============================================================================
-// MAIN COMPONENT
+// MAIN COMPONENTS
 // ============================================================================
 
 export function Team() {
@@ -312,7 +312,7 @@ export function Team() {
           {/* Header */}
           <AnimatedSection>
             <div className="flex flex-col gap-4">
-              <SectionLabel number="03" label="Our team" />
+              <SectionLabel number="05" label="Our team" />
               <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
                 <div>
                   <h2 className="font-semibold tracking-tight">
@@ -339,34 +339,37 @@ export function Team() {
               </StaggeredItem>
             ))}
           </StaggeredGrid>
-
-          {/* Stack Marquee */}
-          <AnimatedSection delay={0.2}>
-            <div className="flex flex-col items-center gap-4 pt-6">
-              <span className="text-xs font-medium uppercase tracking-widest text-[hsl(var(--color-foreground-subtle))]">
-                Our stack & tools
-              </span>
-              <div
-                className="marquee-container relative w-full overflow-hidden"
-                aria-label="Technology stack"
-              >
-                <div className="marquee-track flex items-center py-3">
-                  <div className="marquee-content flex items-center shrink-0">
-                    {STACK_TOOLS.map((tool) => (
-                      <ToolLogo key={tool.name} tool={tool} />
-                    ))}
-                  </div>
-                  <div className="marquee-content flex items-center shrink-0" aria-hidden="true">
-                    {STACK_TOOLS.map((tool) => (
-                      <ToolLogo key={`dup-${tool.name}`} tool={tool} />
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </AnimatedSection>
         </div>
       </Container>
     </Section>
+  );
+}
+
+export function StackMarquee() {
+  return (
+    <AnimatedSection delay={0.2}>
+      <div className="flex flex-col items-center gap-4 py-10">
+        <span className="text-xs font-medium uppercase tracking-widest text-[hsl(var(--color-foreground-subtle))]">
+          Our stack & tools
+        </span>
+        <div
+          className="marquee-container relative w-full overflow-hidden"
+          aria-label="Technology stack"
+        >
+          <div className="marquee-track flex items-center py-3">
+            <div className="marquee-content flex items-center shrink-0">
+              {STACK_TOOLS.map((tool) => (
+                <ToolLogo key={tool.name} tool={tool} />
+              ))}
+            </div>
+            <div className="marquee-content flex items-center shrink-0" aria-hidden="true">
+              {STACK_TOOLS.map((tool) => (
+                <ToolLogo key={`dup-${tool.name}`} tool={tool} />
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </AnimatedSection>
   );
 }

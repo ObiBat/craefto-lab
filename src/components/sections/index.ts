@@ -5,6 +5,6 @@ export { ServicesOverview } from "./services-overview";
 export { SelectedWork } from "./selected-work";
 export { Metrics } from "./metrics";
 export { Process } from "./process";
-export { Team } from "./team";
+export { Team, StackMarquee } from "./team";
 export { CTABlock } from "./cta-block";
 export { ApproachProcess } from "./approach-process";
