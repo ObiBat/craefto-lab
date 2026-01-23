@@ -187,8 +187,24 @@ const jsonLd = {
       "@type": "Offer",
       itemOffered: {
         "@type": "Service",
-        name: "SaaS & Internal Tools",
-        description: "MVPs, client portals, and automation systems.",
+        name: "Digital Products & Platforms",
+        description: "MVPs, interactive experiences, and scalable tools from concept to launch.",
+      },
+    },
+    {
+      "@type": "Offer",
+      itemOffered: {
+        "@type": "Service",
+        name: "AI & Automation",
+        description: "Intelligent systems, agents, and automation for modern teams.",
+      },
+    },
+    {
+      "@type": "Offer",
+      itemOffered: {
+        "@type": "Service",
+        name: "Security & Penetration Testing",
+        description: "Vulnerability assessments and security audits to protect your systems.",
       },
     },
   ],

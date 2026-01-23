@@ -34,22 +34,22 @@ export const services = [
     href: "/services#web",
   },
   {
-    title: "Creative-Tech Products",
-    description: "Interactive experiences, 3D, and experimental web work.",
-    capabilities: ["WebGL & 3D", "Interactive installations", "Motion design", "Generative art", "Experimental UI"],
-    href: "/services#creative",
+    title: "Digital Products & Platforms",
+    description: "MVPs, interactive experiences, and scalable tools from concept to launch.",
+    capabilities: ["MVP development", "Client portals", "Interactive experiences", "Workflow automation", "API integrations", "WebGL & 3D"],
+    href: "/services#products",
   },
   {
-    title: "SaaS & Internal Tools",
-    description: "MVPs, client portals, and automation systems.",
-    capabilities: ["MVP development", "Client portals", "Admin dashboards", "Workflow automation", "API integrations"],
-    href: "/services#saas",
-  },
-  {
-    title: "AI-Powered Systems",
-    description: "Workflows, agents, and intelligence tools for modern teams.",
-    capabilities: ["AI agents", "LLM integrations", "Intelligent workflows", "Data pipelines", "Custom AI tools"],
+    title: "AI & Automation",
+    description: "Intelligent systems, agents, and automation for modern teams.",
+    capabilities: ["AI agents", "LLM integrations", "Intelligent workflows", "Data pipelines", "Custom AI tools", "Process automation"],
     href: "/services#ai",
+  },
+  {
+    title: "Security & Penetration Testing",
+    description: "Vulnerability assessments and security audits to protect your systems.",
+    capabilities: ["Penetration testing", "Vulnerability assessments", "Security audits", "Infrastructure review", "Compliance checks"],
+    href: "/services#security",
   },
 ];
 
