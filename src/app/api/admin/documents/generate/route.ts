@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { createServerClient } from '@/lib/supabase';
 import {
   generateDocument,
   generateDefaultProposalContent,
@@ -16,14 +16,10 @@ import type {
   InvoiceContent,
 } from '@/lib/documents/types';
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
-
 // POST /api/admin/documents/generate - Generate document from lead data
 export async function POST(request: NextRequest) {
   try {
+    const supabase = createServerClient();
     const body: GenerateDocumentRequest = await request.json();
 
     // Validate required fields

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { createServerClient } from '@/lib/supabase';
 import {
   generateDocumentPDF,
   populatePlaceholders,
@@ -10,17 +10,13 @@ import type { DocumentType } from '@/lib/documents/types';
 // Vercel serverless function config - Chromium needs more time and memory
 export const maxDuration = 30;
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
-
 // GET /api/admin/documents/[id]/pdf - Generate and download PDF
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const supabase = createServerClient();
     const { id } = await params;
     const { searchParams } = new URL(request.url);
     const download = searchParams.get('download') === 'true';

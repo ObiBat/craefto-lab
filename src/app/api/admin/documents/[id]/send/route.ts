@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { createServerClient } from '@/lib/supabase';
 import {
   docusealClient,
   generateDocumentPDF,
@@ -8,17 +8,13 @@ import {
 } from '@/lib/documents';
 import type { SendForSignatureRequest, DocumentType } from '@/lib/documents/types';
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
-
 // POST /api/admin/documents/[id]/send - Send document for signature
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const supabase = createServerClient();
     const { id } = await params;
     const body: SendForSignatureRequest = await request.json();
 

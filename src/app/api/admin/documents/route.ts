@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { createServerClient } from '@/lib/supabase';
 import type {
   Document,
   DocumentType,
@@ -9,14 +9,10 @@ import type {
   CreateDocumentRequest,
 } from '@/lib/documents/types';
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
-
 // GET /api/admin/documents - List documents with filters
 export async function GET(request: NextRequest) {
   try {
+    const supabase = createServerClient();
     const { searchParams } = new URL(request.url);
 
     const params: DocumentListParams = {
@@ -98,6 +94,7 @@ export async function GET(request: NextRequest) {
 // POST /api/admin/documents - Create a new document
 export async function POST(request: NextRequest) {
   try {
+    const supabase = createServerClient();
     const body: CreateDocumentRequest = await request.json();
 
     // Validate required fields

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { createServerClient } from '@/lib/supabase';
 import { promises as fs } from 'fs';
 import path from 'path';
 import {
@@ -7,11 +7,6 @@ import {
   loadTemplate,
 } from '@/lib/documents';
 import type { DocumentType } from '@/lib/documents/types';
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
 
 // Cache the CSS to avoid repeated file reads
 let cachedCss: string | null = null;
@@ -121,6 +116,7 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const supabase = createServerClient();
     const { id } = await params;
 
     // Get document

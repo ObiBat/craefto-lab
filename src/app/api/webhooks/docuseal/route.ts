@@ -1,14 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { createServerClient } from '@/lib/supabase';
 import { verifyWebhookSignature } from '@/lib/documents';
 import { Resend } from 'resend';
+import type { SupabaseClient } from '@supabase/supabase-js';
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+let supabase: SupabaseClient;
+let resend: Resend;
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+function initClients() {
+  if (!supabase) supabase = createServerClient();
+  if (!resend) resend = new Resend(process.env.RESEND_API_KEY);
+}
 
 interface DocuSealWebhookPayload {
   event_type: string;
@@ -41,6 +43,7 @@ interface DocuSealWebhookPayload {
 // POST /api/webhooks/docuseal - Handle DocuSeal signing events
 export async function POST(request: NextRequest) {
   try {
+    initClients();
     const rawBody = await request.text();
 
     // Verify webhook signature if configured
