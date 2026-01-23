@@ -511,6 +511,55 @@ img {
 }
 
 /* ─────────────────────────────────────────────────────────────
+   MARQUEE - CSS-only, GPU-accelerated
+   ───────────────────────────────────────────────────────────── */
+
+@keyframes marquee-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+.marquee-container {
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 10%,
+    black 90%,
+    transparent
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 10%,
+    black 90%,
+    transparent
+  );
+}
+
+.marquee-track {
+  animation: marquee-scroll 30s linear infinite;
+  will-change: transform;
+  width: max-content;
+}
+
+.marquee-container:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: auto;
+  }
+
+  .marquee-content:last-child {
+    display: none;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
    UTILITY CLASSES
    ───────────────────────────────────────────────────────────── */
 

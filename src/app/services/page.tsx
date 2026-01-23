@@ -356,7 +356,7 @@ export default function ServicesPage() {
                 <div className="rounded-2xl bg-[hsl(var(--color-accent))] p-8 sm:p-10 lg:p-12">
                   <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
                     <div className="max-w-xl">
-                      <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-white mb-2">
+                      <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight !text-white mb-2">
                         Ready to start?
                       </h2>
                       <p className="text-white/80 text-base lg:text-lg leading-relaxed">
@@ -366,7 +366,7 @@ export default function ServicesPage() {
                     <Button
                       size="lg"
                       variant="secondary"
-                      className="!bg-white !text-[hsl(var(--color-accent))] hover:!bg-white/90 flex-shrink-0"
+                      className="!bg-white !text-[hsl(var(--color-accent))] hover:!bg-[hsl(var(--color-foreground))] hover:!text-white flex-shrink-0"
                       asChild
                     >
                       <Link href="/contact">

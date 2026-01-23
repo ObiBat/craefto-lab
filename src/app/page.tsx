@@ -3,6 +3,7 @@ import {
   Hero,
   ServicesOverview,
   SelectedWork,
+  Team,
   CTABlock,
 } from "@/components/sections";
 
@@ -14,6 +15,7 @@ export default function Home() {
         <Hero />
         <ServicesOverview />
         <SelectedWork />
+        <Team />
         <CTABlock />
       </main>
       <Footer />

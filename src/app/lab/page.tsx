@@ -286,13 +286,13 @@ export default function LabPage() {
                     <span className="text-xs font-medium uppercase tracking-widest text-white/70">
                       Collaborate
                     </span>
-                    <h2 className="font-semibold tracking-tight text-white">
+                    <h2 className="font-semibold tracking-tight !text-white">
                       Have an experiment in mind?
                     </h2>
                     <p className="text-white/80 text-lg leading-relaxed max-w-lg">
                       We&apos;re open to collaborations on tools, research, and experiments that push the boundaries of creative technology.
                     </p>
-                    <Button size="lg" variant="secondary" className="mt-2 !bg-white !text-[hsl(var(--color-accent))] hover:!bg-white/90" asChild>
+                    <Button size="lg" variant="secondary" className="mt-2 !bg-white !text-[hsl(var(--color-accent))] hover:!bg-[hsl(var(--color-foreground))] hover:!text-white" asChild>
                       <Link href="/contact">
                         <span className="btn-text-wrapper">
                           <span className="btn-text-primary">

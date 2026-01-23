@@ -16,13 +16,13 @@ export function CTABlock() {
               <span className="text-xs font-medium uppercase tracking-widest text-white/70">
                 Start a project
               </span>
-              <h2 className="font-semibold tracking-tight text-white">
+              <h2 className="font-semibold tracking-tight !text-white">
                 Ready to build something that lasts?
               </h2>
               <p className="text-white/80 text-lg leading-relaxed max-w-lg">
                 Let&apos;s talk about your project. We work with founders who value clarity, craft, and long-term thinking.
               </p>
-              <Button size="lg" variant="secondary" className="mt-2 !bg-white !text-[hsl(var(--color-accent))] hover:!bg-white/90" asChild>
+              <Button size="lg" variant="secondary" className="mt-2 !bg-white !text-[hsl(var(--color-accent))] hover:!bg-[hsl(var(--color-foreground))] hover:!text-white" asChild>
                 <Link href="/contact">
                   <span className="btn-text-wrapper">
                     <span className="btn-text-primary">

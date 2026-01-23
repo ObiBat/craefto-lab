@@ -309,13 +309,13 @@ export default function AboutPage() {
                     <span className="text-xs font-medium uppercase tracking-widest text-white/70">
                       Connect
                     </span>
-                    <h2 className="font-semibold tracking-tight text-white">
+                    <h2 className="font-semibold tracking-tight !text-white">
                       Let&apos;s build something together
                     </h2>
                     <p className="text-white/80 text-lg leading-relaxed max-w-lg">
                       Interested in new projects and collaborations with people who care about craft.
                     </p>
-                    <Button size="lg" variant="secondary" className="mt-2 !bg-white !text-[hsl(var(--color-accent))] hover:!bg-white/90" asChild>
+                    <Button size="lg" variant="secondary" className="mt-2 !bg-white !text-[hsl(var(--color-accent))] hover:!bg-[hsl(var(--color-foreground))] hover:!text-white" asChild>
                       <Link href="/contact">
                         <span className="btn-text-wrapper">
                           <span className="btn-text-primary">
