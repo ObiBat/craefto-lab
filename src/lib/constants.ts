@@ -47,8 +47,8 @@ export const services = [
   },
   {
     title: "Security & Penetration Testing",
-    description: "Vulnerability assessments and security audits to protect your systems.",
-    capabilities: ["Penetration testing", "Vulnerability assessments", "Security audits", "Infrastructure review", "Compliance checks"],
+    description: "Enterprise-grade security assessments at accessible pricing. We don't just build it, we secure it.",
+    capabilities: ["Web application security", "Penetration testing", "Vulnerability assessments", "Compliance readiness", "Executive reporting", "30-day re-testing"],
     href: "/services#security",
   },
 ];
