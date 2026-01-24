@@ -77,7 +77,7 @@ const services = [
     title: "Security & Pen Testing",
     tagline: "We don't just build it, we secure it",
     description:
-      "Enterprise-grade penetration testing and security audits, accessible to startups and SMEs. Web application assessments, compliance readiness, and actionable remediation — from $4,999 AUD.",
+      "Enterprise-grade penetration testing and security audits, accessible to startups and SMEs.",
     includes: [
       "Web application security assessment",
       "Vulnerability report & remediation guide",
