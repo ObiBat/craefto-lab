@@ -196,13 +196,13 @@ const TEAM: TeamMember[] = [
     image: "/team/urna.jpg",
     socials: { linkedin: "https://www.linkedin.com/in/urna-ganbat/" },
   },
-  {
-    name: "Enkhbold Altangerel",
-    role: "Security Engineer",
-    detail: "Defense minded. Always vigilant.",
-    image: "/team/enkhbold.jpg",
-    socials: { linkedin: "https://www.linkedin.com/in/enkhbold-altangerel-a7227a1a2/" },
-  },
+  // {
+  //   name: "Enkhbold Altangerel",
+  //   role: "Security Engineer",
+  //   detail: "Defense minded. Always vigilant.",
+  //   image: "/team/enkhbold.jpg",
+  //   socials: { linkedin: "https://www.linkedin.com/in/enkhbold-altangerel-a7227a1a2/" },
+  // },
   {
     name: "Sara Chinzorig",
     role: "Creative",
