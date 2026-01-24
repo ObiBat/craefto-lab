@@ -23,7 +23,7 @@ const services = [
       "Payment integration (Stripe)",
       "Performance optimization",
     ],
-    featured: true,
+    featured: false,
   },
   {
     id: "brand",
@@ -222,9 +222,6 @@ function ProcessStep({ step, index }: { step: typeof workProcess[0]; index: numb
 }
 
 export default function ServicesPage() {
-  const featuredService = services.find(s => s.featured)!;
-  const otherServices = services.filter(s => !s.featured);
-
   return (
     <>
       <Header />
@@ -264,44 +261,40 @@ export default function ServicesPage() {
           <Section spacing="sm" className="pt-0">
             <Container>
               <AnimatedSection>
-                {/* Desktop Bento Grid */}
-                <div className="hidden lg:grid lg:grid-cols-12 lg:grid-rows-[auto_auto] gap-4 lg:gap-5">
-                  {/* Featured Service - Large Card */}
+                {/* Desktop Grid */}
+                <div className="hidden lg:grid lg:grid-cols-12 gap-4 lg:gap-5">
                   <ServiceCard
-                    service={featuredService}
-                    size="featured"
-                    className="lg:col-span-7 lg:row-span-2 min-h-[480px]"
-                  />
-
-                  {/* Other Services - 2x2 Grid */}
-                  <ServiceCard
-                    service={otherServices[0]}
-                    className="lg:col-span-5 min-h-[230px]"
+                    service={services[0]}
+                    className="lg:col-span-4 min-h-[240px]"
                   />
                   <ServiceCard
-                    service={otherServices[1]}
-                    className="lg:col-span-5 min-h-[230px]"
+                    service={services[1]}
+                    className="lg:col-span-4 min-h-[240px]"
+                  />
+                  <ServiceCard
+                    service={services[2]}
+                    className="lg:col-span-4 min-h-[240px]"
                   />
                 </div>
 
                 {/* Second Row */}
                 <div className="hidden lg:grid lg:grid-cols-12 gap-4 lg:gap-5 mt-4 lg:mt-5">
                   <ServiceCard
-                    service={otherServices[2]}
-                    className="lg:col-span-4 min-h-[220px]"
+                    service={services[3]}
+                    className="lg:col-span-4 min-h-[240px]"
                   />
                   <ServiceCard
-                    service={otherServices[3]}
-                    className="lg:col-span-4 min-h-[220px]"
+                    service={services[4]}
+                    className="lg:col-span-4 min-h-[240px]"
                   />
 
                   {/* Process Card */}
-                  <div className="lg:col-span-4 rounded-2xl border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background-subtle))] p-6 lg:p-8 min-h-[220px]">
+                  <div className="lg:col-span-4 rounded-2xl border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background-subtle))] p-6 lg:p-8 min-h-[240px]">
                     <p className="text-xs font-medium text-[hsl(var(--color-accent))] uppercase tracking-wide mb-5">
                       How We Work
                     </p>
                     <div className="space-y-4">
-                      {workProcess.map((step, index) => (
+                      {workProcess.map((step) => (
                         <div key={step.title} className="flex items-center gap-3">
                           <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[hsl(var(--color-accent))] flex items-center justify-center text-[10px] font-semibold text-white">
                             {step.number}
@@ -316,14 +309,9 @@ export default function ServicesPage() {
                   </div>
                 </div>
 
-                {/* Mobile Layout - Stacked Cards (all collapsed by default) */}
+                {/* Mobile Layout - Stacked Cards */}
                 <div className="lg:hidden space-y-4">
-                  {/* Featured service shown as default card on mobile */}
-                  <ServiceCard
-                    service={featuredService}
-                    size="default"
-                  />
-                  {otherServices.map((service) => (
+                  {services.map((service) => (
                     <ServiceCard
                       key={service.id}
                       service={service}
