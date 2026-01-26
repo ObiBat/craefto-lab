@@ -270,9 +270,10 @@ function TeamCard({ member }: { member: TeamMember }) {
           </div>
         )}
 
-        {/* Gradient overlay for social links */}
+        {/* Gradient overlay for social links - desktop only */}
         <div
           className="
+            hidden lg:block
             absolute inset-x-0 bottom-0 h-16
             bg-gradient-to-t from-[hsl(var(--color-foreground)/0.7)] to-transparent
             opacity-0 group-hover:opacity-100
@@ -281,11 +282,12 @@ function TeamCard({ member }: { member: TeamMember }) {
           aria-hidden="true"
         />
 
-        {/* Social links overlay */}
+        {/* Social links overlay - desktop only */}
         <div
           className="
+            hidden lg:flex
             absolute bottom-0 left-0 right-0 p-3
-            flex items-center gap-2
+            items-center gap-2
             transform translate-y-full group-hover:translate-y-0
             transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]
           "
@@ -313,18 +315,51 @@ function TeamCard({ member }: { member: TeamMember }) {
 
       {/* Info */}
       <div className="p-4">
-        <h3 className="font-heading tracking-tight text-base group-hover:text-[hsl(var(--color-accent))] transition-colors duration-300 inline-block relative">
-          <span className="font-semibold">{member.name.split(" ")[0]}</span>
-          {member.name.split(" ").length > 1 && (
-            <span className="font-normal text-sm text-[hsl(var(--color-foreground-muted))] ml-1.5">
-              {member.name.split(" ").slice(1).join(" ")}
-            </span>
+        <div className="flex items-start justify-between gap-2">
+          <div className="flex-1 min-w-0">
+            <h3 className="font-heading tracking-tight text-base group-hover:text-[hsl(var(--color-accent))] transition-colors duration-300 inline-block relative">
+              <span className="font-semibold">{member.name.split(" ")[0]}</span>
+              {member.name.split(" ").length > 1 && (
+                <span className="font-normal text-sm text-[hsl(var(--color-foreground-muted))] ml-1.5">
+                  {member.name.split(" ").slice(1).join(" ")}
+                </span>
+              )}
+              <span className="absolute bottom-0 left-0 w-0 h-[1.5px] bg-[hsl(var(--color-accent))] group-hover:w-full transition-all duration-500 ease-out" />
+            </h3>
+            <p className="text-sm text-[hsl(var(--color-foreground-muted))] mt-0.5">
+              {member.role}
+            </p>
+          </div>
+          {/* Social links - mobile only */}
+          {Object.keys(member.socials).length > 0 && (
+            <div className="flex items-center gap-1.5 lg:hidden">
+              {Object.entries(member.socials).map(([type, url]) => (
+                url && (
+                  <a
+                    key={type}
+                    href={url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="
+                      w-8 h-8 rounded-full
+                      bg-[hsl(var(--color-background-muted))]
+                      border border-[hsl(var(--color-border))]
+                      flex items-center justify-center
+                      text-[hsl(var(--color-foreground-muted))]
+                      hover:text-[hsl(var(--color-accent))]
+                      hover:border-[hsl(var(--color-accent))]
+                      active:scale-95
+                      transition-all duration-200
+                    "
+                    aria-label={`${member.name} on ${type}`}
+                  >
+                    <SocialIcon type={type as "linkedin" | "twitter" | "dribbble"} />
+                  </a>
+                )
+              ))}
+            </div>
           )}
-          <span className="absolute bottom-0 left-0 w-0 h-[1.5px] bg-[hsl(var(--color-accent))] group-hover:w-full transition-all duration-500 ease-out" />
-        </h3>
-        <p className="text-sm text-[hsl(var(--color-foreground-muted))] mt-0.5">
-          {member.role}
-        </p>
+        </div>
         <p className="text-xs text-[hsl(var(--color-foreground-subtle))] italic mt-1.5">
           {member.detail}
         </p>
