@@ -190,13 +190,6 @@ const TEAM: TeamMember[] = [
     socials: { linkedin: "https://www.linkedin.com/in/obi-batbileg/" },
   },
   {
-    name: "Urna Ganbat",
-    role: "Financial Accountant",
-    detail: "Numbers driven. Detail oriented.",
-    image: "/team/urna.jpg",
-    socials: { linkedin: "https://www.linkedin.com/in/urna-ganbat/" },
-  },
-  {
     name: "Enkhbold Altangerel",
     role: "Security Engineer, OSCP",
     detail: "Defense minded. Always vigilant.",
@@ -209,6 +202,13 @@ const TEAM: TeamMember[] = [
     detail: "Visual thinker. Always exploring.",
     image: "/team/sara.jpg",
     socials: {},
+  },
+  {
+    name: "Urna Ganbat",
+    role: "Financial Accountant",
+    detail: "Numbers driven. Detail oriented.",
+    image: "/team/urna.jpg",
+    socials: { linkedin: "https://www.linkedin.com/in/urna-ganbat/" },
   },
 ];
 
