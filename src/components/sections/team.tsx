@@ -198,7 +198,7 @@ const TEAM: TeamMember[] = [
   },
   {
     name: "Enkhbold Altangerel",
-    role: "Security Engineer",
+    role: "Security Engineer, OSCP",
     detail: "Defense minded. Always vigilant.",
     image: "/team/enkhbold.jpg",
     socials: { linkedin: "https://www.linkedin.com/in/enkhbold-altangerel-a7227a1a2/" },
