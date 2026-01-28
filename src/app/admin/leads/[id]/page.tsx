@@ -25,6 +25,20 @@ interface Lead {
   stage: { id: string; name: string; color: string } | null;
 }
 
+interface CompanyResearch {
+  domain: string | null;
+  industry: string | null;
+  estimated_size: string | null;
+  linkedin_url: string | null;
+  tech_signals: string[];
+  funding_stage: string | null;
+}
+
+interface DetailedRedFlag {
+  flag: string;
+  severity: 'low' | 'medium' | 'high';
+}
+
 interface LeadAnalysis {
   fit_score: number;
   scope_creep_risk: number;
@@ -36,6 +50,11 @@ interface LeadAnalysis {
   requires_review: boolean;
   analysis_mode: string;
   analyzed_at: string;
+  // V2 Enhanced fields
+  company_research?: CompanyResearch;
+  detailed_red_flags?: DetailedRedFlag[];
+  response_template?: string;
+  call_agenda?: string[];
 }
 
 interface Activity {
@@ -537,6 +556,125 @@ export default function LeadDetailPage() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                     </svg>
                     <span className="text-sm font-medium">This lead requires human review</span>
+                  </div>
+                )}
+
+                {/* V2: Company Research */}
+                {analysis.company_research?.domain && (
+                  <div className="p-4 bg-[hsl(var(--color-background-subtle))] rounded-xl">
+                    <p className="text-[hsl(var(--color-foreground-subtle))] text-sm mb-3">Company Research</p>
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-[hsl(var(--color-foreground-muted))]">Domain</span>
+                        <a 
+                          href={`https://${analysis.company_research.domain}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-sm text-[hsl(var(--color-accent))] hover:underline"
+                        >
+                          {analysis.company_research.domain}
+                        </a>
+                      </div>
+                      {analysis.company_research.industry && (
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-[hsl(var(--color-foreground-muted))]">Industry</span>
+                          <span className="text-sm text-[hsl(var(--color-foreground))]">{analysis.company_research.industry}</span>
+                        </div>
+                      )}
+                      {analysis.company_research.tech_signals && analysis.company_research.tech_signals.length > 0 && (
+                        <div>
+                          <span className="text-sm text-[hsl(var(--color-foreground-muted))]">Tech Stack Detected</span>
+                          <div className="flex flex-wrap gap-1 mt-1">
+                            {analysis.company_research.tech_signals.map((tech) => (
+                              <span key={tech} className="px-2 py-0.5 bg-blue-500/20 text-blue-400 text-xs rounded">
+                                {tech}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      {analysis.company_research.linkedin_url && (
+                        <a 
+                          href={analysis.company_research.linkedin_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 text-sm text-[hsl(var(--color-accent))] hover:underline mt-2"
+                        >
+                          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                          </svg>
+                          View on LinkedIn
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* V2: Detailed Red Flags */}
+                {analysis.detailed_red_flags && analysis.detailed_red_flags.length > 0 && (
+                  <div>
+                    <p className="text-[hsl(var(--color-foreground-subtle))] text-sm mb-2">Risk Assessment</p>
+                    <div className="space-y-2">
+                      {analysis.detailed_red_flags.map((flag, i) => (
+                        <div 
+                          key={i} 
+                          className={`flex items-center gap-2 text-sm p-2 rounded-lg ${
+                            flag.severity === 'high' ? 'bg-red-500/10 text-red-500' :
+                            flag.severity === 'medium' ? 'bg-yellow-500/10 text-yellow-600' :
+                            'bg-gray-500/10 text-gray-400'
+                          }`}
+                        >
+                          <span className={`w-2 h-2 rounded-full ${
+                            flag.severity === 'high' ? 'bg-red-500' :
+                            flag.severity === 'medium' ? 'bg-yellow-500' :
+                            'bg-gray-400'
+                          }`} />
+                          {flag.flag}
+                          <span className="ml-auto text-xs opacity-60 uppercase">{flag.severity}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* V2: Response Template */}
+                {analysis.response_template && (
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <p className="text-[hsl(var(--color-foreground-subtle))] text-sm">Suggested Response</p>
+                      <button
+                        onClick={() => {
+                          navigator.clipboard.writeText(analysis.response_template || '');
+                        }}
+                        className="text-xs text-[hsl(var(--color-accent))] hover:underline"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <div className="p-4 bg-[hsl(var(--color-background-subtle))] rounded-xl">
+                      <pre className="text-sm text-[hsl(var(--color-foreground-muted))] whitespace-pre-wrap font-sans">
+                        {analysis.response_template}
+                      </pre>
+                    </div>
+                  </div>
+                )}
+
+                {/* V2: Call Agenda */}
+                {analysis.call_agenda && analysis.call_agenda.length > 0 && (
+                  <div>
+                    <p className="text-[hsl(var(--color-foreground-subtle))] text-sm mb-2">Discovery Call Agenda</p>
+                    <ol className="space-y-2">
+                      {analysis.call_agenda.map((item, i) => (
+                        <li key={i} className="flex items-start gap-3 text-sm">
+                          <span className="w-5 h-5 rounded-full bg-[hsl(var(--color-accent))]/20 text-[hsl(var(--color-accent))] flex items-center justify-center text-xs shrink-0">
+                            {i + 1}
+                          </span>
+                          <span className={item.startsWith('⚠️') ? 'text-yellow-600' : 'text-[hsl(var(--color-foreground-muted))]'}>
+                            {item}
+                          </span>
+                        </li>
+                      ))}
+                    </ol>
                   </div>
                 )}
 

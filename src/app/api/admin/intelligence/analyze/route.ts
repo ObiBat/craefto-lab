@@ -12,6 +12,231 @@ interface LeadData {
   message: string | null;
 }
 
+interface CompanyResearch {
+  domain: string | null;
+  industry: string | null;
+  estimated_size: string | null;
+  linkedin_url: string | null;
+  tech_signals: string[];
+  funding_stage: string | null;
+}
+
+// Extract domain from email
+function extractDomain(email: string): string | null {
+  const commonDomains = ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', 'icloud.com', 'me.com'];
+  const domain = email.split('@')[1]?.toLowerCase();
+  if (!domain || commonDomains.includes(domain)) return null;
+  return domain;
+}
+
+// Research company from domain/name
+async function researchCompany(email: string, companyName: string | null): Promise<CompanyResearch> {
+  const domain = extractDomain(email);
+  const research: CompanyResearch = {
+    domain,
+    industry: null,
+    estimated_size: null,
+    linkedin_url: null,
+    tech_signals: [],
+    funding_stage: null,
+  };
+
+  if (!domain && !companyName) return research;
+
+  // Try to fetch company website for tech signals
+  if (domain) {
+    try {
+      const response = await fetch(`https://${domain}`, {
+        signal: AbortSignal.timeout(5000),
+        headers: { 'User-Agent': 'Mozilla/5.0 (compatible; CraeftoBot/1.0)' },
+      });
+      
+      if (response.ok) {
+        const html = await response.text();
+        
+        // Detect tech stack from HTML
+        if (html.includes('__NEXT_DATA__') || html.includes('_next/')) {
+          research.tech_signals.push('Next.js');
+        }
+        if (html.includes('react') || html.includes('React')) {
+          research.tech_signals.push('React');
+        }
+        if (html.includes('shopify') || html.includes('Shopify')) {
+          research.tech_signals.push('Shopify');
+          research.industry = 'E-commerce';
+        }
+        if (html.includes('wordpress') || html.includes('wp-content')) {
+          research.tech_signals.push('WordPress');
+        }
+        if (html.includes('stripe')) {
+          research.tech_signals.push('Stripe');
+        }
+        if (html.includes('intercom')) {
+          research.tech_signals.push('Intercom');
+          research.estimated_size = 'Growth stage';
+        }
+        if (html.includes('hubspot')) {
+          research.tech_signals.push('HubSpot');
+        }
+        
+        // Industry detection from content
+        const lowerHtml = html.toLowerCase();
+        if (lowerHtml.includes('fintech') || lowerHtml.includes('financial')) {
+          research.industry = 'Fintech';
+        } else if (lowerHtml.includes('healthcare') || lowerHtml.includes('health')) {
+          research.industry = 'Healthcare';
+        } else if (lowerHtml.includes('saas') || lowerHtml.includes('software')) {
+          research.industry = 'SaaS';
+        } else if (lowerHtml.includes('real estate') || lowerHtml.includes('property')) {
+          research.industry = 'Real Estate';
+        } else if (lowerHtml.includes('education') || lowerHtml.includes('learning')) {
+          research.industry = 'EdTech';
+        }
+      }
+    } catch {
+      // Website fetch failed, continue without
+    }
+    
+    research.linkedin_url = `https://www.linkedin.com/company/${domain.split('.')[0]}`;
+  }
+
+  return research;
+}
+
+// Generate response template based on analysis
+function generateResponseTemplate(lead: LeadData, analysis: ReturnType<typeof analyzeLeadRuleBased>, research: CompanyResearch): string {
+  const firstName = lead.name.split(' ')[0];
+  const serviceNames: Record<string, string> = {
+    'web': 'web design and development',
+    'saas': 'SaaS product development',
+    'ai': 'AI and automation solutions',
+    'brand': 'brand identity',
+    'other': 'your project',
+  };
+  const serviceName = serviceNames[lead.service_interest || 'other'];
+  
+  // High fit template
+  if (analysis.fit_score >= 0.6) {
+    return `Hi ${firstName},
+
+Thanks for reaching out about ${serviceName}. ${lead.company ? `I took a look at ${lead.company} and ` : ''}this sounds like a great fit for what we do.
+
+${lead.message && lead.message.length > 100 ? `I especially liked the detail you provided about your project—` : ''}I'd love to learn more about your goals and timeline.
+
+Are you available for a quick discovery call this week? I have slots open [SUGGEST TIMES].
+
+Looking forward to connecting.
+
+Best,
+Obi`;
+  }
+  
+  // Medium fit template
+  if (analysis.fit_score >= 0.4) {
+    return `Hi ${firstName},
+
+Thanks for getting in touch about ${serviceName}. I've reviewed your inquiry and have a few questions to make sure we're aligned before moving forward.
+
+Could you share a bit more about:
+1. The specific outcomes you're hoping to achieve
+2. Any existing materials or branding we'd be working with
+3. Your decision-making timeline
+
+Once I understand these better, I can provide a more tailored proposal.
+
+Best,
+Obi`;
+  }
+  
+  // Low fit - polite decline or referral
+  return `Hi ${firstName},
+
+Thanks for considering Craefto for ${serviceName}. I've reviewed your project details.
+
+Based on the scope and budget, I think you might be better served by [ALTERNATIVE SUGGESTION]. They specialize in projects at this scale and do great work.
+
+If your requirements change or you'd like to discuss a phased approach, I'm happy to chat.
+
+Best wishes with the project,
+Obi`;
+}
+
+// Generate discovery call agenda
+function generateCallAgenda(lead: LeadData, analysis: ReturnType<typeof analyzeLeadRuleBased>, research: CompanyResearch): string[] {
+  const agenda: string[] = [];
+  
+  agenda.push('Introductions and background (5 min)');
+  
+  if (lead.company) {
+    agenda.push(`Learn about ${lead.company}'s current challenges and goals`);
+  } else {
+    agenda.push('Understand the business context and target audience');
+  }
+  
+  const serviceQuestions: Record<string, string> = {
+    'web': 'Discuss website goals, key pages, and conversion objectives',
+    'saas': 'Map out core features, user flows, and MVP scope',
+    'ai': 'Identify automation opportunities and data requirements',
+    'brand': 'Explore brand values, positioning, and competitive landscape',
+    'other': 'Define project scope and success metrics',
+  };
+  agenda.push(serviceQuestions[lead.service_interest || 'other']);
+  
+  if (analysis.scope_creep_risk > 0.5) {
+    agenda.push('⚠️ Clarify boundaries and phasing to manage scope');
+  }
+  
+  if (lead.timeline === 'asap') {
+    agenda.push('⚠️ Discuss realistic timeline and any flexibility');
+  }
+  
+  agenda.push('Review budget alignment and payment structure');
+  agenda.push('Outline next steps and proposal timeline');
+  
+  return agenda;
+}
+
+// Detect red flags
+function detectRedFlags(lead: LeadData): { flag: string; severity: 'low' | 'medium' | 'high' }[] {
+  const flags: { flag: string; severity: 'low' | 'medium' | 'high' }[] = [];
+  
+  // Budget + Timeline mismatch
+  if (lead.budget_range === '3-5k' && lead.timeline === 'asap') {
+    flags.push({ flag: 'Low budget with urgent timeline', severity: 'high' });
+  }
+  
+  if (lead.budget_range === '3-5k' && lead.service_interest === 'saas') {
+    flags.push({ flag: 'Budget too low for SaaS development', severity: 'high' });
+  }
+  
+  // Vague requirements
+  if (!lead.message || lead.message.length < 50) {
+    flags.push({ flag: 'Vague project description', severity: 'medium' });
+  }
+  
+  // No company (could be fine, but flag it)
+  if (!lead.company) {
+    flags.push({ flag: 'No company provided', severity: 'low' });
+  }
+  
+  // "Discuss" budget often means misaligned expectations
+  if (lead.budget_range === 'discuss') {
+    flags.push({ flag: 'Budget not disclosed - may need qualification', severity: 'medium' });
+  }
+  
+  // Keywords suggesting trouble
+  const troubleKeywords = ['cheap', 'free', 'exposure', 'equity only', 'revision', 'unlimited'];
+  const messageLower = (lead.message || '').toLowerCase();
+  for (const keyword of troubleKeywords) {
+    if (messageLower.includes(keyword)) {
+      flags.push({ flag: `Message contains "${keyword}"`, severity: 'high' });
+      break;
+    }
+  }
+  
+  return flags;
+}
+
 // Rule-based analysis when ML service is unavailable
 function analyzeLeadRuleBased(lead: LeadData) {
   let fitScore = 0.5; // Base score
@@ -212,22 +437,65 @@ export async function POST(request: NextRequest) {
       // Still return the analysis even if save fails
     }
 
+    // Enhanced Intelligence V2: Company research, templates, agenda
+    const companyResearch = await researchCompany(lead.email, lead.company);
+    const detailedRedFlags = detectRedFlags(lead as LeadData);
+    const responseTemplate = generateResponseTemplate(lead as LeadData, analysis, companyResearch);
+    const callAgenda = generateCallAgenda(lead as LeadData, analysis, companyResearch);
+
+    // Merge detailed red flags into analysis
+    const enhancedAnalysis = {
+      ...analysis,
+      company_research: companyResearch,
+      detailed_red_flags: detailedRedFlags,
+      response_template: responseTemplate,
+      call_agenda: callAgenda,
+    };
+
+    // Save enhanced analysis
+    const { error: updateError } = await supabase
+      .from('lead_analysis')
+      .upsert({
+        lead_id: leadId,
+        fit_score: analysis.fit_score,
+        project_type: analysis.project_type,
+        complexity: analysis.complexity,
+        scope_creep_risk: analysis.scope_creep_risk,
+        recommended_stack: analysis.recommended_stack,
+        red_flags: analysis.red_flags,
+        green_flags: analysis.green_flags,
+        requires_review: analysis.requires_review,
+        analysis_mode: analysis.analysis_mode,
+        company_research: companyResearch,
+        detailed_red_flags: detailedRedFlags,
+        response_template: responseTemplate,
+        call_agenda: callAgenda,
+        analyzed_at: new Date().toISOString(),
+      }, {
+        onConflict: 'lead_id',
+      });
+
+    if (updateError) {
+      console.error('Error saving enhanced analysis:', updateError);
+    }
+
     // Log activity
     await supabase.from('lead_activities').insert({
       lead_id: leadId,
       type: 'ai_analysis',
       title: 'AI Analysis Completed',
-      description: `${analysis.analysis_mode === 'ml_service' ? 'ML Service' : 'Rule-based'} analysis: Fit Score ${Math.round(analysis.fit_score * 100)}%, Scope Risk ${Math.round(analysis.scope_creep_risk * 100)}%`,
+      description: `${analysis.analysis_mode === 'ml_service' ? 'ML Service' : 'Rule-based'} analysis: Fit Score ${Math.round(analysis.fit_score * 100)}%, Scope Risk ${Math.round(analysis.scope_creep_risk * 100)}%${companyResearch.domain ? ` | Company: ${companyResearch.domain}` : ''}`,
       metadata: {
         fit_score: analysis.fit_score,
         scope_creep_risk: analysis.scope_creep_risk,
         project_type: analysis.project_type,
         complexity: analysis.complexity,
         analysis_mode: analysis.analysis_mode,
+        has_company_research: !!companyResearch.domain,
       },
     });
 
-    return NextResponse.json({ analysis });
+    return NextResponse.json({ analysis: enhancedAnalysis });
   } catch (error) {
     console.error('Error analyzing lead:', error);
     return NextResponse.json({ error: 'Failed to analyze lead' }, { status: 500 });

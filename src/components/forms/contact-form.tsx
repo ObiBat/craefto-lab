@@ -1,14 +1,76 @@
 "use client";
 
 import * as React from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useSearchParams } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select } from "@/components/ui/select";
+
+// Service to project type mapping
+const SERVICE_MAP: Record<string, string> = {
+  brand: "brand",
+  web: "web",
+  product: "saas",
+  ai: "ai",
+  security: "other",
+};
+
+// Suggested budgets based on project type
+const BUDGET_SUGGESTIONS: Record<string, string> = {
+  brand: "5-10k",
+  web: "10-25k",
+  saas: "25-50k",
+  ai: "10-25k",
+  other: "discuss",
+};
+
+// Timeline suggestions based on project type
+const TIMELINE_SUGGESTIONS: Record<string, string> = {
+  brand: "1-3months",
+  web: "1-3months",
+  saas: "3-6months",
+  ai: "1-3months",
+  other: "flexible",
+};
+
+// Complexity indicator logic
+function getComplexityScore(
+  projectType: string,
+  budget: string,
+  timeline: string,
+  messageLength: number
+): { score: number; label: string; color: string } {
+  let score = 0;
+  
+  // Project type scoring
+  if (projectType === "saas") score += 3;
+  else if (projectType === "ai") score += 2;
+  else if (projectType === "web") score += 1;
+  else if (projectType === "brand") score += 1;
+  
+  // Budget scoring (higher budget = more complex usually)
+  if (budget === "50k+") score += 3;
+  else if (budget === "25-50k") score += 2;
+  else if (budget === "10-25k") score += 1;
+  
+  // Timeline scoring (shorter = more urgent, could be simpler or rush)
+  if (timeline === "asap") score += 1;
+  else if (timeline === "3-6months") score += 2;
+  
+  // Message length (longer = more thought out = potentially more complex)
+  if (messageLength > 200) score += 1;
+  if (messageLength > 400) score += 1;
+  
+  if (score <= 2) return { score, label: "Simple", color: "text-green-600" };
+  if (score <= 4) return { score, label: "Moderate", color: "text-yellow-600" };
+  if (score <= 6) return { score, label: "Complex", color: "text-orange-600" };
+  return { score, label: "Enterprise", color: "text-purple-600" };
+}
 
 const contactSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -20,23 +82,71 @@ const contactSchema = z.object({
   message: z.string().min(20, "Please tell us more about your project (at least 20 characters)"),
 });
 
+const quickInquirySchema = z.object({
+  email: z.string().email("Please enter a valid email"),
+  message: z.string().min(10, "Please enter at least 10 characters"),
+});
+
 type ContactFormData = z.infer<typeof contactSchema>;
+type QuickInquiryData = z.infer<typeof quickInquirySchema>;
 
 export function ContactForm() {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [isSubmitted, setIsSubmitted] = React.useState(false);
   const [submitError, setSubmitError] = React.useState<string | null>(null);
+  const [quickMode, setQuickMode] = React.useState(false);
   const honeypotRef = React.useRef<HTMLInputElement>(null);
   const searchParams = useSearchParams();
+  
+  // Check for service pre-selection from URL
+  const preselectedService = searchParams.get("service");
+  const defaultProjectType = preselectedService ? SERVICE_MAP[preselectedService] || "" : "";
 
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
+    setValue,
+    control,
   } = useForm<ContactFormData>({
     resolver: zodResolver(contactSchema),
+    defaultValues: {
+      projectType: defaultProjectType,
+      budget: defaultProjectType ? BUDGET_SUGGESTIONS[defaultProjectType] : "",
+      timeline: defaultProjectType ? TIMELINE_SUGGESTIONS[defaultProjectType] : "",
+    },
   });
+
+  const quickForm = useForm<QuickInquiryData>({
+    resolver: zodResolver(quickInquirySchema),
+  });
+
+  // Watch form values for complexity indicator
+  const watchedProjectType = useWatch({ control, name: "projectType" });
+  const watchedBudget = useWatch({ control, name: "budget" });
+  const watchedTimeline = useWatch({ control, name: "timeline" });
+  const watchedMessage = useWatch({ control, name: "message" });
+
+  const complexity = React.useMemo(() => {
+    if (!watchedProjectType || !watchedBudget || !watchedTimeline) return null;
+    return getComplexityScore(
+      watchedProjectType,
+      watchedBudget,
+      watchedTimeline,
+      watchedMessage?.length || 0
+    );
+  }, [watchedProjectType, watchedBudget, watchedTimeline, watchedMessage]);
+
+  // Auto-suggest budget and timeline when project type changes
+  React.useEffect(() => {
+    if (watchedProjectType && !watchedBudget) {
+      setValue("budget", BUDGET_SUGGESTIONS[watchedProjectType] || "");
+    }
+    if (watchedProjectType && !watchedTimeline) {
+      setValue("timeline", TIMELINE_SUGGESTIONS[watchedProjectType] || "");
+    }
+  }, [watchedProjectType, watchedBudget, watchedTimeline, setValue]);
 
   const onSubmit = async (data: ContactFormData) => {
     setIsSubmitting(true);
@@ -83,9 +193,49 @@ export function ContactForm() {
     }
   };
 
+  // Quick inquiry submission
+  const onQuickSubmit = async (data: QuickInquiryData) => {
+    setIsSubmitting(true);
+    setSubmitError(null);
+
+    try {
+      const response = await fetch('/api/leads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: data.email.split('@')[0], // Use email prefix as name
+          email: data.email,
+          message: data.message,
+          service: 'other',
+          budget: 'discuss',
+          timeline: 'flexible',
+          website_url: honeypotRef.current?.value || '',
+          utm_source: searchParams.get('utm_source'),
+          utm_medium: searchParams.get('utm_medium'),
+          utm_campaign: searchParams.get('utm_campaign'),
+          landing_page: typeof window !== 'undefined' ? window.location.pathname : null,
+          is_quick_inquiry: true,
+        }),
+      });
+
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || 'Something went wrong');
+      setIsSubmitted(true);
+      quickForm.reset();
+    } catch (error) {
+      setSubmitError(error instanceof Error ? error.message : 'Failed to submit. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   if (isSubmitted) {
     return (
-      <div className="p-8 rounded-lg border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background-muted))] text-center">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="p-8 rounded-xl border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background-muted))] text-center"
+      >
         <div className="flex flex-col items-center gap-4">
           <div className="w-12 h-12 rounded-full bg-[hsl(var(--color-success-subtle))] flex items-center justify-center">
             <svg
@@ -104,39 +254,149 @@ export function ContactForm() {
           </div>
           <h3 className="text-xl font-semibold">Message sent</h3>
           <p className="text-[hsl(var(--color-foreground-muted))]">
-            Thanks for reaching out. We&apos;ll be in touch soon.
+            Thanks for reaching out. We&apos;ll be in touch within 24 hours.
           </p>
           <Button
             variant="secondary"
-            onClick={() => setIsSubmitted(false)}
+            onClick={() => {
+              setIsSubmitted(false);
+              setQuickMode(false);
+            }}
             className="mt-2"
           >
             Send another message
           </Button>
         </div>
-      </div>
+      </motion.div>
     );
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-      {/* Honeypot field - hidden from users, catches bots */}
-      <input
-        ref={honeypotRef}
-        type="text"
-        name="website_url"
-        autoComplete="off"
-        tabIndex={-1}
-        className="absolute -left-[9999px] opacity-0 pointer-events-none"
-        aria-hidden="true"
-      />
-
-      {/* Error message */}
-      {submitError && (
-        <div className="p-4 rounded-lg border border-[hsl(var(--color-error)/0.3)] bg-[hsl(var(--color-error)/0.1)] text-[hsl(var(--color-error))]">
-          <p className="text-sm">{submitError}</p>
+    <div className="space-y-6">
+      {/* Mode Toggle */}
+      <div className="flex items-center justify-between p-4 rounded-xl bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))]">
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={() => setQuickMode(false)}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+              !quickMode
+                ? "bg-[hsl(var(--color-accent))] text-[hsl(var(--color-accent-foreground))]"
+                : "text-[hsl(var(--color-foreground-muted))] hover:text-[hsl(var(--color-foreground))]"
+            }`}
+          >
+            Full inquiry
+          </button>
+          <button
+            type="button"
+            onClick={() => setQuickMode(true)}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+              quickMode
+                ? "bg-[hsl(var(--color-accent))] text-[hsl(var(--color-accent-foreground))]"
+                : "text-[hsl(var(--color-foreground-muted))] hover:text-[hsl(var(--color-foreground))]"
+            }`}
+          >
+            Quick message
+          </button>
         </div>
-      )}
+        {complexity && !quickMode && (
+          <div className="hidden sm:flex items-center gap-2">
+            <span className="text-xs text-[hsl(var(--color-foreground-subtle))]">Project scope:</span>
+            <span className={`text-sm font-medium ${complexity.color}`}>{complexity.label}</span>
+          </div>
+        )}
+      </div>
+
+      <AnimatePresence mode="wait">
+        {quickMode ? (
+          <motion.form
+            key="quick"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.2 }}
+            onSubmit={quickForm.handleSubmit(onQuickSubmit)}
+            className="space-y-4"
+          >
+            <input
+              ref={honeypotRef}
+              type="text"
+              name="website_url"
+              autoComplete="off"
+              tabIndex={-1}
+              className="absolute -left-[9999px] opacity-0 pointer-events-none"
+              aria-hidden="true"
+            />
+
+            {submitError && (
+              <div className="p-4 rounded-lg border border-[hsl(var(--color-error)/0.3)] bg-[hsl(var(--color-error)/0.1)] text-[hsl(var(--color-error))]">
+                <p className="text-sm">{submitError}</p>
+              </div>
+            )}
+
+            <div className="space-y-2">
+              <label htmlFor="quick-email" className="text-sm font-medium text-[hsl(var(--color-foreground))]">
+                Email <span className="text-[hsl(var(--color-error))]">*</span>
+              </label>
+              <Input
+                id="quick-email"
+                type="email"
+                placeholder="you@company.com"
+                error={!!quickForm.formState.errors.email}
+                {...quickForm.register("email")}
+              />
+              {quickForm.formState.errors.email && (
+                <p className="text-sm text-[hsl(var(--color-error))]">{quickForm.formState.errors.email.message}</p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <label htmlFor="quick-message" className="text-sm font-medium text-[hsl(var(--color-foreground))]">
+                What&apos;s on your mind? <span className="text-[hsl(var(--color-error))]">*</span>
+              </label>
+              <Textarea
+                id="quick-message"
+                placeholder="Brief description of what you're looking for..."
+                rows={4}
+                error={!!quickForm.formState.errors.message}
+                {...quickForm.register("message")}
+              />
+              {quickForm.formState.errors.message && (
+                <p className="text-sm text-[hsl(var(--color-error))]">{quickForm.formState.errors.message.message}</p>
+              )}
+            </div>
+
+            <Button type="submit" loading={isSubmitting}>
+              Send quick message
+            </Button>
+          </motion.form>
+        ) : (
+          <motion.form
+            key="full"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 20 }}
+            transition={{ duration: 0.2 }}
+            onSubmit={handleSubmit(onSubmit)}
+            className="space-y-6"
+          >
+            {/* Honeypot field - hidden from users, catches bots */}
+            <input
+              ref={honeypotRef}
+              type="text"
+              name="website_url"
+              autoComplete="off"
+              tabIndex={-1}
+              className="absolute -left-[9999px] opacity-0 pointer-events-none"
+              aria-hidden="true"
+            />
+
+            {/* Error message */}
+            {submitError && (
+              <div className="p-4 rounded-lg border border-[hsl(var(--color-error)/0.3)] bg-[hsl(var(--color-error)/0.1)] text-[hsl(var(--color-error))]">
+                <p className="text-sm">{submitError}</p>
+              </div>
+            )}
 
       {/* Name & Email */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -300,46 +560,59 @@ export function ContactForm() {
         )}
       </div>
 
-      {/* Submit */}
-      <Button
-        type="submit"
-        size="lg"
-        loading={isSubmitting}
-        className="w-full sm:w-auto"
-        hoverText={
-          <>
-            Let&apos;s go
-            <svg
-              className="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M17 8l4 4m0 0l-4 4m4-4H3"
-              />
-            </svg>
-          </>
-        }
-      >
-        Send inquiry
-        <svg
-          className="w-4 h-4"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M17 8l4 4m0 0l-4 4m4-4H3"
-          />
-        </svg>
-      </Button>
-    </form>
+            {/* Submit */}
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+              <Button
+                type="submit"
+                size="lg"
+                loading={isSubmitting}
+                className="w-full sm:w-auto"
+                hoverText={
+                  <>
+                    Let&apos;s go
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M17 8l4 4m0 0l-4 4m4-4H3"
+                      />
+                    </svg>
+                  </>
+                }
+              >
+                Send inquiry
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M17 8l4 4m0 0l-4 4m4-4H3"
+                  />
+                </svg>
+              </Button>
+              
+              {/* Complexity indicator (mobile) */}
+              {complexity && (
+                <div className="sm:hidden flex items-center gap-2">
+                  <span className="text-xs text-[hsl(var(--color-foreground-subtle))]">Project scope:</span>
+                  <span className={`text-sm font-medium ${complexity.color}`}>{complexity.label}</span>
+                </div>
+              )}
+            </div>
+          </motion.form>
+        )}
+      </AnimatePresence>
+    </div>
   );
 }

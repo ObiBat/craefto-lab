@@ -1,17 +1,40 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
+import { motion, AnimatePresence } from "framer-motion";
 import { Container } from "@/components/layout/container";
 import { Button } from "@/components/ui/button";
-import { HeroText } from "@/components/ui/motion";
+import { HeroText, AnimatedCounter } from "@/components/ui/motion";
 
 const Metaballs = dynamic(
   () => import("@/components/ui/metaballs").then((mod) => mod.Metaballs),
   { ssr: false }
 );
 
+const VALUE_PROPS = [
+  "Design systems and digital products built with craft and intention.",
+  "From brand identity to production-ready code, end to end.",
+  "Strategy, design, and engineering under one roof.",
+];
+
+const SOCIAL_PROOF = [
+  { value: 12, suffix: "+", label: "Projects delivered" },
+  { value: 98, suffix: "%", label: "Client satisfaction" },
+  { value: 3, suffix: " weeks", label: "Avg. delivery time" },
+];
+
 export function Hero() {
+  const [currentValueProp, setCurrentValueProp] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentValueProp((prev) => (prev + 1) % VALUE_PROPS.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <section className="relative min-h-[100vh] flex items-center pt-20 pb-16 overflow-hidden bg-[hsl(var(--color-background))]">
       {/* 3D Animation - desktop: right side, mobile: bottom 15% */}
@@ -22,20 +45,49 @@ export function Hero() {
       {/* Content - left aligned */}
       <Container size="lg" className="relative z-10">
         <div className="flex flex-col items-start text-left gap-6 max-w-xl lg:max-w-2xl">
+          {/* Badge */}
           <HeroText delay={0}>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[hsl(var(--color-accent))]/10 border border-[hsl(var(--color-accent))]/20"
+            >
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[hsl(var(--color-accent))] opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-[hsl(var(--color-accent))]"></span>
+              </span>
+              <span className="text-sm font-medium text-[hsl(var(--color-accent))]">
+                Available for new projects
+              </span>
+            </motion.div>
+          </HeroText>
+
+          <HeroText delay={0.1}>
             <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-semibold tracking-tighter leading-[0.95] text-[#4A4A4A]">
               Built to compound.
             </h1>
           </HeroText>
 
-          <HeroText delay={0.15}>
-            <p className="text-lg sm:text-xl max-w-lg leading-relaxed text-[#6B6B6B]">
-              Design systems and digital products built with craft and intention.
-            </p>
+          {/* Rotating value prop */}
+          <HeroText delay={0.2}>
+            <div className="h-[56px] sm:h-[64px] overflow-hidden">
+              <AnimatePresence mode="wait">
+                <motion.p
+                  key={currentValueProp}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.4, ease: "easeOut" }}
+                  className="text-lg sm:text-xl max-w-lg leading-relaxed text-[#6B6B6B]"
+                >
+                  {VALUE_PROPS[currentValueProp]}
+                </motion.p>
+              </AnimatePresence>
+            </div>
           </HeroText>
 
-          <HeroText delay={0.3}>
-            <div className="flex flex-col sm:flex-row gap-4 mt-4">
+          <HeroText delay={0.35}>
+            <div className="flex flex-col sm:flex-row gap-4 mt-2">
               <Button size="lg" asChild>
                 <Link href="/contact">
                   <span className="btn-text-wrapper">
@@ -82,6 +134,21 @@ export function Hero() {
                   </span>
                 </Link>
               </Button>
+            </div>
+          </HeroText>
+
+          {/* Social Proof Stats */}
+          <HeroText delay={0.5}>
+            <div className="flex items-center gap-8 pt-8 border-t border-[hsl(var(--color-border))] mt-4">
+              {SOCIAL_PROOF.map((stat, index) => (
+                <div key={index} className="flex flex-col">
+                  <span className="text-2xl sm:text-3xl font-semibold text-[#4A4A4A] tabular-nums">
+                    <AnimatedCounter value={stat.value} duration={2 + index * 0.2} />
+                    {stat.suffix}
+                  </span>
+                  <span className="text-sm text-[#6B6B6B]">{stat.label}</span>
+                </div>
+              ))}
             </div>
           </HeroText>
         </div>
