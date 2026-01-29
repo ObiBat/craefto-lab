@@ -7,12 +7,12 @@ import Link from "next/link";
 const NAV_ITEMS = [
   { href: "/admin", label: "Dashboard", icon: "grid" },
   { href: "/admin/leads", label: "Leads", icon: "users" },
+  { href: "/admin/clients", label: "Clients", icon: "briefcase" },
   { href: "/admin/documents", label: "Documents", icon: "file-signature" },
   { href: "/admin/subscribers", label: "Subscribers", icon: "mail" },
   { href: "/admin/journal", label: "Journal", icon: "document" },
   { href: "/admin/pipeline", label: "Pipeline", icon: "pipeline" },
   { href: "/admin/analytics", label: "Analytics", icon: "chart" },
-  { href: "/admin/client-hub", label: "Client Hub", icon: "briefcase" },
 ];
 
 function NavIcon({ icon }: { icon: string }) {
