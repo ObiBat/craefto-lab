@@ -66,7 +66,7 @@ export const services = [
     description: "Enterprise-grade security assessments at accessible pricing. We don't just build it, we secure it.",
     capabilities: ["Web application security", "Penetration testing", "Vulnerability assessments", "Compliance readiness", "Executive reporting", "30-day re-testing"],
     href: "/services#security",
-    startingPrice: 1500,
+    startingPrice: 2000,
     timeline: "1-2 weeks",
     badge: null,
     icon: "security",
