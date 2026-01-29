@@ -3,6 +3,7 @@
 import * as React from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
+import { CommandPalette } from "@/components/admin/CommandPalette";
 
 const NAV_ITEMS = [
   { href: "/admin", label: "Dashboard", icon: "grid" },
@@ -217,9 +218,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </div>
 
         {/* Desktop header */}
-        <div className="hidden lg:block mb-8">
+        <div className="hidden lg:block mb-6">
           <span className="text-lg font-semibold block text-[hsl(var(--color-foreground))]">Craefto Admin</span>
           <span className="text-sm text-[hsl(var(--color-foreground-muted))] block">CRM & Analytics</span>
+        </div>
+
+        {/* Command Palette Trigger */}
+        <div className="hidden lg:block mb-4">
+          <CommandPalette />
         </div>
 
         <nav className="flex-1 space-y-1 overflow-y-auto">

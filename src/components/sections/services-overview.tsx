@@ -8,7 +8,55 @@ import { Section } from "@/components/layout/section";
 import { Separator } from "@/components/ui/separator";
 import { SectionLabel } from "@/components/ui/section-label";
 import { AnimatedSection } from "@/components/ui/motion";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { services } from "@/lib/constants";
+
+function formatPrice(price: number) {
+  return new Intl.NumberFormat("en-AU", {
+    style: "currency",
+    currency: "AUD",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(price);
+}
+
+function ServiceIcon({ icon }: { icon: string }) {
+  switch (icon) {
+    case "brand":
+      return (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+        </svg>
+      );
+    case "web":
+      return (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+        </svg>
+      );
+    case "product":
+      return (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+        </svg>
+      );
+    case "ai":
+      return (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+        </svg>
+      );
+    case "security":
+      return (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+        </svg>
+      );
+    default:
+      return null;
+  }
+}
 
 function AccordionItem({
   service,
@@ -35,10 +83,17 @@ function AccordionItem({
           {number}
         </span>
 
-        {/* Title */}
-        <h3 className="flex-1 text-xl sm:text-2xl md:text-3xl font-semibold tracking-tight">
-          {service.title}
-        </h3>
+        {/* Title + Badge */}
+        <div className="flex-1 flex items-center gap-3">
+          <h3 className="text-xl sm:text-2xl md:text-3xl font-semibold tracking-tight">
+            {service.title}
+          </h3>
+          {service.badge && (
+            <Badge variant="accent" className="hidden sm:inline-flex">
+              {service.badge}
+            </Badge>
+          )}
+        </div>
 
         {/* Toggle Icon - green accent on hover */}
         <motion.div
@@ -73,39 +128,64 @@ function AccordionItem({
             className="overflow-hidden"
           >
             <div className="pl-12 sm:pl-16 pb-8 sm:pb-10 pr-4 sm:pr-8 -mx-4 sm:-mx-8 px-4 sm:px-8 bg-[hsl(var(--color-accent-subtle))]">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-12 pt-6">
-                {/* Description */}
-                <div className="flex flex-col gap-4">
-                  <p className="text-lg text-[hsl(var(--color-foreground-muted))] leading-relaxed max-w-md">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 pt-6">
+                {/* Description + CTA */}
+                <div className="flex flex-col gap-5 lg:col-span-1">
+                  <p className="text-lg text-[hsl(var(--color-foreground-muted))] leading-relaxed">
                     {service.description}
                   </p>
-                  <Link
-                    href={service.href}
-                    className="inline-flex items-center gap-2 text-sm font-medium text-[hsl(var(--color-foreground))] hover:text-[hsl(var(--color-accent))] transition-colors group/link"
-                  >
-                    Learn more
-                    <svg
-                      className="w-4 h-4 transition-transform group-hover/link:translate-x-1"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
+                  
+                  {/* Pricing & Timeline */}
+                  <div className="flex flex-col gap-2">
+                    <div className="flex items-center gap-2 text-sm">
+                      <span className="text-[hsl(var(--color-foreground-subtle))]">Starting from</span>
+                      <span className="font-semibold text-[hsl(var(--color-foreground))]">
+                        {formatPrice(service.startingPrice)}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm">
+                      <span className="text-[hsl(var(--color-foreground-subtle))]">Typical timeline</span>
+                      <span className="font-medium text-[hsl(var(--color-foreground))]">
+                        {service.timeline}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="flex flex-col sm:flex-row gap-3 pt-2">
+                    <Button size="sm" asChild>
+                      <Link href={`/contact?service=${service.icon}`}>
+                        Get a quote
+                      </Link>
+                    </Button>
+                    <Link
+                      href={service.href}
+                      className="inline-flex items-center justify-center gap-2 text-sm font-medium text-[hsl(var(--color-foreground-muted))] hover:text-[hsl(var(--color-foreground))] transition-colors py-2"
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={1.5}
-                        d="M17 8l4 4m0 0l-4 4m4-4H3"
-                      />
-                    </svg>
-                  </Link>
+                      Learn more
+                      <svg
+                        className="w-4 h-4 transition-transform group-hover/link:translate-x-1"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={1.5}
+                          d="M17 8l4 4m0 0l-4 4m4-4H3"
+                        />
+                      </svg>
+                    </Link>
+                  </div>
                 </div>
 
                 {/* Capabilities */}
-                <div className="flex flex-wrap items-center justify-start md:justify-end gap-3">
+                <div className="lg:col-span-2 flex flex-wrap items-start content-start justify-start lg:justify-end gap-2">
                   {service.capabilities?.map((capability) => (
                     <span
                       key={capability}
-                      className="px-4 py-2 text-sm font-medium rounded-full border border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground-muted))] bg-[hsl(var(--color-background))] whitespace-nowrap"
+                      className="px-3 py-1.5 text-sm font-medium rounded-full border border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground-muted))] bg-[hsl(var(--color-background))] whitespace-nowrap"
                     >
                       {capability}
                     </span>
