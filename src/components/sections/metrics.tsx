@@ -19,10 +19,10 @@ const metrics = [
     description: "Based on post-project surveys",
   },
   {
-    value: 3,
-    suffix: "x",
-    label: "Average engagement",
-    description: "Clients return for new projects",
+    value: 4,
+    suffix: "-5 wks",
+    label: "Average delivery",
+    description: "From kickoff to launch",
   },
   {
     value: 5,
