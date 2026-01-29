@@ -16,7 +16,7 @@ const Metaballs = dynamic(
 const VALUE_PROPS = [
   "Design systems and digital products built with craft and intention.",
   "From brand identity to production-ready code, end to end.",
-  "Strategy, design, and engineering under one roof.",
+  "Strategy, design, engineering, and security audit under one roof.",
 ];
 
 const SOCIAL_PROOF = [
