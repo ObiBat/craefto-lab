@@ -439,29 +439,31 @@ export function AnimatedCounter({
 }: AnimatedCounterProps) {
   const { ref, isInView } = useScrollAnimation();
   const [count, setCount] = React.useState(0);
-  const [hasAnimated, setHasAnimated] = React.useState(false);
+  const [shouldAnimate, setShouldAnimate] = React.useState(false);
   const prefersReducedMotion = useReducedMotion();
 
-  // Fallback: show value after 3s if intersection observer hasn't triggered
+  // Fallback: trigger animation after 1.5s if intersection observer hasn't fired
   React.useEffect(() => {
-    if (hasAnimated) return;
-    
     const fallbackTimer = setTimeout(() => {
-      if (!hasAnimated) {
-        setCount(value);
-        setHasAnimated(true);
-      }
-    }, 3000);
+      setShouldAnimate(true);
+    }, 1500);
 
     return () => clearTimeout(fallbackTimer);
-  }, [value, hasAnimated]);
+  }, []);
 
+  // Trigger animation when in view OR fallback timer fires
   React.useEffect(() => {
-    if (!isInView || hasAnimated) return;
+    if (isInView) {
+      setShouldAnimate(true);
+    }
+  }, [isInView]);
+
+  // Run the animation
+  React.useEffect(() => {
+    if (!shouldAnimate) return;
 
     if (prefersReducedMotion) {
       setCount(value);
-      setHasAnimated(true);
       return;
     }
 
@@ -478,8 +480,6 @@ export function AnimatedCounter({
 
       if (progress < 1) {
         animationFrame = requestAnimationFrame(animate);
-      } else {
-        setHasAnimated(true);
       }
     };
 
@@ -488,7 +488,7 @@ export function AnimatedCounter({
     return () => {
       if (animationFrame) cancelAnimationFrame(animationFrame);
     };
-  }, [isInView, value, duration, prefersReducedMotion, hasAnimated]);
+  }, [shouldAnimate, value, duration, prefersReducedMotion]);
 
   return (
     <span
