@@ -22,7 +22,7 @@ const VALUE_PROPS = [
 const SOCIAL_PROOF = [
   { value: 12, suffix: "+", label: "Projects delivered" },
   { value: 98, suffix: "%", label: "Client satisfaction" },
-  { value: 3, suffix: " weeks", label: "Avg. delivery time" },
+  { value: 3, suffix: " weeks", label: "To MVP, then iterate" },
 ];
 
 export function Hero() {
