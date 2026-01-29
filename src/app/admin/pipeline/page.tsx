@@ -20,6 +20,18 @@ interface QueueItem {
   created_at: string;
 }
 
+interface Schedule {
+  id: string;
+  name: string;
+  schedule_type: string;
+  day_of_week: number | null;
+  hour: number;
+  enabled: boolean;
+  last_run_at: string | null;
+  next_run_at: string | null;
+  topics: string[];
+}
+
 function formatDate(dateString: string) {
   return new Date(dateString).toLocaleDateString("en-US", {
     month: "short",
@@ -32,8 +44,10 @@ function formatDate(dateString: string) {
 export default function PipelineDashboard() {
   const [stats, setStats] = React.useState<PipelineStats | null>(null);
   const [awaitingApproval, setAwaitingApproval] = React.useState<QueueItem[]>([]);
+  const [schedules, setSchedules] = React.useState<Schedule[]>([]);
   const [loading, setLoading] = React.useState(true);
   const [scanning, setScanning] = React.useState(false);
+  const [showScheduleModal, setShowScheduleModal] = React.useState(false);
 
   const fetchData = React.useCallback(async () => {
     try {
@@ -42,6 +56,13 @@ export default function PipelineDashboard() {
       if (pipelineRes.ok) {
         const data = await pipelineRes.json();
         setAwaitingApproval(data.awaitingApproval || []);
+      }
+
+      // Fetch schedules
+      const scheduleRes = await fetch("/api/admin/pipeline/schedule");
+      if (scheduleRes.ok) {
+        const scheduleData = await scheduleRes.json();
+        setSchedules(scheduleData || []);
       }
 
       // Fetch counts for each stage
@@ -100,6 +121,31 @@ export default function PipelineDashboard() {
     } finally {
       setScanning(false);
     }
+  };
+
+  const toggleSchedule = async (scheduleId: string) => {
+    try {
+      await fetch("/api/admin/pipeline/schedule", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "toggle", scheduleId }),
+      });
+      await fetchData();
+    } catch (error) {
+      console.error("Failed to toggle schedule:", error);
+    }
+  };
+
+  const formatNextRun = (nextRun: string | null) => {
+    if (!nextRun) return "Not scheduled";
+    const date = new Date(nextRun);
+    const now = new Date();
+    const diff = date.getTime() - now.getTime();
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    if (days === 0) return "Today";
+    if (days === 1) return "Tomorrow";
+    if (days < 7) return `In ${days} days`;
+    return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
   };
 
   if (loading) {
@@ -246,6 +292,60 @@ export default function PipelineDashboard() {
           </div>
         </Link>
       </div>
+
+      {/* Scheduled Scans */}
+      {schedules.length > 0 && (
+        <div className="bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-sm font-medium text-[hsl(var(--color-foreground-subtle))] uppercase tracking-wider">Scheduled Scans</h2>
+          </div>
+          <div className="space-y-3">
+            {schedules.map((schedule) => (
+              <div
+                key={schedule.id}
+                className="flex items-center justify-between p-4 bg-[hsl(var(--color-background-subtle))] rounded-xl"
+              >
+                <div className="flex items-center gap-4">
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+                    schedule.enabled ? "bg-green-500/20 text-green-600" : "bg-[hsl(var(--color-background-muted))] text-[hsl(var(--color-foreground-muted))]"
+                  }`}>
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="font-medium text-[hsl(var(--color-foreground))]">{schedule.name}</p>
+                    <p className="text-xs text-[hsl(var(--color-foreground-subtle))]">
+                      {schedule.schedule_type.charAt(0).toUpperCase() + schedule.schedule_type.slice(1)} • {schedule.topics.slice(0, 2).join(", ")}
+                      {schedule.topics.length > 2 && ` +${schedule.topics.length - 2} more`}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-4">
+                  <div className="text-right">
+                    <p className="text-xs text-[hsl(var(--color-foreground-subtle))]">Next run</p>
+                    <p className={`text-sm font-medium ${schedule.enabled ? "text-[hsl(var(--color-foreground))]" : "text-[hsl(var(--color-foreground-muted))]"}`}>
+                      {schedule.enabled ? formatNextRun(schedule.next_run_at) : "Disabled"}
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => toggleSchedule(schedule.id)}
+                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                      schedule.enabled ? "bg-green-600" : "bg-[hsl(var(--color-border))]"
+                    }`}
+                  >
+                    <span
+                      className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                        schedule.enabled ? "translate-x-6" : "translate-x-1"
+                      }`}
+                    />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Workflow Guide */}
       <div className="bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl p-6">

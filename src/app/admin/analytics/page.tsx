@@ -27,6 +27,44 @@ interface AnalyticsData {
   }>;
 }
 
+interface FunnelData {
+  funnel: Array<{
+    stage: string;
+    count: number;
+    conversionRate: number;
+  }>;
+  overallConversion: string;
+}
+
+interface Goal {
+  id: string;
+  name: string;
+  goal_type: string;
+  target_value: number;
+  current_value: number;
+  period: string;
+  status: string;
+  progress: number;
+  daysRemaining: number | null;
+  isOnTrack: boolean;
+}
+
+interface SourceData {
+  totalLeads: number;
+  sources: Array<{
+    source: string;
+    count: number;
+    avgScore: number;
+    percentage: number;
+  }>;
+  trafficSources: Array<{
+    source: string;
+    visits: number;
+    leads: number;
+    conversionRate: string;
+  }>;
+}
+
 function StatCard({
   label,
   value,
@@ -85,17 +123,35 @@ function SimpleChart({ data, dataKey, color }: { data: Array<{ date: string; vie
 
 export default function AnalyticsPage() {
   const [data, setData] = React.useState<AnalyticsData | null>(null);
+  const [funnelData, setFunnelData] = React.useState<FunnelData | null>(null);
+  const [goals, setGoals] = React.useState<Goal[]>([]);
+  const [sourceData, setSourceData] = React.useState<SourceData | null>(null);
   const [loading, setLoading] = React.useState(true);
   const [days, setDays] = React.useState(30);
+  const [activeSection, setActiveSection] = React.useState<"overview" | "funnel" | "sources" | "goals">("overview");
 
   React.useEffect(() => {
     async function fetchData() {
       setLoading(true);
       try {
-        const res = await fetch(`/api/admin/analytics?days=${days}`);
-        if (res.ok) {
-          const json = await res.json();
-          setData(json);
+        const [analyticsRes, funnelRes, goalsRes, sourcesRes] = await Promise.all([
+          fetch(`/api/admin/analytics?days=${days}`),
+          fetch(`/api/admin/analytics/funnel?days=${days}`),
+          fetch("/api/admin/analytics/goals"),
+          fetch(`/api/admin/analytics/sources?days=${days}`),
+        ]);
+
+        if (analyticsRes.ok) {
+          setData(await analyticsRes.json());
+        }
+        if (funnelRes.ok) {
+          setFunnelData(await funnelRes.json());
+        }
+        if (goalsRes.ok) {
+          setGoals(await goalsRes.json());
+        }
+        if (sourcesRes.ok) {
+          setSourceData(await sourcesRes.json());
         }
       } catch (error) {
         console.error("Failed to fetch analytics:", error);
@@ -244,52 +300,289 @@ export default function AnalyticsPage() {
         />
       </div>
 
-      {/* Tables */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Top Pages */}
-        <div className="bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl overflow-hidden">
-          <div className="p-6 border-b border-[hsl(var(--color-border))]">
-            <h2 className="text-lg font-semibold">Top Pages</h2>
-          </div>
-          <div className="divide-y divide-[hsl(var(--color-border))]">
-            {data?.topPages && data.topPages.length > 0 ? (
-              data.topPages.map((page, index) => (
-                <div key={index} className="flex items-center justify-between px-6 py-4">
-                  <div className="flex items-center gap-3">
-                    <span className="text-[hsl(var(--color-foreground-subtle))] text-sm w-6">{index + 1}.</span>
-                    <span className="font-mono text-sm">{page.path}</span>
-                  </div>
-                  <span className="text-[hsl(var(--color-foreground-muted))]">{page.views} views</span>
-                </div>
-              ))
-            ) : (
-              <div className="px-6 py-8 text-center text-[hsl(var(--color-foreground-subtle))]">No data yet</div>
-            )}
-          </div>
-        </div>
-
-        {/* Traffic Sources */}
-        <div className="bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl overflow-hidden">
-          <div className="p-6 border-b border-[hsl(var(--color-border))]">
-            <h2 className="text-lg font-semibold">Traffic Sources</h2>
-          </div>
-          <div className="divide-y divide-[hsl(var(--color-border))]">
-            {data?.trafficSources && data.trafficSources.length > 0 ? (
-              data.trafficSources.map((source, index) => (
-                <div key={index} className="flex items-center justify-between px-6 py-4">
-                  <div className="flex items-center gap-3">
-                    <span className="text-[hsl(var(--color-foreground-subtle))] text-sm w-6">{index + 1}.</span>
-                    <span>{source.source}</span>
-                  </div>
-                  <span className="text-[hsl(var(--color-foreground-muted))]">{source.visits} visits</span>
-                </div>
-              ))
-            ) : (
-              <div className="px-6 py-8 text-center text-[hsl(var(--color-foreground-subtle))]">No data yet</div>
-            )}
-          </div>
-        </div>
+      {/* Section Tabs */}
+      <div className="flex gap-2 border-b border-[hsl(var(--color-border))] pb-4">
+        {[
+          { id: "overview", label: "Overview" },
+          { id: "funnel", label: "Conversion Funnel" },
+          { id: "sources", label: "Lead Sources" },
+          { id: "goals", label: "Goals" },
+        ].map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => setActiveSection(tab.id as typeof activeSection)}
+            className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors ${
+              activeSection === tab.id
+                ? "bg-[hsl(var(--color-background-subtle))] text-[hsl(var(--color-foreground))]"
+                : "text-[hsl(var(--color-foreground-subtle))] hover:text-[hsl(var(--color-foreground))]"
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
       </div>
+
+      {/* Overview Section */}
+      {activeSection === "overview" && (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Top Pages */}
+          <div className="bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl overflow-hidden">
+            <div className="p-6 border-b border-[hsl(var(--color-border))]">
+              <h2 className="text-lg font-semibold">Top Pages</h2>
+            </div>
+            <div className="divide-y divide-[hsl(var(--color-border))]">
+              {data?.topPages && data.topPages.length > 0 ? (
+                data.topPages.map((page, index) => (
+                  <div key={index} className="flex items-center justify-between px-6 py-4">
+                    <div className="flex items-center gap-3">
+                      <span className="text-[hsl(var(--color-foreground-subtle))] text-sm w-6">{index + 1}.</span>
+                      <span className="font-mono text-sm">{page.path}</span>
+                    </div>
+                    <span className="text-[hsl(var(--color-foreground-muted))]">{page.views} views</span>
+                  </div>
+                ))
+              ) : (
+                <div className="px-6 py-8 text-center text-[hsl(var(--color-foreground-subtle))]">No data yet</div>
+              )}
+            </div>
+          </div>
+
+          {/* Traffic Sources */}
+          <div className="bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl overflow-hidden">
+            <div className="p-6 border-b border-[hsl(var(--color-border))]">
+              <h2 className="text-lg font-semibold">Traffic Sources</h2>
+            </div>
+            <div className="divide-y divide-[hsl(var(--color-border))]">
+              {data?.trafficSources && data.trafficSources.length > 0 ? (
+                data.trafficSources.map((source, index) => (
+                  <div key={index} className="flex items-center justify-between px-6 py-4">
+                    <div className="flex items-center gap-3">
+                      <span className="text-[hsl(var(--color-foreground-subtle))] text-sm w-6">{index + 1}.</span>
+                      <span>{source.source}</span>
+                    </div>
+                    <span className="text-[hsl(var(--color-foreground-muted))]">{source.visits} visits</span>
+                  </div>
+                ))
+              ) : (
+                <div className="px-6 py-8 text-center text-[hsl(var(--color-foreground-subtle))]">No data yet</div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Conversion Funnel Section */}
+      {activeSection === "funnel" && (
+        <div className="space-y-6">
+          <div className="bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl p-6">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h2 className="text-lg font-semibold">Conversion Funnel</h2>
+                <p className="text-sm text-[hsl(var(--color-foreground-subtle))]">
+                  Overall conversion: {funnelData?.overallConversion || "0"}%
+                </p>
+              </div>
+            </div>
+
+            {funnelData?.funnel && funnelData.funnel.length > 0 ? (
+              <div className="space-y-4">
+                {funnelData.funnel.map((stage, index) => {
+                  const maxCount = funnelData.funnel[0].count || 1;
+                  const width = Math.max(10, (stage.count / maxCount) * 100);
+
+                  return (
+                    <div key={stage.stage} className="space-y-2">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm font-medium text-[hsl(var(--color-foreground))]">
+                          {index + 1}. {stage.stage}
+                        </span>
+                        <div className="flex items-center gap-4">
+                          <span className="text-sm text-[hsl(var(--color-foreground-muted))]">
+                            {stage.count.toLocaleString()}
+                          </span>
+                          <span className="text-xs text-[hsl(var(--color-foreground-subtle))] w-12 text-right">
+                            {stage.conversionRate}%
+                          </span>
+                        </div>
+                      </div>
+                      <div className="h-8 bg-[hsl(var(--color-background-subtle))] rounded-lg overflow-hidden">
+                        <div
+                          className="h-full bg-gradient-to-r from-[hsl(var(--color-accent))] to-[hsl(var(--color-accent-hover))] rounded-lg transition-all duration-500"
+                          style={{ width: `${width}%` }}
+                        />
+                      </div>
+                      {index < funnelData.funnel.length - 1 && (
+                        <div className="flex justify-center">
+                          <svg className="w-4 h-4 text-[hsl(var(--color-foreground-subtle))]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                          </svg>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="py-12 text-center text-[hsl(var(--color-foreground-subtle))]">
+                No funnel data yet
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Lead Sources Section */}
+      {activeSection === "sources" && (
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Lead Sources */}
+            <div className="bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl overflow-hidden">
+              <div className="p-6 border-b border-[hsl(var(--color-border))]">
+                <h2 className="text-lg font-semibold">Lead Sources</h2>
+                <p className="text-sm text-[hsl(var(--color-foreground-subtle))]">
+                  {sourceData?.totalLeads || 0} total leads
+                </p>
+              </div>
+              <div className="divide-y divide-[hsl(var(--color-border))]">
+                {sourceData?.sources && sourceData.sources.length > 0 ? (
+                  sourceData.sources.map((source, index) => (
+                    <div key={source.source} className="px-6 py-4">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="font-medium text-[hsl(var(--color-foreground))] capitalize">{source.source}</span>
+                        <span className="text-[hsl(var(--color-foreground-muted))]">{source.count} leads</span>
+                      </div>
+                      <div className="flex items-center gap-4">
+                        <div className="flex-1 h-2 bg-[hsl(var(--color-background-subtle))] rounded-full overflow-hidden">
+                          <div
+                            className="h-full bg-[hsl(var(--color-accent))] rounded-full"
+                            style={{ width: `${source.percentage}%` }}
+                          />
+                        </div>
+                        <span className="text-xs text-[hsl(var(--color-foreground-subtle))] w-10 text-right">
+                          {source.percentage}%
+                        </span>
+                        <span className="text-xs text-[hsl(var(--color-foreground-subtle))] w-16 text-right">
+                          Avg: {source.avgScore}
+                        </span>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="px-6 py-8 text-center text-[hsl(var(--color-foreground-subtle))]">No data yet</div>
+                )}
+              </div>
+            </div>
+
+            {/* Traffic to Lead Conversion */}
+            <div className="bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl overflow-hidden">
+              <div className="p-6 border-b border-[hsl(var(--color-border))]">
+                <h2 className="text-lg font-semibold">Traffic → Lead Conversion</h2>
+                <p className="text-sm text-[hsl(var(--color-foreground-subtle))]">
+                  Conversion rate by traffic source
+                </p>
+              </div>
+              <div className="divide-y divide-[hsl(var(--color-border))]">
+                {sourceData?.trafficSources && sourceData.trafficSources.length > 0 ? (
+                  sourceData.trafficSources.map((source) => (
+                    <div key={source.source} className="px-6 py-4 flex items-center justify-between">
+                      <div>
+                        <span className="font-medium text-[hsl(var(--color-foreground))] capitalize">{source.source}</span>
+                        <p className="text-xs text-[hsl(var(--color-foreground-subtle))]">
+                          {source.visits.toLocaleString()} visits → {source.leads} leads
+                        </p>
+                      </div>
+                      <span className={`text-lg font-semibold ${
+                        parseFloat(source.conversionRate) >= 2 ? "text-green-600" :
+                        parseFloat(source.conversionRate) >= 1 ? "text-yellow-600" :
+                        "text-[hsl(var(--color-foreground-muted))]"
+                      }`}>
+                        {source.conversionRate}%
+                      </span>
+                    </div>
+                  ))
+                ) : (
+                  <div className="px-6 py-8 text-center text-[hsl(var(--color-foreground-subtle))]">No data yet</div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Goals Section */}
+      {activeSection === "goals" && (
+        <div className="space-y-6">
+          <div className="flex justify-between items-center">
+            <h2 className="text-lg font-semibold">Goals</h2>
+            <button className="px-4 py-2 bg-[hsl(var(--color-accent))] text-black text-sm font-medium rounded-xl hover:bg-[hsl(var(--color-accent-hover))] transition-colors">
+              + New Goal
+            </button>
+          </div>
+
+          {goals.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {goals.map((goal) => (
+                <div
+                  key={goal.id}
+                  className="bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl p-6"
+                >
+                  <div className="flex justify-between items-start mb-4">
+                    <div>
+                      <h3 className="font-medium text-[hsl(var(--color-foreground))]">{goal.name}</h3>
+                      <p className="text-xs text-[hsl(var(--color-foreground-subtle))] capitalize">
+                        {goal.goal_type.replace("_", " ")} • {goal.period}
+                      </p>
+                    </div>
+                    <span className={`px-2 py-0.5 rounded text-xs font-medium ${
+                      goal.isOnTrack
+                        ? "bg-green-500/15 text-green-600"
+                        : "bg-yellow-500/15 text-yellow-600"
+                    }`}>
+                      {goal.isOnTrack ? "On Track" : "Behind"}
+                    </span>
+                  </div>
+
+                  <div className="mb-4">
+                    <div className="flex justify-between items-baseline mb-2">
+                      <span className="text-2xl font-semibold text-[hsl(var(--color-foreground))]">
+                        {goal.current_value.toLocaleString()}
+                      </span>
+                      <span className="text-sm text-[hsl(var(--color-foreground-subtle))]">
+                        / {goal.target_value.toLocaleString()}
+                      </span>
+                    </div>
+                    <div className="h-3 bg-[hsl(var(--color-background-subtle))] rounded-full overflow-hidden">
+                      <div
+                        className={`h-full rounded-full transition-all ${
+                          goal.progress >= 100 ? "bg-green-600" :
+                          goal.progress >= 75 ? "bg-[hsl(var(--color-accent))]" :
+                          goal.progress >= 50 ? "bg-yellow-600" :
+                          "bg-red-600"
+                        }`}
+                        style={{ width: `${Math.min(100, goal.progress)}%` }}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex justify-between items-center text-xs text-[hsl(var(--color-foreground-subtle))]">
+                    <span>{goal.progress}% complete</span>
+                    {goal.daysRemaining !== null && (
+                      <span>{goal.daysRemaining} days remaining</span>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl p-12 text-center">
+              <p className="text-[hsl(var(--color-foreground-muted))] mb-4">No goals set yet</p>
+              <p className="text-sm text-[hsl(var(--color-foreground-subtle))]">
+                Set goals to track your progress on leads, page views, and conversions
+              </p>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

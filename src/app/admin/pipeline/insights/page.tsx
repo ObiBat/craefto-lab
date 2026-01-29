@@ -63,6 +63,8 @@ export default function InsightsPage() {
   const [rejectReason, setRejectReason] = React.useState("");
   const [showRejectModal, setShowRejectModal] = React.useState(false);
   const [notification, setNotification] = React.useState<{ type: "success" | "error" | "info"; message: string } | null>(null);
+  const [selectedIds, setSelectedIds] = React.useState<Set<string>>(new Set());
+  const [batchLoading, setBatchLoading] = React.useState(false);
 
   const showNotification = (type: "success" | "error" | "info", message: string) => {
     setNotification({ type, message });
@@ -161,6 +163,56 @@ export default function InsightsPage() {
     }
   };
 
+  const toggleSelectAll = () => {
+    if (selectedIds.size === insights.filter(i => i.status === "new").length) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(insights.filter(i => i.status === "new").map(i => i.id)));
+    }
+  };
+
+  const toggleSelect = (id: string) => {
+    const newSelected = new Set(selectedIds);
+    if (newSelected.has(id)) {
+      newSelected.delete(id);
+    } else {
+      newSelected.add(id);
+    }
+    setSelectedIds(newSelected);
+  };
+
+  const handleBatchAction = async (action: "approve" | "reject") => {
+    if (selectedIds.size === 0) return;
+    
+    setBatchLoading(true);
+    try {
+      const res = await fetch("/api/admin/pipeline/batch", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action,
+          itemType: "insight",
+          itemIds: Array.from(selectedIds),
+          reviewedBy: "admin",
+          reason: action === "reject" ? "Batch rejected" : undefined,
+        }),
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        showNotification("success", `${action === "approve" ? "Approved" : "Rejected"} ${data.results.success.length} insights`);
+        setSelectedIds(new Set());
+        await fetchInsights();
+      } else {
+        showNotification("error", data.error || `Failed to ${action} insights`);
+      }
+    } catch (error) {
+      showNotification("error", `Failed to ${action} insights`);
+    } finally {
+      setBatchLoading(false);
+    }
+  };
+
   if (loading) {
     return <AdminLoader message="Loading insights..." />;
   }
@@ -232,6 +284,49 @@ export default function InsightsPage() {
         ))}
       </div>
 
+      {/* Batch Actions Toolbar */}
+      {insights.some(i => i.status === "new") && (
+        <div className="flex items-center gap-4 p-4 bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl">
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={selectedIds.size > 0 && selectedIds.size === insights.filter(i => i.status === "new").length}
+              onChange={toggleSelectAll}
+              className="w-4 h-4 rounded border-[hsl(var(--color-border))] bg-[hsl(var(--color-background-subtle))] text-[hsl(var(--color-accent))] focus:ring-[hsl(var(--color-accent))]"
+            />
+            <span className="text-sm text-[hsl(var(--color-foreground-muted))]">
+              {selectedIds.size > 0 ? `${selectedIds.size} selected` : "Select all new"}
+            </span>
+          </label>
+          
+          {selectedIds.size > 0 && (
+            <>
+              <div className="h-4 w-px bg-[hsl(var(--color-border))]" />
+              <button
+                onClick={() => handleBatchAction("approve")}
+                disabled={batchLoading}
+                className="px-3 py-1.5 bg-[hsl(var(--color-accent))] text-black text-sm font-medium rounded-lg hover:bg-[hsl(var(--color-accent-hover))] transition-colors disabled:opacity-50"
+              >
+                {batchLoading ? "Processing..." : `Approve ${selectedIds.size}`}
+              </button>
+              <button
+                onClick={() => handleBatchAction("reject")}
+                disabled={batchLoading}
+                className="px-3 py-1.5 bg-red-500/15 text-red-600 text-sm font-medium rounded-lg hover:bg-red-500/25 transition-colors disabled:opacity-50"
+              >
+                Reject {selectedIds.size}
+              </button>
+              <button
+                onClick={() => setSelectedIds(new Set())}
+                className="px-3 py-1.5 text-[hsl(var(--color-foreground-muted))] text-sm hover:text-[hsl(var(--color-foreground))] transition-colors"
+              >
+                Clear
+              </button>
+            </>
+          )}
+        </div>
+      )}
+
       {/* Insights List */}
       <div className="space-y-3">
         {insights.length === 0 ? (
@@ -255,14 +350,26 @@ export default function InsightsPage() {
           insights.map((insight) => {
             const statusConfig = getStatusConfig(insight.status);
             const urgencyConfig = getUrgencyIcon(insight.urgency);
+            const isSelected = selectedIds.has(insight.id);
 
             return (
               <div
                 key={insight.id}
-                className="bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl p-5 hover:border-[hsl(var(--color-border))] transition-colors"
+                className={`bg-[hsl(var(--color-background-muted))] border rounded-xl p-5 transition-colors ${
+                  isSelected ? "border-[hsl(var(--color-accent))]" : "border-[hsl(var(--color-border))] hover:border-[hsl(var(--color-border))]"
+                }`}
               >
                 <div className="flex justify-between items-start gap-4">
-                  <div className="flex-1 min-w-0">
+                  <div className="flex gap-3 flex-1 min-w-0">
+                    {insight.status === "new" && (
+                      <input
+                        type="checkbox"
+                        checked={isSelected}
+                        onChange={() => toggleSelect(insight.id)}
+                        className="mt-1 w-4 h-4 rounded border-[hsl(var(--color-border))] bg-[hsl(var(--color-background-subtle))] text-[hsl(var(--color-accent))] focus:ring-[hsl(var(--color-accent))] flex-shrink-0"
+                      />
+                    )}
+                    <div className="flex-1 min-w-0">
                     {/* Tags Row */}
                     <div className="flex items-center gap-2 mb-3 flex-wrap">
                       <span className={`px-2.5 py-1 rounded-md text-xs font-medium ${statusConfig.bg} ${statusConfig.text}`}>
@@ -298,6 +405,7 @@ export default function InsightsPage() {
                       {insight.target_keywords.length > 4 && (
                         <span className="text-xs text-[hsl(var(--color-foreground-subtle))]">+{insight.target_keywords.length - 4} more</span>
                       )}
+                    </div>
                     </div>
                   </div>
 
