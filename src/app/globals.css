@@ -1113,7 +1113,8 @@ img {
    ───────────────────────────────────────────────────────────── */
 
 /* Drop cap for first paragraph - newspaper style */
-.article-content > p:first-of-type::first-letter {
+/* Drop cap removed - caused spacing issues with quotes */
+/* .article-content > p:first-of-type::first-letter {
   float: left;
   font-family: var(--font-heading);
   font-size: 3.5rem;
@@ -1129,7 +1130,7 @@ img {
     font-size: 4.25rem;
     padding-right: 0.75rem;
   }
-}
+} */
 
 /* Image stability for lazy loading - prevents layout shifts */
 article img {
