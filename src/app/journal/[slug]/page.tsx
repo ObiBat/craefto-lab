@@ -151,6 +151,9 @@ export async function generateMetadata({
     };
   }
 
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://craefto.com";
+  const ogImageUrl = `${baseUrl}/journal/${slug}/opengraph-image`;
+  
   return {
     title: article.meta_title || `${article.title} | Craefto Lab Journal`,
     description: article.meta_description || article.excerpt,
@@ -160,15 +163,22 @@ export async function generateMetadata({
       type: "article",
       publishedTime: article.published_at || undefined,
       authors: [article.author_name],
-      images: article.featured_image_url
-        ? [{ url: article.featured_image_url }]
-        : undefined,
+      url: `${baseUrl}/journal/${slug}`,
+      siteName: "Craefto Lab",
+      images: [
+        {
+          url: ogImageUrl,
+          width: 1200,
+          height: 630,
+          alt: article.title,
+        },
+      ],
     },
     twitter: {
       card: "summary_large_image",
       title: article.title,
       description: article.excerpt || undefined,
-      images: article.featured_image_url ? [article.featured_image_url] : undefined,
+      images: [ogImageUrl],
     },
   };
 }
