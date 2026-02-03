@@ -303,4 +303,10 @@ export const mdxComponents = {
       {children}
     </em>
   ),
+  // Highlight/mark for emphasized callouts
+  mark: ({ children, ...props }: React.HTMLAttributes<HTMLElement>) => (
+    <mark className="bg-yellow-100 text-foreground px-1 py-0.5 rounded" {...props}>
+      {children}
+    </mark>
+  ),
 };
