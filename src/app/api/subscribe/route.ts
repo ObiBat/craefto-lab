@@ -174,7 +174,7 @@ export async function POST(request: NextRequest) {
 }
 
 async function sendWelcomeEmail(email: string, token: string) {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://craefto.com';
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.craefto.com';
   const unsubscribeUrl = `${baseUrl}/api/subscribe/unsubscribe?token=${token}`;
 
   try {

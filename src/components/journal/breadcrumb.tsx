@@ -10,7 +10,7 @@ interface BreadcrumbProps {
 }
 
 export function Breadcrumb({ items }: BreadcrumbProps) {
-  const baseUrl = "https://craefto.com";
+  const baseUrl = "https://www.craefto.com";
 
   // JSON-LD schema for breadcrumbs
   const schema = {

@@ -55,7 +55,7 @@ export function SubscriptionWelcomeEmail({ unsubscribeUrl }: SubscriptionWelcome
               </div>
 
               <div style="margin: 30px 0; text-align: center;">
-                <a href="https://craefto.com/journal" style="display: inline-block; padding: 14px 28px; background-color: #1A1714; color: #FFFFFF; font-size: 14px; font-weight: 600; text-decoration: none; border-radius: 8px;">
+                <a href="https://www.craefto.com/journal" style="display: inline-block; padding: 14px 28px; background-color: #1A1714; color: #FFFFFF; font-size: 14px; font-weight: 600; text-decoration: none; border-radius: 8px;">
                   Browse the Journal
                 </a>
               </div>
@@ -72,7 +72,7 @@ export function SubscriptionWelcomeEmail({ unsubscribeUrl }: SubscriptionWelcome
 
               <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #E8E5E0;">
                 <p style="margin: 0; font-size: 12px; color: #9A9A9A;">
-                  <a href="https://craefto.com" style="color: #9A9A9A; text-decoration: none;">craefto.com</a>
+                  <a href="https://www.craefto.com" style="color: #9A9A9A; text-decoration: none;">craefto.com</a>
                   &nbsp;&nbsp;·&nbsp;&nbsp;
                   <a href="mailto:hello@craefto.com" style="color: #9A9A9A; text-decoration: none;">hello@craefto.com</a>
                 </p>

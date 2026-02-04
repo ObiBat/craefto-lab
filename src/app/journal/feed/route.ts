@@ -2,7 +2,7 @@ import { createServerClient } from "@/lib/supabase";
 
 export async function GET() {
   const supabase = createServerClient();
-  const baseUrl = "https://craefto.com";
+  const baseUrl = "https://www.craefto.com";
 
   const { data: articles } = await supabase
     .from("journal_published_articles")

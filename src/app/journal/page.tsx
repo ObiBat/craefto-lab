@@ -16,17 +16,17 @@ export const metadata = {
   description:
     "Insights on systems thinking, applied AI, product craft, and creative technology from the Craefto Lab team.",
   alternates: {
-    canonical: "https://craefto.com/journal",
+    canonical: "https://www.craefto.com/journal",
     types: {
-      "application/rss+xml": "https://craefto.com/journal/feed",
-      "application/atom+xml": "https://craefto.com/journal/atom",
+      "application/rss+xml": "https://www.craefto.com/journal/feed",
+      "application/atom+xml": "https://www.craefto.com/journal/atom",
     },
   },
   openGraph: {
     title: "Journal | Craefto Lab",
     description:
       "Insights on systems thinking, applied AI, product craft, and creative technology.",
-    url: "https://craefto.com/journal",
+    url: "https://www.craefto.com/journal",
     type: "website",
   },
 };

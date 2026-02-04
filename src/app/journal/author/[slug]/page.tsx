@@ -87,12 +87,12 @@ export async function generateMetadata({ params }: AuthorPageProps): Promise<Met
     title: `${author.name} | Craefto Lab Journal`,
     description: author.bio || `Articles by ${author.name} on Craefto Lab Journal.`,
     alternates: {
-      canonical: `https://craefto.com/journal/author/${author.slug}`,
+      canonical: `https://www.craefto.com/journal/author/${author.slug}`,
     },
     openGraph: {
       title: `${author.name} | Craefto Lab Journal`,
       description: author.bio || `Articles by ${author.name} on Craefto Lab Journal.`,
-      url: `https://craefto.com/journal/author/${author.slug}`,
+      url: `https://www.craefto.com/journal/author/${author.slug}`,
       type: "profile",
       images: author.avatar_url ? [{ url: author.avatar_url }] : undefined,
     },
@@ -243,7 +243,7 @@ export default async function AuthorPage({ params }: AuthorPageProps) {
             name: author.name,
             jobTitle: author.role,
             description: author.bio,
-            url: `https://craefto.com/journal/author/${author.slug}`,
+            url: `https://www.craefto.com/journal/author/${author.slug}`,
             image: author.avatar_url,
             sameAs: [
               author.twitter?.startsWith("http") ? author.twitter : author.twitter ? `https://twitter.com/${author.twitter}` : null,
@@ -252,7 +252,7 @@ export default async function AuthorPage({ params }: AuthorPageProps) {
             worksFor: {
               "@type": "Organization",
               name: "Craefto Lab",
-              url: "https://craefto.com",
+              url: "https://www.craefto.com",
             },
             breadcrumb: {
               "@type": "BreadcrumbList",
@@ -261,13 +261,13 @@ export default async function AuthorPage({ params }: AuthorPageProps) {
                   "@type": "ListItem",
                   position: 1,
                   name: "Journal",
-                  item: "https://craefto.com/journal",
+                  item: "https://www.craefto.com/journal",
                 },
                 {
                   "@type": "ListItem",
                   position: 2,
                   name: author.name,
-                  item: `https://craefto.com/journal/author/${author.slug}`,
+                  item: `https://www.craefto.com/journal/author/${author.slug}`,
                 },
               ],
             },

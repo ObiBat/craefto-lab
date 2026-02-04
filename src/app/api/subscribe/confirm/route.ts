@@ -7,7 +7,7 @@ export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const token = searchParams.get('token');
 
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://craefto.com';
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.craefto.com';
 
   if (!token) {
     return NextResponse.redirect(`${baseUrl}/journal?error=invalid_token`);

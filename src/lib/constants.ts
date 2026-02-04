@@ -2,7 +2,7 @@ export const siteConfig = {
   name: "Craefto Lab",
   description:
     "Craefto Lab is a creative tech studio. We design and build brands, products, and tools for founders and teams who value craft.",
-  url: "https://craefto.com",
+  url: "https://www.craefto.com",
   email: "hello@craefto.com",
   links: {
     twitter: "https://x.com/craefto",

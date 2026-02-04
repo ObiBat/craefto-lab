@@ -24,7 +24,7 @@ interface AdminNotificationEmailProps {
 }
 
 export function AdminNotificationEmail({ lead, leadId }: AdminNotificationEmailProps) {
-  const adminUrl = `https://craefto.com/admin/leads/${leadId}`;
+  const adminUrl = `https://www.craefto.com/admin/leads/${leadId}`;
 
   return `
 <!DOCTYPE html>

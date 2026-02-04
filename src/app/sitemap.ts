@@ -4,7 +4,7 @@ import { createServerClient } from "@/lib/supabase";
 type ChangeFrequency = "weekly" | "monthly" | "always" | "hourly" | "daily" | "yearly" | "never";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = "https://craefto.com";
+  const baseUrl = "https://www.craefto.com";
   const supabase = createServerClient();
 
   // Static pages

@@ -151,7 +151,7 @@ export async function generateMetadata({
     };
   }
 
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://craefto.com";
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.craefto.com";
   const ogImageUrl = `${baseUrl}/journal/${slug}/opengraph-image`;
   
   return {
@@ -291,19 +291,19 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
               author: {
                 "@type": "Person",
                 name: article.author_name,
-                url: `https://craefto.com/journal/author/${article.author_slug}`,
+                url: `https://www.craefto.com/journal/author/${article.author_slug}`,
               },
               publisher: {
                 "@type": "Organization",
                 name: "Craefto Lab",
                 logo: {
                   "@type": "ImageObject",
-                  url: "https://craefto.com/logo.png",
+                  url: "https://www.craefto.com/logo.png",
                 },
               },
               mainEntityOfPage: {
                 "@type": "WebPage",
-                "@id": `https://craefto.com/journal/${article.slug}`,
+                "@id": `https://www.craefto.com/journal/${article.slug}`,
               },
             }),
           }}

@@ -69,7 +69,7 @@ export function SubscriptionConfirmationEmail({ confirmationUrl }: SubscriptionC
 
               <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #E8E5E0;">
                 <p style="margin: 0; font-size: 12px; color: #9A9A9A;">
-                  <a href="https://craefto.com" style="color: #9A9A9A; text-decoration: none;">craefto.com</a>
+                  <a href="https://www.craefto.com" style="color: #9A9A9A; text-decoration: none;">craefto.com</a>
                   &nbsp;&nbsp;·&nbsp;&nbsp;
                   <a href="mailto:hello@craefto.com" style="color: #9A9A9A; text-decoration: none;">hello@craefto.com</a>
                 </p>

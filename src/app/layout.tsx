@@ -32,7 +32,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://craefto.com"),
+  metadataBase: new URL("https://www.craefto.com"),
   title: {
     default: "Craefto Lab | Creative Tech Studio",
     template: "%s | Craefto Lab",
@@ -53,7 +53,7 @@ export const metadata: Metadata = {
     "product design",
     "web design agency",
   ],
-  authors: [{ name: "Craefto Lab", url: "https://craefto.com" }],
+  authors: [{ name: "Craefto Lab", url: "https://www.craefto.com" }],
   creator: "Craefto Lab",
   publisher: "Craefto Lab",
   formatDetection: {
@@ -86,7 +86,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://craefto.com",
+    url: "https://www.craefto.com",
     siteName: "Craefto Lab",
     title: "Craefto Lab | Creative Tech Studio",
     description:
@@ -122,7 +122,7 @@ export const metadata: Metadata = {
     },
   },
   alternates: {
-    canonical: "https://craefto.com",
+    canonical: "https://www.craefto.com",
   },
   verification: {
     google: "kXrPFgynaTLHeof1J6rY-uZKVo6dYXXQYbKU71lbfpg",
@@ -137,8 +137,8 @@ const jsonLd = {
   name: "Craefto Lab",
   description:
     "Craefto Lab is a creative tech studio. We design and build brands, products, and tools for founders and teams who value craft.",
-  url: "https://craefto.com",
-  logo: "https://craefto.com/logo.png",
+  url: "https://www.craefto.com",
+  logo: "https://www.craefto.com/logo.png",
   sameAs: [
     "https://x.com/craefto",
     "https://www.linkedin.com/company/craefto",

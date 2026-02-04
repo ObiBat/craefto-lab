@@ -65,7 +65,7 @@ export function LeadConfirmationEmail({ name, service }: LeadConfirmationEmailPr
               </div>
 
               <p style="margin: 0; font-size: 16px; color: #6B6B6B; line-height: 1.6;">
-                In the meantime, feel free to explore our <a href="https://craefto.com/work" style="color: #4A4A4A; text-decoration: underline;">recent work</a>.
+                In the meantime, feel free to explore our <a href="https://www.craefto.com/work" style="color: #4A4A4A; text-decoration: underline;">recent work</a>.
               </p>
             </td>
           </tr>
@@ -80,7 +80,7 @@ export function LeadConfirmationEmail({ name, service }: LeadConfirmationEmailPr
 
               <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #E8E5E0;">
                 <p style="margin: 0; font-size: 12px; color: #9A9A9A;">
-                  <a href="https://craefto.com" style="color: #9A9A9A; text-decoration: none;">craefto.com</a>
+                  <a href="https://www.craefto.com" style="color: #9A9A9A; text-decoration: none;">craefto.com</a>
                   &nbsp;&nbsp;·&nbsp;&nbsp;
                   <a href="mailto:hello@craefto.com" style="color: #9A9A9A; text-decoration: none;">hello@craefto.com</a>
                 </p>

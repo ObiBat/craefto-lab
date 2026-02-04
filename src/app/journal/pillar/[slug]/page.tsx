@@ -83,12 +83,12 @@ export async function generateMetadata({ params }: PillarPageProps): Promise<Met
     title: `${pillar.name} | Craefto Lab Journal`,
     description: pillar.description || `Articles about ${pillar.name} from Craefto Lab.`,
     alternates: {
-      canonical: `https://craefto.com/journal/pillar/${pillar.slug}`,
+      canonical: `https://www.craefto.com/journal/pillar/${pillar.slug}`,
     },
     openGraph: {
       title: `${pillar.name} | Craefto Lab Journal`,
       description: pillar.description || `Articles about ${pillar.name} from Craefto Lab.`,
-      url: `https://craefto.com/journal/pillar/${pillar.slug}`,
+      url: `https://www.craefto.com/journal/pillar/${pillar.slug}`,
       type: "website",
     },
   };
@@ -174,11 +174,11 @@ export default async function PillarPage({ params }: PillarPageProps) {
             "@type": "CollectionPage",
             name: pillar.name,
             description: pillar.description,
-            url: `https://craefto.com/journal/pillar/${pillar.slug}`,
+            url: `https://www.craefto.com/journal/pillar/${pillar.slug}`,
             isPartOf: {
               "@type": "Blog",
               name: "Craefto Lab Journal",
-              url: "https://craefto.com/journal",
+              url: "https://www.craefto.com/journal",
             },
             breadcrumb: {
               "@type": "BreadcrumbList",
@@ -187,13 +187,13 @@ export default async function PillarPage({ params }: PillarPageProps) {
                   "@type": "ListItem",
                   position: 1,
                   name: "Journal",
-                  item: "https://craefto.com/journal",
+                  item: "https://www.craefto.com/journal",
                 },
                 {
                   "@type": "ListItem",
                   position: 2,
                   name: pillar.name,
-                  item: `https://craefto.com/journal/pillar/${pillar.slug}`,
+                  item: `https://www.craefto.com/journal/pillar/${pillar.slug}`,
                 },
               ],
             },
