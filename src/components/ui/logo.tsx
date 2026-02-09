@@ -11,10 +11,10 @@ interface LogoProps {
 }
 
 const sizes = {
-  sm: { width: 24, height: 24 },
-  md: { width: 32, height: 32 },
-  lg: { width: 40, height: 40 },
-  xl: { width: 56, height: 56 },
+  sm: { width: 32, height: 32 },
+  md: { width: 40, height: 40 },
+  lg: { width: 52, height: 52 },
+  xl: { width: 72, height: 72 },
 };
 
 export function Logo({
