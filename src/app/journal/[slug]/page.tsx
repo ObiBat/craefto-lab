@@ -85,13 +85,34 @@ async function getArticle(slug: string): Promise<PageArticle | null> {
     return null;
   }
 
-  // Get related articles
-  const { data: related } = await supabase
+  // Get related articles — intelligent recommendations
+  // 1. Same pillar first (most relevant), then fill with other articles
+  // 2. Ordered by recency
+  // 3. Never show the current article
+  const { data: samePillar } = await supabase
     .from("journal_published_articles")
     .select("*")
     .eq("pillar_slug", article.pillar.slug)
     .neq("slug", slug)
+    .order("published_at", { ascending: false })
     .limit(3);
+
+  const samePillarIds = (samePillar || []).map((a) => a.id);
+  const needMore = 3 - (samePillar || []).length;
+
+  let otherArticles: typeof samePillar = [];
+  if (needMore > 0) {
+    const excludeIds = [article.id, ...samePillarIds];
+    const { data: others } = await supabase
+      .from("journal_published_articles")
+      .select("*")
+      .not("id", "in", `(${excludeIds.join(",")})`)
+      .order("published_at", { ascending: false })
+      .limit(needMore);
+    otherArticles = others || [];
+  }
+
+  const related = [...(samePillar || []), ...otherArticles];
 
   return {
     id: article.id,
