@@ -34,13 +34,15 @@ export function AuthorCard({
           className="shrink-0 group"
         >
           {avatar ? (
-            <Image
-              src={avatar}
-              alt={name}
-              width={80}
-              height={80}
-              className="rounded-full ring-4 ring-background shadow-lg transition-transform group-hover:scale-105"
-            />
+            <div className="w-20 h-20 rounded-full ring-4 ring-background shadow-lg transition-transform group-hover:scale-105 bg-background flex items-center justify-center overflow-hidden">
+              <Image
+                src={avatar}
+                alt={name}
+                width={48}
+                height={48}
+                className="object-contain"
+              />
+            </div>
           ) : (
             <div className="w-20 h-20 rounded-full bg-accent/15 flex items-center justify-center text-accent text-2xl font-semibold ring-4 ring-background shadow-lg transition-transform group-hover:scale-105">
               {name.charAt(0)}
