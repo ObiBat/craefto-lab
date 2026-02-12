@@ -48,7 +48,7 @@ export default function LabPage() {
 
                 <HeroText>
                   <h1 className="font-semibold tracking-tight mb-4">
-                    About Cræfto Lab
+                    About Cræfto
                   </h1>
                 </HeroText>
                 <HeroText delay={0.1}>

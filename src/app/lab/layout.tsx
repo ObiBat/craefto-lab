@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Lab",
+  title: "About",
   description:
-    "Experiments, tools, and R&D from Craefto Lab. Coming soon.",
+    "Experiments, tools, and R&D from Craefto. Where we push boundaries and build what's next.",
 };
 
 export default function LabLayout({
