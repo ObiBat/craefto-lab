@@ -201,7 +201,7 @@ const TEAM: TeamMember[] = [
     role: "Creative",
     detail: "Visual thinker. Always exploring.",
     image: "/team/sara.jpg",
-    socials: {},
+    socials: { linkedin: "https://www.linkedin.com/in/sara-chinzorig-8815a6211/" },
   },
   {
     name: "Urna Ganbat",
