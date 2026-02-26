@@ -153,11 +153,11 @@ function AccordionItem({
 
                   {/* Actions */}
                   <div className="flex flex-col sm:flex-row gap-3 pt-2">
-                    <Button size="sm" asChild>
-                      <Link href={`/contact?service=${service.icon}`}>
+                    <Link href={`/contact?service=${service.icon}`}>
+                      <Button size="sm" hoverText="Get a quote →">
                         Get a quote
-                      </Link>
-                    </Button>
+                      </Button>
+                    </Link>
                     <Link
                       href={service.href}
                       className="inline-flex items-center justify-center gap-2 text-sm font-medium text-[hsl(var(--color-foreground-muted))] hover:text-[hsl(var(--color-foreground))] transition-colors py-2"
