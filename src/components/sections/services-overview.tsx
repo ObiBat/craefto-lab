@@ -154,7 +154,7 @@ function AccordionItem({
                   {/* Actions */}
                   <div className="flex flex-col sm:flex-row gap-3 pt-2">
                     <Link href={`/contact?service=${service.icon}`}>
-                      <Button size="sm" hoverText="Get a quote →">
+                      <Button size="sm" hoverText="Let's talk">
                         Get a quote
                       </Button>
                     </Link>
