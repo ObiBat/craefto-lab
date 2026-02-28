@@ -1,4 +1,5 @@
 import { createBrowserClient } from './supabase-auth';
+import { isDemoMode, getMockDashboardData, getMockProjectDetail, getMockProjects, getMockUsers, getMockTasks, getMockTeamMembers } from './mock-data';
 import type {
   Project,
   ProjectWithMeta,
@@ -9,10 +10,10 @@ import type {
   DashboardData,
   ProjectDetailData,
   CreateUpdateInput,
-  TimelineEvent,
 } from './types';
 
 function getClient() {
+  if (isDemoMode()) return null;
   return createBrowserClient();
 }
 
@@ -21,57 +22,31 @@ function getClient() {
 // ============================================================================
 
 export async function fetchDashboardData(): Promise<DashboardData> {
-  const supabase = getClient();
+  if (isDemoMode()) return getMockDashboardData();
 
+  const supabase = getClient()!;
   const [projectsRes, updatesRes] = await Promise.all([
-    supabase
-      .from('portal_projects')
-      .select('*')
-      .order('updated_at', { ascending: false }),
-    supabase
-      .from('portal_updates')
-      .select('*, author:portal_users(*), project:portal_projects(id, name, slug)')
-      .order('created_at', { ascending: false })
-      .limit(10),
+    supabase.from('portal_projects').select('*').order('updated_at', { ascending: false }),
+    supabase.from('portal_updates').select('*, author:portal_users(*), project:portal_projects(id, name, slug)').order('created_at', { ascending: false }).limit(10),
   ]);
 
   const projects = (projectsRes.data ?? []) as Project[];
   const recentUpdates = (updatesRes.data ?? []) as Update[];
 
-  // Fetch meta for each project
   const projectsWithMeta: ProjectWithMeta[] = await Promise.all(
     projects.map(async (project) => {
       const [tasksRes, teamRes, updatesCountRes, latestUpdateRes] = await Promise.all([
-        supabase
-          .from('portal_tasks')
-          .select('id, status')
-          .eq('project_id', project.id),
-        supabase
-          .from('portal_team_members')
-          .select('*, user:portal_users(*)')
-          .eq('project_id', project.id),
-        supabase
-          .from('portal_updates')
-          .select('id', { count: 'exact' })
-          .eq('project_id', project.id),
-        supabase
-          .from('portal_updates')
-          .select('*, author:portal_users(*)')
-          .eq('project_id', project.id)
-          .order('created_at', { ascending: false })
-          .limit(1)
-          .maybeSingle(),
+        supabase.from('portal_tasks').select('id, status').eq('project_id', project.id),
+        supabase.from('portal_team_members').select('*, user:portal_users(*)').eq('project_id', project.id),
+        supabase.from('portal_updates').select('id', { count: 'exact' }).eq('project_id', project.id),
+        supabase.from('portal_updates').select('*, author:portal_users(*)').eq('project_id', project.id).order('created_at', { ascending: false }).limit(1).maybeSingle(),
       ]);
-
       const tasks = tasksRes.data ?? [];
       const team = (teamRes.data ?? []) as TeamMember[];
-
       return {
         ...project,
         task_count: tasks.length,
-        completed_task_count: tasks.filter(
-          (t: { status: string }) => t.status === 'done'
-        ).length,
+        completed_task_count: tasks.filter((t: { status: string }) => t.status === 'done').length,
         team_members: team,
         update_count: updatesCountRes.count ?? 0,
         latest_update: (latestUpdateRes.data as Update) ?? null,
@@ -79,14 +54,16 @@ export async function fetchDashboardData(): Promise<DashboardData> {
     })
   );
 
-  const stats = {
-    total_projects: projects.length,
-    on_track: projects.filter((p) => p.status === 'on_track').length,
-    at_risk: projects.filter((p) => p.status === 'at_risk').length,
-    blocked: projects.filter((p) => p.status === 'blocked').length,
+  return {
+    projects: projectsWithMeta,
+    recent_updates: recentUpdates,
+    stats: {
+      total_projects: projects.length,
+      on_track: projects.filter((p) => p.status === 'on_track').length,
+      at_risk: projects.filter((p) => p.status === 'at_risk').length,
+      blocked: projects.filter((p) => p.status === 'blocked').length,
+    },
   };
-
-  return { projects: projectsWithMeta, recent_updates: recentUpdates, stats };
 }
 
 // ============================================================================
@@ -94,44 +71,24 @@ export async function fetchDashboardData(): Promise<DashboardData> {
 // ============================================================================
 
 export async function fetchProjectDetail(projectId: string): Promise<ProjectDetailData | null> {
-  const supabase = getClient();
+  if (isDemoMode()) return getMockProjectDetail(projectId);
 
+  const supabase = getClient()!;
   const [projectRes, updatesRes, tasksRes, teamRes, timelineRes] = await Promise.all([
-    supabase
-      .from('portal_projects')
-      .select('*')
-      .eq('id', projectId)
-      .single(),
-    supabase
-      .from('portal_updates')
-      .select('*, author:portal_users(*)')
-      .eq('project_id', projectId)
-      .order('created_at', { ascending: false }),
-    supabase
-      .from('portal_tasks')
-      .select('*, assignee:portal_users(*)')
-      .eq('project_id', projectId)
-      .order('sort_order', { ascending: true }),
-    supabase
-      .from('portal_team_members')
-      .select('*, user:portal_users(*)')
-      .eq('project_id', projectId),
-    supabase
-      .from('portal_timeline_events')
-      .select('*, actor:portal_users(*)')
-      .eq('project_id', projectId)
-      .order('created_at', { ascending: false })
-      .limit(50),
+    supabase.from('portal_projects').select('*').eq('id', projectId).single(),
+    supabase.from('portal_updates').select('*, author:portal_users(*)').eq('project_id', projectId).order('created_at', { ascending: false }),
+    supabase.from('portal_tasks').select('*, assignee:portal_users(*)').eq('project_id', projectId).order('sort_order', { ascending: true }),
+    supabase.from('portal_team_members').select('*, user:portal_users(*)').eq('project_id', projectId),
+    supabase.from('portal_timeline_events').select('*, actor:portal_users(*)').eq('project_id', projectId).order('created_at', { ascending: false }).limit(50),
   ]);
 
   if (!projectRes.data) return null;
-
   return {
     project: projectRes.data as Project,
     updates: (updatesRes.data ?? []) as Update[],
     tasks: (tasksRes.data ?? []) as Task[],
     team_members: (teamRes.data ?? []) as (TeamMember & { user: PortalUser })[],
-    timeline: (timelineRes.data ?? []) as unknown as TimelineEvent[],
+    timeline: (timelineRes.data ?? []) as unknown as import('./types').TimelineEvent[],
   };
 }
 
@@ -140,21 +97,19 @@ export async function fetchProjectDetail(projectId: string): Promise<ProjectDeta
 // ============================================================================
 
 export async function fetchProjects() {
-  const supabase = getClient();
-  const { data } = await supabase
-    .from('portal_projects')
-    .select('*')
-    .order('updated_at', { ascending: false });
+  if (isDemoMode()) return getMockProjects();
+  const supabase = getClient()!;
+  const { data } = await supabase.from('portal_projects').select('*').order('updated_at', { ascending: false });
   return (data ?? []) as Project[];
 }
 
 export async function fetchProjectBySlug(slug: string) {
-  const supabase = getClient();
-  const { data } = await supabase
-    .from('portal_projects')
-    .select('*')
-    .eq('slug', slug)
-    .single();
+  if (isDemoMode()) {
+    const projects = getMockProjects();
+    return projects.find(p => p.slug === slug) || null;
+  }
+  const supabase = getClient()!;
+  const { data } = await supabase.from('portal_projects').select('*').eq('slug', slug).single();
   return data as Project | null;
 }
 
@@ -163,14 +118,9 @@ export async function fetchProjectBySlug(slug: string) {
 // ============================================================================
 
 export async function updateTaskStatus(taskId: string, status: string) {
-  const supabase = getClient();
-  const { data, error } = await supabase
-    .from('portal_tasks')
-    .update({ status })
-    .eq('id', taskId)
-    .select()
-    .single();
-
+  if (isDemoMode()) return { id: taskId, status } as Task;
+  const supabase = getClient()!;
+  const { data, error } = await supabase.from('portal_tasks').update({ status }).eq('id', taskId).select().single();
   if (error) throw error;
   return data as Task;
 }
@@ -180,20 +130,14 @@ export async function updateTaskStatus(taskId: string, status: string) {
 // ============================================================================
 
 export async function createUpdate(input: CreateUpdateInput) {
-  const supabase = getClient();
+  if (isDemoMode()) {
+    const { getMockUser } = await import('./mock-data');
+    return { ...input, id: 'upd-demo-' + Date.now(), author_id: 'user-001', pinned: false, created_at: new Date().toISOString(), updated_at: new Date().toISOString(), author: getMockUser() } as Update;
+  }
+  const supabase = getClient()!;
   const { data: { user } } = await supabase.auth.getUser();
-
   if (!user) throw new Error('Not authenticated');
-
-  const { data, error } = await supabase
-    .from('portal_updates')
-    .insert({
-      ...input,
-      author_id: user.id,
-    })
-    .select('*, author:portal_users(*)')
-    .single();
-
+  const { data, error } = await supabase.from('portal_updates').insert({ ...input, author_id: user.id }).select('*, author:portal_users(*)').single();
   if (error) throw error;
   return data as Update;
 }
@@ -203,11 +147,9 @@ export async function createUpdate(input: CreateUpdateInput) {
 // ============================================================================
 
 export async function fetchTeamMembers(projectId: string) {
-  const supabase = getClient();
-  const { data } = await supabase
-    .from('portal_team_members')
-    .select('*, user:portal_users(*)')
-    .eq('project_id', projectId);
+  if (isDemoMode()) return getMockTeamMembers(projectId);
+  const supabase = getClient()!;
+  const { data } = await supabase.from('portal_team_members').select('*, user:portal_users(*)').eq('project_id', projectId);
   return (data ?? []) as (TeamMember & { user: PortalUser })[];
 }
 
@@ -216,10 +158,8 @@ export async function fetchTeamMembers(projectId: string) {
 // ============================================================================
 
 export async function fetchAllPortalUsers() {
-  const supabase = getClient();
-  const { data } = await supabase
-    .from('portal_users')
-    .select('*')
-    .order('full_name');
+  if (isDemoMode()) return getMockUsers();
+  const supabase = getClient()!;
+  const { data } = await supabase.from('portal_users').select('*').order('full_name');
   return (data ?? []) as PortalUser[];
 }

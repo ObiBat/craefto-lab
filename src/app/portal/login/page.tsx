@@ -246,7 +246,7 @@ function BrandPanel() {
 
 function LoginForm() {
   const router = useRouter();
-  const { signIn } = useAuth();
+  const { signIn, isDemo } = useAuth();
   const { variants, transition, stagger, prefersReducedMotion } =
     useMotionConfig();
 
@@ -451,6 +451,19 @@ function LoginForm() {
             </Button>
           </motion.div>
         </form>
+
+          {/* Demo credentials hint */}
+          {isDemo && (
+            <div className="mt-4 rounded-lg border border-[hsl(var(--color-accent)/0.3)] bg-[hsl(var(--color-accent-subtle))] p-4">
+              <p className="text-xs font-medium text-[hsl(var(--color-accent))] mb-1">Demo Mode</p>
+              <p className="text-xs text-[hsl(var(--color-foreground-muted))]">
+                Email: <span className="font-mono select-all">demo@craefto.com</span>
+              </p>
+              <p className="text-xs text-[hsl(var(--color-foreground-muted))]">
+                Password: <span className="font-mono select-all">demo123456</span>
+              </p>
+            </div>
+          )}
 
         {/* Demo credentials hint */}
         <motion.div
