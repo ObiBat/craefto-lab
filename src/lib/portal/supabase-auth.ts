@@ -10,8 +10,10 @@ let browserClient: SupabaseClient | null = null;
 export function createBrowserClient(): SupabaseClient {
   if (browserClient) return browserClient;
 
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+
+  if (!url || !anonKey) return null as unknown as SupabaseClient;
 
   browserClient = createClient(url, anonKey, {
     auth: {
@@ -30,8 +32,10 @@ export function createBrowserClient(): SupabaseClient {
 // ============================================================================
 
 export function createPortalServerClient(): SupabaseClient {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
+
+  if (!url || !serviceRoleKey) return null as unknown as SupabaseClient;
 
   return createClient(url, serviceRoleKey, {
     auth: {
