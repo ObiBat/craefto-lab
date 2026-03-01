@@ -3,6 +3,7 @@ import { AuthProvider } from "@/lib/portal/auth-context";
 import { ToastProvider } from "@/components/portal/toast";
 
 export const metadata: Metadata = {
+  manifest: "/manifest.json",
   title: "Portal | Cræfto",
   description: "Stakeholder updates portal for Cræfto projects.",
   robots: {

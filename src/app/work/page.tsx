@@ -51,6 +51,17 @@ const projects = [
     accentColor: "18 100% 50%",
     thumbnail: "/images/projects/nuu/nuu-thumb.jpg",
   },
+  {
+    slug: "stakeholder-portal",
+    title: "Stakeholder Portal",
+    description: "Real-time project transparency platform for client communication, built as a subdomain experience with role-based access.",
+    category: "Product",
+    industry: "Project Management / Agency Tools",
+    year: 2026,
+    featured: true,
+    accentColor: "90 30% 45%",
+    thumbnail: "/images/projects/portal/portal-thumb.jpg",
+  },
 ];
 
 export default function WorkPage() {
