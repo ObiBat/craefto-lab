@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import { createBrowserClient } from './supabase-auth';
-import { isDemoMode, DEMO_CREDENTIALS, getMockUser } from './mock-data';
+import { DEMO_CREDENTIALS, getMockUser } from './mock-data';
 import type { User, Session } from '@supabase/supabase-js';
 import type { PortalUser } from './types';
 
@@ -19,12 +19,22 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
+/**
+ * Check if the portal has its own Supabase tables set up.
+ * Until NEXT_PUBLIC_PORTAL_LIVE=true is set, we run in demo mode
+ * even if Supabase env vars exist (they're used by other site features).
+ */
+function isPortalDemoMode(): boolean {
+  if (typeof window === 'undefined') return true;
+  return process.env.NEXT_PUBLIC_PORTAL_LIVE !== 'true';
+}
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [portalUser, setPortalUser] = useState<PortalUser | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
-  const isDemo = isDemoMode();
+  const isDemo = isPortalDemoMode();
 
   const supabase = isDemo ? null : createBrowserClient();
 
@@ -48,7 +58,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (isDemo) {
-      // Check if demo user is "logged in" via sessionStorage
       const demoLoggedIn = typeof window !== 'undefined' && sessionStorage.getItem('portal_demo_auth');
       if (demoLoggedIn) {
         const mockUser = getMockUser();
@@ -82,31 +91,29 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [supabase, fetchPortalUser, isDemo]);
 
   const handleSignIn = async (email: string, password: string) => {
-    if (isDemo) {
-      if (email === DEMO_CREDENTIALS.email && password === DEMO_CREDENTIALS.password) {
-        const mockUser = getMockUser();
-        setUser({ id: mockUser.id, email: mockUser.email } as User);
-        setPortalUser(mockUser);
-        setSession({ user: { id: mockUser.id, email: mockUser.email } } as Session);
-        if (typeof window !== 'undefined') sessionStorage.setItem('portal_demo_auth', '1');
-        return;
-      }
-      throw new Error('Invalid demo credentials. Use demo@craefto.com / demo123456');
+    // Always accept demo credentials (even when Supabase is configured)
+    if (email === DEMO_CREDENTIALS.email && password === DEMO_CREDENTIALS.password) {
+      const mockUser = getMockUser();
+      setUser({ id: mockUser.id, email: mockUser.email } as User);
+      setPortalUser(mockUser);
+      setSession({ user: { id: mockUser.id, email: mockUser.email } } as Session);
+      if (typeof window !== 'undefined') sessionStorage.setItem('portal_demo_auth', '1');
+      return;
     }
-    if (!supabase) throw new Error('Supabase not configured');
+
+    // Non-demo credentials: try Supabase if available
+    if (!supabase) {
+      throw new Error('Invalid credentials. Use demo@craefto.com / demo123456');
+    }
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) throw error;
   };
 
   const handleSignOut = async () => {
-    if (isDemo) {
-      if (typeof window !== 'undefined') sessionStorage.removeItem('portal_demo_auth');
-      setUser(null);
-      setPortalUser(null);
-      setSession(null);
-      return;
+    if (typeof window !== 'undefined') sessionStorage.removeItem('portal_demo_auth');
+    if (supabase) {
+      try { await supabase.auth.signOut(); } catch { /* ignore */ }
     }
-    if (supabase) await supabase.auth.signOut();
     setUser(null);
     setPortalUser(null);
     setSession(null);

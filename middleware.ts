@@ -65,6 +65,10 @@ async function checkAuth(request: NextRequest, hostname: string): Promise<NextRe
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
   // Demo mode: skip auth check, let client-side handle it
+  if (process.env.NEXT_PUBLIC_PORTAL_LIVE !== 'true') {
+    return null;
+  }
+
   if (!supabaseUrl || !supabaseAnonKey) {
     return null;
   }

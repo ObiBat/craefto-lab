@@ -18,9 +18,7 @@ export const DEMO_CREDENTIALS = { email: 'demo@craefto.com', password: 'demo1234
 
 export function isDemoMode(): boolean {
   if (typeof window === 'undefined') return true;
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-  return !url || !key;
+  return process.env.NEXT_PUBLIC_PORTAL_LIVE !== 'true';
 }
 
 const mockUsers: PortalUser[] = [
