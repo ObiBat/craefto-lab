@@ -108,7 +108,7 @@ export function PortalHeader({
           {/* Wordmark as first breadcrumb */}
           <Link
             href={portalPath('/')}
-            className="flex items-center gap-1.5 rounded-md px-1.5 py-1 transition-colors hover:bg-[hsl(var(--color-background-muted))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--color-ring))] focus-visible:ring-offset-2 min-h-0"
+            className="flex items-center gap-1.5 rounded-md px-1.5 py-1 transition-colors hover:bg-[hsl(var(--color-background-muted))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--color-ring))] focus-visible:ring-offset-2 min-h-0 leading-none"
             aria-label="Back to portal dashboard"
           >
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
@@ -128,7 +128,7 @@ export function PortalHeader({
                 <ChevronRight className="flex-shrink-0 text-[hsl(var(--color-neutral-300))]" />
                 {isLast || !crumb.href ? (
                   <span
-                    className="truncate max-w-[220px] text-[13px] font-medium text-[hsl(var(--color-foreground))]"
+                    className="truncate max-w-[220px] px-1.5 py-1 text-[13px] leading-none font-medium text-[hsl(var(--color-foreground))]"
                     aria-current={isLast ? "page" : undefined}
                   >
                     {crumb.label}
@@ -136,7 +136,7 @@ export function PortalHeader({
                 ) : (
                   <Link
                     href={crumb.href}
-                    className="truncate max-w-[220px] rounded-md px-1.5 py-1 text-[13px] text-[hsl(var(--color-foreground-muted))] transition-colors hover:bg-[hsl(var(--color-background-muted))] hover:text-[hsl(var(--color-foreground))] min-h-0"
+                    className="truncate max-w-[220px] rounded-md px-1.5 py-1 text-[13px] leading-none text-[hsl(var(--color-foreground-muted))] transition-colors hover:bg-[hsl(var(--color-background-muted))] hover:text-[hsl(var(--color-foreground))] min-h-0"
                   >
                     {crumb.label}
                   </Link>
