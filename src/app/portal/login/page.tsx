@@ -276,7 +276,13 @@ function LoginForm() {
 
       try {
         await signIn(email.trim(), password);
-        router.push(portalDashboardPath());
+        // Use full navigation on subdomain so middleware rewrite kicks in
+        const dashPath = portalDashboardPath();
+        if (dashPath === '/') {
+          window.location.href = '/';
+        } else {
+          router.push(dashPath);
+        }
       } catch (err) {
         const message =
           err instanceof Error ? err.message : "Invalid credentials.";
@@ -446,9 +452,10 @@ function LoginForm() {
               size="lg"
               loading={isLoading}
               disabled={isLoading}
-              className="w-full"
+              className="group w-full"
             >
-              Sign in
+              <span className="group-hover:hidden">{isLoading ? 'Signing in...' : 'Sign in'}</span>
+              <span className="hidden group-hover:inline">Let&apos;s go →</span>
             </Button>
           </motion.div>
         </form>
