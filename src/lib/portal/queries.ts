@@ -1,5 +1,6 @@
 import { createBrowserClient } from './supabase-auth';
 import { isDemoMode, getMockDashboardData, getMockProjectDetail, getMockProjects, getMockUsers, getMockTasks, getMockTeamMembers } from './mock-data';
+import { sanitizeUpdateInput } from './sanitize';
 import type {
   Project,
   ProjectWithMeta,
@@ -130,14 +131,17 @@ export async function updateTaskStatus(taskId: string, status: string) {
 // ============================================================================
 
 export async function createUpdate(input: CreateUpdateInput) {
+  // Sanitize user input before storage
+  const sanitized = sanitizeUpdateInput(input);
+
   if (isDemoMode()) {
     const { getMockUser } = await import('./mock-data');
-    return { ...input, id: 'upd-demo-' + Date.now(), author_id: 'user-001', pinned: false, created_at: new Date().toISOString(), updated_at: new Date().toISOString(), author: getMockUser() } as Update;
+    return { ...sanitized, id: 'upd-demo-' + Date.now(), author_id: 'user-001', pinned: false, created_at: new Date().toISOString(), updated_at: new Date().toISOString(), author: getMockUser() } as Update;
   }
   const supabase = getClient()!;
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error('Not authenticated');
-  const { data, error } = await supabase.from('portal_updates').insert({ ...input, author_id: user.id }).select('*, author:portal_users(*)').single();
+  const { data, error } = await supabase.from('portal_updates').insert({ ...sanitized, author_id: user.id }).select('*, author:portal_users(*)').single();
   if (error) throw error;
   return data as Update;
 }

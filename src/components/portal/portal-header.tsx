@@ -65,6 +65,8 @@ export interface BreadcrumbItem {
 export interface PortalHeaderUser {
   name: string;
   avatarUrl?: string;
+  /** Portal role — displayed as a badge next to the name. */
+  role?: string;
 }
 
 export interface PortalHeaderProps {
@@ -164,6 +166,11 @@ export function PortalHeader({
               <span className="hidden text-sm font-medium text-[hsl(var(--color-foreground))] sm:inline">
                 {user.name}
               </span>
+              {user.role && (
+                <span className="hidden sm:inline-flex items-center rounded-full bg-[hsl(var(--color-background-subtle))] px-2 py-0.5 text-[11px] font-medium text-[hsl(var(--color-foreground-muted))] border border-[hsl(var(--color-border))]">
+                  {user.role}
+                </span>
+              )}
             </div>
 
             {/* Sign out */}
