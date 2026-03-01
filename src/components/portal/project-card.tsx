@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import type { ProjectStatus } from "@/lib/portal/types";
 import { portalPath } from "@/lib/portal/routes";
 import { StatusPill } from "./status-pill";
+import { Sparkline } from "./sparkline";
 import { ProgressRing } from "./progress-ring";
 
 // ---------------------------------------------------------------------------
@@ -37,6 +38,8 @@ export interface ProjectCardProps {
   taskCount?: number;
   /** Stagger index for entrance animation. */
   index?: number;
+  /** Sparkline data points (activity over 30 days) */
+  sparklineData?: number[];
   className?: string;
 }
 
@@ -59,6 +62,7 @@ export function ProjectCard({
   team = [],
   taskCount,
   index = 0,
+  sparklineData,
   className,
 }: ProjectCardProps) {
   const prefersReducedMotion = useReducedMotion();
@@ -116,6 +120,13 @@ export function ProjectCard({
                   </span>{" "}
                   {latestUpdate}
                 </p>
+              </div>
+            )}
+
+            {/* Activity sparkline */}
+            {sparklineData && sparklineData.length > 0 && (
+              <div className="pt-1">
+                <Sparkline data={sparklineData} width={160} height={28} />
               </div>
             )}
 

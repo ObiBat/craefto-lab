@@ -125,3 +125,15 @@ export function getMockProjectDetail(projectId: string): ProjectDetailData | nul
 export function getMockProjects(): Project[] { return mockProjects; }
 export function getMockTasks(projectId: string): Task[] { return mockTasks.filter(t => t.project_id === projectId); }
 export function getMockTeamMembers(projectId: string): (TeamMember & { user: PortalUser })[] { return mockTeamMembers.filter(tm => tm.project_id === projectId); }
+
+// ============================================================================
+// SPARKLINE DATA — 30-day activity frequency per project (mock)
+// ============================================================================
+
+export const mockSparklineData: Record<string, number[]> = {
+  'proj-001': [0, 1, 0, 2, 1, 3, 2, 1, 0, 1, 2, 3, 1, 2, 0, 1, 3, 2, 4, 2, 1, 3, 2, 1, 2, 3, 4, 2, 3, 5],
+  'proj-002': [1, 0, 0, 1, 0, 1, 2, 0, 0, 1, 0, 0, 1, 2, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 2, 1, 0, 1],
+  'proj-003': [0, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 2, 1, 0, 1, 1, 2],
+  'proj-004': [3, 2, 4, 3, 2, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  'proj-005': [0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+};

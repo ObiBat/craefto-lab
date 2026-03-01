@@ -28,8 +28,9 @@ import { sanitizeRichContent } from "@/lib/portal/sanitize";
 import { PortalHeader } from "@/components/portal/portal-header";
 import { PortalSidebar } from "@/components/portal/portal-sidebar";
 import { UpdateTypeBadge } from "@/components/portal/update-type-badge";
-import { RichTextEditor } from "@/components/portal/rich-text-editor";
-import { FileUpload } from "@/components/portal/file-upload";
+import dynamic from "next/dynamic";
+const RichTextEditor = dynamic(() => import("@/components/portal/rich-text-editor").then(m => m.RichTextEditor), { ssr: false, loading: () => <div className="h-48 animate-pulse rounded-lg bg-[hsl(var(--color-background-muted))]" /> });
+const FileUpload = dynamic(() => import("@/components/portal/file-upload").then(m => m.FileUpload), { ssr: false, loading: () => <div className="h-32 animate-pulse rounded-lg bg-[hsl(var(--color-background-muted))]" /> });
 import { useToast } from "@/components/portal/toast";
 import { Button } from "@/components/ui/button";
 

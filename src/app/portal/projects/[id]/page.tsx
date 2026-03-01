@@ -15,6 +15,7 @@ import { sanitizeRichContent } from '@/lib/portal/sanitize';
 import { useAuth, getRoleLabel } from '@/lib/portal/auth-context';
 import { useProjectRealtime } from '@/lib/portal/realtime';
 import { StatusPill } from '@/components/portal/status-pill';
+import { HorizontalTimeline } from '@/components/portal/horizontal-timeline';
 import { ProgressRing } from '@/components/portal/progress-ring';
 import {
   fadeUp,
@@ -1785,7 +1786,7 @@ export default function ProjectDetailPage({
                 <TeamTab members={team_members} />
               )}
               {activeTab === 'timeline' && (
-                <TimelineTab events={timeline} />
+                <HorizontalTimeline events={timeline} />
               )}
             </motion.div>
           </AnimatePresence>
