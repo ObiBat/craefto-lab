@@ -115,7 +115,7 @@ export function PortalSidebar({
         <Link
           href="/portal"
           className={cn(
-            "group flex items-center gap-3 rounded-[var(--radius-md)] px-3 py-2.5 text-sm font-medium transition-colors min-h-0",
+            "group flex items-center gap-3 rounded-[var(--radius-md)] px-3 py-2.5 text-sm font-medium transition-colors min-h-[44px]",
             isDashboardActive
               ? "border-l-2 border-l-[hsl(var(--color-accent))] bg-[hsl(var(--color-accent-subtle))] text-[hsl(var(--color-accent))]"
               : "text-[hsl(var(--color-foreground-muted))] hover:bg-[hsl(var(--color-background-subtle))] hover:text-[hsl(var(--color-foreground))]",
@@ -132,7 +132,7 @@ export function PortalSidebar({
             type="button"
             onClick={() => setProjectsExpanded((prev) => !prev)}
             className={cn(
-              "group flex w-full items-center gap-3 rounded-[var(--radius-md)] px-3 py-2.5 text-sm font-medium transition-colors min-h-0",
+              "group flex w-full items-center gap-3 rounded-[var(--radius-md)] px-3 py-2.5 text-sm font-medium transition-colors min-h-[44px]",
               isProjectsActive
                 ? "border-l-2 border-l-[hsl(var(--color-accent))] bg-[hsl(var(--color-accent-subtle))] text-[hsl(var(--color-accent))]"
                 : "text-[hsl(var(--color-foreground-muted))] hover:bg-[hsl(var(--color-background-subtle))] hover:text-[hsl(var(--color-foreground))]",
@@ -174,7 +174,7 @@ export function PortalSidebar({
                       <Link
                         href={`/portal/projects/${project.id}`}
                         className={cn(
-                          "block truncate rounded-[var(--radius-sm)] py-1.5 pl-11 pr-3 text-[13px] transition-colors min-h-0",
+                          "block truncate rounded-[var(--radius-sm)] py-2.5 pl-11 pr-3 text-[13px] transition-colors min-h-[44px] flex items-center",
                           active
                             ? "font-medium text-[hsl(var(--color-accent))]"
                             : "text-[hsl(var(--color-foreground-subtle))] hover:text-[hsl(var(--color-foreground))]",
@@ -214,7 +214,7 @@ export function PortalSidebar({
       <button
         type="button"
         onClick={() => setMobileOpen((o) => !o)}
-        className="fixed top-3 right-3 z-50 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground))] shadow-sm lg:hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--color-ring))]"
+        className="fixed top-3 right-3 z-50 inline-flex h-11 w-11 items-center justify-center rounded-xl bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground))] shadow-sm lg:hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--color-ring))]"
         aria-label={mobileOpen ? "Close navigation" : "Open navigation"}
       >
         {mobileOpen ? <XIcon /> : <MenuIcon />}

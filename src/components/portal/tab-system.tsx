@@ -51,7 +51,7 @@ export function TabSystem({
     <div className={cn("w-full", className)}>
       {/* ── Tab bar ──────────────────────────────────────────── */}
       <div
-        className="relative flex border-b border-[hsl(var(--color-border))]"
+        className="relative flex overflow-x-auto border-b border-[hsl(var(--color-border))] scrollbar-none [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         role="tablist"
         aria-orientation="horizontal"
       >
@@ -87,7 +87,7 @@ export function TabSystem({
                 }
               }}
               className={cn(
-                "relative px-4 pb-3 pt-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--color-ring))] focus-visible:ring-offset-2 rounded-t-[var(--radius-sm)] min-h-0",
+                "relative shrink-0 whitespace-nowrap px-4 pb-3 pt-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--color-ring))] focus-visible:ring-offset-2 rounded-t-[var(--radius-sm)] min-h-[44px]",
                 isActive
                   ? "text-[hsl(var(--color-foreground))]"
                   : "text-[hsl(var(--color-foreground-subtle))] hover:text-[hsl(var(--color-foreground-muted))]",

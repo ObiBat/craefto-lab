@@ -109,7 +109,7 @@ export function PortalHeader({
             aria-label="Back to portal dashboard"
           >
             <span className="font-heading text-base font-semibold tracking-tight text-[hsl(var(--color-foreground))]">
-              Craefto Lab
+              Cræfto
             </span>
           </Link>
 
@@ -170,7 +170,7 @@ export function PortalHeader({
               <button
                 type="button"
                 onClick={onSignOut}
-                className="inline-flex h-8 w-8 items-center justify-center rounded-full text-[hsl(var(--color-foreground-subtle))] transition-colors hover:bg-[hsl(var(--color-background-muted))] hover:text-[hsl(var(--color-foreground))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--color-ring))] min-h-0"
+                className="inline-flex h-11 w-11 items-center justify-center rounded-full text-[hsl(var(--color-foreground-subtle))] transition-colors hover:bg-[hsl(var(--color-background-muted))] hover:text-[hsl(var(--color-foreground))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--color-ring))]"
                 aria-label="Sign out"
               >
                 <LogOutIcon />

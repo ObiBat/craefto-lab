@@ -1370,19 +1370,19 @@ You can use **bold**, `code`, and line breaks."
                 transition={motionTransition}
                 className="sticky bottom-0 -mx-4 mt-4 border-t border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))]/90 px-4 py-4 backdrop-blur-md sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8"
               >
-                <div className="flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-2">
-                    <Button
-                      variant="accent"
-                      size="md"
-                      loading={isSubmitting}
-                      disabled={isSubmitting}
-                      onClick={handleSubmit}
-                      className="gap-2"
-                    >
-                      <SendIcon width={14} height={14} />
-                      Publish Update
-                    </Button>
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <Button
+                    variant="accent"
+                    size="md"
+                    loading={isSubmitting}
+                    disabled={isSubmitting}
+                    onClick={handleSubmit}
+                    className="w-full sm:w-auto gap-2"
+                  >
+                    <SendIcon width={14} height={14} />
+                    Publish Update
+                  </Button>
+                  <div className="flex items-center justify-between sm:gap-2">
                     <Button
                       variant="ghost"
                       size="md"
@@ -1393,19 +1393,18 @@ You can use **bold**, `code`, and line breaks."
                     >
                       Save Draft
                     </Button>
+                    <Button
+                      variant="link"
+                      size="sm"
+                      onClick={() =>
+                        router.push(`/portal/projects/${projectId}`)
+                      }
+                      disabled={isSubmitting}
+                      className="text-[hsl(var(--color-foreground-subtle))]"
+                    >
+                      Cancel
+                    </Button>
                   </div>
-
-                  <Button
-                    variant="link"
-                    size="sm"
-                    onClick={() =>
-                      router.push(`/portal/projects/${projectId}`)
-                    }
-                    disabled={isSubmitting}
-                    className="text-[hsl(var(--color-foreground-subtle))]"
-                  >
-                    Cancel
-                  </Button>
                 </div>
               </motion.div>
             </motion.div>

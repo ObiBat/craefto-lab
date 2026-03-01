@@ -203,13 +203,15 @@ export default function DashboardPage() {
   if (loading || authLoading) {
     return (
       <div className="flex min-h-screen">
-        <PortalHeader />
         <PortalSidebar />
-        <main className="flex-1 lg:ml-[240px] pt-16">
-          <div className="p-6 md:p-8 lg:p-10">
-            <SkeletonDashboard />
-          </div>
-        </main>
+        <div className="flex flex-1 flex-col min-w-0">
+          <PortalHeader />
+          <main className="flex-1">
+            <div className="px-4 py-6 sm:p-6 md:p-8 lg:p-10">
+              <SkeletonDashboard />
+            </div>
+          </main>
+        </div>
       </div>
     );
   }
@@ -220,15 +222,17 @@ export default function DashboardPage() {
 
   return (
     <div className="flex min-h-screen">
-      {/* Fixed header */}
-      <PortalHeader />
-
       {/* Sidebar */}
       <PortalSidebar />
 
-      {/* Main content area */}
-      <main className="flex-1 lg:ml-[240px] pt-16">
-        <div className="px-4 py-6 sm:p-6 md:p-8 lg:p-10 max-w-[1600px] mx-auto">
+      {/* Main content column */}
+      <div className="flex flex-1 flex-col min-w-0">
+        {/* Fixed header */}
+        <PortalHeader />
+
+        {/* Main content area */}
+        <main className="flex-1">
+          <div className="px-4 py-6 sm:p-6 md:p-8 lg:p-10 max-w-[1600px] mx-auto">
           {/* =================================================================
               WELCOME BANNER
               ================================================================= */}
@@ -335,18 +339,18 @@ export default function DashboardPage() {
                 animate="visible"
                 variants={fadeUpVariant}
                 transition={{ ...transition, delay: 0.1 }}
-                className="flex items-center justify-between mb-6"
+                className="flex items-center justify-between gap-3 mb-6"
               >
-                <h2 className="text-lg font-semibold tracking-tight text-[hsl(var(--color-foreground))] font-[family-name:var(--font-heading)]">
+                <h2 className="text-lg font-semibold tracking-tight text-[hsl(var(--color-foreground))] font-[family-name:var(--font-heading)] shrink-0">
                   Projects
                 </h2>
-                <div className="flex items-center gap-1.5 p-1 rounded-full bg-[hsl(var(--color-background-subtle))] border border-[hsl(var(--color-border))]">
+                <div className="flex items-center gap-1.5 p-1 rounded-full bg-[hsl(var(--color-background-subtle))] border border-[hsl(var(--color-border))] overflow-x-auto scrollbar-none [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                   {FILTER_OPTIONS.map((filter) => (
                     <button
                       key={filter.value}
                       onClick={() => setActiveFilter(filter.value)}
                       className={cn(
-                        'relative px-3.5 py-1.5 text-xs font-medium rounded-full transition-all duration-200 min-h-0',
+                        'relative shrink-0 whitespace-nowrap px-3.5 py-1.5 text-xs font-medium rounded-full transition-all duration-200 min-h-[36px]',
                         activeFilter === filter.value
                           ? 'text-[hsl(var(--color-background))]'
                           : 'text-[hsl(var(--color-foreground-muted))] hover:text-[hsl(var(--color-foreground))]',
@@ -513,8 +517,9 @@ export default function DashboardPage() {
               </div>
             </motion.aside>
           </div>
-        </div>
-      </main>
+          </div>
+        </main>
+      </div>
     </div>
   );
 }

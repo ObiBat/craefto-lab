@@ -81,12 +81,12 @@ export function SkeletonCard({ className }: SkeletonCardProps) {
   return (
     <div
       className={cn(
-        "rounded-[var(--radius-lg)] border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] p-6",
+        "rounded-[var(--radius-lg)] border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] p-4 sm:p-6",
         className,
       )}
       aria-hidden="true"
     >
-      <div className="flex items-start justify-between gap-4">
+      <div className="flex items-start justify-between gap-3 sm:gap-4">
         {/* Left content area */}
         <div className="flex-1 space-y-4">
           {/* Title + status pill */}
@@ -113,7 +113,7 @@ export function SkeletonCard({ className }: SkeletonCardProps) {
         </div>
 
         {/* Right — progress ring placeholder */}
-        <div className="skeleton h-[80px] w-[80px] rounded-full shrink-0" />
+        <div className="skeleton h-[56px] w-[56px] sm:h-[80px] sm:w-[80px] rounded-full shrink-0" />
       </div>
     </div>
   );
@@ -145,7 +145,7 @@ export function SkeletonDashboard({
       </div>
 
       {/* Cards grid */}
-      <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
+      <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
         {Array.from({ length: count }).map((_, i) => (
           <SkeletonCard key={i} />
         ))}

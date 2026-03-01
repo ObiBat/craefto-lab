@@ -1679,7 +1679,7 @@ export default function ProjectDetailPage({
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
                   className={cn(
-                    'relative flex items-center gap-2 whitespace-nowrap px-4 py-3 text-sm font-medium transition-colors min-h-0',
+                    'relative flex shrink-0 items-center gap-2 whitespace-nowrap px-4 py-3 text-sm font-medium transition-colors min-h-[44px]',
                     activeTab === tab.id
                       ? 'text-[hsl(var(--color-foreground))]'
                       : 'text-[hsl(var(--color-foreground-subtle))] hover:text-[hsl(var(--color-foreground-muted))]'

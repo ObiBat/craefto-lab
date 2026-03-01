@@ -87,10 +87,10 @@ export function ProjectCard({
     >
       <Link
         href={`/portal/projects/${id}`}
-        className="block rounded-[var(--radius-lg)] border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] p-6 shadow-[var(--shadow-sm)] transition-all duration-300 ease-[var(--ease-out)] hover:shadow-[var(--shadow-xl)] hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--color-ring))] focus-visible:ring-offset-2 focus-visible:ring-offset-[hsl(var(--color-background))]"
+        className="block rounded-[var(--radius-lg)] border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] p-4 sm:p-6 shadow-[var(--shadow-sm)] transition-all duration-300 ease-[var(--ease-out)] hover:shadow-[var(--shadow-xl)] hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--color-ring))] focus-visible:ring-offset-2 focus-visible:ring-offset-[hsl(var(--color-background))]"
         aria-label={`View project: ${name}`}
       >
-        <div className="flex items-start justify-between gap-5">
+        <div className="flex items-start justify-between gap-3 sm:gap-5">
           {/* ── Left: content ─────────────────────────────────────── */}
           <div className="min-w-0 flex-1 space-y-3">
             {/* Title + status */}
@@ -160,7 +160,12 @@ export function ProjectCard({
 
           {/* ── Right: progress ring ──────────────────────────────── */}
           <div className="shrink-0 pt-1">
-            <ProgressRing value={progress} status={status} size={72} strokeWidth={5} />
+            <div className="hidden sm:block">
+              <ProgressRing value={progress} status={status} size={72} strokeWidth={5} />
+            </div>
+            <div className="sm:hidden">
+              <ProgressRing value={progress} status={status} size={56} strokeWidth={4} />
+            </div>
           </div>
         </div>
       </Link>
