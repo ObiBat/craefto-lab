@@ -2,7 +2,8 @@
 
 import * as React from "react";
 import { cn } from "@/lib/utils";
-import type { UpdateType } from "@/lib/portal/types";
+import { sanitizeRichContent } from "@/lib/portal/sanitize";
+import type { UpdateType, Attachment } from "@/lib/portal/types";
 
 // ---------------------------------------------------------------------------
 // Activity Item — single entry in an activity / updates feed
@@ -181,6 +182,12 @@ export interface ActivityItemProps {
   timestamp: string | Date;
   /** Name of the associated project. */
   projectName: string;
+  /** Optional rich HTML content body. */
+  content?: string;
+  /** Optional file attachments. */
+  attachments?: Attachment[];
+  /** Show content expanded (e.g. in project detail view). */
+  expanded?: boolean;
   className?: string;
 }
 
@@ -190,12 +197,17 @@ export function ActivityItem({
   author,
   timestamp,
   projectName,
+  content,
+  attachments,
+  expanded = false,
   className,
 }: ActivityItemProps) {
   const Icon = typeIconMap[type];
   const formattedTime = relativeTime(timestamp);
   const isoString =
     typeof timestamp === "string" ? timestamp : timestamp.toISOString();
+
+  const imageAttachments = attachments?.filter((a) => a.type.startsWith("image/")) ?? [];
 
   return (
     <article
@@ -231,6 +243,29 @@ export function ActivityItem({
           <span aria-hidden="true">&middot;</span>
           <span>{projectName}</span>
         </div>
+
+        {/* Rich content body (when expanded) */}
+        {expanded && content && (
+          <div
+            className="mt-2 text-sm leading-relaxed text-[hsl(var(--color-foreground-muted))] [&_p]:my-1 [&_strong]:font-semibold [&_strong]:text-[hsl(var(--color-foreground))] [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5 [&_li]:my-0.5 [&_blockquote]:border-l-2 [&_blockquote]:border-[hsl(var(--color-border-strong))] [&_blockquote]:pl-3 [&_blockquote]:italic [&_code]:bg-[hsl(var(--color-background-muted))] [&_code]:rounded [&_code]:px-1 [&_code]:py-0.5 [&_code]:text-xs [&_code]:font-mono [&_a]:text-[hsl(var(--color-accent))] [&_a]:underline"
+            dangerouslySetInnerHTML={{ __html: sanitizeRichContent(content) }}
+          />
+        )}
+
+        {/* Attachment thumbnails */}
+        {expanded && imageAttachments.length > 0 && (
+          <div className="mt-2 flex gap-2 overflow-x-auto">
+            {imageAttachments.map((att) => (
+              /* eslint-disable-next-line @next/next/no-img-element */
+              <img
+                key={att.id}
+                src={att.url}
+                alt={att.name}
+                className="h-16 w-20 shrink-0 rounded-[var(--radius-sm)] border border-[hsl(var(--color-border))] object-cover"
+              />
+            ))}
+          </div>
+        )}
       </div>
     </article>
   );

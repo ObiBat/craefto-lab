@@ -23,10 +23,14 @@ import {
   fetchAllPortalUsers,
   fetchProjectDetail,
 } from "@/lib/portal/queries";
-import type { UpdateType, PortalUser } from "@/lib/portal/types";
+import type { UpdateType, PortalUser, Attachment } from "@/lib/portal/types";
+import { sanitizeRichContent } from "@/lib/portal/sanitize";
 import { PortalHeader } from "@/components/portal/portal-header";
 import { PortalSidebar } from "@/components/portal/portal-sidebar";
 import { UpdateTypeBadge } from "@/components/portal/update-type-badge";
+import { RichTextEditor } from "@/components/portal/rich-text-editor";
+import { FileUpload } from "@/components/portal/file-upload";
+import { useToast } from "@/components/portal/toast";
 import { Button } from "@/components/ui/button";
 
 // ============================================================================
@@ -353,23 +357,6 @@ const smoothTransition = {
 };
 
 const instantTransition = { duration: 0.01 };
-
-// ============================================================================
-// AUTO-EXPANDING TEXTAREA HOOK
-// ============================================================================
-
-function useAutoExpand(value: string) {
-  const ref = useRef<HTMLTextAreaElement>(null);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    el.style.height = "auto";
-    el.style.height = `${Math.max(el.scrollHeight, 180)}px`;
-  }, [value]);
-
-  return ref;
-}
 
 // ============================================================================
 // SUB-COMPONENTS
@@ -724,6 +711,7 @@ function LivePreview({
   mentions,
   allUsers,
   authorName,
+  attachments,
 }: {
   type: UpdateType | null;
   title: string;
@@ -732,6 +720,7 @@ function LivePreview({
   mentions: string[];
   allUsers: PortalUser[];
   authorName: string;
+  attachments: Attachment[];
 }) {
   const prefersReducedMotion = useReducedMotion();
   const transition = prefersReducedMotion ? instantTransition : { duration: 0.3, ease: [0.22, 1, 0.36, 1] as const };
@@ -744,57 +733,12 @@ function LivePreview({
     [mentions, allUsers],
   );
 
-  const isEmpty = !type && !title && !content && tags.length === 0;
+  // Strip HTML tags to check for emptiness
+  const contentText = useMemo(() => content.replace(/<[^>]*>/g, "").trim(), [content]);
+  const isEmpty = !type && !title && !contentText && tags.length === 0;
 
-  // Simple markdown-like content rendering (bold, italic, code, line breaks)
-  const formattedContent = useMemo(() => {
-    if (!content) return null;
-    const lines = content.split("\n");
-    return lines.map((line, i) => {
-      // Process inline formatting
-      let processed: React.ReactNode = line;
-
-      // Code blocks (inline `code`)
-      if (line.includes("`")) {
-        const parts = line.split(/(`[^`]+`)/g);
-        processed = parts.map((part, j) => {
-          if (part.startsWith("`") && part.endsWith("`")) {
-            return (
-              <code
-                key={j}
-                className="rounded-md bg-[hsl(var(--color-background-muted))] px-1.5 py-0.5 font-[family-name:var(--font-mono)] text-[0.85em] text-[hsl(var(--color-accent))]"
-              >
-                {part.slice(1, -1)}
-              </code>
-            );
-          }
-          return part;
-        });
-      }
-
-      // Bold (**text**)
-      if (typeof processed === "string" && processed.includes("**")) {
-        const parts = processed.split(/(\*\*[^*]+\*\*)/g);
-        processed = parts.map((part, j) => {
-          if (part.startsWith("**") && part.endsWith("**")) {
-            return (
-              <strong key={j} className="font-semibold text-[hsl(var(--color-foreground))]">
-                {part.slice(2, -2)}
-              </strong>
-            );
-          }
-          return part;
-        });
-      }
-
-      return (
-        <span key={i}>
-          {processed}
-          {i < lines.length - 1 && <br />}
-        </span>
-      );
-    });
-  }, [content]);
+  // Sanitize HTML for safe rendering
+  const sanitizedContent = useMemo(() => sanitizeRichContent(content), [content]);
 
   return (
     <div className="space-y-5">
@@ -869,16 +813,46 @@ function LivePreview({
           {/* Divider */}
           <div className="h-px bg-[hsl(var(--color-border))]" />
 
-          {/* Content */}
-          {content && (
+          {/* Content — rendered as sanitized HTML */}
+          {contentText && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.3 }}
-              className="text-sm leading-relaxed text-[hsl(var(--color-foreground-muted))] font-[family-name:var(--font-sans)] whitespace-pre-wrap"
-            >
-              {formattedContent}
-            </motion.div>
+              className="prose-portal text-sm leading-relaxed text-[hsl(var(--color-foreground-muted))] font-[family-name:var(--font-sans)] [&_p]:my-1.5 [&_h2]:font-[family-name:var(--font-heading)] [&_h2]:text-lg [&_h2]:font-semibold [&_h2]:mt-4 [&_h2]:mb-2 [&_h3]:font-[family-name:var(--font-heading)] [&_h3]:text-base [&_h3]:font-semibold [&_h3]:mt-3 [&_h3]:mb-1.5 [&_ul]:my-2 [&_ul]:pl-5 [&_ul]:list-disc [&_ol]:my-2 [&_ol]:pl-5 [&_ol]:list-decimal [&_li]:my-0.5 [&_blockquote]:border-l-2 [&_blockquote]:border-[hsl(var(--color-border-strong))] [&_blockquote]:pl-4 [&_blockquote]:italic [&_code]:bg-[hsl(var(--color-background-muted))] [&_code]:rounded [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:text-xs [&_code]:font-mono [&_pre]:bg-[hsl(var(--color-foreground))] [&_pre]:text-[hsl(var(--color-background))] [&_pre]:rounded-[var(--radius-md)] [&_pre]:p-4 [&_a]:text-[hsl(var(--color-accent))] [&_a]:underline [&_strong]:font-semibold [&_strong]:text-[hsl(var(--color-foreground))]"
+              dangerouslySetInnerHTML={{ __html: sanitizedContent }}
+            />
+          )}
+
+          {/* Attachment previews */}
+          {attachments.length > 0 && (
+            <div className="grid grid-cols-3 gap-2">
+              {attachments.map((att) => (
+                <div
+                  key={att.id}
+                  className="overflow-hidden rounded-[var(--radius-md)] border border-[hsl(var(--color-border))]"
+                >
+                  {att.type.startsWith("image/") ? (
+                    /* eslint-disable-next-line @next/next/no-img-element */
+                    <img
+                      src={att.url}
+                      alt={att.name}
+                      className="aspect-[4/3] w-full object-cover"
+                    />
+                  ) : (
+                    <div className="flex aspect-[4/3] items-center justify-center bg-[hsl(var(--color-background-subtle))]">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-[hsl(var(--color-foreground-subtle))]">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                        <polyline points="14 2 14 8 20 8" />
+                      </svg>
+                    </div>
+                  )}
+                  <p className="truncate px-1.5 py-1 text-[10px] text-[hsl(var(--color-foreground-subtle))]">
+                    {att.name}
+                  </p>
+                </div>
+              ))}
+            </div>
           )}
 
           {/* Tags */}
@@ -993,12 +967,16 @@ export default function UpdateComposerPage({
   const [allUsers, setAllUsers] = useState<PortalUser[]>([]);
   const [dataLoading, setDataLoading] = useState(true);
 
+  // ── Toast ────────────────────────────────────────────────────────
+  const { toast } = useToast();
+
   // ── Form state ──────────────────────────────────────────────────
   const [updateType, setUpdateType] = useState<UpdateType | null>(null);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [tags, setTags] = useState<string[]>([]);
   const [mentions, setMentions] = useState<string[]>([]);
+  const [attachments, setAttachments] = useState<Attachment[]>([]);
 
   // ── UI state ────────────────────────────────────────────────────
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -1009,9 +987,6 @@ export default function UpdateComposerPage({
     content: false,
   });
   const [mobileTab, setMobileTab] = useState<"editor" | "preview">("editor");
-
-  // ── Refs ────────────────────────────────────────────────────────
-  const contentRef = useAutoExpand(content);
 
   // ── Fetch project + users on mount ──────────────────────────────
   useEffect(() => {
@@ -1048,7 +1023,9 @@ export default function UpdateComposerPage({
     const errors: Record<string, string> = {};
     if (!updateType) errors.type = "Please select an update type.";
     if (!title.trim()) errors.title = "A headline is required.";
-    if (!content.trim()) errors.content = "Share some details with the team.";
+    // Strip HTML tags to check for actual text content
+    const contentText = content.replace(/<[^>]*>/g, "").trim();
+    if (!contentText) errors.content = "Share some details with the team.";
     return errors;
   }, [updateType, title, content]);
 
@@ -1067,25 +1044,29 @@ export default function UpdateComposerPage({
     setError(null);
     setIsSubmitting(true);
 
+    // Optimistic: navigate immediately, show toast
+    toast("info", "Publishing update...");
+    router.push(portalPath(`/projects/${projectId}`));
+
     try {
       await createUpdate({
         project_id: projectId,
         type: updateType,
         title: title.trim(),
-        content: content.trim(),
+        content,
         tags,
         mentions,
+        attachments,
       });
 
-      router.push(portalPath(`/projects/${projectId}`));
+      toast("success", "Update published successfully");
     } catch (err) {
       const message =
         err instanceof Error ? err.message : "Failed to publish update.";
-      setError(message);
-    } finally {
+      toast("error", message);
       setIsSubmitting(false);
     }
-  }, [isValid, updateType, projectId, title, content, tags, mentions, router]);
+  }, [isValid, updateType, projectId, title, content, tags, mentions, attachments, router, toast]);
 
   const handleAddTag = useCallback(
     (tag: string) => setTags((prev) => [...prev, tag]),
@@ -1297,53 +1278,54 @@ export default function UpdateComposerPage({
                 </AnimatePresence>
               </motion.div>
 
-              {/* 3. Content editor */}
+              {/* 3. Rich text content editor */}
               <motion.div
                 variants={staggerItem}
                 transition={motionTransition}
                 className="mb-8"
               >
                 <label
-                  htmlFor="update-content"
                   className="mb-2.5 block text-xs font-semibold uppercase tracking-[0.1em] text-[hsl(var(--color-foreground-subtle))] font-[family-name:var(--font-sans)]"
                 >
                   Content
                 </label>
-                <textarea
-                  id="update-content"
-                  ref={contentRef}
-                  value={content}
-                  onChange={(e) => {
-                    setContent(e.target.value);
+                <RichTextEditor
+                  content={content}
+                  onChange={(html) => {
+                    setContent(html);
                     if (error) setError(null);
                   }}
-                  onBlur={() =>
-                    setTouched((prev) => ({ ...prev, content: true }))
-                  }
-                  placeholder="Share your update with the team...
-
-You can use **bold**, `code`, and line breaks."
-                  className={cn(
-                    "w-full resize-none rounded-xl border bg-[hsl(var(--color-background))] px-4 py-3.5 text-[15px] leading-relaxed text-[hsl(var(--color-foreground))] outline-none transition-all duration-200 font-[family-name:var(--font-sans)]",
-                    "placeholder:text-[hsl(var(--color-foreground-subtle))]/50",
-                    "focus:ring-2 focus:ring-[hsl(var(--color-ring))]/20 focus:border-[hsl(var(--color-border-strong))]",
-                    "min-h-[180px]",
+                  placeholder="Share your update with the team..."
+                  editable={!isSubmitting}
+                  className={
                     touched.content && validationErrors.content
-                      ? "border-[hsl(var(--color-error))]/40 focus:ring-[hsl(var(--color-error))]/15"
-                      : "border-[hsl(var(--color-border))] hover:border-[hsl(var(--color-border-strong))]",
+                      ? "border-[hsl(var(--color-error))]/40"
+                      : ""
+                  }
+                />
+                <AnimatePresence>
+                  {touched.content && validationErrors.content && (
+                    <div className="mt-1.5">
+                      <ValidationHint message={validationErrors.content} />
+                    </div>
                   )}
+                </AnimatePresence>
+              </motion.div>
+
+              {/* 3b. File upload */}
+              <motion.div
+                variants={staggerItem}
+                transition={motionTransition}
+                className="mb-8"
+              >
+                <label className="mb-2.5 block text-xs font-semibold uppercase tracking-[0.1em] text-[hsl(var(--color-foreground-subtle))] font-[family-name:var(--font-sans)]">
+                  Attachments
+                </label>
+                <FileUpload
+                  attachments={attachments}
+                  onChange={setAttachments}
                   disabled={isSubmitting}
                 />
-                <div className="mt-1.5 flex items-center justify-between">
-                  <AnimatePresence>
-                    {touched.content && validationErrors.content && (
-                      <ValidationHint message={validationErrors.content} />
-                    )}
-                  </AnimatePresence>
-                  <p className="ml-auto text-[10px] text-[hsl(var(--color-foreground-subtle))] font-[family-name:var(--font-sans)]">
-                    Supports **bold**, `code`, and line breaks
-                  </p>
-                </div>
               </motion.div>
 
               {/* 4. Tags input */}
@@ -1470,6 +1452,7 @@ You can use **bold**, `code`, and line breaks."
                   mentions={mentions}
                   allUsers={allUsers}
                   authorName={authorName}
+                  attachments={attachments}
                 />
               </motion.div>
 
@@ -1488,27 +1471,12 @@ You can use **bold**, `code`, and line breaks."
                 className="mt-6 rounded-[var(--radius-lg)] border border-[hsl(var(--color-border-subtle))] bg-[hsl(var(--color-background))] p-4"
               >
                 <p className="mb-2.5 text-[10px] font-semibold uppercase tracking-[0.1em] text-[hsl(var(--color-foreground-subtle))]">
-                  Formatting Tips
+                  Editor Tips
                 </p>
                 <div className="space-y-1.5 font-[family-name:var(--font-mono)] text-[11px] text-[hsl(var(--color-foreground-subtle))]">
-                  <p>
-                    <span className="rounded bg-[hsl(var(--color-background-muted))] px-1 py-0.5 text-[hsl(var(--color-foreground-muted))]">
-                      **bold**
-                    </span>{" "}
-                    for emphasis
-                  </p>
-                  <p>
-                    <span className="rounded bg-[hsl(var(--color-background-muted))] px-1 py-0.5 text-[hsl(var(--color-foreground-muted))]">
-                      `code`
-                    </span>{" "}
-                    for inline code
-                  </p>
-                  <p>
-                    <span className="rounded bg-[hsl(var(--color-background-muted))] px-1 py-0.5 text-[hsl(var(--color-foreground-muted))]">
-                      Enter
-                    </span>{" "}
-                    for line breaks
-                  </p>
+                  <p>Use the <span className="rounded bg-[hsl(var(--color-background-muted))] px-1 py-0.5 text-[hsl(var(--color-foreground-muted))]">toolbar</span> for formatting</p>
+                  <p><span className="rounded bg-[hsl(var(--color-background-muted))] px-1 py-0.5 text-[hsl(var(--color-foreground-muted))]">Cmd+B</span> bold, <span className="rounded bg-[hsl(var(--color-background-muted))] px-1 py-0.5 text-[hsl(var(--color-foreground-muted))]">Cmd+I</span> italic</p>
+                  <p>Drag files to the <span className="rounded bg-[hsl(var(--color-background-muted))] px-1 py-0.5 text-[hsl(var(--color-foreground-muted))]">upload area</span> below</p>
                 </div>
               </motion.div>
             </div>

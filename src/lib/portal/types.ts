@@ -59,16 +59,25 @@ export interface Task {
   assignee?: PortalUser | null;
 }
 
+export interface Attachment {
+  id: string;
+  name: string;
+  url: string;
+  type: string; // MIME type
+  size: number; // bytes
+}
+
 export interface Update {
   id: string;
   project_id: string;
   author_id: string;
   type: UpdateType;
   title: string;
-  content: string; // Rich text / markdown
+  content: string; // Rich text HTML
   tags: string[];
   mentions: string[]; // user IDs
   pinned: boolean;
+  attachments: Attachment[];
   created_at: string;
   updated_at: string;
   // Joined
@@ -138,6 +147,7 @@ export interface CreateUpdateInput {
   content: string;
   tags: string[];
   mentions: string[];
+  attachments: Attachment[];
 }
 
 export interface LoginInput {
