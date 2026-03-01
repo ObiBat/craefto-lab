@@ -3,8 +3,8 @@ import { AuthProvider } from "@/lib/portal/auth-context";
 import { ToastProvider } from "@/components/portal/toast";
 
 export const metadata: Metadata = {
-  title: "Portal | Craefto Lab",
-  description: "Stakeholder updates portal for Craefto Lab projects.",
+  title: "Portal | Cræfto",
+  description: "Stakeholder updates portal for Cræfto projects.",
   robots: {
     index: false,
     follow: false,

@@ -19,6 +19,7 @@ import { cn } from '@/lib/utils';
 import { useAuth } from '@/lib/portal/auth-context';
 import { useRealtime } from '@/lib/portal/realtime';
 import { fetchDashboardData } from '@/lib/portal/queries';
+import { mockSparklineData } from '@/lib/portal/mock-data';
 import type { DashboardData, ProjectFilter, PortalUser } from '@/lib/portal/types';
 import { portalLoginPath } from '@/lib/portal/routes';
 
@@ -630,6 +631,7 @@ function DashboardPage() {
                           })) ?? []}
                           taskCount={project.task_count}
                           index={index}
+                          sparklineData={mockSparklineData[project.id]}
                         />
                       </motion.div>
                     ))}
