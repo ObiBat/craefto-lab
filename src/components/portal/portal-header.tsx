@@ -126,7 +126,7 @@ export function PortalHeader({
                   <ChevronRight className="flex-shrink-0 text-[hsl(var(--color-neutral-300))]" />
                   {isLast || !crumb.href ? (
                     <span
-                      className="text-[13px] font-medium text-[hsl(var(--color-foreground))] py-1"
+                      className="flex items-center text-[13px] font-medium text-[hsl(var(--color-foreground))] py-1"
                       aria-current={isLast ? "page" : undefined}
                     >
                       {crumb.label}
@@ -134,7 +134,7 @@ export function PortalHeader({
                   ) : (
                     <Link
                       href={crumb.href}
-                      className="text-[13px] text-[hsl(var(--color-foreground-muted))] rounded-md px-2 py-1 transition-colors hover:bg-[hsl(var(--color-background-muted))] hover:text-[hsl(var(--color-foreground))]"
+                      className="flex items-center text-[13px] text-[hsl(var(--color-foreground-muted))] rounded-md px-2 py-1 transition-colors hover:bg-[hsl(var(--color-background-muted))] hover:text-[hsl(var(--color-foreground))]"
                     >
                       {crumb.label}
                     </Link>
