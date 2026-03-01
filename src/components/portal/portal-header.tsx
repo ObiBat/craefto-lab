@@ -104,46 +104,45 @@ export function PortalHeader({
     >
       <div className="flex w-full items-center justify-between gap-4">
         {/* ── Left: logo + breadcrumbs ─────────────────────────── */}
-        <nav className="flex items-center gap-1.5" aria-label="Breadcrumb">
-          {/* Wordmark as first breadcrumb */}
-          <Link
-            href={portalPath('/')}
-            className="flex items-center gap-1.5 rounded-md px-1.5 py-1 transition-colors hover:bg-[hsl(var(--color-background-muted))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--color-ring))] focus-visible:ring-offset-2 min-h-0 leading-none"
-            aria-label="Back to portal dashboard"
-          >
-            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
-              <rect x="1" y="1" width="16" height="16" rx="4" stroke="currentColor" strokeWidth="1.5" className="text-[hsl(var(--color-foreground))]" />
-              <path d="M6 6h2v6H6zM10 6h2v6h-2z" fill="currentColor" className="text-[hsl(var(--color-foreground))]" />
-            </svg>
-            <span className="font-heading text-[13px] font-semibold tracking-tight text-[hsl(var(--color-foreground))]">
-              Portal
-            </span>
-          </Link>
-
-          {/* Breadcrumb items */}
-          {breadcrumbs.map((crumb, i) => {
-            const isLast = i === breadcrumbs.length - 1;
-            return (
-              <React.Fragment key={i}>
-                <ChevronRight className="flex-shrink-0 text-[hsl(var(--color-neutral-300))]" />
-                {isLast || !crumb.href ? (
-                  <span
-                    className="truncate max-w-[220px] px-1.5 py-1 text-[13px] leading-none font-medium text-[hsl(var(--color-foreground))]"
-                    aria-current={isLast ? "page" : undefined}
-                  >
-                    {crumb.label}
-                  </span>
-                ) : (
-                  <Link
-                    href={crumb.href}
-                    className="truncate max-w-[220px] rounded-md px-1.5 py-1 text-[13px] leading-none text-[hsl(var(--color-foreground-muted))] transition-colors hover:bg-[hsl(var(--color-background-muted))] hover:text-[hsl(var(--color-foreground))] min-h-0"
-                  >
-                    {crumb.label}
-                  </Link>
-                )}
-              </React.Fragment>
-            );
-          })}
+        <nav aria-label="Breadcrumb">
+          <ol className="flex items-center gap-1.5 m-0 p-0 list-none h-8">
+            <li className="flex items-center h-full">
+              <Link
+                href={portalPath('/')}
+                className="inline-flex items-center gap-1.5 rounded-md px-2 h-8 text-[13px] font-semibold tracking-tight text-[hsl(var(--color-foreground))] font-heading transition-colors hover:bg-[hsl(var(--color-background-muted))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--color-ring))]"
+                aria-label="Back to portal dashboard"
+              >
+                <svg width="16" height="16" viewBox="0 0 18 18" fill="none" aria-hidden="true" className="flex-shrink-0">
+                  <rect x="1" y="1" width="16" height="16" rx="4" stroke="currentColor" strokeWidth="1.5" />
+                  <path d="M6 6h2v6H6zM10 6h2v6h-2z" fill="currentColor" />
+                </svg>
+                Portal
+              </Link>
+            </li>
+            {breadcrumbs.map((crumb, i) => {
+              const isLast = i === breadcrumbs.length - 1;
+              return (
+                <li key={i} className="flex items-center gap-1.5 h-full">
+                  <ChevronRight className="flex-shrink-0 text-[hsl(var(--color-neutral-300))]" />
+                  {isLast || !crumb.href ? (
+                    <span
+                      className="truncate max-w-[220px] inline-flex items-center h-8 text-[13px] font-medium text-[hsl(var(--color-foreground))]"
+                      aria-current={isLast ? "page" : undefined}
+                    >
+                      {crumb.label}
+                    </span>
+                  ) : (
+                    <Link
+                      href={crumb.href}
+                      className="truncate max-w-[220px] inline-flex items-center h-8 rounded-md px-2 text-[13px] text-[hsl(var(--color-foreground-muted))] transition-colors hover:bg-[hsl(var(--color-background-muted))] hover:text-[hsl(var(--color-foreground))]"
+                    >
+                      {crumb.label}
+                    </Link>
+                  )}
+                </li>
+              );
+            })}
+          </ol>
         </nav>
 
         {/* ── Right: user + sign out ──────────────────────────── */}
