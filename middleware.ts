@@ -10,40 +10,30 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Check for Supabase auth token in cookies
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
+  // Demo mode: skip auth check, let client-side handle it
   if (!supabaseUrl || !supabaseAnonKey) {
-    return NextResponse.redirect(new URL('/portal/login', request.url));
+    return NextResponse.next();
   }
 
   // Get the access token from cookies
-  // Supabase stores the session in sb-<ref>-auth-token cookie
   const ref = supabaseUrl.match(/https:\/\/(.+)\.supabase\.co/)?.[1];
   const authCookieName = `sb-${ref}-auth-token`;
   const authCookie = request.cookies.get(authCookieName);
 
   if (!authCookie?.value) {
-    // Try the base64 cookie format
     const authTokenBase64 = request.cookies.get(`${authCookieName}.0`)?.value;
     if (!authTokenBase64) {
       return NextResponse.redirect(new URL('/portal/login', request.url));
     }
   }
 
-  // Verify the token with Supabase
   try {
     const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-      auth: {
-        autoRefreshToken: false,
-        persistSession: false,
-      },
-      global: {
-        headers: {
-          cookie: request.headers.get('cookie') ?? '',
-        },
-      },
+      auth: { autoRefreshToken: false, persistSession: false },
+      global: { headers: { cookie: request.headers.get('cookie') ?? '' } },
     });
 
     const { data: { user } } = await supabase.auth.getUser();
