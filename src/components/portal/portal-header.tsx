@@ -3,6 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { portalPath } from "@/lib/portal/routes";
 
 // ---------------------------------------------------------------------------
 // Portal Header — sticky, blurred, editorial top bar
@@ -104,7 +105,7 @@ export function PortalHeader({
         <div className="flex items-center gap-3">
           {/* Wordmark */}
           <Link
-            href="/portal"
+            href={portalPath('/')}
             className="flex items-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--color-ring))] focus-visible:ring-offset-2 rounded-[var(--radius-sm)] min-h-0"
             aria-label="Back to portal dashboard"
           >

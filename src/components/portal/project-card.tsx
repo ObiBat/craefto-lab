@@ -5,6 +5,7 @@ import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import type { ProjectStatus } from "@/lib/portal/types";
+import { portalPath } from "@/lib/portal/routes";
 import { StatusPill } from "./status-pill";
 import { ProgressRing } from "./progress-ring";
 
@@ -86,7 +87,7 @@ export function ProjectCard({
       style={{ transform: "translateZ(0)" }}
     >
       <Link
-        href={`/portal/projects/${id}`}
+        href={portalPath(`/projects/${id}`)}
         className="block rounded-[var(--radius-lg)] border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] p-4 sm:p-6 shadow-[var(--shadow-sm)] transition-all duration-300 ease-[var(--ease-out)] hover:shadow-[var(--shadow-xl)] hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--color-ring))] focus-visible:ring-offset-2 focus-visible:ring-offset-[hsl(var(--color-background))]"
         aria-label={`View project: ${name}`}
       >

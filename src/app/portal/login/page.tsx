@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { LogoStatic } from "@/components/ui/logo";
 import { cn } from "@/lib/utils";
+import { portalDashboardPath } from "@/lib/portal/routes";
 import {
   smoothTransition,
   instantTransition,
@@ -275,7 +276,7 @@ function LoginForm() {
 
       try {
         await signIn(email.trim(), password);
-        router.push("/portal");
+        router.push(portalDashboardPath());
       } catch (err) {
         const message =
           err instanceof Error ? err.message : "Invalid credentials.";

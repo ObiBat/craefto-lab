@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { portalPath } from "@/lib/portal/routes";
 
 // ---------------------------------------------------------------------------
 // Portal Sidebar — collapsible navigation with expandable project list
@@ -100,12 +101,14 @@ export function PortalSidebar({
   }, [pathname]);
 
   const isDashboardActive =
-    pathname === "/portal" || pathname === "/portal/";
-  const isProjectsActive = pathname?.startsWith("/portal/projects");
+    pathname === "/portal" || pathname === "/portal/" || pathname === "/";
+  const isProjectsActive = pathname?.startsWith("/portal/projects") || pathname?.startsWith("/projects");
 
   const isProjectActive = (projectId: string) =>
     pathname === `/portal/projects/${projectId}` ||
-    pathname?.startsWith(`/portal/projects/${projectId}/`);
+    pathname?.startsWith(`/portal/projects/${projectId}/`) ||
+    pathname === `/projects/${projectId}` ||
+    pathname?.startsWith(`/projects/${projectId}/`);
 
   /* Shared nav content (rendered in both desktop + mobile) */
   const NavContent = (
@@ -113,7 +116,7 @@ export function PortalSidebar({
       <nav className="flex-1 space-y-1 px-3 py-4" aria-label="Portal navigation">
         {/* Dashboard link */}
         <Link
-          href="/portal"
+          href={portalPath('/')}
           className={cn(
             "group flex items-center gap-3 rounded-[var(--radius-md)] px-3 py-2.5 text-sm font-medium transition-colors min-h-[44px]",
             isDashboardActive
@@ -172,7 +175,7 @@ export function PortalSidebar({
                   return (
                     <li key={project.id}>
                       <Link
-                        href={`/portal/projects/${project.id}`}
+                        href={portalPath(`/projects/${project.id}`)}
                         className={cn(
                           "block truncate rounded-[var(--radius-sm)] py-2.5 pl-11 pr-3 text-[13px] transition-colors min-h-[44px] flex items-center",
                           active

@@ -9,6 +9,7 @@ import {
   useReducedMotion,
 } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import { portalPath } from '@/lib/portal/routes';
 import { fetchProjectDetail, updateTaskStatus } from '@/lib/portal/queries';
 import { useAuth } from '@/lib/portal/auth-context';
 import { useProjectRealtime } from '@/lib/portal/realtime';
@@ -1480,7 +1481,7 @@ export default function ProjectDetailPage({
             The project could not be loaded. Please try again.
           </p>
           <Link
-            href="/portal"
+            href={portalPath('/')}
             className="inline-flex items-center gap-2 rounded-xl bg-[hsl(var(--color-primary))] px-5 py-2.5 text-sm font-medium text-[hsl(var(--color-primary-foreground))] transition-colors hover:bg-[hsl(var(--color-primary-hover))]"
           >
             <svg
@@ -1511,7 +1512,7 @@ export default function ProjectDetailPage({
         <div className="mx-auto max-w-7xl px-4 py-3 sm:px-6 lg:px-8">
           <nav className="flex items-center gap-2 text-sm" aria-label="Breadcrumb">
             <Link
-              href="/portal"
+              href={portalPath('/')}
               className="text-[hsl(var(--color-foreground-subtle))] transition-colors hover:text-[hsl(var(--color-foreground))] min-h-0"
             >
               Portal

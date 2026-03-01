@@ -16,6 +16,7 @@ import {
   type Variants,
 } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { portalPath } from "@/lib/portal/routes";
 import { useAuth } from "@/lib/portal/auth-context";
 import {
   createUpdate,
@@ -1069,7 +1070,7 @@ export default function UpdateComposerPage({
         mentions,
       });
 
-      router.push(`/portal/projects/${projectId}`);
+      router.push(portalPath(`/projects/${projectId}`));
     } catch (err) {
       const message =
         err instanceof Error ? err.message : "Failed to publish update.";
@@ -1110,7 +1111,7 @@ export default function UpdateComposerPage({
     : [
         {
           label: projectName || "Project",
-          href: `/portal/projects/${projectId}`,
+          href: portalPath(`/projects/${projectId}`),
         },
         { label: "New Update" },
       ];
@@ -1397,7 +1398,7 @@ You can use **bold**, `code`, and line breaks."
                       variant="link"
                       size="sm"
                       onClick={() =>
-                        router.push(`/portal/projects/${projectId}`)
+                        router.push(portalPath(`/projects/${projectId}`))
                       }
                       disabled={isSubmitting}
                       className="text-[hsl(var(--color-foreground-subtle))]"
