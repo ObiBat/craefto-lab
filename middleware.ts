@@ -41,9 +41,14 @@ export async function middleware(request: NextRequest) {
   // =========================================================================
 
   if (isPortalSubdomain(hostname)) {
-    // Already a /portal path (shouldn't happen on subdomain, but be safe)
+    // Client-side router.push uses /portal/* paths. On the subdomain, redirect
+    // to the clean URL (without /portal prefix) so the address bar stays tidy.
+    // The clean URL will hit this middleware again and get rewritten back to /portal/*.
     if (pathname.startsWith('/portal')) {
-      // Continue as-is — middleware auth logic below will handle it
+      const cleanPath = pathname.replace(/^\/portal/, '') || '/';
+      const url = request.nextUrl.clone();
+      url.pathname = cleanPath;
+      return NextResponse.redirect(url);
     } else {
       // Rewrite: /login → /portal/login, /projects/x → /portal/projects/x, / → /portal
       const rewrittenPath = pathname === '/' ? '/portal' : `/portal${pathname}`;

@@ -19,17 +19,15 @@ export function isPortalSubdomain(): boolean {
 /**
  * Build a portal-aware path.
  *
- * - On subdomain: portalPath('/projects/abc') → '/projects/abc'
- * - On main domain: portalPath('/projects/abc') → '/portal/projects/abc'
- * - portalPath('/') → '/' on subdomain, '/portal' on main domain
+ * Always returns /portal/* paths for internal Next.js routing. The middleware
+ * rewrites subdomain requests (project-portal.craefto.com/*) to /portal/*
+ * on the server, but client-side router.push bypasses middleware. Using
+ * /portal/* paths everywhere ensures client navigation always resolves to
+ * real routes. The browser URL stays clean on the subdomain because the
+ * middleware handles incoming requests.
  */
 export function portalPath(path: string = '/'): string {
   const normalized = path === '/' ? '' : path.startsWith('/') ? path : `/${path}`;
-
-  if (isPortalSubdomain()) {
-    return normalized || '/';
-  }
-
   return `/portal${normalized}`;
 }
 
