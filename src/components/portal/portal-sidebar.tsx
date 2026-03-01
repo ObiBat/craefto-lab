@@ -214,7 +214,7 @@ export function PortalSidebar({
       <button
         type="button"
         onClick={() => setMobileOpen((o) => !o)}
-        className="fixed bottom-4 right-4 z-50 inline-flex h-12 w-12 items-center justify-center rounded-full bg-[hsl(var(--color-foreground))] text-[hsl(var(--color-background))] shadow-[var(--shadow-lg)] lg:hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--color-ring))]"
+        className="fixed top-3 right-3 z-50 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground))] shadow-sm lg:hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--color-ring))]"
         aria-label={mobileOpen ? "Close navigation" : "Open navigation"}
       >
         {mobileOpen ? <XIcon /> : <MenuIcon />}

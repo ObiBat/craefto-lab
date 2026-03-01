@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useMemo, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 import { motion, useReducedMotion } from 'framer-motion';
 import {
   AnimatedCounter,
@@ -116,7 +117,15 @@ function getFormattedDate(): string {
 // =============================================================================
 
 export default function DashboardPage() {
-  const { portalUser, loading: authLoading } = useAuth();
+  const { portalUser, user, loading: authLoading } = useAuth();
+  const authRouter = useRouter();
+
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!authLoading && !user) {
+      authRouter.replace("/portal/login");
+    }
+  }, [authLoading, user, authRouter]);
   const prefersReducedMotion = useReducedMotion();
 
   const [data, setData] = useState<DashboardData | null>(null);
@@ -219,12 +228,12 @@ export default function DashboardPage() {
 
       {/* Main content area */}
       <main className="flex-1 lg:ml-[240px] pt-16">
-        <div className="p-6 md:p-8 lg:p-10 max-w-[1600px] mx-auto">
+        <div className="px-4 py-6 sm:p-6 md:p-8 lg:p-10 max-w-[1600px] mx-auto">
           {/* =================================================================
               WELCOME BANNER
               ================================================================= */}
           <AnimatedSection variant="fadeUp" className="mb-10">
-            <div className="relative overflow-hidden rounded-2xl border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] p-8 md:p-10 shadow-sm">
+            <div className="relative overflow-hidden rounded-2xl border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] p-5 sm:p-8 md:p-10 shadow-sm">
               {/* Decorative background grain */}
               <div
                 className="pointer-events-none absolute inset-0 opacity-[0.03]"
@@ -239,7 +248,7 @@ export default function DashboardPage() {
                 <p className="text-sm font-medium tracking-wide uppercase text-[hsl(var(--color-foreground-subtle))] mb-2 font-[family-name:var(--font-sans)]">
                   {getFormattedDate()}
                 </p>
-                <h1 className="text-3xl md:text-4xl lg:text-[2.75rem] font-semibold tracking-tight leading-[1.1] text-[hsl(var(--color-foreground))] font-[family-name:var(--font-heading)]">
+                <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-[2.75rem] font-semibold tracking-tight leading-[1.1] text-[hsl(var(--color-foreground))] font-[family-name:var(--font-heading)]">
                   {getGreeting()},{' '}
                   <span className="text-[hsl(var(--color-accent))]">
                     {firstName}
@@ -259,7 +268,7 @@ export default function DashboardPage() {
             initial="hidden"
             animate="visible"
             variants={containerVariant}
-            className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10"
+            className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-8 sm:mb-10"
           >
             {(
               [
@@ -276,7 +285,7 @@ export default function DashboardPage() {
                   variants={itemVariant}
                   transition={transition}
                   className={cn(
-                    'group relative overflow-hidden rounded-xl border border-[hsl(var(--color-border))] p-5 md:p-6 transition-all duration-300 ease-out hover:shadow-md hover:-translate-y-0.5',
+                    'group relative overflow-hidden rounded-xl border border-[hsl(var(--color-border))] p-4 sm:p-5 md:p-6 transition-all duration-300 ease-out hover:shadow-md hover:-translate-y-0.5',
                     config.bg,
                   )}
                 >
@@ -288,7 +297,7 @@ export default function DashboardPage() {
                       <p className="text-xs font-medium uppercase tracking-wider text-[hsl(var(--color-foreground-subtle))] mb-2">
                         {config.label}
                       </p>
-                      <div className={cn('text-3xl md:text-4xl font-semibold tracking-tight font-[family-name:var(--font-heading)]', config.color)}>
+                      <div className={cn('text-2xl sm:text-3xl md:text-4xl font-semibold tracking-tight font-[family-name:var(--font-heading)]', config.color)}>
                         <AnimatedCounter value={value} duration={1.8} />
                       </div>
                     </div>
