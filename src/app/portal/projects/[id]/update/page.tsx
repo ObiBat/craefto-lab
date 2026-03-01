@@ -17,7 +17,7 @@ import {
 } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { portalPath } from "@/lib/portal/routes";
-import { useAuth } from "@/lib/portal/auth-context";
+import { useAuth, getRoleLabel } from "@/lib/portal/auth-context";
 import {
   createUpdate,
   fetchAllPortalUsers,
@@ -978,8 +978,15 @@ export default function UpdateComposerPage({
 }) {
   const { id: projectId } = use(params);
   const router = useRouter();
-  const { portalUser, signOut } = useAuth();
+  const { portalUser, signOut, hasPermission } = useAuth();
   const prefersReducedMotion = useReducedMotion();
+
+  // ── RBAC: redirect stakeholders to dashboard ────────────────────
+  useEffect(() => {
+    if (portalUser && !hasPermission('create_update')) {
+      router.replace(portalPath('/'));
+    }
+  }, [portalUser, hasPermission, router]);
 
   // ── Data state ──────────────────────────────────────────────────
   const [projectName, setProjectName] = useState<string>("");
@@ -1131,6 +1138,7 @@ export default function UpdateComposerPage({
               ? {
                   name: portalUser.full_name,
                   avatarUrl: portalUser.avatar_url ?? undefined,
+                  role: getRoleLabel(portalUser.role),
                 }
               : undefined
           }

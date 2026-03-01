@@ -1,10 +1,47 @@
 'use client';
 
-import { createContext, useContext, useEffect, useState, useCallback } from 'react';
+import { createContext, useContext, useEffect, useState, useCallback, useMemo } from 'react';
 import { createBrowserClient } from './supabase-auth';
 import { DEMO_CREDENTIALS, getMockUser } from './mock-data';
 import type { User, Session } from '@supabase/supabase-js';
-import type { PortalUser } from './types';
+import type { PortalUser, UserRole } from './types';
+
+// ============================================================================
+// PERMISSION SYSTEM
+// ============================================================================
+
+export type PortalAction = 'create_update' | 'edit_task' | 'manage_team' | 'admin';
+
+const ROLE_PERMISSIONS: Record<UserRole, Set<PortalAction>> = {
+  admin: new Set(['create_update', 'edit_task', 'manage_team', 'admin']),
+  project_manager: new Set(['create_update', 'edit_task', 'manage_team']),
+  team_member: new Set(['create_update', 'edit_task']),
+  stakeholder: new Set(),
+};
+
+/**
+ * Check if a given role has a specific permission.
+ */
+export function roleHasPermission(role: UserRole | undefined, action: PortalAction): boolean {
+  if (!role) return false;
+  return ROLE_PERMISSIONS[role]?.has(action) ?? false;
+}
+
+/**
+ * Get a human-readable label for a role.
+ */
+export function getRoleLabel(role: UserRole): string {
+  switch (role) {
+    case 'admin': return 'Admin';
+    case 'project_manager': return 'Project Manager';
+    case 'team_member': return 'Team Member';
+    case 'stakeholder': return 'Stakeholder';
+  }
+}
+
+// ============================================================================
+// AUTH CONTEXT
+// ============================================================================
 
 interface AuthContextValue {
   user: User | null;
@@ -15,6 +52,8 @@ interface AuthContextValue {
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
   refreshPortalUser: () => Promise<void>;
+  /** Check if the current user has permission for an action. */
+  hasPermission: (action: PortalAction) => boolean;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -55,6 +94,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const refreshPortalUser = useCallback(async () => {
     if (user?.id) await fetchPortalUser(user.id);
   }, [user?.id, fetchPortalUser]);
+
+  const hasPermission = useCallback(
+    (action: PortalAction): boolean => {
+      return roleHasPermission(portalUser?.role, action);
+    },
+    [portalUser?.role],
+  );
 
   useEffect(() => {
     if (isDemo) {
@@ -119,10 +165,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setSession(null);
   };
 
+  const contextValue = useMemo<AuthContextValue>(
+    () => ({
+      user,
+      portalUser,
+      session,
+      loading,
+      isDemo,
+      signIn: handleSignIn,
+      signOut: handleSignOut,
+      refreshPortalUser,
+      hasPermission,
+    }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [user, portalUser, session, loading, isDemo, refreshPortalUser, hasPermission],
+  );
+
   return (
-    <AuthContext.Provider
-      value={{ user, portalUser, session, loading, isDemo, signIn: handleSignIn, signOut: handleSignOut, refreshPortalUser }}
-    >
+    <AuthContext.Provider value={contextValue}>
       {children}
     </AuthContext.Provider>
   );

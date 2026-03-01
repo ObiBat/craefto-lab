@@ -11,7 +11,7 @@ import {
 import { cn } from '@/lib/utils';
 import { portalPath } from '@/lib/portal/routes';
 import { fetchProjectDetail, updateTaskStatus } from '@/lib/portal/queries';
-import { useAuth } from '@/lib/portal/auth-context';
+import { useAuth, getRoleLabel } from '@/lib/portal/auth-context';
 import { useProjectRealtime } from '@/lib/portal/realtime';
 import { StatusPill } from '@/components/portal/status-pill';
 import { ProgressRing } from '@/components/portal/progress-ring';
@@ -598,7 +598,7 @@ function KanbanColumn({
 }: {
   status: TaskStatus;
   tasks: Task[];
-  onStatusChange: (taskId: string, newStatus: TaskStatus) => void;
+  onStatusChange?: (taskId: string, newStatus: TaskStatus) => void;
 }) {
   const prefersReducedMotion = useReducedMotion();
 
@@ -672,12 +672,13 @@ function KanbanColumn({
                   )}
                 </div>
 
-                {/* Move forward/back buttons */}
+                {/* Move forward/back buttons — hidden when read-only */}
+                {onStatusChange && (
                 <div className="flex gap-0.5 opacity-0 transition-opacity group-hover/card:opacity-100">
                   {TASK_STATUS_ORDER.indexOf(status) > 0 && (
                     <button
                       onClick={() =>
-                        onStatusChange(
+                        onStatusChange?.(
                           task.id,
                           TASK_STATUS_ORDER[
                             TASK_STATUS_ORDER.indexOf(status) - 1
@@ -697,7 +698,7 @@ function KanbanColumn({
                     TASK_STATUS_ORDER.length - 1 && (
                     <button
                       onClick={() =>
-                        onStatusChange(
+                        onStatusChange?.(
                           task.id,
                           TASK_STATUS_ORDER[
                             TASK_STATUS_ORDER.indexOf(status) + 1
@@ -714,6 +715,7 @@ function KanbanColumn({
                     </button>
                   )}
                 </div>
+                )}
               </div>
             </motion.div>
           ))}
@@ -734,7 +736,7 @@ function KanbanView({
   onStatusChange,
 }: {
   tasks: Task[];
-  onStatusChange: (taskId: string, newStatus: TaskStatus) => void;
+  onStatusChange?: (taskId: string, newStatus: TaskStatus) => void;
 }) {
   const grouped = useMemo(() => {
     const map: Record<TaskStatus, Task[]> = {
@@ -776,7 +778,7 @@ function TaskListView({
   onStatusChange,
 }: {
   tasks: Task[];
-  onStatusChange: (taskId: string, newStatus: TaskStatus) => void;
+  onStatusChange?: (taskId: string, newStatus: TaskStatus) => void;
 }) {
   const prefersReducedMotion = useReducedMotion();
   type SortKey = 'title' | 'status' | 'priority' | 'assignee' | 'due_date';
@@ -909,10 +911,14 @@ function TaskListView({
 
               <button
                 onClick={() =>
-                  onStatusChange(task.id, getNextStatus(task.status))
+                  onStatusChange?.(task.id, getNextStatus(task.status))
                 }
-                className="flex items-center gap-1.5 min-h-0"
-                title={`Click to change status (currently ${TASK_STATUS_LABELS[task.status]})`}
+                disabled={!onStatusChange}
+                className={cn(
+                  "flex items-center gap-1.5 min-h-0",
+                  !onStatusChange && "cursor-default opacity-60"
+                )}
+                title={onStatusChange ? `Click to change status (currently ${TASK_STATUS_LABELS[task.status]})` : TASK_STATUS_LABELS[task.status]}
               >
                 <div
                   className={cn(
@@ -977,7 +983,7 @@ function TasksTab({
   onStatusChange,
 }: {
   tasks: Task[];
-  onStatusChange: (taskId: string, newStatus: TaskStatus) => void;
+  onStatusChange?: (taskId: string, newStatus: TaskStatus) => void;
 }) {
   const [view, setView] = useState<TaskView>('kanban');
 
@@ -1375,7 +1381,8 @@ export default function ProjectDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = use(params);
-  const { portalUser } = useAuth();
+  const { portalUser, hasPermission } = useAuth();
+  const canEditTask = hasPermission('edit_task');
   const prefersReducedMotion = useReducedMotion();
 
   const [data, setData] = useState<ProjectDetailData | null>(null);
@@ -1741,7 +1748,7 @@ export default function ProjectDetailPage({
               {activeTab === 'tasks' && (
                 <TasksTab
                   tasks={optimisticTasks}
-                  onStatusChange={handleTaskStatusChange}
+                  onStatusChange={canEditTask ? handleTaskStatusChange : undefined}
                 />
               )}
               {activeTab === 'team' && (

@@ -80,6 +80,8 @@ export interface PortalSidebarProps {
   projects?: SidebarProject[];
   /** Callback when "New Update" CTA is clicked. */
   onNewUpdate?: () => void;
+  /** Hide the "New Update" button (e.g. for stakeholder role). */
+  hideNewUpdate?: boolean;
   className?: string;
 }
 
@@ -88,6 +90,7 @@ export interface PortalSidebarProps {
 export function PortalSidebar({
   projects = [],
   onNewUpdate,
+  hideNewUpdate = false,
   className,
 }: PortalSidebarProps) {
   const pathname = usePathname();
@@ -195,8 +198,8 @@ export function PortalSidebar({
         </div>
       </nav>
 
-      {/* CTA: New Update */}
-      {onNewUpdate && (
+      {/* CTA: New Update — hidden for stakeholder role */}
+      {onNewUpdate && !hideNewUpdate && (
         <div className="border-t border-[hsl(var(--color-border))] p-4">
           <button
             type="button"
