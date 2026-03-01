@@ -104,47 +104,47 @@ export function PortalHeader({
     >
       <div className="flex w-full items-center justify-between gap-4">
         {/* ── Left: logo + breadcrumbs ─────────────────────────── */}
-        <div className="flex items-center gap-3">
-          {/* Wordmark */}
+        <nav className="flex items-center gap-1.5" aria-label="Breadcrumb">
+          {/* Wordmark as first breadcrumb */}
           <Link
             href={portalPath('/')}
-            className="flex items-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--color-ring))] focus-visible:ring-offset-2 rounded-[var(--radius-sm)] min-h-0"
+            className="flex items-center gap-1.5 rounded-md px-1.5 py-1 transition-colors hover:bg-[hsl(var(--color-background-muted))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--color-ring))] focus-visible:ring-offset-2 min-h-0"
             aria-label="Back to portal dashboard"
           >
-            <span className="font-heading text-base font-semibold tracking-tight text-[hsl(var(--color-foreground))]">
-              Cræfto
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+              <rect x="1" y="1" width="16" height="16" rx="4" stroke="currentColor" strokeWidth="1.5" className="text-[hsl(var(--color-foreground))]" />
+              <path d="M6 6h2v6H6zM10 6h2v6h-2z" fill="currentColor" className="text-[hsl(var(--color-foreground))]" />
+            </svg>
+            <span className="font-heading text-[13px] font-semibold tracking-tight text-[hsl(var(--color-foreground))]">
+              Portal
             </span>
           </Link>
 
-          {/* Breadcrumbs */}
-          {breadcrumbs.length > 0 && (
-            <nav aria-label="Breadcrumb" className="hidden sm:flex items-center gap-1 text-sm">
-              {breadcrumbs.map((crumb, i) => {
-                const isLast = i === breadcrumbs.length - 1;
-                return (
-                  <React.Fragment key={i}>
-                    <ChevronRight className="text-[hsl(var(--color-foreground-subtle))]" />
-                    {isLast || !crumb.href ? (
-                      <span
-                        className="truncate max-w-[180px] text-[hsl(var(--color-foreground-muted))] font-medium"
-                        aria-current={isLast ? "page" : undefined}
-                      >
-                        {crumb.label}
-                      </span>
-                    ) : (
-                      <Link
-                        href={crumb.href}
-                        className="truncate max-w-[180px] text-[hsl(var(--color-foreground-subtle))] transition-colors hover:text-[hsl(var(--color-foreground))] min-h-0"
-                      >
-                        {crumb.label}
-                      </Link>
-                    )}
-                  </React.Fragment>
-                );
-              })}
-            </nav>
-          )}
-        </div>
+          {/* Breadcrumb items */}
+          {breadcrumbs.map((crumb, i) => {
+            const isLast = i === breadcrumbs.length - 1;
+            return (
+              <React.Fragment key={i}>
+                <ChevronRight className="flex-shrink-0 text-[hsl(var(--color-neutral-300))]" />
+                {isLast || !crumb.href ? (
+                  <span
+                    className="truncate max-w-[220px] text-[13px] font-medium text-[hsl(var(--color-foreground))]"
+                    aria-current={isLast ? "page" : undefined}
+                  >
+                    {crumb.label}
+                  </span>
+                ) : (
+                  <Link
+                    href={crumb.href}
+                    className="truncate max-w-[220px] rounded-md px-1.5 py-1 text-[13px] text-[hsl(var(--color-foreground-muted))] transition-colors hover:bg-[hsl(var(--color-background-muted))] hover:text-[hsl(var(--color-foreground))] min-h-0"
+                  >
+                    {crumb.label}
+                  </Link>
+                )}
+              </React.Fragment>
+            );
+          })}
+        </nav>
 
         {/* ── Right: user + sign out ──────────────────────────── */}
         {user && (
