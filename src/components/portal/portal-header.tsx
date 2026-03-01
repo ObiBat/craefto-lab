@@ -104,12 +104,12 @@ export function PortalHeader({
     >
       <div className="flex w-full items-center justify-between gap-4">
         {/* ── Left: logo + breadcrumbs ─────────────────────────── */}
-        <nav aria-label="Breadcrumb">
-          <ol className="flex items-center gap-1.5 m-0 p-0 list-none h-8">
-            <li className="flex items-center h-full">
+        <nav aria-label="Breadcrumb" className="flex items-center">
+          <ol className="flex items-center gap-1.5 m-0 p-0 list-none">
+            <li className="flex items-center">
               <Link
                 href={portalPath('/')}
-                className="inline-flex items-center gap-1.5 rounded-md px-2 h-8 text-[13px] font-semibold tracking-tight text-[hsl(var(--color-foreground))] font-heading transition-colors hover:bg-[hsl(var(--color-background-muted))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--color-ring))]"
+                className="flex items-center gap-1.5 rounded-md px-2 py-1 text-[13px] font-semibold tracking-tight text-[hsl(var(--color-foreground))] font-heading transition-colors hover:bg-[hsl(var(--color-background-muted))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--color-ring))]"
                 aria-label="Back to portal dashboard"
               >
                 <svg width="16" height="16" viewBox="0 0 18 18" fill="none" aria-hidden="true" className="flex-shrink-0">
@@ -122,11 +122,11 @@ export function PortalHeader({
             {breadcrumbs.map((crumb, i) => {
               const isLast = i === breadcrumbs.length - 1;
               return (
-                <li key={i} className="flex items-center gap-1.5 h-full">
+                <li key={i} className="flex items-center gap-1.5">
                   <ChevronRight className="flex-shrink-0 text-[hsl(var(--color-neutral-300))]" />
                   {isLast || !crumb.href ? (
                     <span
-                      className="truncate max-w-[220px] inline-flex items-center h-8 text-[13px] font-medium text-[hsl(var(--color-foreground))]"
+                      className="text-[13px] font-medium text-[hsl(var(--color-foreground))] py-1"
                       aria-current={isLast ? "page" : undefined}
                     >
                       {crumb.label}
@@ -134,7 +134,7 @@ export function PortalHeader({
                   ) : (
                     <Link
                       href={crumb.href}
-                      className="truncate max-w-[220px] inline-flex items-center h-8 rounded-md px-2 text-[13px] text-[hsl(var(--color-foreground-muted))] transition-colors hover:bg-[hsl(var(--color-background-muted))] hover:text-[hsl(var(--color-foreground))]"
+                      className="text-[13px] text-[hsl(var(--color-foreground-muted))] rounded-md px-2 py-1 transition-colors hover:bg-[hsl(var(--color-background-muted))] hover:text-[hsl(var(--color-foreground))]"
                     >
                       {crumb.label}
                     </Link>
