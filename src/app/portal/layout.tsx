@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { AuthProvider } from "@/lib/portal/auth-context";
+import { ToastProvider } from "@/components/portal/toast";
 
 export const metadata: Metadata = {
   title: "Portal | Craefto Lab",
@@ -17,9 +18,11 @@ export default function PortalLayout({
 }) {
   return (
     <AuthProvider>
-      <div className="min-h-screen bg-[hsl(var(--color-background))]">
-        {children}
-      </div>
+      <ToastProvider>
+        <div className="min-h-screen bg-[hsl(var(--color-background))]">
+          {children}
+        </div>
+      </ToastProvider>
     </AuthProvider>
   );
 }

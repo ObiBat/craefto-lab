@@ -11,6 +11,7 @@ import {
 import { cn } from '@/lib/utils';
 import { portalPath } from '@/lib/portal/routes';
 import { fetchProjectDetail, updateTaskStatus } from '@/lib/portal/queries';
+import { sanitizeRichContent } from '@/lib/portal/sanitize';
 import { useAuth, getRoleLabel } from '@/lib/portal/auth-context';
 import { useProjectRealtime } from '@/lib/portal/realtime';
 import { StatusPill } from '@/components/portal/status-pill';
@@ -482,10 +483,17 @@ function UpdatesTab({ updates }: { updates: Update[] }) {
     >
       {sorted.map((update) => {
         const isExpanded = expandedId === update.id;
-        const isLongContent = update.content.length > 200;
-        const preview = isLongContent
-          ? update.content.slice(0, 200) + '...'
-          : update.content;
+        // Strip HTML for length check
+        const plainContent = update.content.replace(/<[^>]*>/g, '');
+        const isLongContent = plainContent.length > 200;
+        const sanitizedHtml = sanitizeRichContent(update.content);
+        // Create a truncated preview by stripping tags and slicing
+        const previewText = isLongContent
+          ? plainContent.slice(0, 200) + '...'
+          : plainContent;
+        const imageAttachments = (update.attachments ?? []).filter((a) =>
+          a.type.startsWith('image/')
+        );
 
         return (
           <motion.div
@@ -542,11 +550,33 @@ function UpdatesTab({ updates }: { updates: Update[] }) {
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.15 }}
                 >
-                  <p className="whitespace-pre-wrap text-sm leading-relaxed text-[hsl(var(--color-foreground-muted))]">
-                    {isExpanded ? update.content : preview}
-                  </p>
+                  {isExpanded ? (
+                    <div
+                      className="text-sm leading-relaxed text-[hsl(var(--color-foreground-muted))] [&_p]:my-1.5 [&_strong]:font-semibold [&_strong]:text-[hsl(var(--color-foreground))] [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5 [&_li]:my-0.5 [&_blockquote]:border-l-2 [&_blockquote]:border-[hsl(var(--color-border-strong))] [&_blockquote]:pl-3 [&_blockquote]:italic [&_code]:bg-[hsl(var(--color-background-muted))] [&_code]:rounded [&_code]:px-1 [&_code]:py-0.5 [&_code]:text-xs [&_code]:font-mono [&_a]:text-[hsl(var(--color-accent))] [&_a]:underline"
+                      dangerouslySetInnerHTML={{ __html: sanitizedHtml }}
+                    />
+                  ) : (
+                    <p className="text-sm leading-relaxed text-[hsl(var(--color-foreground-muted))]">
+                      {previewText}
+                    </p>
+                  )}
                 </motion.div>
               </AnimatePresence>
+
+              {/* Attachment thumbnails when expanded */}
+              {isExpanded && imageAttachments.length > 0 && (
+                <div className="mt-3 flex gap-2 overflow-x-auto">
+                  {imageAttachments.map((att) => (
+                    /* eslint-disable-next-line @next/next/no-img-element */
+                    <img
+                      key={att.id}
+                      src={att.url}
+                      alt={att.name}
+                      className="h-20 w-28 shrink-0 rounded-[var(--radius-md)] border border-[hsl(var(--color-border))] object-cover"
+                    />
+                  ))}
+                </div>
+              )}
 
               {isLongContent && (
                 <span className="mt-2 inline-flex items-center gap-1 text-xs font-medium text-[hsl(var(--color-accent))]">

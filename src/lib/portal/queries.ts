@@ -136,7 +136,7 @@ export async function createUpdate(input: CreateUpdateInput) {
 
   if (isDemoMode()) {
     const { getMockUser } = await import('./mock-data');
-    return { ...sanitized, id: 'upd-demo-' + Date.now(), author_id: 'user-001', pinned: false, created_at: new Date().toISOString(), updated_at: new Date().toISOString(), author: getMockUser() } as Update;
+    return { ...sanitized, id: 'upd-demo-' + Date.now(), author_id: 'user-001', pinned: false, attachments: sanitized.attachments ?? [], created_at: new Date().toISOString(), updated_at: new Date().toISOString(), author: getMockUser() } as Update;
   }
   const supabase = getClient()!;
   const { data: { user } } = await supabase.auth.getUser();
