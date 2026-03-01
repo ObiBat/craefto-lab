@@ -15,6 +15,7 @@ import { sanitizeRichContent } from '@/lib/portal/sanitize';
 import { useAuth, getRoleLabel } from '@/lib/portal/auth-context';
 import { useProjectRealtime } from '@/lib/portal/realtime';
 import { StatusPill } from '@/components/portal/status-pill';
+import { PortalHeader } from '@/components/portal/portal-header';
 import { HorizontalTimeline } from '@/components/portal/horizontal-timeline';
 import { ProgressRing } from '@/components/portal/progress-ring';
 import {
@@ -1544,34 +1545,15 @@ export default function ProjectDetailPage({
   return (
     <div className="min-h-screen bg-[hsl(var(--color-background))]">
       {/* ================================================================
-          BREADCRUMB HEADER
+          HEADER
           ================================================================ */}
-      <div className="border-b border-[hsl(var(--color-border))]">
-        <div className="mx-auto max-w-7xl px-4 py-3 sm:px-6 lg:px-8">
-          <nav className="flex items-center gap-2 text-sm" aria-label="Breadcrumb">
-            <Link
-              href={portalPath('/')}
-              className="text-[hsl(var(--color-foreground-subtle))] transition-colors hover:text-[hsl(var(--color-foreground))] min-h-0"
-            >
-              Portal
-            </Link>
-            <svg
-              width="12"
-              height="12"
-              viewBox="0 0 12 12"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              className="text-[hsl(var(--color-neutral-300))]"
-            >
-              <path d="M4.5 2.5l3 3.5-3 3.5" />
-            </svg>
-            <span className="font-medium text-[hsl(var(--color-foreground))]">
-              {project.name}
-            </span>
-          </nav>
-        </div>
-      </div>
+      <PortalHeader
+        breadcrumbs={[
+          { label: 'Projects', href: portalPath('/') },
+          { label: project.name },
+        ]}
+        user={portalUser ? { name: portalUser.full_name, role: getRoleLabel(portalUser.role) } : undefined}
+      />
 
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         {/* ================================================================

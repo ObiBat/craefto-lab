@@ -16,7 +16,7 @@ import {
   reducedMotionVariants,
 } from '@/components/ui/motion';
 import { cn } from '@/lib/utils';
-import { useAuth } from '@/lib/portal/auth-context';
+import { useAuth, getRoleLabel } from '@/lib/portal/auth-context';
 import { useRealtime } from '@/lib/portal/realtime';
 import { fetchDashboardData } from '@/lib/portal/queries';
 import { mockSparklineData } from '@/lib/portal/mock-data';
@@ -344,7 +344,9 @@ function DashboardPage() {
       {/* Main content column */}
       <div className="flex flex-1 flex-col min-w-0">
         {/* Fixed header */}
-        <PortalHeader />
+        <PortalHeader
+          user={portalUser ? { name: portalUser.full_name, role: getRoleLabel(portalUser.role) } : undefined}
+        />
 
         {/* Main content area */}
         <main className="flex-1" role="main" aria-label="Dashboard">
