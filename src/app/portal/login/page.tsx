@@ -179,7 +179,7 @@ function BrandPanel() {
         >
           <LogoStatic size="md" inverted />
           <span className="font-[family-name:var(--font-heading)] text-lg font-semibold tracking-tight">
-            Craefto Lab
+            Cræfto
           </span>
         </motion.div>
 
@@ -232,7 +232,7 @@ function BrandPanel() {
         >
           <div className="h-px w-16 bg-[hsl(var(--color-background))]/20 mb-4" />
           <p className="text-xs text-[hsl(var(--color-background))]/30 font-[family-name:var(--font-sans)]">
-            {new Date().getFullYear()} Craefto Lab. All rights reserved.
+            {new Date().getFullYear()} Cræfto. All rights reserved.
           </p>
         </motion.div>
       </div>
@@ -308,7 +308,7 @@ function LoginForm() {
         >
           <LogoStatic size="sm" />
           <span className="font-[family-name:var(--font-heading)] text-base font-semibold tracking-tight text-[hsl(var(--color-foreground))]">
-            Craefto Lab
+            Cræfto
           </span>
         </motion.div>
 
@@ -531,24 +531,9 @@ function LoginForm() {
 export default function LoginPage() {
   return (
     <main className="grid min-h-screen lg:grid-cols-[1fr_1.15fr]">
-      {/* Left: Brand panel (hidden below lg, shown as dark strip) */}
+      {/* Left: Brand panel (desktop only) */}
       <div className="hidden lg:flex">
         <BrandPanel />
-      </div>
-
-      {/* Mobile: Compact brand header */}
-      <div className="lg:hidden bg-[hsl(var(--color-foreground))] px-6 py-6">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <LogoStatic size="sm" inverted />
-            <span className="font-[family-name:var(--font-heading)] text-base font-semibold tracking-tight text-[hsl(var(--color-background))]">
-              Craefto Lab
-            </span>
-          </div>
-          <span className="text-xs font-medium uppercase tracking-[0.15em] text-[hsl(var(--color-background))]/40 font-[family-name:var(--font-sans)]">
-            Portal
-          </span>
-        </div>
       </div>
 
       {/* Right: Login form */}

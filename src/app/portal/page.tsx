@@ -203,7 +203,7 @@ export default function DashboardPage() {
   if (loading || authLoading) {
     return (
       <div className="flex min-h-screen">
-        <PortalSidebar />
+        <PortalSidebar projects={data?.projects?.map(p => ({ id: p.id, name: p.name })) ?? []} />
         <div className="flex flex-1 flex-col min-w-0">
           <PortalHeader />
           <main className="flex-1">
@@ -223,7 +223,7 @@ export default function DashboardPage() {
   return (
     <div className="flex min-h-screen">
       {/* Sidebar */}
-      <PortalSidebar />
+      <PortalSidebar projects={data?.projects?.map(p => ({ id: p.id, name: p.name })) ?? []} />
 
       {/* Main content column */}
       <div className="flex flex-1 flex-col min-w-0">
@@ -293,10 +293,8 @@ export default function DashboardPage() {
                     config.bg,
                   )}
                 >
-                  {/* Subtle decorative corner */}
-                  <div className="absolute -top-8 -right-8 h-24 w-24 rounded-full opacity-[0.04] bg-current" />
 
-                  <div className="relative flex items-start justify-between">
+                  <div className="relative">
                     <div>
                       <p className="text-xs font-medium uppercase tracking-wider text-[hsl(var(--color-foreground-subtle))] mb-2">
                         {config.label}
@@ -305,20 +303,7 @@ export default function DashboardPage() {
                         <AnimatedCounter value={value} duration={1.8} />
                       </div>
                     </div>
-                    <div
-                      className={cn(
-                        'flex items-center justify-center w-10 h-10 rounded-xl transition-transform duration-300 group-hover:scale-110',
-                        key === 'total'
-                          ? 'bg-[hsl(var(--color-neutral-200))] text-[hsl(var(--color-foreground-muted))]'
-                          : key === 'on_track'
-                            ? 'bg-[hsl(var(--color-success)/0.12)] text-[hsl(var(--color-success))]'
-                            : key === 'at_risk'
-                              ? 'bg-[hsl(var(--color-warning)/0.12)] text-[hsl(var(--color-warning))]'
-                              : 'bg-[hsl(var(--color-error)/0.12)] text-[hsl(var(--color-error))]',
-                      )}
-                    >
-                      {config.icon}
-                    </div>
+
                   </div>
                 </motion.div>
               );
