@@ -712,16 +712,14 @@ function DashboardPage() {
                 {/* Activity list */}
                 <div className="divide-y divide-[hsl(var(--color-border-subtle))]">
                   {data?.recent_updates && data.recent_updates.length > 0 ? (
-                    <motion.div
-                      initial="hidden"
-                      animate="visible"
-                      variants={containerVariant}
-                    >
+                    <AnimatePresence initial={false}>
                       {data.recent_updates.slice(0, 10).map((update) => (
                         <motion.div
                           key={update.id}
-                          variants={itemVariant}
-                          transition={transition}
+                          initial={{ opacity: 0, y: -20, height: 0 }}
+                          animate={{ opacity: 1, y: 0, height: 'auto', boxShadow: '0 0 0 0 hsla(var(--color-accent), 0)' }}
+                          exit={{ opacity: 0, y: -10, height: 0 }}
+                          transition={{ type: 'spring', stiffness: 300, damping: 30 }}
                         >
                           <ActivityItem
                             type={update.type as 'alignment' | 'decision' | 'blocker' | 'milestone' | 'task_update'}
@@ -732,7 +730,7 @@ function DashboardPage() {
                           />
                         </motion.div>
                       ))}
-                    </motion.div>
+                    </AnimatePresence>
                   ) : (
                     <div className="px-6 py-12 text-center">
                       <p className="text-sm text-[hsl(var(--color-foreground-subtle))]">
