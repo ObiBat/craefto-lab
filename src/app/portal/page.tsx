@@ -119,9 +119,31 @@ function getFormattedDate(): string {
 // DASHBOARD PAGE
 // =============================================================================
 
+function DashboardSuspenseFallback() {
+  return (
+    <div className="flex min-h-screen">
+      <div className="flex flex-1 flex-col min-w-0">
+        <div className="sticky top-0 z-40 flex h-16 w-full items-center border-b border-[hsl(var(--color-border))] bg-[hsl(var(--color-background)/.85)] px-4 backdrop-blur-lg sm:px-6 lg:px-8" />
+        <main className="flex-1 px-4 py-6 sm:p-6 md:p-8 lg:p-10">
+          <div className="max-w-[1600px] mx-auto">
+            <div className="animate-pulse space-y-6">
+              <div className="h-32 rounded-2xl bg-[hsl(var(--color-background-muted))]" />
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                <div className="h-48 rounded-xl bg-[hsl(var(--color-background-muted))]" />
+                <div className="h-48 rounded-xl bg-[hsl(var(--color-background-muted))]" />
+                <div className="h-48 rounded-xl bg-[hsl(var(--color-background-muted))]" />
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  );
+}
+
 export default function DashboardPageWrapper() {
   return (
-    <Suspense>
+    <Suspense fallback={<DashboardSuspenseFallback />}>
       <DashboardPage />
     </Suspense>
   );
