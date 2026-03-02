@@ -117,12 +117,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (isDemo) {
-      const demoLoggedIn = typeof window !== 'undefined' && sessionStorage.getItem('portal_demo_auth');
-      if (demoLoggedIn) {
-        const mockUser = getMockUser();
-        setUser({ id: mockUser.id, email: mockUser.email } as User);
-        setPortalUser(mockUser);
-      }
+      // In demo mode, always initialize with mock user.
+      // sessionStorage tracks explicit login for login page redirect,
+      // but pages should never go blank waiting for auth.
+      const mockUser = getMockUser();
+      setUser({ id: mockUser.id, email: mockUser.email } as User);
+      setPortalUser(mockUser);
       setLoading(false);
       return;
     }
