@@ -150,8 +150,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [supabase, fetchPortalUser, isDemo]);
 
   const handleSignIn = async (email: string, password: string) => {
-    // Always accept demo credentials (even when Supabase is configured)
-    if (email === DEMO_CREDENTIALS.email && password === DEMO_CREDENTIALS.password) {
+    // In demo mode (no live Supabase), use mock auth
+    if (isDemo && email === DEMO_CREDENTIALS.email && password === DEMO_CREDENTIALS.password) {
       const mockUser = getMockUser();
       setUser({ id: mockUser.id, email: mockUser.email } as User);
       setPortalUser(mockUser);
@@ -160,7 +160,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       return;
     }
 
-    // Non-demo credentials: try Supabase if available
+    // Live mode: all credentials go through real Supabase auth (needed for RLS)
     if (!supabase) {
       throw new Error('Invalid credentials. Use demo@craefto.com / demo123456');
     }
