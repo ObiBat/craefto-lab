@@ -3,7 +3,7 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 import { sanitizeRichContent } from "@/lib/portal/sanitize";
-import type { UpdateType, Attachment } from "@/lib/portal/types";
+import type { UpdateType, Attachment, ApprovalStatus } from "@/lib/portal/types";
 
 // ---------------------------------------------------------------------------
 // Activity Item — single entry in an activity / updates feed
@@ -188,6 +188,16 @@ export interface ActivityItemProps {
   attachments?: Attachment[];
   /** Show content expanded (e.g. in project detail view). */
   expanded?: boolean;
+  /** Current approval status (for decision/milestone updates). */
+  approvalStatus?: ApprovalStatus | null;
+  /** Comment left when changes were requested. */
+  approvalComment?: string | null;
+  /** Show Approve / Request Changes buttons (for stakeholder role). */
+  showApprovalActions?: boolean;
+  /** Callback when stakeholder approves. */
+  onApprove?: () => void;
+  /** Callback when stakeholder requests changes. */
+  onRequestChanges?: (comment: string) => void;
   className?: string;
 }
 
@@ -200,6 +210,11 @@ export function ActivityItem({
   content,
   attachments,
   expanded = false,
+  approvalStatus,
+  approvalComment,
+  showApprovalActions = false,
+  onApprove,
+  onRequestChanges,
   className,
 }: ActivityItemProps) {
   const Icon = typeIconMap[type];
@@ -266,7 +281,114 @@ export function ActivityItem({
             ))}
           </div>
         )}
+
+        {/* Approval badge */}
+        {approvalStatus && (
+          <div className="mt-2">
+            {approvalStatus === 'approved' && (
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-[hsl(var(--color-success-subtle))] px-2.5 py-1 text-[11px] font-semibold text-[hsl(var(--color-success))]">
+                <svg xmlns="http://www.w3.org/2000/svg" width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5" /></svg>
+                Approved
+              </span>
+            )}
+            {approvalStatus === 'changes_requested' && (
+              <div>
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-[hsl(var(--color-warning-subtle))] px-2.5 py-1 text-[11px] font-semibold text-[hsl(var(--color-warning))]">
+                  <svg xmlns="http://www.w3.org/2000/svg" width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 9v4" /><path d="M12 17h.01" /></svg>
+                  Changes Requested
+                </span>
+                {approvalComment && (
+                  <p className="mt-1 text-xs text-[hsl(var(--color-warning))] italic">
+                    &ldquo;{approvalComment}&rdquo;
+                  </p>
+                )}
+              </div>
+            )}
+            {approvalStatus === 'pending_review' && (
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-[hsl(var(--color-neutral-200))] px-2.5 py-1 text-[11px] font-semibold text-[hsl(var(--color-neutral-700))]">
+                Pending Review
+              </span>
+            )}
+          </div>
+        )}
+
+        {/* Approval action buttons (stakeholder only, for decision/milestone) */}
+        {showApprovalActions && (type === 'decision' || type === 'milestone') && approvalStatus !== 'approved' && (
+          <ApprovalActions onApprove={onApprove} onRequestChanges={onRequestChanges} />
+        )}
       </div>
     </article>
+  );
+}
+
+/* ── Approval Actions sub-component ──────────────────────────────── */
+
+function ApprovalActions({
+  onApprove,
+  onRequestChanges,
+}: {
+  onApprove?: () => void;
+  onRequestChanges?: (comment: string) => void;
+}) {
+  const [showCommentBox, setShowCommentBox] = React.useState(false);
+  const [comment, setComment] = React.useState('');
+
+  return (
+    <div className="mt-3 pt-3 border-t border-[hsl(var(--color-border))]">
+      {!showCommentBox ? (
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={onApprove}
+            className="inline-flex items-center gap-1.5 rounded-full bg-[hsl(var(--color-success))] px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-[hsl(var(--color-success)/.85)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--color-ring))]"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5" /></svg>
+            Approve
+          </button>
+          <button
+            type="button"
+            onClick={() => setShowCommentBox(true)}
+            className="inline-flex items-center gap-1.5 rounded-full border border-[hsl(var(--color-warning))] px-3 py-1.5 text-xs font-medium text-[hsl(var(--color-warning))] transition-colors hover:bg-[hsl(var(--color-warning-subtle))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--color-ring))]"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 9v4" /><path d="M12 17h.01" /></svg>
+            Request Changes
+          </button>
+        </div>
+      ) : (
+        <div className="space-y-2">
+          <textarea
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+            placeholder="Describe the changes you would like..."
+            rows={2}
+            className="w-full rounded-lg border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] px-3 py-2 text-xs text-[hsl(var(--color-foreground))] placeholder:text-[hsl(var(--color-foreground-subtle))] transition-colors focus:border-[hsl(var(--color-accent))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-ring))] resize-none"
+            aria-label="Changes requested comment"
+          />
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => {
+                if (comment.trim() && onRequestChanges) {
+                  onRequestChanges(comment.trim());
+                  setComment('');
+                  setShowCommentBox(false);
+                }
+              }}
+              disabled={!comment.trim()}
+              className="inline-flex items-center rounded-full bg-[hsl(var(--color-warning))] px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-[hsl(var(--color-warning)/.85)] disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Submit
+            </button>
+            <button
+              type="button"
+              onClick={() => { setShowCommentBox(false); setComment(''); }}
+              className="text-xs font-medium text-[hsl(var(--color-foreground-muted))] hover:text-[hsl(var(--color-foreground))]"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }

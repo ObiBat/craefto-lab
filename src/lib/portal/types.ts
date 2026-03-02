@@ -78,6 +78,8 @@ export interface Update {
   mentions: string[]; // user IDs
   pinned: boolean;
   attachments: Attachment[];
+  approval_status?: ApprovalStatus | null;
+  approval_comment?: string | null;
   created_at: string;
   updated_at: string;
   // Joined
