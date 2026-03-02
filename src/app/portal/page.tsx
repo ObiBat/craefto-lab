@@ -319,7 +319,7 @@ function DashboardPage() {
   if (loading || authLoading) {
     return (
       <div className="flex min-h-screen">
-        <PortalSidebar projects={data?.projects?.map(p => ({ id: p.id, name: p.name })) ?? []} />
+        <PortalSidebar projects={data?.projects?.map(p => ({ id: p.id, name: p.name })) ?? []} userRole={portalUser?.role} />
         <div className="flex flex-1 flex-col min-w-0">
           <PortalHeader />
           <main className="flex-1" role="main" aria-label="Dashboard">
@@ -339,7 +339,7 @@ function DashboardPage() {
   return (
     <div className="flex min-h-screen">
       {/* Sidebar */}
-      <PortalSidebar projects={data?.projects?.map(p => ({ id: p.id, name: p.name })) ?? []} />
+      <PortalSidebar projects={data?.projects?.map(p => ({ id: p.id, name: p.name })) ?? []} userRole={portalUser?.role} />
 
       {/* Main content column */}
       <div className="flex flex-1 flex-col min-w-0">
