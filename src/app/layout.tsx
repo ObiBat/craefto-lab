@@ -232,6 +232,17 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-screen antialiased">
+        {/* Subdomain path fixer: redirect clean URLs to /portal/* before React hydrates */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){
+              var h=location.hostname;
+              if(h.indexOf('project-portal')===0&&location.pathname.indexOf('/portal')!==0&&location.pathname!=='/login'){
+                location.replace('/portal'+location.pathname+location.search+location.hash);
+              }
+            })();`,
+          }}
+        />
         {/* Skip Link for Accessibility */}
         <a
           href="#main-content"
