@@ -68,7 +68,47 @@ function XIcon(props: React.SVGProps<SVGSVGElement>) {
   );
 }
 
+function MessageSquareIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...props}>
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+    </svg>
+  );
+}
+
+function FileTextIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...props}>
+      <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" />
+      <path d="M14 2v4a2 2 0 0 0 2 2h4" />
+      <path d="M10 13H8" />
+      <path d="M16 17H8" />
+      <path d="M16 13h-2" />
+    </svg>
+  );
+}
+
+function CreditCardIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...props}>
+      <rect width={20} height={14} x={2} y={5} rx={2} />
+      <line x1={2} x2={22} y1={10} y2={10} />
+    </svg>
+  );
+}
+
+function SettingsIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...props}>
+      <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
+      <circle cx={12} cy={12} r={3} />
+    </svg>
+  );
+}
+
 /* ── Types ────────────────────────────────────────────────────────── */
+
+import type { UserRole } from "@/lib/portal/types";
 
 export interface SidebarProject {
   id: string;
@@ -82,6 +122,8 @@ export interface PortalSidebarProps {
   onNewUpdate?: () => void;
   /** Hide the "New Update" button (e.g. for stakeholder role). */
   hideNewUpdate?: boolean;
+  /** Current user role — controls which nav items are visible. */
+  userRole?: UserRole;
   className?: string;
 }
 
@@ -91,6 +133,7 @@ export function PortalSidebar({
   projects = [],
   onNewUpdate,
   hideNewUpdate = false,
+  userRole,
   className,
 }: PortalSidebarProps) {
   const pathname = usePathname();
@@ -106,6 +149,14 @@ export function PortalSidebar({
   const isDashboardActive =
     pathname === "/portal" || pathname === "/portal/" || pathname === "/";
   const isProjectsActive = pathname?.startsWith("/portal/projects") || pathname?.startsWith("/projects");
+  const isRequestsActive = pathname?.startsWith("/portal/requests");
+  const isDocumentsActive = pathname?.startsWith("/portal/documents");
+  const isPaymentsActive = pathname?.startsWith("/portal/payments");
+  const isSettingsActive = pathname?.startsWith("/portal/settings");
+
+  // All roles can see Projects; stakeholder sees Requests, Documents, Payments;
+  // Admin/PM see everything including those sections
+  const showStakeholderNav = userRole === 'stakeholder' || userRole === 'admin' || userRole === 'project_manager';
 
   const isProjectActive = (projectId: string) =>
     pathname === `/portal/projects/${projectId}` ||
@@ -196,6 +247,72 @@ export function PortalSidebar({
             )}
           </AnimatePresence>
         </div>
+
+        {/* ── Stakeholder / shared nav items ────────────────── */}
+        {showStakeholderNav && (
+          <>
+            <div className="mx-3 my-2 h-px bg-[hsl(var(--color-border))]" role="separator" />
+
+            <Link
+              href={portalPath('/requests')}
+              className={cn(
+                "group flex items-center gap-3 rounded-[var(--radius-md)] px-3 py-2.5 text-sm font-medium transition-colors min-h-[44px]",
+                isRequestsActive
+                  ? "border-l-2 border-l-[hsl(var(--color-accent))] bg-[hsl(var(--color-accent-subtle))] text-[hsl(var(--color-accent))]"
+                  : "text-[hsl(var(--color-foreground-muted))] hover:bg-[hsl(var(--color-background-subtle))] hover:text-[hsl(var(--color-foreground))]",
+              )}
+              aria-current={isRequestsActive ? "page" : undefined}
+            >
+              <MessageSquareIcon />
+              Requests
+            </Link>
+
+            <Link
+              href={portalPath('/documents')}
+              className={cn(
+                "group flex items-center gap-3 rounded-[var(--radius-md)] px-3 py-2.5 text-sm font-medium transition-colors min-h-[44px]",
+                isDocumentsActive
+                  ? "border-l-2 border-l-[hsl(var(--color-accent))] bg-[hsl(var(--color-accent-subtle))] text-[hsl(var(--color-accent))]"
+                  : "text-[hsl(var(--color-foreground-muted))] hover:bg-[hsl(var(--color-background-subtle))] hover:text-[hsl(var(--color-foreground))]",
+              )}
+              aria-current={isDocumentsActive ? "page" : undefined}
+            >
+              <FileTextIcon />
+              Documents
+            </Link>
+
+            <Link
+              href={portalPath('/payments')}
+              className={cn(
+                "group flex items-center gap-3 rounded-[var(--radius-md)] px-3 py-2.5 text-sm font-medium transition-colors min-h-[44px]",
+                isPaymentsActive
+                  ? "border-l-2 border-l-[hsl(var(--color-accent))] bg-[hsl(var(--color-accent-subtle))] text-[hsl(var(--color-accent))]"
+                  : "text-[hsl(var(--color-foreground-muted))] hover:bg-[hsl(var(--color-background-subtle))] hover:text-[hsl(var(--color-foreground))]",
+              )}
+              aria-current={isPaymentsActive ? "page" : undefined}
+            >
+              <CreditCardIcon />
+              Payments
+            </Link>
+          </>
+        )}
+
+        {/* Settings — visible to all roles */}
+        <div className="mx-3 my-2 h-px bg-[hsl(var(--color-border))]" role="separator" />
+
+        <Link
+          href={portalPath('/settings')}
+          className={cn(
+            "group flex items-center gap-3 rounded-[var(--radius-md)] px-3 py-2.5 text-sm font-medium transition-colors min-h-[44px]",
+            isSettingsActive
+              ? "border-l-2 border-l-[hsl(var(--color-accent))] bg-[hsl(var(--color-accent-subtle))] text-[hsl(var(--color-accent))]"
+              : "text-[hsl(var(--color-foreground-muted))] hover:bg-[hsl(var(--color-background-subtle))] hover:text-[hsl(var(--color-foreground))]",
+          )}
+          aria-current={isSettingsActive ? "page" : undefined}
+        >
+          <SettingsIcon />
+          Settings
+        </Link>
       </nav>
 
       {/* CTA: New Update — hidden for stakeholder role */}

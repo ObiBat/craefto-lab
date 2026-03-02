@@ -1109,7 +1109,7 @@ export default function UpdateComposerPage({
   return (
     <div className="flex min-h-screen bg-[hsl(var(--color-background))]">
       {/* Sidebar */}
-      <PortalSidebar />
+      <PortalSidebar userRole={portalUser?.role} />
 
       {/* Main area */}
       <div className="flex flex-1 flex-col min-w-0">

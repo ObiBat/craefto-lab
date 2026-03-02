@@ -54,6 +54,8 @@ interface AuthContextValue {
   refreshPortalUser: () => Promise<void>;
   /** Check if the current user has permission for an action. */
   hasPermission: (action: PortalAction) => boolean;
+  /** Switch the active role in demo mode. No-op in live mode. */
+  switchDemoRole: (role: UserRole) => void;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -100,6 +102,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       return roleHasPermission(portalUser?.role, action);
     },
     [portalUser?.role],
+  );
+
+  const switchDemoRole = useCallback(
+    (role: UserRole) => {
+      if (!isDemo) return;
+      const mockUser = getMockUser(role);
+      setUser({ id: mockUser.id, email: mockUser.email } as User);
+      setPortalUser(mockUser);
+      setSession({ user: { id: mockUser.id, email: mockUser.email } } as Session);
+    },
+    [isDemo],
   );
 
   useEffect(() => {
@@ -176,9 +189,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       signOut: handleSignOut,
       refreshPortalUser,
       hasPermission,
+      switchDemoRole,
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [user, portalUser, session, loading, isDemo, refreshPortalUser, hasPermission],
+    [user, portalUser, session, loading, isDemo, refreshPortalUser, hasPermission, switchDemoRole],
   );
 
   return (

@@ -78,6 +78,8 @@ export interface Update {
   mentions: string[]; // user IDs
   pinned: boolean;
   attachments: Attachment[];
+  approval_status?: ApprovalStatus | null;
+  approval_comment?: string | null;
   created_at: string;
   updated_at: string;
   // Joined
@@ -202,3 +204,84 @@ export type ProjectFilter = 'all' | ProjectStatus;
 export type UpdateFilter = 'all' | UpdateType;
 export type TaskView = 'kanban' | 'list';
 export type ProjectTab = 'updates' | 'tasks' | 'team' | 'timeline';
+
+// ============================================================================
+// CLIENT REQUESTS
+// ============================================================================
+
+export type RequestType = 'change_request' | 'feedback' | 'question' | 'bug_report' | 'feature_request';
+
+export type RequestPriority = 'low' | 'medium' | 'high' | 'urgent';
+
+export type RequestStatus = 'pending' | 'in_review' | 'approved' | 'rejected' | 'completed';
+
+export interface RequestReply {
+  id: string;
+  request_id: string;
+  author_id: string;
+  content: string;
+  created_at: string;
+  author?: PortalUser;
+}
+
+export interface ClientRequest {
+  id: string;
+  project_id: string;
+  author_id: string;
+  title: string;
+  description: string;
+  type: RequestType;
+  priority: RequestPriority;
+  status: RequestStatus;
+  attachments: Attachment[];
+  created_at: string;
+  updated_at: string;
+  author?: PortalUser;
+  project?: Project;
+  replies?: RequestReply[];
+}
+
+// ============================================================================
+// DOCUMENT VAULT
+// ============================================================================
+
+export type DocumentCategory = 'contracts' | 'brand_assets' | 'deliverables' | 'reports' | 'invoices';
+
+export interface PortalDocument {
+  id: string;
+  project_id: string;
+  name: string;
+  file_type: string; // e.g. 'pdf', 'png', 'docx', 'xlsx'
+  size: number; // bytes
+  category: DocumentCategory;
+  uploaded_by: string;
+  uploaded_at: string;
+  download_url: string;
+  uploader?: PortalUser;
+}
+
+// ============================================================================
+// INVOICES / PAYMENTS
+// ============================================================================
+
+export type InvoiceStatus = 'draft' | 'sent' | 'paid' | 'overdue';
+
+export interface Invoice {
+  id: string;
+  project_id: string;
+  number: string;
+  description: string;
+  amount: number; // AUD cents
+  status: InvoiceStatus;
+  due_date: string;
+  paid_at: string | null;
+  stripe_checkout_url: string | null;
+  created_at: string;
+  project?: Project;
+}
+
+// ============================================================================
+// APPROVAL WORKFLOW
+// ============================================================================
+
+export type ApprovalStatus = 'pending_review' | 'approved' | 'changes_requested';
