@@ -19,9 +19,10 @@ import { cn } from '@/lib/utils';
 import { useAuth, getRoleLabel } from '@/lib/portal/auth-context';
 import { useRealtime } from '@/lib/portal/realtime';
 import { fetchDashboardData } from '@/lib/portal/queries';
-import { mockSparklineData } from '@/lib/portal/mock-data';
+import { mockSparklineData, getMockRequests, getMockInvoices } from '@/lib/portal/mock-data';
 import type { DashboardData, ProjectFilter, PortalUser } from '@/lib/portal/types';
-import { portalLoginPath } from '@/lib/portal/routes';
+import { portalLoginPath, portalPath } from '@/lib/portal/routes';
+import Link from 'next/link';
 
 // Portal components (built separately)
 import { PortalHeader } from '@/components/portal/portal-header';
@@ -269,6 +270,21 @@ function DashboardPage() {
 
   const firstName = portalUser?.full_name?.split(' ')[0] ?? 'there';
   const activeMemberName = allMembers.find((m) => m.id === activeMember)?.full_name;
+  const isStakeholder = portalUser?.role === 'stakeholder';
+
+  // Stakeholder-specific stats
+  const stakeholderStats = useMemo(() => {
+    if (!isStakeholder) return null;
+    const requests = getMockRequests();
+    const invoices = getMockInvoices();
+    const activeProjects = data?.projects.filter((p) => p.status !== 'completed' && p.status !== 'paused').length ?? 0;
+    const pendingRequests = requests.filter((r) => r.status === 'pending' || r.status === 'in_review').length;
+    const recentUpdates = data?.recent_updates.length ?? 0;
+    const outstandingAmount = invoices
+      .filter((inv) => inv.status === 'sent' || inv.status === 'overdue')
+      .reduce((sum, inv) => sum + inv.amount, 0);
+    return { activeProjects, pendingRequests, recentUpdates, outstandingAmount };
+  }, [isStakeholder, data]);
 
   // ---------------------------------------------------------------------------
   // Keyboard navigation for filter tabs
@@ -372,14 +388,61 @@ function DashboardPage() {
                   {getFormattedDate()}
                 </p>
                 <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-[2.75rem] font-semibold tracking-tight leading-[1.1] text-[hsl(var(--color-foreground))] font-[family-name:var(--font-heading)]">
-                  {getGreeting()},{' '}
+                  {isStakeholder ? 'Welcome back, ' : `${getGreeting()}, `}
                   <span className="text-[hsl(var(--color-accent))]">
                     {firstName}
                   </span>
                 </h1>
                 <p className="mt-3 text-base text-[hsl(var(--color-foreground-muted))] max-w-xl leading-relaxed">
-                  Here is what is happening across your projects today. Stay informed, stay aligned.
+                  {isStakeholder
+                    ? 'Here is the latest on your projects. Review updates, submit requests, and track progress.'
+                    : 'Here is what is happening across your projects today. Stay informed, stay aligned.'}
                 </p>
+
+                {/* Stakeholder quick stats */}
+                {isStakeholder && stakeholderStats && (
+                  <div className="flex flex-wrap gap-4 mt-5">
+                    <div className="flex items-center gap-2 rounded-lg bg-[hsl(var(--color-background-subtle))] border border-[hsl(var(--color-border))] px-3 py-2">
+                      <span className="text-lg font-semibold text-[hsl(var(--color-accent))] font-[family-name:var(--font-heading)]">{stakeholderStats.activeProjects}</span>
+                      <span className="text-xs text-[hsl(var(--color-foreground-muted))]">active projects</span>
+                    </div>
+                    <div className="flex items-center gap-2 rounded-lg bg-[hsl(var(--color-background-subtle))] border border-[hsl(var(--color-border))] px-3 py-2">
+                      <span className="text-lg font-semibold text-[hsl(var(--color-warning))] font-[family-name:var(--font-heading)]">{stakeholderStats.pendingRequests}</span>
+                      <span className="text-xs text-[hsl(var(--color-foreground-muted))]">pending requests</span>
+                    </div>
+                    <div className="flex items-center gap-2 rounded-lg bg-[hsl(var(--color-background-subtle))] border border-[hsl(var(--color-border))] px-3 py-2">
+                      <span className="text-lg font-semibold text-[hsl(var(--color-foreground))] font-[family-name:var(--font-heading)]">{stakeholderStats.recentUpdates}</span>
+                      <span className="text-xs text-[hsl(var(--color-foreground-muted))]">unread updates</span>
+                    </div>
+                  </div>
+                )}
+
+                {/* Stakeholder quick actions */}
+                {isStakeholder && (
+                  <div className="flex flex-wrap gap-3 mt-5">
+                    <Link
+                      href={portalPath('/requests/new')}
+                      className="inline-flex items-center gap-2 rounded-full bg-[hsl(var(--color-accent))] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[hsl(var(--color-accent-hover))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--color-ring))]"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14" /><path d="M12 5v14" /></svg>
+                      Submit a Request
+                    </Link>
+                    <Link
+                      href={portalPath('/documents')}
+                      className="inline-flex items-center gap-2 rounded-full border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] px-4 py-2 text-sm font-medium text-[hsl(var(--color-foreground))] transition-colors hover:bg-[hsl(var(--color-background-subtle))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--color-ring))]"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" /><path d="M14 2v4a2 2 0 0 0 2 2h4" /></svg>
+                      View Documents
+                    </Link>
+                    <Link
+                      href={portalPath('/payments')}
+                      className="inline-flex items-center gap-2 rounded-full border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] px-4 py-2 text-sm font-medium text-[hsl(var(--color-foreground))] transition-colors hover:bg-[hsl(var(--color-background-subtle))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--color-ring))]"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect width={20} height={14} x={2} y={5} rx={2} /><line x1={2} x2={22} y1={10} y2={10} /></svg>
+                      View Invoices
+                    </Link>
+                  </div>
+                )}
               </div>
             </div>
           </AnimatedSection>
