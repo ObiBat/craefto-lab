@@ -106,7 +106,7 @@ function formatFileSize(bytes: number): string {
 // ---------------------------------------------------------------------------
 
 export default function RequestDetailPage() {
-  const { portalUser, user, loading: authLoading, signOut, hasPermission } = useAuth();
+  const { portalUser, user, loading: authLoading, signOut, hasPermission, isDemo} = useAuth();
   const router = useRouter();
   const params = useParams();
   const prefersReducedMotion = useReducedMotion();
@@ -121,7 +121,7 @@ export default function RequestDetailPage() {
   const canManage = hasPermission('create_update'); // admin, PM, team members
 
   useEffect(() => {
-    if (!authLoading && !user) {
+    if (!authLoading && !user && !isDemo) {
       router.replace(portalLoginPath());
     }
   }, [authLoading, user, router]);

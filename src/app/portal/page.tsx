@@ -150,13 +150,13 @@ export default function DashboardPageWrapper() {
 }
 
 function DashboardPage() {
-  const { portalUser, user, loading: authLoading } = useAuth();
+  const { portalUser, user, loading: authLoading, isDemo} = useAuth();
   const authRouter = useRouter();
   const searchParams = useSearchParams();
 
   // Redirect to login if not authenticated
   useEffect(() => {
-    if (!authLoading && !user) {
+    if (!authLoading && !user && !isDemo) {
       authRouter.replace(portalLoginPath());
     }
   }, [authLoading, user, authRouter]);

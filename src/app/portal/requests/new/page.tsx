@@ -60,7 +60,7 @@ function SendIcon(props: React.SVGProps<SVGSVGElement>) {
 // ---------------------------------------------------------------------------
 
 export default function NewRequestPage() {
-  const { portalUser, user, loading: authLoading, signOut } = useAuth();
+  const { portalUser, user, loading: authLoading, signOut, isDemo} = useAuth();
   const router = useRouter();
   const prefersReducedMotion = useReducedMotion();
   const { toast } = useToast();
@@ -76,7 +76,7 @@ export default function NewRequestPage() {
   const [priority, setPriority] = useState<RequestPriority>('medium');
 
   useEffect(() => {
-    if (!authLoading && !user) {
+    if (!authLoading && !user && !isDemo) {
       router.replace(portalLoginPath());
     }
   }, [authLoading, user, router]);

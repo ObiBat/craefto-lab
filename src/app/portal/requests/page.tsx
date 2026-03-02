@@ -54,7 +54,7 @@ const STATUS_FILTERS: { value: 'all' | RequestStatus; label: string }[] = [
 // ---------------------------------------------------------------------------
 
 export default function RequestsPage() {
-  const { portalUser, user, loading: authLoading, signOut } = useAuth();
+  const { portalUser, user, loading: authLoading, signOut, isDemo} = useAuth();
   const router = useRouter();
   const prefersReducedMotion = useReducedMotion();
 
@@ -63,7 +63,7 @@ export default function RequestsPage() {
   const [statusFilter, setStatusFilter] = useState<'all' | RequestStatus>('all');
 
   useEffect(() => {
-    if (!authLoading && !user) {
+    if (!authLoading && !user && !isDemo) {
       router.replace(portalLoginPath());
     }
   }, [authLoading, user, router]);

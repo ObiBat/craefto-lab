@@ -48,7 +48,7 @@ const STATUS_FILTERS: { value: 'all' | InvoiceStatus; label: string }[] = [
 // ---------------------------------------------------------------------------
 
 export default function PaymentsPage() {
-  const { portalUser, user, loading: authLoading, signOut } = useAuth();
+  const { portalUser, user, loading: authLoading, signOut, isDemo} = useAuth();
   const router = useRouter();
   const prefersReducedMotion = useReducedMotion();
 
@@ -57,7 +57,7 @@ export default function PaymentsPage() {
   const [statusFilter, setStatusFilter] = useState<'all' | InvoiceStatus>('all');
 
   useEffect(() => {
-    if (!authLoading && !user) {
+    if (!authLoading && !user && !isDemo) {
       router.replace(portalLoginPath());
     }
   }, [authLoading, user, router]);

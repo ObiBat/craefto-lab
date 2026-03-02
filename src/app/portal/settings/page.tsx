@@ -15,11 +15,11 @@ import { NotificationSettings } from '@/components/portal/notification-settings'
 // ---------------------------------------------------------------------------
 
 export default function SettingsPage() {
-  const { portalUser, user, loading: authLoading, signOut } = useAuth();
+  const { portalUser, user, loading: authLoading, signOut, isDemo} = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if (!authLoading && !user) {
+    if (!authLoading && !user && !isDemo) {
       router.replace(portalLoginPath());
     }
   }, [authLoading, user, router]);

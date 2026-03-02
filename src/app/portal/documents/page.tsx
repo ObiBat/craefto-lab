@@ -63,7 +63,7 @@ const CATEGORY_FILTERS: { value: 'all' | DocumentCategory; label: string }[] = [
 // ---------------------------------------------------------------------------
 
 export default function DocumentsPage() {
-  const { portalUser, user, loading: authLoading, signOut, hasPermission } = useAuth();
+  const { portalUser, user, loading: authLoading, signOut, hasPermission, isDemo} = useAuth();
   const router = useRouter();
   const prefersReducedMotion = useReducedMotion();
 
@@ -75,7 +75,7 @@ export default function DocumentsPage() {
   const canUpload = hasPermission('create_update');
 
   useEffect(() => {
-    if (!authLoading && !user) {
+    if (!authLoading && !user && !isDemo) {
       router.replace(portalLoginPath());
     }
   }, [authLoading, user, router]);
