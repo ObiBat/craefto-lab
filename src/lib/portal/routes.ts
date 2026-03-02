@@ -28,6 +28,14 @@ export function isPortalSubdomain(): boolean {
  */
 export function portalPath(path: string = '/'): string {
   const normalized = path === '/' ? '' : path.startsWith('/') ? path : `/${path}`;
+
+  // On subdomain, return clean paths (no /portal prefix).
+  // The middleware rewrites these to /portal/* server-side,
+  // and the catch-all route at src/app/(portal-alias) handles client-side.
+  if (isPortalSubdomain()) {
+    return normalized || '/';
+  }
+
   return `/portal${normalized}`;
 }
 
