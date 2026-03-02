@@ -71,11 +71,16 @@ function isPortalDemoMode(): boolean {
 }
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
-  const [portalUser, setPortalUser] = useState<PortalUser | null>(null);
-  const [session, setSession] = useState<Session | null>(null);
-  const [loading, setLoading] = useState(true);
   const isDemo = isPortalDemoMode();
+  const _demoUser = isDemo ? getMockUser() : null;
+  const [user, setUser] = useState<User | null>(
+    _demoUser ? { id: _demoUser.id, email: _demoUser.email } as User : null
+  );
+  const [portalUser, setPortalUser] = useState<PortalUser | null>(_demoUser);
+  const [session, setSession] = useState<Session | null>(
+    _demoUser ? { user: { id: _demoUser.id, email: _demoUser.email } } as Session : null
+  );
+  const [loading, setLoading] = useState(!isDemo);
 
   const supabase = isDemo ? null : createBrowserClient();
 
@@ -117,13 +122,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (isDemo) {
-      // In demo mode, always initialize with mock user.
-      // sessionStorage tracks explicit login for login page redirect,
-      // but pages should never go blank waiting for auth.
-      const mockUser = getMockUser();
-      setUser({ id: mockUser.id, email: mockUser.email } as User);
-      setPortalUser(mockUser);
-      setLoading(false);
+      // Demo state already initialized synchronously in useState.
+      // Nothing to do here.
       return;
     }
 
