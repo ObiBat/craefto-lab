@@ -92,7 +92,10 @@ const mockTimeline: TimelineEvent[] = [
   { id: 'tl-005', type: 'update', title: 'Design system finalised', description: 'Paper & Ink theme locked in', timestamp: '2026-02-15T09:00:00Z', actor: mockUsers[0] },
 ];
 
-export function getMockUser(): PortalUser { return mockUsers[0]; }
+export function getMockUser(role?: PortalUser['role']): PortalUser {
+  if (!role) return mockUsers[0];
+  return mockUsers.find((u) => u.role === role) ?? mockUsers[0];
+}
 export function getMockUsers(): PortalUser[] { return mockUsers; }
 
 export function getMockDashboardData(): DashboardData {
