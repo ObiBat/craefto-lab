@@ -2,7 +2,7 @@
 // LINEAR API CLIENT — Sync projects & tasks from Linear
 // ============================================================================
 
-import type { LinearProject, LinearIssue } from './types';
+import type { LinearProject, LinearIssue, LinearTask, LinearMilestone, ProjectStatus } from './types';
 
 const LINEAR_API_URL = 'https://api.linear.app/graphql';
 
@@ -142,7 +142,132 @@ export async function fetchLinearTeamIssues(teamId: string): Promise<LinearIssue
 }
 
 // ============================================================================
-// MAP LINEAR STATE TO PORTAL STATUS
+// FETCH PROJECT TASKS (simplified for portal v2)
+// ============================================================================
+
+export async function fetchLinearProjectTasks(projectId: string): Promise<LinearTask[]> {
+  const data = await linearQuery<{
+    project: {
+      issues: {
+        nodes: Array<{
+          id: string;
+          title: string;
+          state: { name: string };
+          assignee: { name: string } | null;
+          priority: number;
+        }>;
+      };
+    };
+  }>(
+    `
+    query($projectId: String!) {
+      project(id: $projectId) {
+        issues(first: 100, orderBy: updatedAt) {
+          nodes {
+            id
+            title
+            state { name }
+            assignee { name }
+            priority
+          }
+        }
+      }
+    }
+  `,
+    { projectId }
+  );
+
+  return data.project.issues.nodes.map((issue) => ({
+    id: issue.id,
+    title: issue.title,
+    status: issue.state.name,
+    assignee: issue.assignee?.name ?? null,
+    priority: issue.priority,
+  }));
+}
+
+// ============================================================================
+// FETCH PROJECT MILESTONES
+// ============================================================================
+
+export async function fetchLinearMilestones(projectId: string): Promise<LinearMilestone[]> {
+  const data = await linearQuery<{
+    project: {
+      projectMilestones: {
+        nodes: Array<{
+          id: string;
+          name: string;
+          targetDate: string | null;
+          sortOrder: number;
+        }>;
+      };
+      progress: number;
+    };
+  }>(
+    `
+    query($projectId: String!) {
+      project(id: $projectId) {
+        progress
+        projectMilestones {
+          nodes {
+            id
+            name
+            targetDate
+            sortOrder
+          }
+        }
+      }
+    }
+  `,
+    { projectId }
+  );
+
+  const milestones = data.project.projectMilestones.nodes;
+  const now = new Date();
+
+  return milestones.map((m) => {
+    let status: LinearMilestone['status'] = 'planned';
+    if (m.targetDate) {
+      const target = new Date(m.targetDate);
+      if (target < now) {
+        status = 'completed';
+      } else {
+        // Find the nearest upcoming milestone — mark it active
+        const upcomingMilestones = milestones
+          .filter((ms) => ms.targetDate && new Date(ms.targetDate) >= now)
+          .sort((a, b) => new Date(a.targetDate!).getTime() - new Date(b.targetDate!).getTime());
+        if (upcomingMilestones.length > 0 && upcomingMilestones[0].id === m.id) {
+          status = 'active';
+        }
+      }
+    }
+
+    return {
+      id: m.id,
+      name: m.name,
+      targetDate: m.targetDate,
+      status,
+    };
+  });
+}
+
+// ============================================================================
+// MAP LINEAR PROJECT STATUS TO PORTAL STATUS
+// ============================================================================
+
+export function mapLinearProjectStatusToPortal(state: string): ProjectStatus {
+  const mapping: Record<string, ProjectStatus> = {
+    started: 'on_track',
+    planned: 'on_track',
+    paused: 'at_risk',
+    canceled: 'blocked',
+    completed: 'completed',
+  };
+  return mapping[state] ?? 'on_track';
+}
+
+// ============================================================================
+// MAP LINEAR STATE TO PORTAL TASK STATUS
 // ============================================================================
 
 export function mapLinearStateToTaskStatus(stateType: string): string {
