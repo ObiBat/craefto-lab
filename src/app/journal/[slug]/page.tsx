@@ -168,7 +168,7 @@ export async function generateMetadata({
 
   if (!article) {
     return {
-      title: "Article Not Found | Craefto Lab",
+      title: "Article Not Found | Craefto",
     };
   }
 
@@ -176,7 +176,7 @@ export async function generateMetadata({
   const ogImageUrl = `${baseUrl}/journal/${slug}/opengraph-image`;
   
   return {
-    title: article.meta_title || `${article.title} | Craefto Lab Journal`,
+    title: article.meta_title || `${article.title} | Craefto Journal`,
     description: article.meta_description || article.excerpt,
     openGraph: {
       title: article.title,
@@ -185,7 +185,7 @@ export async function generateMetadata({
       publishedTime: article.published_at || undefined,
       authors: [article.author_name],
       url: `${baseUrl}/journal/${slug}`,
-      siteName: "Craefto Lab",
+      siteName: "Craefto",
       images: [
         {
           url: ogImageUrl,
@@ -316,7 +316,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
               },
               publisher: {
                 "@type": "Organization",
-                name: "Craefto Lab",
+                name: "Craefto",
                 logo: {
                   "@type": "ImageObject",
                   url: "https://www.craefto.com/logo.png",

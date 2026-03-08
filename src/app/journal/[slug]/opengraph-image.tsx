@@ -2,7 +2,7 @@ import { ImageResponse } from "next/og";
 import { createServerClient } from "@/lib/supabase";
 
 export const runtime = "edge";
-export const alt = "Craefto Lab Journal Article";
+export const alt = "Craefto Journal Article";
 export const size = {
   width: 1200,
   height: 630,
@@ -102,7 +102,7 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
               color: "#1A1714",
             }}
           >
-            Craefto Lab
+            Craefto
           </div>
         </div>
 

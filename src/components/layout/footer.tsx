@@ -28,7 +28,7 @@ export function Footer() {
               <Link
                 href="/"
                 className="inline-block mb-4"
-                aria-label="Craefto Lab - Home"
+                aria-label="Craefto - Home"
               >
                 <Logo size="md" inverted />
               </Link>

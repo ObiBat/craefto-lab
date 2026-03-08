@@ -280,7 +280,7 @@ async function notifyAdminOfSignature(signature: {
 
   try {
     await resend.emails.send({
-      from: 'Craefto Lab <noreply@craeftolab.com>',
+      from: 'Craefto <noreply@craeftolab.com>',
       to: adminEmail,
       subject: `Signature Received: ${document.document_number}`,
       html: `
@@ -342,7 +342,7 @@ async function sendCompletionEmails(
   if (adminEmail) {
     try {
       await resend.emails.send({
-        from: 'Craefto Lab <noreply@craeftolab.com>',
+        from: 'Craefto <noreply@craeftolab.com>',
         to: adminEmail,
         subject: `✓ Fully Signed: ${document.document_number}`,
         html: emailContent,
@@ -356,7 +356,7 @@ async function sendCompletionEmails(
   if (document.lead?.email) {
     try {
       await resend.emails.send({
-        from: 'Craefto Lab <noreply@craeftolab.com>',
+        from: 'Craefto <noreply@craeftolab.com>',
         to: document.lead.email,
         subject: `Your Signed Document: ${document.document_number}`,
         html: emailContent.replace(

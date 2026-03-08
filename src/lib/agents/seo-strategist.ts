@@ -2,7 +2,7 @@ import { createServerClient } from "@/lib/supabase";
 import { BaseAgent, callLLM, parseJSONResponse } from "./base-agent";
 import type { SEOStrategistInput, SEOStrategistOutput, ContentBrief } from "./types";
 
-const SYSTEM_PROMPT = `You are an SEO Strategist agent for Craefto Lab. Your job is to optimize content briefs for search visibility while maintaining editorial quality.
+const SYSTEM_PROMPT = `You are an SEO Strategist agent for Craefto. Your job is to optimize content briefs for search visibility while maintaining editorial quality.
 
 Your responsibilities:
 1. Identify the primary keyword with best opportunity

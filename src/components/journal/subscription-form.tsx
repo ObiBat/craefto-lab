@@ -83,7 +83,7 @@ function SubscriptionFormInner() {
           You're subscribed!
         </p>
         <p className="text-[hsl(var(--color-foreground-muted))] text-sm">
-          Welcome to the Craefto Lab Journal. Check your inbox for a welcome email.
+          Welcome to the Craefto Journal. Check your inbox for a welcome email.
         </p>
       </div>
     );
@@ -111,7 +111,7 @@ function SubscriptionFormInner() {
           You're already subscribed
         </p>
         <p className="text-[hsl(var(--color-foreground-muted))] text-sm">
-          Thanks for being part of the Craefto Lab community.
+          Thanks for being part of the Craefto community.
         </p>
       </div>
     );

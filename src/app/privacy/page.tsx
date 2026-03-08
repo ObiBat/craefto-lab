@@ -6,7 +6,7 @@ import { Separator } from "@/components/ui/separator";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
-  description: "Learn how Craefto Lab collects, uses, and protects your personal information.",
+  description: "Learn how Craefto collects, uses, and protects your personal information.",
 };
 
 interface ContentItem {

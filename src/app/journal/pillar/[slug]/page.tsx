@@ -75,19 +75,19 @@ export async function generateMetadata({ params }: PillarPageProps): Promise<Met
 
   if (!pillar) {
     return {
-      title: "Pillar Not Found | Craefto Lab Journal",
+      title: "Pillar Not Found | Craefto Journal",
     };
   }
 
   return {
-    title: `${pillar.name} | Craefto Lab Journal`,
-    description: pillar.description || `Articles about ${pillar.name} from Craefto Lab.`,
+    title: `${pillar.name} | Craefto Journal`,
+    description: pillar.description || `Articles about ${pillar.name} from Craefto.`,
     alternates: {
       canonical: `https://www.craefto.com/journal/pillar/${pillar.slug}`,
     },
     openGraph: {
-      title: `${pillar.name} | Craefto Lab Journal`,
-      description: pillar.description || `Articles about ${pillar.name} from Craefto Lab.`,
+      title: `${pillar.name} | Craefto Journal`,
+      description: pillar.description || `Articles about ${pillar.name} from Craefto.`,
       url: `https://www.craefto.com/journal/pillar/${pillar.slug}`,
       type: "website",
     },
@@ -177,7 +177,7 @@ export default async function PillarPage({ params }: PillarPageProps) {
             url: `https://www.craefto.com/journal/pillar/${pillar.slug}`,
             isPartOf: {
               "@type": "Blog",
-              name: "Craefto Lab Journal",
+              name: "Craefto Journal",
               url: "https://www.craefto.com/journal",
             },
             breadcrumb: {

@@ -10,7 +10,7 @@ if (!apiKey) {
 // Using a placeholder key for build time to prevent initialization errors
 export const resend = new Resend(apiKey || 're_placeholder_key');
 
-export const EMAIL_FROM = process.env.RESEND_FROM_EMAIL || 'Craefto Lab <hello@craefto.com>';
+export const EMAIL_FROM = process.env.RESEND_FROM_EMAIL || 'Craefto <hello@craefto.com>';
 export const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'hello@craefto.com';
 
 // Helper to check if emails are enabled

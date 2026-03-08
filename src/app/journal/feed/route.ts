@@ -13,15 +13,15 @@ export async function GET() {
   const feed = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
-    <title>Craefto Lab Journal</title>
+    <title>Craefto Journal</title>
     <link>${baseUrl}/journal</link>
-    <description>Insights on systems thinking, applied AI, product craft, and creative technology from the Craefto Lab team.</description>
+    <description>Insights on systems thinking, applied AI, product craft, and creative technology from the Craefto team.</description>
     <language>en-us</language>
     <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
     <atom:link href="${baseUrl}/journal/feed" rel="self" type="application/rss+xml"/>
     <image>
       <url>${baseUrl}/logo.png</url>
-      <title>Craefto Lab Journal</title>
+      <title>Craefto Journal</title>
       <link>${baseUrl}/journal</link>
     </image>
     ${(articles || [])

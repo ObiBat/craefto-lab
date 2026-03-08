@@ -638,7 +638,7 @@ export function generateDefaultInvoiceContent(
     clientName: lead.name,
     clientEmail: lead.email,
 
-    providerCompany: 'Craefto Lab',
+    providerCompany: 'Craefto',
     providerAddress: 'Melbourne, Victoria, Australia',
     providerABN: '00 000 000 000', // Placeholder
 

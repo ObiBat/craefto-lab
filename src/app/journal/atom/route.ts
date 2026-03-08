@@ -14,20 +14,20 @@ export async function GET() {
 
   const feed = `<?xml version="1.0" encoding="UTF-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-  <title>Craefto Lab Journal</title>
+  <title>Craefto Journal</title>
   <subtitle>Insights on systems thinking, applied AI, product craft, and creative technology</subtitle>
   <link href="${baseUrl}/journal/atom" rel="self" type="application/atom+xml"/>
   <link href="${baseUrl}/journal" rel="alternate" type="text/html"/>
   <id>${baseUrl}/journal</id>
   <updated>${new Date(latestUpdate).toISOString()}</updated>
   <author>
-    <name>Craefto Lab</name>
+    <name>Craefto</name>
     <email>hello@craefto.com</email>
     <uri>${baseUrl}</uri>
   </author>
   <icon>${baseUrl}/favicon.ico</icon>
   <logo>${baseUrl}/logo.png</logo>
-  <rights>Copyright ${new Date().getFullYear()} Craefto Lab</rights>
+  <rights>Copyright ${new Date().getFullYear()} Craefto</rights>
   ${(articles || [])
     .map(
       (article) => `

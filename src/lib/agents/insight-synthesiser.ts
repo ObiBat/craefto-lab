@@ -8,7 +8,7 @@ import type {
   OutlineItem,
 } from "./types";
 
-const SYSTEM_PROMPT = `You are an Insight Synthesiser agent for Craefto Lab, transforming raw content insights into comprehensive content briefs.
+const SYSTEM_PROMPT = `You are an Insight Synthesiser agent for Craefto, transforming raw content insights into comprehensive content briefs.
 
 Your job is to:
 1. Analyze the insight and identify the most compelling angle

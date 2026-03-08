@@ -2,7 +2,7 @@ import { createServerClient } from "@/lib/supabase";
 import { BaseAgent, callLLM, parseJSONResponse } from "./base-agent";
 import type { TrendScannerInput, TrendScannerOutput, ContentInsight } from "./types";
 
-const SYSTEM_PROMPT = `You are a Trend Scanner agent for Craefto Lab, a creative tech studio specializing in design systems, applied AI, and product development.
+const SYSTEM_PROMPT = `You are a Trend Scanner agent for Craefto, a creative tech studio specializing in design systems, applied AI, and product development.
 
 Your job is to identify content opportunities by analyzing topics for:
 1. Trending discussions in the tech/design community
@@ -28,7 +28,7 @@ For each insight, provide:
 
 Return your analysis as JSON.`;
 
-const USER_PROMPT_TEMPLATE = `Analyze the following topics and identify content opportunities for Craefto Lab:
+const USER_PROMPT_TEMPLATE = `Analyze the following topics and identify content opportunities for Craefto:
 
 Topics to analyze:
 {{topics}}

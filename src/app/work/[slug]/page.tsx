@@ -307,7 +307,7 @@ const projects: CaseStudy[] = [
       { label: "Page Load Time", value: "< 1.2s" },
     ],
     testimonial: {
-      quote: "Craefto Lab didn&apos;t just design our brand. They helped us understand who we are. The system they created has become the foundation for everything we do.",
+      quote: "Craefto didn&apos;t just design our brand. They helped us understand who we are. The system they created has become the foundation for everything we do.",
       author: "Sarah Chen",
       role: "CEO & Co-founder",
       company: "Alpha Inc.",

@@ -6,7 +6,7 @@ import { Separator } from "@/components/ui/separator";
 
 export const metadata: Metadata = {
   title: "Terms of Service",
-  description: "Terms and conditions for using Craefto Lab services and website.",
+  description: "Terms and conditions for using Craefto services and website.",
 };
 
 interface ContentItem {
@@ -26,7 +26,7 @@ const sections: SectionData[] = [
     title: "Acceptance of Terms",
     content: [
       {
-        text: "By accessing or using the Craefto Lab website and services, you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our website or services. We reserve the right to update these terms at any time, and your continued use constitutes acceptance of any changes.",
+        text: "By accessing or using the Craefto website and services, you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our website or services. We reserve the right to update these terms at any time, and your continued use constitutes acceptance of any changes.",
       },
     ],
   },
@@ -35,7 +35,7 @@ const sections: SectionData[] = [
     title: "Our Services",
     content: [
       {
-        text: "Craefto Lab provides design and development services including brand identity, design systems, web design and development, creative technology products, SaaS development, and AI-powered systems. The specific scope, deliverables, timeline, and fees for any project will be outlined in a separate proposal or statement of work agreed upon by both parties.",
+        text: "Craefto provides design and development services including brand identity, design systems, web design and development, creative technology products, SaaS development, and AI-powered systems. The specific scope, deliverables, timeline, and fees for any project will be outlined in a separate proposal or statement of work agreed upon by both parties.",
       },
     ],
   },
@@ -98,7 +98,7 @@ const sections: SectionData[] = [
     title: "Limitation of Liability",
     content: [
       {
-        text: "To the maximum extent permitted by law, Craefto Lab shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising from your use of our services or website. Our total liability shall not exceed the amount paid by you for the specific services giving rise to the claim.",
+        text: "To the maximum extent permitted by law, Craefto shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising from your use of our services or website. Our total liability shall not exceed the amount paid by you for the specific services giving rise to the claim.",
       },
     ],
   },
@@ -162,7 +162,7 @@ export default function TermsPage() {
                 </HeroText>
                 <HeroText delay={0.2}>
                   <p className="text-lg text-[hsl(var(--color-foreground-muted))] leading-relaxed">
-                    These terms govern your use of our website and services. Please read them carefully before engaging with Craefto Lab.
+                    These terms govern your use of our website and services. Please read them carefully before engaging with Craefto.
                   </p>
                 </HeroText>
                 <HeroText delay={0.3}>

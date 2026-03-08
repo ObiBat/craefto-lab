@@ -47,7 +47,7 @@ export function AdminNotificationEmail({ lead, leadId }: AdminNotificationEmailP
             <td style="text-align: center; padding-bottom: 10px;">
               <img src="${LOGO_DATA_URI}" alt="Craefto" width="28" height="20" style="display: inline-block; vertical-align: middle;" />
               <span style="margin-left: 8px; font-family: ${FONT_STACK}; font-size: 12px; font-weight: 600; letter-spacing: 0.5px; color: #6B6B6B; vertical-align: middle;">
-                Craefto Lab
+                Craefto
               </span>
             </td>
           </tr>

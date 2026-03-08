@@ -35,7 +35,7 @@ export function LeadConfirmationEmail({ name, service }: LeadConfirmationEmailPr
             <td style="padding: 40px 40px 30px; text-align: center; border-bottom: 1px solid #F0EDE8;">
               <img src="${LOGO_DATA_URI}" alt="Craefto" width="35" height="25" style="display: inline-block; vertical-align: middle;" />
               <div style="margin-top: 12px; font-family: ${FONT_STACK}; font-size: 13px; font-weight: 600; letter-spacing: 0.5px; color: #1A1714;">
-                Craefto Lab
+                Craefto
               </div>
             </td>
           </tr>
@@ -75,7 +75,7 @@ export function LeadConfirmationEmail({ name, service }: LeadConfirmationEmailPr
             <td style="padding: 30px 40px; background-color: #FAF7F2; border-top: 1px solid #F0EDE8;">
               <p style="margin: 0; font-size: 14px; color: #9A9A9A; line-height: 1.6;">
                 Best,<br>
-                <strong style="color: #6B6B6B;">The Craefto Lab Team</strong>
+                <strong style="color: #6B6B6B;">The Craefto Team</strong>
               </p>
 
               <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #E8E5E0;">

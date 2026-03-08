@@ -79,19 +79,19 @@ export async function generateMetadata({ params }: AuthorPageProps): Promise<Met
 
   if (!author) {
     return {
-      title: "Author Not Found | Craefto Lab Journal",
+      title: "Author Not Found | Craefto Journal",
     };
   }
 
   return {
-    title: `${author.name} | Craefto Lab Journal`,
-    description: author.bio || `Articles by ${author.name} on Craefto Lab Journal.`,
+    title: `${author.name} | Craefto Journal`,
+    description: author.bio || `Articles by ${author.name} on Craefto Journal.`,
     alternates: {
       canonical: `https://www.craefto.com/journal/author/${author.slug}`,
     },
     openGraph: {
-      title: `${author.name} | Craefto Lab Journal`,
-      description: author.bio || `Articles by ${author.name} on Craefto Lab Journal.`,
+      title: `${author.name} | Craefto Journal`,
+      description: author.bio || `Articles by ${author.name} on Craefto Journal.`,
       url: `https://www.craefto.com/journal/author/${author.slug}`,
       type: "profile",
       images: author.avatar_url ? [{ url: author.avatar_url }] : undefined,
@@ -251,7 +251,7 @@ export default async function AuthorPage({ params }: AuthorPageProps) {
             ].filter(Boolean),
             worksFor: {
               "@type": "Organization",
-              name: "Craefto Lab",
+              name: "Craefto",
               url: "https://www.craefto.com",
             },
             breadcrumb: {

@@ -2,8 +2,8 @@ import Link from "next/link";
 import { Header, Footer, Container, Section } from "@/components/layout";
 
 export const metadata = {
-  title: "Unsubscribed | Craefto Lab",
-  description: "You have been unsubscribed from the Craefto Lab Journal.",
+  title: "Unsubscribed | Craefto",
+  description: "You have been unsubscribed from the Craefto Journal.",
   robots: {
     index: false,
     follow: false,

@@ -341,7 +341,7 @@ export async function generateDocumentPDF(
   if (documentType === 'proposal') {
     options.footerTemplate = `
       <div style="font-size: 9px; width: 100%; text-align: center; color: #807870; padding: 0 20mm;">
-        <span>Craefto Lab — Project Proposal</span>
+        <span>Craefto — Project Proposal</span>
         <span style="margin-left: 20px;">Page <span class="pageNumber"></span> of <span class="totalPages"></span></span>
       </div>
     `;

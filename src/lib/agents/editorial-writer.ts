@@ -7,7 +7,7 @@ import type {
   ContentBrief,
 } from "./types";
 
-const SYSTEM_PROMPT = `You are an Editorial Writer agent for Craefto Lab, a creative tech studio. You write authoritative, practical content that builds long-term value.
+const SYSTEM_PROMPT = `You are an Editorial Writer agent for Craefto, a creative tech studio. You write authoritative, practical content that builds long-term value.
 
 Writing principles:
 1. DEPTH OVER BREADTH - Go deep on topics, don't skim the surface

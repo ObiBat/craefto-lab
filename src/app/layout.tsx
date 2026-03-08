@@ -34,11 +34,11 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.craefto.com"),
   title: {
-    default: "Craefto Lab | Creative Tech Studio",
-    template: "%s | Craefto Lab",
+    default: "Craefto | Creative Tech Studio",
+    template: "%s | Craefto",
   },
   description:
-    "Craefto Lab is a creative tech studio. We design and build brands, products, and tools for founders and teams who value craft.",
+    "Craefto is a creative tech studio. We design and build brands, products, and tools for founders and teams who value craft.",
   keywords: [
     "design studio",
     "web development",
@@ -53,9 +53,9 @@ export const metadata: Metadata = {
     "product design",
     "web design agency",
   ],
-  authors: [{ name: "Craefto Lab", url: "https://www.craefto.com" }],
-  creator: "Craefto Lab",
-  publisher: "Craefto Lab",
+  authors: [{ name: "Craefto", url: "https://www.craefto.com" }],
+  creator: "Craefto",
+  publisher: "Craefto",
   formatDetection: {
     email: false,
     address: false,
@@ -81,14 +81,14 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "Craefto Lab",
+    title: "Craefto",
   },
   openGraph: {
     type: "website",
     locale: "en_US",
     url: "https://www.craefto.com",
-    siteName: "Craefto Lab",
-    title: "Craefto Lab | Creative Tech Studio",
+    siteName: "Craefto",
+    title: "Craefto | Creative Tech Studio",
     description:
       "We design and build brands, products, and tools for founders and teams who value craft.",
     images: [
@@ -96,14 +96,14 @@ export const metadata: Metadata = {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Craefto Lab Creative Tech Studio",
+        alt: "Craefto Creative Tech Studio",
         type: "image/png",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Craefto Lab | Creative Tech Studio",
+    title: "Craefto | Creative Tech Studio",
     description:
       "We design and build brands, products, and tools for founders and teams who value craft.",
     creator: "@craeftolab",
@@ -134,9 +134,9 @@ export const metadata: Metadata = {
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "Organization",
-  name: "Craefto Lab",
+  name: "Craefto",
   description:
-    "Craefto Lab is a creative tech studio. We design and build brands, products, and tools for founders and teams who value craft.",
+    "Craefto is a creative tech studio. We design and build brands, products, and tools for founders and teams who value craft.",
   url: "https://www.craefto.com",
   logo: "https://www.craefto.com/logo.png",
   sameAs: [

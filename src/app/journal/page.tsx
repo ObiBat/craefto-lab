@@ -12,9 +12,9 @@ import type { ArticleCard as ArticleCardType, Pillar } from "@/lib/journal-types
 export const revalidate = 60;
 
 export const metadata = {
-  title: "Journal | Craefto Lab",
+  title: "Journal | Craefto",
   description:
-    "Insights on systems thinking, applied AI, product craft, and creative technology from the Craefto Lab team.",
+    "Insights on systems thinking, applied AI, product craft, and creative technology from the Craefto team.",
   alternates: {
     canonical: "https://www.craefto.com/journal",
     types: {
@@ -23,7 +23,7 @@ export const metadata = {
     },
   },
   openGraph: {
-    title: "Journal | Craefto Lab",
+    title: "Journal | Craefto",
     description:
       "Insights on systems thinking, applied AI, product craft, and creative technology.",
     url: "https://www.craefto.com/journal",
@@ -135,7 +135,7 @@ export default async function JournalPage({ searchParams }: JournalPageProps) {
               <HeroText delay={0.1}>
                 <p className="text-xl text-[hsl(var(--color-foreground-muted))] leading-relaxed max-w-xl">
                   Insights on systems thinking, applied AI, product craft, and creative
-                  technology from the Craefto Lab team.
+                  technology from the Craefto team.
                 </p>
               </HeroText>
             </div>

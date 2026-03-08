@@ -16,7 +16,7 @@ export function SubscriptionWelcomeEmail({ unsubscribeUrl }: SubscriptionWelcome
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Welcome to Craefto Lab Journal</title>
+  <title>Welcome to Craefto Journal</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600&display=swap" rel="stylesheet">
@@ -31,7 +31,7 @@ export function SubscriptionWelcomeEmail({ unsubscribeUrl }: SubscriptionWelcome
             <td style="padding: 40px 40px 30px; text-align: center; border-bottom: 1px solid #F0EDE8;">
               <img src="${LOGO_DATA_URI}" alt="Craefto" width="35" height="25" style="display: inline-block; vertical-align: middle;" />
               <div style="margin-top: 12px; font-family: ${FONT_STACK}; font-size: 13px; font-weight: 600; letter-spacing: 0.5px; color: #1A1714;">
-                Craefto Lab Journal
+                Craefto Journal
               </div>
             </td>
           </tr>
@@ -67,7 +67,7 @@ export function SubscriptionWelcomeEmail({ unsubscribeUrl }: SubscriptionWelcome
             <td style="padding: 30px 40px; background-color: #FAF7F2; border-top: 1px solid #F0EDE8;">
               <p style="margin: 0; font-size: 14px; color: #9A9A9A; line-height: 1.6;">
                 Best,<br>
-                <strong style="color: #6B6B6B;">The Craefto Lab Team</strong>
+                <strong style="color: #6B6B6B;">The Craefto Team</strong>
               </p>
 
               <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #E8E5E0;">
@@ -83,7 +83,7 @@ export function SubscriptionWelcomeEmail({ unsubscribeUrl }: SubscriptionWelcome
 
         <!-- Unsubscribe -->
         <p style="margin: 30px 0 0; font-size: 11px; color: #9A9A9A; text-align: center;">
-          <a href="${unsubscribeUrl}" style="color: #9A9A9A; text-decoration: underline;">Unsubscribe</a> from the Craefto Lab Journal
+          <a href="${unsubscribeUrl}" style="color: #9A9A9A; text-decoration: underline;">Unsubscribe</a> from the Craefto Journal
         </p>
       </td>
     </tr>
@@ -94,5 +94,5 @@ export function SubscriptionWelcomeEmail({ unsubscribeUrl }: SubscriptionWelcome
 }
 
 export function getSubscriptionWelcomeSubject(): string {
-  return 'Welcome to the Craefto Lab Journal';
+  return 'Welcome to the Craefto Journal';
 }

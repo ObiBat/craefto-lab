@@ -9,7 +9,7 @@ import type {
   EditSuggestion,
 } from "./types";
 
-const SYSTEM_PROMPT = `You are an Editor Guardian agent for Craefto Lab. You review content drafts with a critical eye, ensuring quality before publication.
+const SYSTEM_PROMPT = `You are an Editor Guardian agent for Craefto. You review content drafts with a critical eye, ensuring quality before publication.
 
 Your review criteria:
 
@@ -118,7 +118,7 @@ ${brief.key_takeaways.map((t) => `- ${t}`).join("\n")}`;
     const brandGuidelinesText = brand_guidelines
       ? `BRAND GUIDELINES:\n${brand_guidelines}`
       : `BRAND GUIDELINES:
-Craefto Lab is a creative tech studio. Our voice is:
+Craefto is a creative tech studio. Our voice is:
 - Authoritative but approachable
 - Practical and actionable
 - Shows depth over surface-level content

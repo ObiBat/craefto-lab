@@ -71,7 +71,7 @@ export function Header() {
                 isMobileMenuOpen && "logo-inverted"
               )}
               onClick={handleLogoClick}
-              aria-label="Craefto Lab - Home"
+              aria-label="Craefto - Home"
             >
               <Logo
                 size="md"
