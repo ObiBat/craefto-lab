@@ -1,14 +1,9 @@
 'use client';
 
-import * as React from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import type { ProjectStatus } from '@/lib/portal/types';
 import { portalPath } from '@/lib/portal/routes';
-
-// ---------------------------------------------------------------------------
-// Status colors
-// ---------------------------------------------------------------------------
 
 const STATUS_COLORS: Record<ProjectStatus, string> = {
   on_track: '#2D6A4F',
@@ -26,27 +21,19 @@ const STATUS_LABELS: Record<ProjectStatus, string> = {
   paused: 'Paused',
 };
 
-// ---------------------------------------------------------------------------
-// Props
-// ---------------------------------------------------------------------------
-
-export interface ProjectCardProps {
+export interface ProjectCardV2Props {
   id: string;
   name: string;
   status: ProjectStatus;
   progress: number;
-  description: string;
+  description: string | null;
   aiSummary?: string | null;
   nextMilestone?: string | null;
   nextMilestoneDate?: string | null;
   index?: number;
 }
 
-// ---------------------------------------------------------------------------
-// Component
-// ---------------------------------------------------------------------------
-
-export function ProjectCard({
+export function ProjectCardV2({
   id,
   name,
   status,
@@ -56,24 +43,16 @@ export function ProjectCard({
   nextMilestone,
   nextMilestoneDate,
   index = 0,
-}: ProjectCardProps) {
+}: ProjectCardV2Props) {
   const color = STATUS_COLORS[status];
   const shouldPulse = status === 'on_track' || status === 'at_risk';
-
   const displayText = aiSummary || description || '';
-  const truncatedText = displayText.length > 100
-    ? displayText.slice(0, 100).trimEnd() + '...'
-    : displayText;
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{
-        duration: 0.5,
-        delay: index * 0.1,
-        ease: [0.22, 1, 0.36, 1],
-      }}
+      transition={{ duration: 0.5, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
     >
       <Link
         href={portalPath(`/projects/${id}`)}
@@ -99,7 +78,7 @@ export function ProjectCard({
           </span>
           <span
             className="text-xs font-medium tracking-wide uppercase"
-            style={{ color, fontFamily: 'var(--font-sans)' }}
+            style={{ color, fontFamily: 'var(--font-heading)' }}
           >
             {STATUS_LABELS[status]}
           </span>
@@ -107,41 +86,24 @@ export function ProjectCard({
 
         {/* Project name */}
         <h3
-          className="text-[30px] font-bold leading-tight tracking-tight mb-2"
-          style={{
-            fontFamily: 'var(--font-serif)',
-            color: '#1A1A1A',
-          }}
+          className="text-[30px] font-semibold leading-tight tracking-tight mb-2"
+          style={{ fontFamily: 'var(--font-serif)', color: '#1A1A1A' }}
         >
           {name}
         </h3>
 
         {/* Summary line */}
-        {truncatedText && (
+        {displayText && (
           <p
-            className="text-sm leading-relaxed mb-5 line-clamp-1"
-            style={{ color: '#6B6560' }}
+            className="text-base leading-relaxed mb-5 line-clamp-2"
+            style={{ fontFamily: 'var(--font-serif)', color: '#6B6560' }}
           >
-            {truncatedText}
+            {displayText}
           </p>
         )}
 
         {/* Progress bar */}
         <div className="mb-4">
-          <div className="flex items-center justify-between mb-1.5">
-            <span
-              className="text-xs font-medium"
-              style={{ color: '#6B6560', fontFamily: 'var(--font-sans)' }}
-            >
-              Progress
-            </span>
-            <span
-              className="text-xs font-semibold tabular-nums"
-              style={{ color: '#1A1A1A', fontFamily: 'var(--font-sans)' }}
-            >
-              {progress}%
-            </span>
-          </div>
           <div
             className="h-2 w-full rounded-full overflow-hidden"
             style={{ backgroundColor: '#F0EDE8' }}
@@ -149,7 +111,6 @@ export function ProjectCard({
             <motion.div
               className="h-full rounded-full"
               style={{
-                backgroundColor: color,
                 background: `linear-gradient(90deg, ${color}cc, ${color})`,
               }}
               initial={{ width: 0 }}
@@ -161,12 +122,12 @@ export function ProjectCard({
 
         {/* Next milestone */}
         {nextMilestone && (
-          <div className="flex items-center gap-2 text-xs" style={{ color: '#6B6560' }}>
+          <div className="flex items-center gap-2 text-sm" style={{ color: '#6B6560' }}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" />
               <line x1="4" x2="4" y1="22" y2="15" />
             </svg>
-            <span style={{ fontFamily: 'var(--font-sans)' }}>
+            <span style={{ fontFamily: 'var(--font-heading)', fontSize: 14 }}>
               <span className="font-medium" style={{ color: '#1A1A1A' }}>Next:</span>{' '}
               {nextMilestone}
               {nextMilestoneDate && (
