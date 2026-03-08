@@ -1,5 +1,7 @@
 // Portal UI components — barrel export
+// /src/components/portal/index.ts
 
+// Re-export shared types from the canonical source
 export type { ProjectStatus, UpdateType } from "@/lib/portal/types";
 
 export { StatusPill, statusPillVariants } from "./status-pill";
@@ -27,15 +29,23 @@ export { ActivityItem } from "./activity-item";
 export type { ActivityItemProps } from "./activity-item";
 
 export { ProjectCard } from "./project-card";
-export type { ProjectCardProps } from "./project-card";
+export type {
+  ProjectCardProps,
+  ProjectCardTeamMember,
+} from "./project-card";
 
-export { ProjectCardV2 } from "./project-card-v2";
-export type { ProjectCardV2Props } from "./project-card-v2";
+export { PortalHeader } from "./portal-header";
+export type {
+  PortalHeaderProps,
+  PortalHeaderUser,
+  BreadcrumbItem,
+} from "./portal-header";
 
-export { MilestoneTimeline } from "./milestone-timeline";
-export type { MilestoneTimelineProps, Milestone } from "./milestone-timeline";
+export { PortalSidebar } from "./portal-sidebar";
+export type { PortalSidebarProps, SidebarProject } from "./portal-sidebar";
 
-export { MessageButton } from "./message-button";
+export { TabSystem } from "./tab-system";
+export type { TabSystemProps, TabItem } from "./tab-system";
 
 export { EmptyState } from "./empty-state";
 export type { EmptyStateProps } from "./empty-state";

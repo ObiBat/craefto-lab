@@ -37,10 +37,6 @@ export interface Project {
   target_date: string | null;
   linear_team_id: string | null;
   linear_project_id: string | null;
-  google_drive_url: string | null;
-  ai_summary: string | null;
-  next_milestone: string | null;
-  next_milestone_date: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -173,21 +169,6 @@ export interface LinearProject {
   progress: number;
   startDate: string | null;
   targetDate: string | null;
-}
-
-export interface LinearMilestone {
-  id: string;
-  name: string;
-  targetDate: string | null;
-  status: 'planned' | 'active' | 'completed';
-}
-
-export interface LinearTask {
-  id: string;
-  title: string;
-  status: string;
-  assignee: string | null;
-  priority: number;
 }
 
 export interface LinearIssue {

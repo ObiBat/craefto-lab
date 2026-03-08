@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Space_Grotesk, DM_Sans, Source_Serif_4 } from "next/font/google";
+import { Space_Grotesk, DM_Sans } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { BackToTop } from "@/components/ui";
 import { AnalyticsProvider } from "@/components/analytics/analytics-provider";
@@ -18,14 +18,6 @@ const dmSans = DM_Sans({
   display: "swap",
   weight: ["400", "500", "600", "700"],
   variable: "--font-dm-sans",
-  preload: true,
-});
-
-const sourceSerif4 = Source_Serif_4({
-  subsets: ["latin"],
-  display: "swap",
-  weight: ["400", "600", "700"],
-  variable: "--font-source-serif",
   preload: true,
 });
 
@@ -224,7 +216,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${spaceGrotesk.variable} ${dmSans.variable} ${sourceSerif4.variable}`}>
+    <html lang="en" className={`${spaceGrotesk.variable} ${dmSans.variable}`}>
       <head>
         {/* Favicon links for maximum browser compatibility */}
         <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48" />

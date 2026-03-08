@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { AuthProvider } from "@/lib/portal/auth-context";
 import { ToastProvider } from "@/components/portal/toast";
+import { RoleSwitcher } from "@/components/portal/role-switcher";
 
 export const metadata: Metadata = {
   manifest: "/manifest.json",
@@ -20,8 +21,9 @@ export default function PortalLayout({
   return (
     <AuthProvider>
       <ToastProvider>
-        <div className="min-h-screen" style={{ backgroundColor: '#FAF9F6' }}>
+        <div className="min-h-screen bg-[hsl(var(--color-background))]">
           {children}
+          <RoleSwitcher />
         </div>
       </ToastProvider>
     </AuthProvider>

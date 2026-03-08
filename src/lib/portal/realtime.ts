@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import { createBrowserClient } from './supabase-auth';
+import { isDemoMode } from "./mock-data";
 import type { RealtimeChannel } from '@supabase/supabase-js';
 
 type TableName = 'portal_projects' | 'portal_tasks' | 'portal_updates' | 'portal_timeline_events';
@@ -26,7 +27,7 @@ export function useRealtime({
   const channelRef = useRef<RealtimeChannel | null>(null);
 
   useEffect(() => {
-    if (!enabled) return;
+    if (!enabled || isDemoMode()) return;
 
     const supabase = createBrowserClient();
     const channelName = filter ? `${table}:${filter}` : table;
