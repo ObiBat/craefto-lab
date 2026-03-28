@@ -104,58 +104,82 @@ export default function ProcessPage() {
             </Container>
           </Section>
 
-          {/* Phases */}
-          {phases.map((phase, index) => (
-            <Section key={phase.title} spacing="lg" className={index === 0 ? "pt-0 md:pt-0" : ""}>
-              <Container>
-                <div className="flex flex-col gap-14 md:gap-10">
-                  <AnimatedSection>
-                    <div className="flex flex-col gap-4">
-                      <SectionLabel number={phase.number} label={phase.title} />
-                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                        <h2 className="font-semibold tracking-tight">
-                          {phase.title}
-                        </h2>
-                        <span className="text-sm font-medium text-[hsl(var(--color-accent))] bg-[hsl(var(--color-accent))]/10 px-3 py-1 rounded-full w-fit">
-                          {phase.timeline}
-                        </span>
-                      </div>
-                    </div>
-                  </AnimatedSection>
+          {/* Phases with Timeline */}
+          <Section spacing="lg" className="pt-0 md:pt-0">
+            <Container>
+              <div className="relative">
+                {/* Vertical timeline line */}
+                <div className="absolute left-6 lg:left-8 top-0 bottom-0 w-px bg-[hsl(var(--color-border))]" aria-hidden="true" />
 
-                  <Separator />
-
-                  <AnimatedSection delay={0.1}>
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
-                      <div className="space-y-6">
-                        <p className="text-lg text-[hsl(var(--color-foreground-muted))] leading-relaxed">
-                          {phase.description}
-                        </p>
-                        <ul className="space-y-3">
-                          {phase.activities.map((activity) => (
-                            <li key={activity} className="flex items-start gap-3 text-[hsl(var(--color-foreground-muted))]">
-                              <span className="w-1.5 h-1.5 rounded-full bg-[hsl(var(--color-accent))] mt-2 flex-shrink-0" />
-                              {activity}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                      <div className="flex items-start">
-                        <div className="rounded-xl border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background-subtle))] p-6 w-full">
-                          <p className="text-xs font-medium text-[hsl(var(--color-accent))] uppercase tracking-wide mb-3">
-                            Deliverable
-                          </p>
-                          <p className="text-[hsl(var(--color-foreground))] font-medium leading-relaxed">
-                            {phase.deliverable}
-                          </p>
+                <div className="flex flex-col gap-16 lg:gap-20">
+                  {phases.map((phase, index) => (
+                    <AnimatedSection key={phase.title} delay={index * 0.1}>
+                      <div className="relative pl-16 lg:pl-24">
+                        {/* Phase number circle on timeline */}
+                        <div className="absolute left-0 top-0 z-10 flex items-center justify-center">
+                          <div className="w-12 h-12 lg:w-16 lg:h-16 rounded-full bg-[hsl(var(--color-accent))] flex items-center justify-center shadow-lg shadow-[hsl(var(--color-accent))]/20">
+                            <span className="text-2xl lg:text-3xl font-bold text-white font-heading">
+                              {phase.number}
+                            </span>
+                          </div>
                         </div>
+
+                        {/* Phase content */}
+                        <div className="flex flex-col gap-6">
+                          {/* Header with title and timeline badge */}
+                          <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+                            <h2 className="text-2xl lg:text-3xl font-semibold tracking-tight text-[hsl(var(--color-foreground))]">
+                              {phase.title}
+                            </h2>
+                            <span className="inline-flex items-center px-4 py-1.5 rounded-full text-sm font-semibold bg-[hsl(var(--color-accent))]/15 text-[hsl(var(--color-accent))] border border-[hsl(var(--color-accent))]/25 w-fit">
+                              {phase.timeline}
+                            </span>
+                          </div>
+
+                          <p className="text-lg text-[hsl(var(--color-foreground-muted))] leading-relaxed max-w-2xl">
+                            {phase.description}
+                          </p>
+
+                          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+                            {/* Activities with checkmarks */}
+                            <ul className="space-y-3">
+                              {phase.activities.map((activity) => (
+                                <li key={activity} className="flex items-start gap-3 text-[hsl(var(--color-foreground-muted))]">
+                                  <svg className="w-5 h-5 text-[hsl(var(--color-accent))] mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                  </svg>
+                                  {activity}
+                                </li>
+                              ))}
+                            </ul>
+
+                            {/* Deliverable card with accent background */}
+                            <div className="flex items-start">
+                              <div className="rounded-xl bg-[hsl(var(--color-accent))]/10 border border-[hsl(var(--color-accent))]/20 p-6 w-full">
+                                <p className="text-xs font-semibold text-[hsl(var(--color-accent))] uppercase tracking-widest mb-3">
+                                  Deliverable
+                                </p>
+                                <p className="text-[hsl(var(--color-foreground))] font-medium leading-relaxed">
+                                  {phase.deliverable}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Separator between phases */}
+                        {index < phases.length - 1 && (
+                          <div className="mt-16 lg:mt-20">
+                            <Separator />
+                          </div>
+                        )}
                       </div>
-                    </div>
-                  </AnimatedSection>
+                    </AnimatedSection>
+                  ))}
                 </div>
-              </Container>
-            </Section>
-          ))}
+              </div>
+            </Container>
+          </Section>
 
           {/* What We Need From You */}
           <Section spacing="lg">
