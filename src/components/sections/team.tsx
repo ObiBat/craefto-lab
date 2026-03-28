@@ -183,7 +183,7 @@ interface TeamMember {
 const TEAM: TeamMember[] = [
   {
     name: "Obi Batbileg",
-    role: "Founder & Developer",
+    role: "Founder & Design Technologist",
     detail: "Coffee snob. Pixel perfectionist.",
     image: "/team/obi.jpg",
     featured: true,

@@ -55,6 +55,16 @@ export function Footer() {
                       </Link>
                     </li>
                   ))}
+                  {navigation.secondary.map((item) => (
+                    <li key={item.name}>
+                      <Link
+                        href={item.href}
+                        className="text-sm text-white/70 hover:text-white transition-colors"
+                      >
+                        {item.name}
+                      </Link>
+                    </li>
+                  ))}
                   <li>
                     <Link
                       href={navigation.cta.href}
@@ -132,6 +142,16 @@ export function Footer() {
                   Connect
                 </p>
                 <ul className="space-y-2.5">
+                  <li>
+                    <a
+                      href="/craefto-company-profile.pdf"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm text-white/70 hover:text-white transition-colors"
+                    >
+                      Company Profile ↓
+                    </a>
+                  </li>
                   <li>
                     <a
                       href={`mailto:${siteConfig.email}`}

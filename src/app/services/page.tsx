@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Header, Footer, Container, Section } from "@/components/layout";
-import { PageTransition, AnimatedSection, HeroText } from "@/components/ui";
+import { Separator, PageTransition, AnimatedSection, HeroText, SectionLabel } from "@/components/ui";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -14,17 +14,21 @@ const services = [
     title: "Web Design & Development",
     tagline: "Design and engineering as one",
     description:
-      "Marketing sites, SaaS platforms, and dashboards built with precision. No handoffs, no lost context between design and code. We handle everything from information architecture to deployment.",
+      "Your website doesn\u2019t reflect who you are anymore, or you are launching something new and need it built right the first time. We design and build marketing sites, SaaS platforms, and dashboards end to end.",
     includes: [
       "Information architecture & UX",
       "Visual design & prototyping",
       "Frontend development (React, Next.js)",
       "Backend & API development",
       "Payment integration (Stripe)",
-      "Real-time dashboards & portals",
+      "Real time dashboards & portals",
       "Performance optimization",
     ],
-    featured: false,
+    scenarios: [
+      "Our site looks dated and we are losing credibility",
+      "We need a web app but don\u2019t know where to start",
+      "We have a design but need someone to build it properly",
+    ],
   },
   {
     id: "brand",
@@ -32,14 +36,18 @@ const services = [
     title: "Brand Identity",
     tagline: "Strategic foundations",
     description:
-      "Brands that communicate clearly and design systems that maintain consistency across every touchpoint.",
+      "Your brand feels inconsistent across touchpoints. Your website says one thing, your pitch deck says another. We align everything into a cohesive identity that communicates clearly.",
     includes: [
       "Brand strategy & positioning",
       "Logo & visual identity",
       "Design system & components",
       "Brand guidelines",
     ],
-    featured: false,
+    scenarios: [
+      "We don\u2019t have a real brand, just a logo",
+      "Our visual identity is all over the place",
+      "We are rebranding and need it done professionally",
+    ],
   },
   {
     id: "products",
@@ -47,16 +55,20 @@ const services = [
     title: "Digital Products",
     tagline: "From concept to launch",
     description:
-      "MVPs, interactive experiences, and scalable platforms. Full-stack product development from scoping to deployment.",
+      "You have a product idea but no technical team to build it. Or an existing product that needs a serious upgrade. We handle full stack product development from scoping to deployment.",
     includes: [
       "Product strategy & scoping",
-      "Full-stack development",
+      "Full stack development",
       "Interactive experiences & WebGL",
       "API integrations",
       "Workflow automation",
       "Stakeholder portals & client dashboards",
     ],
-    featured: false,
+    scenarios: [
+      "We have an idea but no technical co founder",
+      "Our current product is held together with duct tape",
+      "We need an MVP to validate our concept before raising",
+    ],
   },
   {
     id: "ai",
@@ -64,33 +76,41 @@ const services = [
     title: "AI & Automation",
     tagline: "Intelligent systems",
     description:
-      "Agents, workflows, and automation tools. Meaningful AI implementation that drives real outcomes.",
+      "You keep hearing about AI but don\u2019t know what is actually useful for your business. We cut through the hype and build agents and automations that save real time.",
     includes: [
       "AI strategy & discovery",
       "Custom agent development",
       "LLM integrations",
       "Process automation",
     ],
-    featured: false,
+    scenarios: [
+      "We want to use AI but don\u2019t know how",
+      "We are doing manual work that could be automated",
+      "We need a custom AI tool for our team",
+    ],
   },
   {
     id: "security",
     number: "05",
     title: "Security & Pen Testing",
-    tagline: "We don't just build it, we secure it",
+    tagline: "We don\u2019t just build it, we secure it",
     description:
-      "Enterprise-grade penetration testing and security audits, accessible to startups and SMEs.",
+      "You know security matters but aren\u2019t sure where the vulnerabilities are. Or you need compliance for enterprise clients. We make enterprise grade security accessible.",
     includes: [
       "Web application security assessment",
       "Vulnerability report & remediation guide",
-      "Executive summary (investor/board-ready)",
-      "30-day re-test after fixes",
+      "Executive summary (investor/board ready)",
+      "30 day re test after fixes",
       "ISO 27001 & SOC 2 readiness",
       "Essential Eight compliance",
-      "PCI-DSS assessment",
-      "OSCP/CREST-certified testers",
+      "PCI DSS assessment",
+      "OSCP/CREST certified testers",
     ],
-    featured: false,
+    scenarios: [
+      "We need a security audit before onboarding enterprise clients",
+      "We have never tested our application for vulnerabilities",
+      "We need compliance documentation for investors or partners",
+    ],
   },
 ];
 
@@ -99,6 +119,45 @@ const workProcess = [
   { number: "02", title: "Proposal", description: "Clear scope and investment" },
   { number: "03", title: "Execution", description: "Build in focused sprints" },
   { number: "04", title: "Launch", description: "Deploy and support" },
+];
+
+const pricingData = [
+  { type: "Brand Identity", range: "$3,000 to $8,000", timeline: "3 to 6 weeks" },
+  { type: "Marketing Website", range: "$5,000 to $15,000", timeline: "4 to 8 weeks" },
+  { type: "Web Application / SaaS", range: "$10,000 to $30,000", timeline: "8 to 16 weeks" },
+  { type: "AI & Automation", range: "$3,000 to $12,000", timeline: "2 to 8 weeks" },
+  { type: "Security Audit", range: "$2,000 to $6,000", timeline: "1 to 3 weeks" },
+];
+
+const faqs = [
+  {
+    question: "Do I need to have a clear brief before reaching out?",
+    answer: "No. Many clients start with just an idea or a frustration. We help shape the direction during our initial conversation, so you don\u2019t need anything polished before getting in touch.",
+  },
+  {
+    question: "How much does a typical project cost?",
+    answer: "It depends on scope, but we are transparent about pricing from the first conversation. See our pricing ranges above for starting points. We will give you a clear, fixed price proposal before any work begins.",
+  },
+  {
+    question: "Can you handle just design, or just development?",
+    answer: "Yes, but we work best when we can do both. Fewer handoffs means better results, faster delivery, and less risk of things getting lost in translation between teams.",
+  },
+  {
+    question: "What is your typical timeline?",
+    answer: "4 to 12 weeks depending on complexity. We set realistic expectations upfront and keep you informed throughout. You will never be left wondering what is happening with your project.",
+  },
+  {
+    question: "Do you support the project after launch?",
+    answer: "Yes. Every project includes 30 days of post launch support. After that, we offer ongoing retainers for maintenance, optimization, and continued development.",
+  },
+  {
+    question: "What technologies do you use?",
+    answer: "We primarily work with React, Next.js, TypeScript, and Tailwind on the frontend, with Node.js, Supabase, and various APIs on the backend. We choose the best tools for each project rather than forcing a one size fits all stack.",
+  },
+  {
+    question: "How does payment work?",
+    answer: "We split projects into milestones so you are never paying for work that has not been delivered. A typical schedule: 30% upfront to begin, 40% at design approval, and 30% on launch. For larger projects, we can break it into more milestones. Retainers are billed monthly in advance. We accept bank transfer and can provide invoices with flexible terms for enterprise clients.",
+  },
 ];
 
 // Service Card Component
@@ -115,8 +174,9 @@ function ServiceCard({
 
   return (
     <div
+      id={service.id}
       className={cn(
-        "group relative rounded-2xl border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] overflow-hidden transition-all duration-300",
+        "group relative rounded-2xl border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] transition-all duration-300",
         "hover:border-[hsl(var(--color-accent))] hover:shadow-lg",
         className
       )}
@@ -166,16 +226,35 @@ function ServiceCard({
           {service.description}
         </p>
 
-        {/* Includes - Show on featured or hover */}
+        {/* Expandable content - Scenarios + Includes */}
         <div className={cn(
-          "transition-all duration-300 overflow-hidden",
+          "transition-all duration-500 overflow-hidden",
           size === "featured"
-            ? "opacity-100 max-h-[500px]"
+            ? "opacity-100 max-h-[800px]"
             : isHovered
-              ? "opacity-100 max-h-[300px]"
+              ? "opacity-100 max-h-[600px]"
               : "opacity-0 max-h-0"
         )}>
+          {/* Scenarios */}
           <div className="pt-4 border-t border-[hsl(var(--color-border))]">
+            <p className="text-xs font-medium text-[hsl(var(--color-foreground-subtle))] uppercase tracking-wide mb-3">
+              Common scenarios
+            </p>
+            <div className="space-y-2">
+              {service.scenarios.map((scenario) => (
+                <p
+                  key={scenario}
+                  className="text-sm text-[hsl(var(--color-foreground-muted))] leading-relaxed flex items-start gap-2"
+                >
+                  <span className="w-1 h-1 rounded-full bg-[hsl(var(--color-accent))] mt-2 flex-shrink-0" />
+                  &ldquo;{scenario}&rdquo;
+                </p>
+              ))}
+            </div>
+          </div>
+
+          {/* Includes */}
+          <div className="pt-4 border-t border-[hsl(var(--color-border))] mt-4">
             <p className="text-xs font-medium text-[hsl(var(--color-foreground-subtle))] uppercase tracking-wide mb-3">
               Includes
             </p>
@@ -192,7 +271,7 @@ function ServiceCard({
           </div>
         </div>
 
-        {/* Arrow indicator - visible by default, animates on hover */}
+        {/* Arrow indicator */}
         {size === "default" && (
           <div className={cn(
             "absolute bottom-6 right-6 transition-all duration-300",
@@ -208,16 +287,38 @@ function ServiceCard({
   );
 }
 
-// Process Step Component
-function ProcessStep({ step, index }: { step: typeof workProcess[0]; index: number }) {
+// FAQ Item Component
+function FAQItem({ faq }: { faq: typeof faqs[0] }) {
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
-    <div className="flex items-start gap-4">
-      <div className="flex-shrink-0 w-8 h-8 rounded-full bg-[hsl(var(--color-accent))] flex items-center justify-center">
-        <span className="text-xs font-semibold text-white">{step.number}</span>
-      </div>
-      <div>
-        <h4 className="font-semibold text-[hsl(var(--color-foreground))] mb-1">{step.title}</h4>
-        <p className="text-sm text-[hsl(var(--color-foreground-muted))]">{step.description}</p>
+    <div className="border-b border-[hsl(var(--color-border))]">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full flex items-center justify-between py-5 text-left group"
+      >
+        <span className="font-medium text-[hsl(var(--color-foreground))] group-hover:text-[hsl(var(--color-accent))] transition-colors pr-4">
+          {faq.question}
+        </span>
+        <svg
+          className={cn(
+            "w-5 h-5 text-[hsl(var(--color-foreground-muted))] flex-shrink-0 transition-transform duration-300",
+            isOpen && "rotate-45"
+          )}
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+        </svg>
+      </button>
+      <div className={cn(
+        "overflow-hidden transition-all duration-300",
+        isOpen ? "max-h-[300px] opacity-100 pb-5" : "max-h-0 opacity-0"
+      )}>
+        <p className="text-[hsl(var(--color-foreground-muted))] leading-relaxed">
+          {faq.answer}
+        </p>
       </div>
     </div>
   );
@@ -308,6 +409,17 @@ export default function ServicesPage() {
                         </div>
                       ))}
                     </div>
+                    <div className="mt-5">
+                      <Link
+                        href="/process"
+                        className="text-sm font-medium text-[hsl(var(--color-accent))] hover:underline inline-flex items-center gap-1"
+                      >
+                        See full process
+                        <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                        </svg>
+                      </Link>
+                    </div>
                   </div>
                 </div>
 
@@ -338,9 +450,105 @@ export default function ServicesPage() {
                         </div>
                       ))}
                     </div>
+                    <div className="mt-5">
+                      <Link
+                        href="/process"
+                        className="text-sm font-medium text-[hsl(var(--color-accent))] hover:underline inline-flex items-center gap-1"
+                      >
+                        See full process
+                        <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                        </svg>
+                      </Link>
+                    </div>
                   </div>
                 </div>
               </AnimatedSection>
+            </Container>
+          </Section>
+
+          {/* Pricing Section */}
+          <Section spacing="lg">
+            <Container>
+              <div className="flex flex-col gap-14 md:gap-10">
+                <AnimatedSection>
+                  <div className="flex flex-col gap-4">
+                    <SectionLabel number="06" label="Investment" />
+                    <h2 className="font-semibold tracking-tight">
+                      Transparent pricing
+                    </h2>
+                    <p className="text-lg text-[hsl(var(--color-foreground-muted))] leading-relaxed max-w-xl">
+                      Every project is different, but here is what to expect. We will give you a precise quote after our discovery call.
+                    </p>
+                  </div>
+                </AnimatedSection>
+
+                <Separator />
+
+                <AnimatedSection delay={0.1}>
+                  <div className="overflow-x-auto">
+                    <table className="w-full">
+                      <thead>
+                        <tr className="border-b border-[hsl(var(--color-border))]">
+                          <th className="text-left py-4 pr-6 text-xs font-medium uppercase tracking-wide text-[hsl(var(--color-foreground-subtle))]">
+                            Project Type
+                          </th>
+                          <th className="text-left py-4 pr-6 text-xs font-medium uppercase tracking-wide text-[hsl(var(--color-foreground-subtle))]">
+                            Typical Range
+                          </th>
+                          <th className="text-left py-4 text-xs font-medium uppercase tracking-wide text-[hsl(var(--color-foreground-subtle))]">
+                            Timeline
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {pricingData.map((row) => (
+                          <tr key={row.type} className="border-b border-[hsl(var(--color-border-subtle))]">
+                            <td className="py-4 pr-6 font-medium text-[hsl(var(--color-foreground))]">
+                              {row.type}
+                            </td>
+                            <td className="py-4 pr-6 text-[hsl(var(--color-accent))] font-medium">
+                              {row.range}
+                            </td>
+                            <td className="py-4 text-[hsl(var(--color-foreground-muted))]">
+                              {row.timeline}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                  <p className="mt-6 text-sm text-[hsl(var(--color-foreground-muted))]">
+                    These are starting points. Pricing is always fixed and agreed upon before work begins.
+                  </p>
+                </AnimatedSection>
+              </div>
+            </Container>
+          </Section>
+
+          {/* FAQ Section */}
+          <Section spacing="lg">
+            <Container>
+              <div className="flex flex-col gap-14 md:gap-10">
+                <AnimatedSection>
+                  <div className="flex flex-col gap-4">
+                    <SectionLabel number="07" label="FAQ" />
+                    <h2 className="font-semibold tracking-tight">
+                      Common questions
+                    </h2>
+                  </div>
+                </AnimatedSection>
+
+                <Separator />
+
+                <AnimatedSection delay={0.1}>
+                  <div className="max-w-2xl">
+                    {faqs.map((faq) => (
+                      <FAQItem key={faq.question} faq={faq} />
+                    ))}
+                  </div>
+                </AnimatedSection>
+              </div>
             </Container>
           </Section>
 
@@ -355,7 +563,7 @@ export default function ServicesPage() {
                         Ready to start?
                       </h2>
                       <p className="text-white/80 text-base lg:text-lg leading-relaxed">
-                        Tell us about what you&apos;re building. We&apos;ll see if we&apos;re the right fit.
+                        You don&apos;t need a finished brief. Start with what you are thinking about, and we will shape it together.
                       </p>
                     </div>
                     <Button

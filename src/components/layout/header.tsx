@@ -162,7 +162,7 @@ export function Header() {
         <div className="relative h-full flex flex-col pt-24 pb-8 px-6 overflow-y-auto">
           {/* Navigation Links */}
           <nav className="flex flex-col gap-1">
-            {navigation.main.map((item, index) => (
+            {[...navigation.main, ...navigation.secondary].map((item, index) => (
               <Link
                 key={item.name}
                 href={item.href}
