@@ -154,6 +154,10 @@ const faqs = [
     question: "What technologies do you use?",
     answer: "We primarily work with React, Next.js, TypeScript, and Tailwind on the frontend, with Node.js, Supabase, and various APIs on the backend. We choose the best tools for each project rather than forcing a one size fits all stack.",
   },
+  {
+    question: "How does payment work?",
+    answer: "We split projects into milestones so you are never paying for work that has not been delivered. A typical schedule: 30% upfront to begin, 40% at design approval, and 30% on launch. For larger projects, we can break it into more milestones. Retainers are billed monthly in advance. We accept bank transfer and can provide invoices with flexible terms for enterprise clients.",
+  },
 ];
 
 // Service Card Component
