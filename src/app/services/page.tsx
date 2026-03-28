@@ -176,7 +176,7 @@ function ServiceCard({
     <div
       id={service.id}
       className={cn(
-        "group relative rounded-2xl border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] overflow-hidden transition-all duration-300",
+        "group relative rounded-2xl border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] transition-all duration-300",
         "hover:border-[hsl(var(--color-accent))] hover:shadow-lg",
         className
       )}
@@ -226,15 +226,16 @@ function ServiceCard({
           {service.description}
         </p>
 
-        {/* Scenarios - Show on hover */}
+        {/* Expandable content - Scenarios + Includes */}
         <div className={cn(
-          "transition-all duration-300 overflow-hidden",
+          "transition-all duration-500 overflow-hidden",
           size === "featured"
-            ? "opacity-100 max-h-[500px]"
+            ? "opacity-100 max-h-[800px]"
             : isHovered
-              ? "opacity-100 max-h-[200px]"
+              ? "opacity-100 max-h-[600px]"
               : "opacity-0 max-h-0"
         )}>
+          {/* Scenarios */}
           <div className="pt-4 border-t border-[hsl(var(--color-border))]">
             <p className="text-xs font-medium text-[hsl(var(--color-foreground-subtle))] uppercase tracking-wide mb-3">
               Common scenarios
@@ -251,17 +252,8 @@ function ServiceCard({
               ))}
             </div>
           </div>
-        </div>
 
-        {/* Includes - Show on hover after scenarios */}
-        <div className={cn(
-          "transition-all duration-300 overflow-hidden",
-          size === "featured"
-            ? "opacity-100 max-h-[500px]"
-            : isHovered
-              ? "opacity-100 max-h-[300px]"
-              : "opacity-0 max-h-0"
-        )}>
+          {/* Includes */}
           <div className="pt-4 border-t border-[hsl(var(--color-border))] mt-4">
             <p className="text-xs font-medium text-[hsl(var(--color-foreground-subtle))] uppercase tracking-wide mb-3">
               Includes
