@@ -6,18 +6,18 @@ import { Separator, PageTransition, AnimatedSection, StaggeredGrid, StaggeredIte
 import { Button } from "@/components/ui/button";
 import { Team } from "@/components/sections/team";
 
-const principles = [
+const beliefs = [
   {
-    title: "Open by default",
-    description: "We share our learnings, code, and experiments with the community.",
+    title: "Understand before building",
+    description: "Rushing to build before understanding the problem always costs more in the end. We invest time upfront to get the foundation right.",
   },
   {
-    title: "Practical over theoretical",
-    description: "Everything we build is tested in real client projects first.",
+    title: "One team, no handoffs",
+    description: "Design and development happen together. Context is never lost between departments or vendors. You talk to the people who do the work.",
   },
   {
-    title: "Quality over quantity",
-    description: "We'd rather ship one great tool than ten mediocre ones.",
+    title: "Craft over speed",
+    description: "We would rather take an extra week to get it right than ship something average. Quality compounds. Shortcuts don\u2019t.",
   },
 ];
 
@@ -48,27 +48,27 @@ export default function LabPage() {
 
                 <HeroText>
                   <h1 className="font-semibold tracking-tight mb-4">
-                    About Cræfto
+                    About Craefto
                   </h1>
                 </HeroText>
                 <HeroText delay={0.1}>
                   <p className="text-xl text-[hsl(var(--color-foreground-muted))] leading-relaxed max-w-xl">
-                    Experiments, tools, and R&D. Where we push boundaries and build what&apos;s next.
+                    A small studio built on the belief that businesses deserve better than overpriced templates and disconnected teams.
                   </p>
                 </HeroText>
               </div>
             </Container>
           </Section>
 
-          {/* Vision */}
+          {/* The Story */}
           <Section spacing="lg" className="pt-0 md:pt-0">
             <Container>
               <div className="flex flex-col gap-14 md:gap-10">
                 <AnimatedSection>
                   <div className="flex flex-col gap-4">
-                    <SectionLabel number="01" label="Vision" />
+                    <SectionLabel number="01" label="The Story" />
                     <h2 className="font-semibold tracking-tight">
-                      Building in public
+                      Where it started
                     </h2>
                   </div>
                 </AnimatedSection>
@@ -79,18 +79,12 @@ export default function LabPage() {
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
                     <div className="space-y-6 text-lg text-[hsl(var(--color-foreground-muted))] leading-relaxed">
                       <p>
-                        <strong className="text-[hsl(var(--color-foreground))]">Beyond client work.</strong> The Lab is where we explore ideas that don&apos;t fit neatly into project scopes: tools we wish existed, patterns we keep using, experiments worth sharing.
-                      </p>
-                      <p>
-                        <strong className="text-[hsl(var(--color-foreground))]">From practice to product.</strong> Every experiment starts as something we need ourselves. If it proves valuable, we polish it for others.
+                        <strong className="text-[hsl(var(--color-foreground))]">Founded in Sydney by Obi Batbileg</strong> after graduating from Western Sydney University. Built from the belief that businesses deserve better than overpriced templates and disconnected teams.
                       </p>
                     </div>
                     <div className="space-y-6 text-lg text-[hsl(var(--color-foreground-muted))] leading-relaxed">
                       <p>
-                        <strong className="text-[hsl(var(--color-foreground))]">Transparency by design.</strong> We document our process, share our failures, and release what works under open licenses when possible.
-                      </p>
-                      <p>
-                        <strong className="text-[hsl(var(--color-foreground))]">Community first.</strong> Feedback shapes direction. The best tools are built in conversation with the people who use them.
+                        <strong className="text-[hsl(var(--color-foreground))]">Every project gets the same attention:</strong> understand deeply, design intentionally, build precisely. No shortcuts, no outsourcing the hard parts, no disappearing after launch.
                       </p>
                     </div>
                   </div>
@@ -99,15 +93,15 @@ export default function LabPage() {
             </Container>
           </Section>
 
-          {/* Principles */}
+          {/* How We Think */}
           <Section spacing="lg">
             <Container>
               <div className="flex flex-col gap-14">
                 <AnimatedSection>
                   <div className="flex flex-col gap-4">
-                    <SectionLabel number="02" label="Principles" />
+                    <SectionLabel number="02" label="How We Think" />
                     <h2 className="font-semibold tracking-tight">
-                      How we approach R&D
+                      Beliefs that shape our work
                     </h2>
                   </div>
                 </AnimatedSection>
@@ -115,15 +109,15 @@ export default function LabPage() {
                 <Separator />
 
                 <StaggeredGrid className="grid grid-cols-1 sm:grid-cols-3 gap-8">
-                  {principles.map((principle, index) => (
-                    <StaggeredItem key={principle.title}>
+                  {beliefs.map((belief, index) => (
+                    <StaggeredItem key={belief.title}>
                       <div className="flex flex-col gap-3">
                         <span className="text-xs font-semibold text-[hsl(var(--color-accent))] tabular-nums">
                           {String(index + 1).padStart(2, "0")}
                         </span>
-                        <h3 className="font-semibold tracking-tight">{principle.title}</h3>
+                        <h3 className="font-semibold tracking-tight">{belief.title}</h3>
                         <p className="text-sm text-[hsl(var(--color-foreground-muted))] leading-relaxed">
-                          {principle.description}
+                          {belief.description}
                         </p>
                       </div>
                     </StaggeredItem>
@@ -136,7 +130,7 @@ export default function LabPage() {
           {/* Team */}
           <Team sectionNumber="03" />
 
-          {/* Newsletter / Stay Updated */}
+          {/* Stay Updated */}
           <Section spacing="lg" className="pt-8 md:pt-12">
             <Container>
               <AnimatedSection variant="scaleIn">
@@ -147,10 +141,10 @@ export default function LabPage() {
                         Stay Updated
                       </span>
                       <h2 className="font-semibold tracking-tight mt-3 mb-4">
-                        Get notified when we ship
+                        Follow our work
                       </h2>
                       <p className="text-[hsl(var(--color-foreground-muted))] leading-relaxed">
-                        We&apos;ll send you updates when new experiments go live, tools get released, or we publish findings worth sharing.
+                        We share our process, new projects, and the occasional insight on building better digital products.
                       </p>
                     </div>
                     <div className="flex flex-col sm:flex-row gap-3 lg:flex-shrink-0">
@@ -194,13 +188,13 @@ export default function LabPage() {
                 <div className="rounded-2xl bg-[hsl(var(--color-accent))] p-10 sm:p-14 md:p-16">
                   <div className="flex flex-col items-center text-center gap-8 max-w-2xl mx-auto">
                     <span className="text-xs font-medium uppercase tracking-widest text-white/70">
-                      Collaborate
+                      Work With Us
                     </span>
                     <h2 className="font-semibold tracking-tight !text-white">
-                      Have an experiment in mind?
+                      Have a project in mind?
                     </h2>
                     <p className="text-white/80 text-lg leading-relaxed max-w-lg">
-                      We&apos;re open to collaborations on tools, research, and experiments that push the boundaries of creative technology.
+                      You don&apos;t need a finished brief. Tell us what you are thinking about and we will figure out the best path forward together.
                     </p>
                     <Button size="lg" variant="secondary" className="mt-2 !bg-white !text-[hsl(var(--color-accent))] hover:!bg-[hsl(var(--color-foreground))] hover:!text-white" asChild>
                       <Link href="/contact">
@@ -222,7 +216,7 @@ export default function LabPage() {
                             </svg>
                           </span>
                           <span className="btn-text-secondary" aria-hidden="true">
-                            Let&apos;s explore together
+                            Say hello
                             <svg
                               className="w-4 h-4"
                               fill="none"
