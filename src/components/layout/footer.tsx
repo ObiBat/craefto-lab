@@ -73,6 +73,14 @@ export function Footer() {
                       {navigation.cta.name}
                     </Link>
                   </li>
+                  <li>
+                    <Link
+                      href="/changelog"
+                      className="text-sm text-white/70 hover:text-white transition-colors"
+                    >
+                      Changelog
+                    </Link>
+                  </li>
                 </ul>
               </nav>
 
