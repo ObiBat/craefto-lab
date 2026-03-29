@@ -42,8 +42,8 @@ export default function ContactPage() {
     <>
       <Header />
       <PageTransition>
-        <main id="main-content" className="pt-16 md:pt-20">
-          <Section spacing="sm" className="pb-12 md:pb-16">
+        <main id="main-content" className="pt-20">
+          <Section spacing="sm" className="pb-8 md:pb-6">
             <Container>
               {/* Breadcrumb */}
               <nav className="mb-4" aria-label="Breadcrumb">

@@ -319,7 +319,7 @@ export default function ServicesPage() {
       <PageTransition>
         <main id="main-content" className="pt-20">
           {/* Hero - Compact */}
-          <Section spacing="sm" className="pb-8 md:pb-10">
+          <Section spacing="sm" className="pb-8 md:pb-6">
             <Container>
               <div className="max-w-3xl">
                 <nav className="mb-6" aria-label="Breadcrumb">
@@ -349,7 +349,7 @@ export default function ServicesPage() {
           </Section>
 
           {/* Bento Grid */}
-          <Section spacing="sm" className="pt-0">
+          <Section spacing="lg" className="pt-0 md:pt-0">
             <Container>
               {/* Desktop Grid - Row 1 */}
               <AnimatedSection>
@@ -544,7 +544,7 @@ export default function ServicesPage() {
           </Section>
 
           {/* CTA */}
-          <Section spacing="md" className="pt-8 md:pt-12">
+          <Section spacing="lg" className="pt-8 md:pt-12">
             <Container>
               <AnimatedSection variant="scaleIn">
                 <div className="rounded-2xl bg-[hsl(var(--color-accent))] p-8 sm:p-10 lg:p-12">
