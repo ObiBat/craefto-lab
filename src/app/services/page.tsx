@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import { Header, Footer, Container, Section } from "@/components/layout";
 import { Separator, PageTransition, AnimatedSection, HeroText, SectionLabel } from "@/components/ui";
 import { Button } from "@/components/ui/button";
@@ -325,6 +326,31 @@ function FAQItem({ faq }: { faq: typeof faqs[0] }) {
 }
 
 export default function ServicesPage() {
+  const pathname = usePathname();
+
+  // Handle hash scrolling after page transition completes
+  useEffect(() => {
+    const hash = window.location.hash;
+    if (!hash) return;
+
+    const targetId = hash.replace("#", "");
+
+    // Wait for page transition (300ms) + layout settle
+    const timer = setTimeout(() => {
+      const element = document.getElementById(targetId);
+      if (element) {
+        const headerOffset = 100; // account for fixed header
+        const elementPosition = element.getBoundingClientRect().top + window.scrollY;
+        window.scrollTo({
+          top: elementPosition - headerOffset,
+          behavior: "smooth",
+        });
+      }
+    }, 400);
+
+    return () => clearTimeout(timer);
+  }, [pathname]);
+
   return (
     <>
       <Header />

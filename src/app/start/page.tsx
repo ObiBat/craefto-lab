@@ -282,6 +282,7 @@ export default function StartPage() {
                     <StaggeredItem key={service.title}>
                       <Link
                         href={service.href}
+                        scroll={false}
                         className="group flex items-center justify-between p-5 rounded-xl border border-[hsl(var(--color-border))] hover:border-[hsl(var(--color-accent))] transition-all duration-300"
                       >
                         <span className="font-medium text-[hsl(var(--color-foreground))] group-hover:text-[hsl(var(--color-accent))] transition-colors">
