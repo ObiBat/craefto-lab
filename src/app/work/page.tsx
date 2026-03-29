@@ -95,7 +95,7 @@ export default function WorkPage() {
                   </h1>
                 </HeroText>
                 <HeroText delay={0.1}>
-                  <p className="text-xl text-[hsl(var(--color-foreground-muted))] leading-relaxed">
+                  <p className="text-lg text-[hsl(var(--color-foreground-muted))] leading-relaxed">
                     A selection of projects across brand, web, and product. Each one
                     built as a system, not a one-off.
                   </p>

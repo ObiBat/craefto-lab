@@ -52,7 +52,7 @@ export default function LabPage() {
                   </h1>
                 </HeroText>
                 <HeroText delay={0.1}>
-                  <p className="text-xl text-[hsl(var(--color-foreground-muted))] leading-relaxed max-w-xl">
+                  <p className="text-lg text-[hsl(var(--color-foreground-muted))] leading-relaxed max-w-xl">
                     A small studio built on the belief that businesses deserve better than overpriced templates and disconnected teams.
                   </p>
                 </HeroText>

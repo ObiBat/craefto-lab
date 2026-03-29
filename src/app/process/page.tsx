@@ -96,7 +96,7 @@ export default function ProcessPage() {
                   </h1>
                 </HeroText>
                 <HeroText delay={0.1}>
-                  <p className="text-xl text-[hsl(var(--color-foreground-muted))] leading-relaxed max-w-xl">
+                  <p className="text-lg text-[hsl(var(--color-foreground-muted))] leading-relaxed max-w-xl">
                     Every project follows a clear path. No surprises, no scope creep, no disappearing acts.
                   </p>
                 </HeroText>

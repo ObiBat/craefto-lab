@@ -101,7 +101,7 @@ export default function StartPage() {
                   </h1>
                 </HeroText>
                 <HeroText delay={0.1}>
-                  <p className="text-xl text-[hsl(var(--color-foreground-muted))] leading-relaxed max-w-xl">
+                  <p className="text-lg text-[hsl(var(--color-foreground-muted))] leading-relaxed max-w-xl">
                     We&apos;re a small, focused team in Sydney that designs and builds digital products for businesses that care about quality.
                   </p>
                 </HeroText>
