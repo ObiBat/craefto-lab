@@ -186,7 +186,11 @@ export function Header() {
                 style={{
                   transitionDelay: isMobileMenuOpen ? `${index * 75 + 150}ms` : "0ms"
                 }}
-                onClick={() => setIsMobileMenuOpen(false)}
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  document.body.style.overflow = "";
+                  window.scrollTo(0, 0);
+                }}
               >
                 <span className="mobile-nav-index text-xs font-medium text-white/50 tabular-nums">
                   {String(index + 1).padStart(2, "0")}
@@ -222,7 +226,7 @@ export function Header() {
               className="w-full !bg-white !text-[hsl(var(--color-accent))] !border-0 font-semibold"
               asChild
             >
-              <Link href={navigation.cta.href} onClick={() => setIsMobileMenuOpen(false)}>
+              <Link href={navigation.cta.href} onClick={() => { setIsMobileMenuOpen(false); document.body.style.overflow = ""; window.scrollTo(0, 0); }}>
                 <span className="btn-text-wrapper">
                   <span className="btn-text-primary">{navigation.cta.name}</span>
                   <span className="btn-text-secondary" aria-hidden="true">Let&apos;s talk</span>
