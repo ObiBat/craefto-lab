@@ -351,36 +351,38 @@ export default function ServicesPage() {
           {/* Bento Grid */}
           <Section spacing="sm" className="pt-0">
             <Container>
+              {/* Desktop Grid - Row 1 */}
               <AnimatedSection>
-                {/* Desktop Grid */}
                 <div className="hidden lg:grid lg:grid-cols-12 gap-4 lg:gap-5">
                   <ServiceCard
                     service={services[0]}
-                    className="lg:col-span-4 min-h-[240px]"
+                    className="lg:col-span-4"
                   />
                   <ServiceCard
                     service={services[1]}
-                    className="lg:col-span-4 min-h-[240px]"
+                    className="lg:col-span-4"
                   />
                   <ServiceCard
                     service={services[2]}
-                    className="lg:col-span-4 min-h-[240px]"
+                    className="lg:col-span-4"
                   />
                 </div>
+              </AnimatedSection>
 
-                {/* Second Row */}
+              {/* Desktop Grid - Row 2 */}
+              <AnimatedSection>
                 <div className="hidden lg:grid lg:grid-cols-12 gap-4 lg:gap-5 mt-4 lg:mt-5">
                   <ServiceCard
                     service={services[3]}
-                    className="lg:col-span-4 min-h-[240px]"
+                    className="lg:col-span-4"
                   />
                   <ServiceCard
                     service={services[4]}
-                    className="lg:col-span-4 min-h-[240px]"
+                    className="lg:col-span-4"
                   />
 
                   {/* Process Card */}
-                  <div className="lg:col-span-4 rounded-2xl border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background-subtle))] p-6 lg:p-8 min-h-[240px]">
+                  <div className="lg:col-span-4 rounded-2xl border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background-subtle))] p-6 lg:p-8">
                     <p className="text-xs font-medium text-[hsl(var(--color-accent))] uppercase tracking-wide mb-5">
                       How We Work
                     </p>
@@ -410,17 +412,18 @@ export default function ServicesPage() {
                     </div>
                   </div>
                 </div>
+              </AnimatedSection>
 
-                {/* Mobile Layout - Stacked Cards */}
-                <div className="lg:hidden space-y-4">
-                  {services.map((service) => (
-                    <ServiceCard
-                      key={service.id}
-                      service={service}
-                    />
-                  ))}
+              {/* Mobile Layout - Each card animates individually */}
+              <div className="lg:hidden space-y-4">
+                {services.map((service) => (
+                  <AnimatedSection key={service.id}>
+                    <ServiceCard service={service} />
+                  </AnimatedSection>
+                ))}
 
-                  {/* Mobile Process */}
+                {/* Mobile Process */}
+                <AnimatedSection>
                   <div className="rounded-2xl border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background-subtle))] p-6">
                     <p className="text-xs font-medium text-[hsl(var(--color-accent))] uppercase tracking-wide mb-5">
                       How We Work
@@ -450,8 +453,8 @@ export default function ServicesPage() {
                       </Link>
                     </div>
                   </div>
-                </div>
-              </AnimatedSection>
+                </AnimatedSection>
+              </div>
             </Container>
           </Section>
 
