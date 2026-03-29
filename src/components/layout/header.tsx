@@ -72,10 +72,11 @@ export function Header() {
       <header
         className={cn(
           "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-          isScrolled
-            ? "bg-[hsl(var(--color-background))]/95 backdrop-blur-md border-b border-[hsl(var(--color-border))] shadow-sm"
-            : "bg-transparent",
-          isMobileMenuOpen && "!bg-[hsl(var(--color-foreground))] !backdrop-blur-none border-transparent shadow-none"
+          isMobileMenuOpen
+            ? "bg-[hsl(var(--color-foreground))] backdrop-blur-0 border-transparent shadow-none"
+            : isScrolled
+              ? "bg-[hsl(var(--color-background))]/95 backdrop-blur-md border-b border-[hsl(var(--color-border))] shadow-sm"
+              : "bg-transparent"
         )}
       >
         <Container>
