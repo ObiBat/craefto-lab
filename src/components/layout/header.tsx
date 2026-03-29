@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Container } from "./container";
 import { Button } from "@/components/ui/button";
@@ -11,8 +11,19 @@ import { navigation } from "@/lib/constants";
 
 export function Header() {
   const pathname = usePathname();
+  const router = useRouter();
   const [isScrolled, setIsScrolled] = React.useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
+
+  // Navigate from mobile menu: close menu first, then navigate
+  const handleMobileNav = React.useCallback((href: string) => {
+    setIsMobileMenuOpen(false);
+    document.body.style.overflow = "";
+    // Let the menu start closing, then navigate
+    requestAnimationFrame(() => {
+      router.push(href);
+    });
+  }, [router]);
 
   const handleLogoClick = (e: React.MouseEvent) => {
     setIsMobileMenuOpen(false);
@@ -31,28 +42,21 @@ export function Header() {
   }, []);
 
   React.useEffect(() => {
-    const updateThemeColor = (color: string) => {
-      // Remove all existing theme-color metas and replace with a clean one
-      // iOS Safari doesn't reliably re-evaluate media-queried metas
-      document.querySelectorAll('meta[name="theme-color"]').forEach(m => m.remove());
-      const meta = document.createElement("meta");
-      meta.name = "theme-color";
-      meta.content = color;
-      document.head.appendChild(meta);
-    };
-
     if (isMobileMenuOpen) {
       document.body.style.overflow = "hidden";
-      updateThemeColor("#4b6c59"); // accent green
     } else {
       document.body.style.overflow = "";
-      updateThemeColor("#FAF7F2"); // cream
     }
     return () => {
       document.body.style.overflow = "";
-      updateThemeColor("#FAF7F2");
     };
   }, [isMobileMenuOpen]);
+
+  // Close menu when route changes (safety net)
+  React.useEffect(() => {
+    setIsMobileMenuOpen(false);
+    document.body.style.overflow = "";
+  }, [pathname]);
 
   // Close menu on escape key
   React.useEffect(() => {
@@ -67,11 +71,11 @@ export function Header() {
     <>
       <header
         className={cn(
-          "fixed top-0 left-0 right-0 z-50 transition-all duration-300 pt-[env(safe-area-inset-top)]",
+          "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
           isScrolled
             ? "bg-[hsl(var(--color-background))]/95 backdrop-blur-md border-b border-[hsl(var(--color-border))] shadow-sm"
             : "bg-transparent",
-          isMobileMenuOpen && "!bg-[hsl(var(--color-accent))] border-transparent shadow-none"
+          isMobileMenuOpen && "bg-transparent border-transparent shadow-none"
         )}
       >
         <Container>
@@ -166,31 +170,27 @@ export function Header() {
         {/* Background overlay */}
         <div
           className={cn(
-            "absolute inset-0 bg-[hsl(var(--color-accent))] transition-transform duration-500 ease-out origin-top",
+            "absolute inset-0 bg-[hsl(var(--color-foreground))] transition-transform duration-500 ease-out origin-top",
             isMobileMenuOpen ? "scale-y-100" : "scale-y-0"
           )}
         />
 
         {/* Content */}
-        <div className="relative h-full flex flex-col pb-8 px-6 overflow-y-auto" style={{ paddingTop: "calc(env(safe-area-inset-top) + 6rem)" }}>
+        <div className="relative h-full flex flex-col pt-24 pb-8 px-6 overflow-y-auto">
           {/* Navigation Links */}
           <nav className="flex flex-col gap-1">
             {[...navigation.main, ...navigation.secondary].map((item, index) => (
-              <Link
+              <button
                 key={item.name}
-                href={item.href}
+                type="button"
                 className={cn(
-                  "mobile-nav-link group flex items-baseline gap-4 py-4 border-b border-white/15",
+                  "mobile-nav-link group flex items-baseline gap-4 py-4 border-b border-white/15 w-full text-left",
                   isMobileMenuOpen && "mobile-nav-link-active"
                 )}
                 style={{
                   transitionDelay: isMobileMenuOpen ? `${index * 75 + 150}ms` : "0ms"
                 }}
-                onClick={() => {
-                  setIsMobileMenuOpen(false);
-                  document.body.style.overflow = "";
-                  window.scrollTo(0, 0);
-                }}
+                onClick={() => handleMobileNav(item.href)}
               >
                 <span className="mobile-nav-index text-xs font-medium text-white/50 tabular-nums">
                   {String(index + 1).padStart(2, "0")}
@@ -206,7 +206,7 @@ export function Header() {
                 >
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                 </svg>
-              </Link>
+              </button>
             ))}
           </nav>
 
@@ -223,15 +223,13 @@ export function Header() {
             <Button
               variant="secondary"
               size="lg"
-              className="w-full !bg-white !text-[hsl(var(--color-accent))] !border-0 font-semibold"
-              asChild
+              className="w-full !bg-[hsl(var(--color-accent))] !text-white !border-0 font-semibold"
+              onClick={() => handleMobileNav(navigation.cta.href)}
             >
-              <Link href={navigation.cta.href} onClick={() => { setIsMobileMenuOpen(false); document.body.style.overflow = ""; window.scrollTo(0, 0); }}>
-                <span className="btn-text-wrapper">
-                  <span className="btn-text-primary">{navigation.cta.name}</span>
-                  <span className="btn-text-secondary" aria-hidden="true">Let&apos;s talk</span>
-                </span>
-              </Link>
+              <span className="btn-text-wrapper">
+                <span className="btn-text-primary">{navigation.cta.name}</span>
+                <span className="btn-text-secondary" aria-hidden="true">Let&apos;s talk</span>
+              </span>
             </Button>
 
             {/* Contact info */}
