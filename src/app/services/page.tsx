@@ -164,124 +164,77 @@ const faqs = [
 function ServiceCard({
   service,
   className,
-  size = "default"
 }: {
   service: typeof services[0];
   className?: string;
-  size?: "featured" | "default";
 }) {
-  const [isHovered, setIsHovered] = useState(false);
-
   return (
     <div
       id={service.id}
       className={cn(
-        "group relative rounded-2xl border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] transition-all duration-300",
-        "hover:border-[hsl(var(--color-accent))] hover:shadow-lg",
+        "group relative rounded-2xl border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] transition-colors duration-300",
+        "hover:border-[hsl(var(--color-accent))]",
         className
       )}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
     >
-      <div className={cn(
-        "h-full flex flex-col",
-        size === "featured" ? "p-8 lg:p-10" : "p-6 lg:p-8"
-      )}>
+      <div className="h-full flex flex-col p-6 lg:p-8">
         {/* Header */}
         <div className="flex items-start justify-between mb-4">
-          <span className={cn(
-            "font-mono font-medium text-[hsl(var(--color-accent))]",
-            size === "featured" ? "text-sm" : "text-xs"
-          )}>
+          <span className="font-mono font-medium text-[hsl(var(--color-accent))] text-xs">
             {service.number}
           </span>
-          <div className={cn(
-            "w-2 h-2 rounded-full bg-[hsl(var(--color-accent))] transition-transform duration-300",
-            isHovered ? "scale-150" : "scale-100"
-          )} />
+          <div className="w-2 h-2 rounded-full bg-[hsl(var(--color-accent))] transition-transform duration-300 group-hover:scale-150" />
         </div>
 
         {/* Title */}
-        <h3 className={cn(
-          "font-heading font-semibold tracking-tight text-[hsl(var(--color-foreground))] mb-2",
-          size === "featured" ? "text-2xl lg:text-3xl" : "text-lg lg:text-xl"
-        )}>
+        <h3 className="font-heading font-semibold tracking-tight text-[hsl(var(--color-foreground))] text-lg lg:text-xl mb-2">
           {service.title}
         </h3>
 
         {/* Tagline */}
-        <p className={cn(
-          "text-[hsl(var(--color-accent))] font-medium uppercase tracking-wide mb-4",
-          size === "featured" ? "text-sm" : "text-xs"
-        )}>
+        <p className="text-[hsl(var(--color-accent))] font-medium uppercase tracking-wide text-xs mb-4">
           {service.tagline}
         </p>
 
         {/* Description */}
-        <p className={cn(
-          "text-[hsl(var(--color-foreground-muted))] leading-relaxed flex-grow",
-          size === "featured" ? "text-base lg:text-lg mb-8" : "text-sm mb-6",
-          size === "default" && "line-clamp-3 group-hover:line-clamp-none transition-all"
-        )}>
+        <p className="text-sm text-[hsl(var(--color-foreground-muted))] leading-relaxed mb-6">
           {service.description}
         </p>
 
-        {/* Expandable content - Scenarios + Includes */}
-        <div className={cn(
-          "transition-all duration-500 overflow-hidden",
-          size === "featured"
-            ? "opacity-100 max-h-[800px]"
-            : isHovered
-              ? "opacity-100 max-h-[600px]"
-              : "opacity-0 max-h-0"
-        )}>
-          {/* Scenarios */}
-          <div className="pt-4 border-t border-[hsl(var(--color-border))]">
-            <p className="text-xs font-medium text-[hsl(var(--color-foreground-subtle))] uppercase tracking-wide mb-3">
-              Common scenarios
-            </p>
-            <div className="space-y-2">
-              {service.scenarios.map((scenario) => (
-                <p
-                  key={scenario}
-                  className="text-sm text-[hsl(var(--color-foreground-muted))] leading-relaxed flex items-start gap-2"
-                >
-                  <span className="w-1 h-1 rounded-full bg-[hsl(var(--color-accent))] mt-2 flex-shrink-0" />
-                  &ldquo;{scenario}&rdquo;
-                </p>
-              ))}
-            </div>
-          </div>
-
-          {/* Includes */}
-          <div className="pt-4 border-t border-[hsl(var(--color-border))] mt-4">
-            <p className="text-xs font-medium text-[hsl(var(--color-foreground-subtle))] uppercase tracking-wide mb-3">
-              Includes
-            </p>
-            <div className="flex flex-wrap gap-2">
-              {service.includes.map((item) => (
-                <span
-                  key={item}
-                  className="px-3 py-1.5 text-xs rounded-full bg-[hsl(var(--color-background-muted))] text-[hsl(var(--color-foreground-muted))] border border-[hsl(var(--color-border-subtle))]"
-                >
-                  {item}
-                </span>
-              ))}
-            </div>
+        {/* Scenarios */}
+        <div className="pt-4 border-t border-[hsl(var(--color-border))]">
+          <p className="text-xs font-medium text-[hsl(var(--color-foreground-subtle))] uppercase tracking-wide mb-3">
+            Common scenarios
+          </p>
+          <div className="space-y-2">
+            {service.scenarios.map((scenario) => (
+              <p
+                key={scenario}
+                className="text-sm text-[hsl(var(--color-foreground-muted))] leading-relaxed flex items-start gap-2"
+              >
+                <span className="w-1 h-1 rounded-full bg-[hsl(var(--color-accent))] mt-2 flex-shrink-0" />
+                &ldquo;{scenario}&rdquo;
+              </p>
+            ))}
           </div>
         </div>
 
-        {/* Arrow indicator */}
-        {size === "default" && (
-          <div className={cn(
-            "absolute bottom-6 right-6 transition-all duration-300",
-            isHovered ? "opacity-100 translate-x-1" : "opacity-40 translate-x-0"
-          )}>
-            <svg className="w-5 h-5 text-[hsl(var(--color-accent))]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-            </svg>
+        {/* Includes */}
+        <div className="pt-4 border-t border-[hsl(var(--color-border))] mt-4">
+          <p className="text-xs font-medium text-[hsl(var(--color-foreground-subtle))] uppercase tracking-wide mb-3">
+            Includes
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {service.includes.map((item) => (
+              <span
+                key={item}
+                className="px-3 py-1.5 text-xs rounded-full bg-[hsl(var(--color-background-muted))] text-[hsl(var(--color-foreground-muted))] border border-[hsl(var(--color-border-subtle))]"
+              >
+                {item}
+              </span>
+            ))}
           </div>
-        )}
+        </div>
       </div>
     </div>
   );
