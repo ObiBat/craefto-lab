@@ -31,20 +31,26 @@ export function Header() {
   }, []);
 
   React.useEffect(() => {
+    const updateThemeColor = (color: string) => {
+      // Remove all existing theme-color metas and replace with a clean one
+      // iOS Safari doesn't reliably re-evaluate media-queried metas
+      document.querySelectorAll('meta[name="theme-color"]').forEach(m => m.remove());
+      const meta = document.createElement("meta");
+      meta.name = "theme-color";
+      meta.content = color;
+      document.head.appendChild(meta);
+    };
+
     if (isMobileMenuOpen) {
       document.body.style.overflow = "hidden";
-      // Update theme-color so status bar blends with the menu
-      const meta = document.querySelector('meta[name="theme-color"]');
-      if (meta) meta.setAttribute("content", "#4b6c59"); // accent green
+      updateThemeColor("#4b6c59"); // accent green
     } else {
       document.body.style.overflow = "";
-      const meta = document.querySelector('meta[name="theme-color"]');
-      if (meta) meta.setAttribute("content", "#FAF7F2"); // cream
+      updateThemeColor("#FAF7F2"); // cream
     }
     return () => {
       document.body.style.overflow = "";
-      const meta = document.querySelector('meta[name="theme-color"]');
-      if (meta) meta.setAttribute("content", "#FAF7F2");
+      updateThemeColor("#FAF7F2");
     };
   }, [isMobileMenuOpen]);
 
