@@ -33,11 +33,18 @@ export function Header() {
   React.useEffect(() => {
     if (isMobileMenuOpen) {
       document.body.style.overflow = "hidden";
+      // Update theme-color so status bar blends with the menu
+      const meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) meta.setAttribute("content", "#4b6c59"); // accent green
     } else {
       document.body.style.overflow = "";
+      const meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) meta.setAttribute("content", "#FAF7F2"); // cream
     }
     return () => {
       document.body.style.overflow = "";
+      const meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) meta.setAttribute("content", "#FAF7F2");
     };
   }, [isMobileMenuOpen]);
 
@@ -54,7 +61,7 @@ export function Header() {
     <>
       <header
         className={cn(
-          "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
+          "fixed top-0 left-0 right-0 z-50 transition-all duration-300 pt-[env(safe-area-inset-top)]",
           isScrolled
             ? "bg-[hsl(var(--color-background))]/95 backdrop-blur-md border-b border-[hsl(var(--color-border))] shadow-sm"
             : "bg-transparent",
@@ -159,7 +166,7 @@ export function Header() {
         />
 
         {/* Content */}
-        <div className="relative h-full flex flex-col pt-24 pb-8 px-6 overflow-y-auto">
+        <div className="relative h-full flex flex-col pb-8 px-6 overflow-y-auto" style={{ paddingTop: "calc(env(safe-area-inset-top) + 6rem)" }}>
           {/* Navigation Links */}
           <nav className="flex flex-col gap-1">
             {[...navigation.main, ...navigation.secondary].map((item, index) => (
