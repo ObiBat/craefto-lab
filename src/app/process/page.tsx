@@ -86,13 +86,13 @@ export default function ProcessPage() {
                       </Link>
                     </li>
                     <li><span className="mx-2">/</span></li>
-                    <li className="text-[hsl(var(--color-foreground))] font-medium">How We Work</li>
+                    <li className="text-[hsl(var(--color-foreground))] font-medium">How we work</li>
                   </ol>
                 </nav>
 
                 <HeroText>
                   <h1 className="font-semibold tracking-tight mb-4">
-                    How We Work
+                    How we work
                   </h1>
                 </HeroText>
                 <HeroText delay={0.1}>

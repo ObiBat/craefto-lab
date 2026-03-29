@@ -384,7 +384,7 @@ export default function ServicesPage() {
                   {/* Process Card */}
                   <div className="lg:col-span-4 rounded-2xl border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background-subtle))] p-6 lg:p-8">
                     <p className="text-xs font-medium text-[hsl(var(--color-accent))] uppercase tracking-wide mb-5">
-                      How We Work
+                      How we work
                     </p>
                     <div className="space-y-4">
                       {workProcess.map((step) => (
@@ -426,7 +426,7 @@ export default function ServicesPage() {
                 <AnimatedSection>
                   <div className="rounded-2xl border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background-subtle))] p-6">
                     <p className="text-xs font-medium text-[hsl(var(--color-accent))] uppercase tracking-wide mb-5">
-                      How We Work
+                      How we work
                     </p>
                     <div className="grid grid-cols-2 gap-4">
                       {workProcess.map((step) => (
