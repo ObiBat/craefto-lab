@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Header, Footer, Container, Section } from "@/components/layout";
 import { Separator, PageTransition, AnimatedSection, StaggeredGrid, StaggeredItem, HeroText, SectionLabel } from "@/components/ui";
 import { Button } from "@/components/ui/button";
@@ -62,6 +63,17 @@ const serviceLinks = [
 ];
 
 export default function StartPage() {
+  const router = useRouter();
+
+  const handleServiceClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    e.preventDefault();
+    const hash = href.split("#")[1];
+    if (hash) {
+      sessionStorage.setItem("scrollToService", hash);
+    }
+    router.push("/services");
+  };
+
   return (
     <>
       <Header />
@@ -282,7 +294,7 @@ export default function StartPage() {
                     <StaggeredItem key={service.title}>
                       <Link
                         href={service.href}
-                        scroll={false}
+                        onClick={(e) => handleServiceClick(e, service.href)}
                         className="group flex items-center justify-between p-5 rounded-xl border border-[hsl(var(--color-border))] hover:border-[hsl(var(--color-accent))] transition-all duration-300"
                       >
                         <span className="font-medium text-[hsl(var(--color-foreground))] group-hover:text-[hsl(var(--color-accent))] transition-colors">

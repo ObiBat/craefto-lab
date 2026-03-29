@@ -1,8 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
-import { usePathname } from "next/navigation";
+import { useState, useEffect, useCallback } from "react";
 import { Header, Footer, Container, Section } from "@/components/layout";
 import { Separator, PageTransition, AnimatedSection, HeroText, SectionLabel } from "@/components/ui";
 import { Button } from "@/components/ui/button";
@@ -326,30 +325,40 @@ function FAQItem({ faq }: { faq: typeof faqs[0] }) {
 }
 
 export default function ServicesPage() {
-  const pathname = usePathname();
-
-  // Handle hash scrolling after page transition completes
-  useEffect(() => {
-    const hash = window.location.hash;
-    if (!hash) return;
-
-    const targetId = hash.replace("#", "");
-
-    // Wait for page transition (300ms) + layout settle
+  const scrollToSection = useCallback((targetId: string) => {
+    // Wait for page transition animation (300ms) + layout to settle
     const timer = setTimeout(() => {
       const element = document.getElementById(targetId);
       if (element) {
-        const headerOffset = 100; // account for fixed header
+        const headerOffset = 100;
         const elementPosition = element.getBoundingClientRect().top + window.scrollY;
         window.scrollTo({
           top: elementPosition - headerOffset,
           behavior: "smooth",
         });
       }
-    }, 400);
+    }, 450);
+    return timer;
+  }, []);
 
-    return () => clearTimeout(timer);
-  }, [pathname]);
+  // Handle scroll from /start page via sessionStorage (no hash in URL)
+  useEffect(() => {
+    const target = sessionStorage.getItem("scrollToService");
+    if (target) {
+      sessionStorage.removeItem("scrollToService");
+      const timer = scrollToSection(target);
+      return () => clearTimeout(timer);
+    }
+
+    // Also handle direct URL hash (e.g. shared link /services#web)
+    const hash = window.location.hash?.replace("#", "");
+    if (hash) {
+      // Reset scroll position immediately to prevent native hash jump
+      window.scrollTo(0, 0);
+      const timer = scrollToSection(hash);
+      return () => clearTimeout(timer);
+    }
+  }, [scrollToSection]);
 
   return (
     <>
