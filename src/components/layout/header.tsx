@@ -42,29 +42,13 @@ export function Header() {
   }, []);
 
   React.useEffect(() => {
-    // Swap iOS Safari status bar color to match menu
-    const setThemeColor = (color: string) => {
-      let meta = document.querySelector('meta[name="theme-color"]') as HTMLMetaElement | null;
-      if (!meta) {
-        meta = document.createElement("meta");
-        meta.name = "theme-color";
-        document.head.appendChild(meta);
-      }
-      // Remove media attribute so iOS Safari picks it up immediately
-      meta.removeAttribute("media");
-      meta.content = color;
-    };
-
     if (isMobileMenuOpen) {
       document.body.style.overflow = "hidden";
-      setThemeColor("#1A1714"); // dark foreground
     } else {
       document.body.style.overflow = "";
-      setThemeColor("#FAF7F2"); // cream background
     }
     return () => {
       document.body.style.overflow = "";
-      setThemeColor("#FAF7F2");
     };
   }, [isMobileMenuOpen]);
 
@@ -72,11 +56,6 @@ export function Header() {
   React.useEffect(() => {
     setIsMobileMenuOpen(false);
     document.body.style.overflow = "";
-    const meta = document.querySelector('meta[name="theme-color"]') as HTMLMetaElement | null;
-    if (meta) {
-      meta.removeAttribute("media");
-      meta.content = "#FAF7F2";
-    }
   }, [pathname]);
 
   // Close menu on escape key
