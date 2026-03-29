@@ -43,16 +43,13 @@ export function Header() {
 
   React.useEffect(() => {
     // Swap iOS Safari status bar color to match menu
+    // Must remove + recreate the tag; iOS Safari ignores .content mutations
     const setThemeColor = (color: string) => {
-      let meta = document.querySelector('meta[name="theme-color"]') as HTMLMetaElement | null;
-      if (!meta) {
-        meta = document.createElement("meta");
-        meta.name = "theme-color";
-        document.head.appendChild(meta);
-      }
-      // Remove media attribute so iOS Safari picks it up immediately
-      meta.removeAttribute("media");
+      document.querySelectorAll('meta[name="theme-color"]').forEach(m => m.remove());
+      const meta = document.createElement("meta");
+      meta.name = "theme-color";
       meta.content = color;
+      document.head.appendChild(meta);
     };
 
     if (isMobileMenuOpen) {
@@ -72,11 +69,11 @@ export function Header() {
   React.useEffect(() => {
     setIsMobileMenuOpen(false);
     document.body.style.overflow = "";
-    const meta = document.querySelector('meta[name="theme-color"]') as HTMLMetaElement | null;
-    if (meta) {
-      meta.removeAttribute("media");
-      meta.content = "#FAF7F2";
-    }
+    document.querySelectorAll('meta[name="theme-color"]').forEach(m => m.remove());
+    const meta = document.createElement("meta");
+    meta.name = "theme-color";
+    meta.content = "#FAF7F2";
+    document.head.appendChild(meta);
   }, [pathname]);
 
   // Close menu on escape key
