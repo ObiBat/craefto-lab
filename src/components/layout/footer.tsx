@@ -15,7 +15,7 @@ export function Footer() {
 
   return (
     <footer
-      className="relative z-10 bg-[hsl(var(--color-foreground))] text-[hsl(var(--color-background))]"
+      className="relative z-10 bg-[hsl(var(--color-foreground))] text-[hsl(var(--color-background))] pb-[env(safe-area-inset-bottom)]"
       role="contentinfo"
       aria-label="Site footer"
     >
