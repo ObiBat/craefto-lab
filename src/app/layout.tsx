@@ -152,7 +152,7 @@ const jsonLd = {
     "@type": "PostalAddress",
     addressCountry: "US",
   },
-  foundingDate: "2024",
+  foundingDate: "2025",
   numberOfEmployees: {
     "@type": "QuantitativeValue",
     minValue: 1,

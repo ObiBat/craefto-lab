@@ -7,7 +7,7 @@ import { Separator, PageTransition, AnimatedSection, StaggeredGrid, StaggeredIte
 import { Button } from "@/components/ui/button";
 
 const stats = [
-  { label: "Founded", value: "2024" },
+  { label: "Founded", value: "2025" },
   { label: "Based in", value: "Sydney" },
   { label: "Capability", value: "Design + Code + Strategy" },
 ];
