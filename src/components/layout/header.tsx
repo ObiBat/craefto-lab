@@ -75,7 +75,7 @@ export function Header() {
           isScrolled
             ? "bg-[hsl(var(--color-background))]/95 backdrop-blur-md border-b border-[hsl(var(--color-border))] shadow-sm"
             : "bg-transparent",
-          isMobileMenuOpen && "bg-transparent border-transparent shadow-none"
+          isMobileMenuOpen && "!bg-[hsl(var(--color-foreground))] border-transparent shadow-none"
         )}
       >
         <Container>
