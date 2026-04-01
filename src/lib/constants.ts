@@ -20,6 +20,7 @@ export const navigation = {
   ],
   secondary: [
     { name: "First time here?", href: "/start" },
+    { name: "Careers", href: "/careers" },
   ],
   cta: { name: "Contact", href: "/contact" },
 };
