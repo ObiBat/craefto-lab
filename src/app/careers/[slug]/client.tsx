@@ -153,8 +153,8 @@ export function RolePageClient({ role, applyHref }: RolePageClientProps) {
                 <div className="border-t border-[hsl(var(--color-border))]">
                   {role.responsibilities.map((item, i) => (
                     <AnimatedSection key={i} delay={i * 0.03}>
-                      <div className="flex items-start gap-5 py-5 border-b border-[hsl(var(--color-border))]">
-                        <span className="text-xs font-semibold text-[hsl(var(--color-foreground-subtle))] tabular-nums mt-0.5 flex-shrink-0 w-5">
+                      <div className="flex items-baseline gap-5 py-5 border-b border-[hsl(var(--color-border))]">
+                        <span className="text-xs font-semibold text-[hsl(var(--color-foreground-subtle))] tabular-nums flex-shrink-0 w-5 leading-relaxed">
                           {String(i + 1).padStart(2, "0")}
                         </span>
                         <p className="text-[hsl(var(--color-foreground-muted))] leading-relaxed">
@@ -185,8 +185,8 @@ export function RolePageClient({ role, applyHref }: RolePageClientProps) {
                 <AnimatedSection delay={0.1}>
                   <ul className="space-y-4">
                     {role.requirements.map((item, i) => (
-                      <li key={i} className="flex items-start gap-4">
-                        <span className="mt-2 w-1.5 h-1.5 rounded-full bg-[hsl(var(--color-accent))] flex-shrink-0" />
+                      <li key={i} className="flex items-baseline gap-4">
+                        <span className="relative top-[-1px] w-1.5 h-1.5 rounded-full bg-[hsl(var(--color-accent))] flex-shrink-0" />
                         <p className="text-[hsl(var(--color-foreground-muted))] leading-relaxed">
                           {item}
                         </p>
