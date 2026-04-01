@@ -25,12 +25,10 @@ function formatDate(dateString: string): string {
 }
 
 const principles = [
-  { number: "01", text: "Ship real work. No spec projects, no fake briefs." },
-  { number: "02", text: "Trust taste over process. We hire creatives, not task completers." },
-  { number: "03", text: "Small team means your voice carries. Every opinion shapes the output." },
-  { number: "04", text: "Quality is the only KPI. We would rather lose a deadline than ship something forgettable." },
-  { number: "05", text: "Remote by default. Your best work happens where you feel best." },
-  { number: "06", text: "Grow through doing, not watching. Client work is the curriculum." },
+  { text: "Ship real work. No spec projects, no fake briefs." },
+  { text: "Trust taste over process. We hire creatives, not task completers." },
+  { text: "Small team means your voice carries. Every opinion shapes the output." },
+  { text: "Remote by default. Your best work happens where you feel best." },
 ];
 
 const perks = [
@@ -144,20 +142,14 @@ export default function CareersPage() {
                 <SectionLabel number="02" label="How we work" />
               </AnimatedSection>
 
-              <div className="mt-12">
+              <div className="mt-12 border-t border-[hsl(var(--color-border))]">
                 {principles.map((p, i) => (
-                  <AnimatedSection key={p.number} delay={i * 0.05}>
-                    <div className="group grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-8 py-6 md:py-7 border-b border-[hsl(var(--color-border))] last:border-b-0 transition-colors hover:bg-[hsl(var(--color-background-subtle))/50] -mx-4 px-4 md:-mx-6 md:px-6 rounded-lg">
-                      <div className="md:col-span-1">
-                        <span className="text-xs font-semibold text-[hsl(var(--color-accent))] tabular-nums">
-                          {p.number}
-                        </span>
-                      </div>
-                      <div className="md:col-span-11">
-                        <p className="text-lg md:text-xl font-medium text-[hsl(var(--color-foreground))] leading-snug tracking-tight">
-                          {p.text}
-                        </p>
-                      </div>
+                  <AnimatedSection key={i} delay={i * 0.05}>
+                    <div className="flex items-start gap-4 py-6 border-b border-[hsl(var(--color-border))]">
+                      <span className="mt-2.5 w-1.5 h-1.5 rounded-full bg-[hsl(var(--color-accent))] flex-shrink-0" />
+                      <p className="text-lg md:text-xl font-medium text-[hsl(var(--color-foreground))] leading-snug tracking-tight">
+                        {p.text}
+                      </p>
                     </div>
                   </AnimatedSection>
                 ))}
@@ -173,9 +165,7 @@ export default function CareersPage() {
                   <AnimatedSection>
                     <SectionLabel number="03" label="Open roles" />
                     <h2 className="font-semibold tracking-tight mt-4">
-                      Current
-                      <br />
-                      openings
+                      Current openings
                     </h2>
                   </AnimatedSection>
                 </div>
