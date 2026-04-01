@@ -15,111 +15,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { roles } from "@/lib/careers";
 
-const whyCraefto = [
-  {
-    number: "01",
-    title: "Your work ships, not slides",
-    description:
-      "No endless revisions that go nowhere. Projects here go live. You will build real brands, real campaigns, and real products that people actually see and use.",
-    icon: (
-      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
-      </svg>
-    ),
-  },
-  {
-    number: "02",
-    title: "Creative freedom with direction",
-    description:
-      "We set the vision together, then get out of your way. No design by committee. No pixel policing. You bring the ideas, we trust your taste.",
-    icon: (
-      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
-      </svg>
-    ),
-  },
-  {
-    number: "03",
-    title: "Small team, big range",
-    description:
-      "One week you are designing a fintech brand identity. The next, social campaigns for a wellness startup. The variety keeps things fresh and your portfolio stacked.",
-    icon: (
-      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
-      </svg>
-    ),
-  },
-  {
-    number: "04",
-    title: "Work from wherever",
-    description:
-      "Fully remote. We care about what you create, not where you sit. Show up with great work and communicate clearly. That is all.",
-    icon: (
-      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-      </svg>
-    ),
-  },
-];
-
-const benefits = [
-  {
-    title: "Flexible hours",
-    description: "Structure your day around your energy, not a clock.",
-    icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-      </svg>
-    ),
-  },
-  {
-    title: "Remote first",
-    description: "Work from anywhere. Sydney, Bali, your couch. Your call.",
-    icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-      </svg>
-    ),
-  },
-  {
-    title: "Learning budget",
-    description: "Courses, conferences, books, tools. We invest in your growth.",
-    icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-      </svg>
-    ),
-  },
-  {
-    title: "Project ownership",
-    description: "Lead features, make architectural decisions, ship with your name on it.",
-    icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
-      </svg>
-    ),
-  },
-  {
-    title: "Minimal meetings",
-    description: "We write things down. Your calendar stays clean.",
-    icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
-      </svg>
-    ),
-  },
-  {
-    title: "Modern stack",
-    description: "Next.js, React, TypeScript, Tailwind, Figma, AI tools. The good stuff.",
-    icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-      </svg>
-    ),
-  },
-];
-
 function formatDate(dateString: string): string {
   const date = new Date(dateString + "T00:00:00");
   return date.toLocaleDateString("en-AU", {
@@ -129,280 +24,297 @@ function formatDate(dateString: string): string {
   });
 }
 
+const principles = [
+  { number: "01", text: "Ship real work. No spec projects, no fake briefs." },
+  { number: "02", text: "Trust taste over process. We hire creatives, not task completers." },
+  { number: "03", text: "Small team means your voice carries. Every opinion shapes the output." },
+  { number: "04", text: "Quality is the only KPI. We would rather lose a deadline than ship something forgettable." },
+  { number: "05", text: "Remote by default. Your best work happens where you feel best." },
+  { number: "06", text: "Grow through doing, not watching. Client work is the curriculum." },
+];
+
+const perks = [
+  { label: "Flexible hours", detail: "Work around your energy, not a clock" },
+  { label: "Remote first", detail: "Sydney, Melbourne, anywhere with WiFi" },
+  { label: "Learning budget", detail: "Tools, courses, conferences on us" },
+  { label: "Creative ownership", detail: "Your name on the work, your call on the craft" },
+  { label: "No meeting culture", detail: "We write things down. Your calendar stays clean" },
+  { label: "Modern tools", detail: "Figma, Adobe CC, the best gear for the job" },
+];
+
 export default function CareersPage() {
   return (
     <>
       <Header />
       <PageTransition>
         <main id="main-content" className="pt-20">
-          {/* Hero */}
-          <Section spacing="sm">
-            <Container>
-              <div className="max-w-3xl">
-                <nav className="mb-8" aria-label="Breadcrumb">
-                  <ol className="flex items-center gap-2 text-sm text-[hsl(var(--color-foreground-muted))]">
-                    <li>
-                      <Link href="/" className="hover:text-[hsl(var(--color-foreground))] transition-colors">
-                        Home
-                      </Link>
-                    </li>
-                    <li>
-                      <span className="mx-2">/</span>
-                    </li>
-                    <li className="text-[hsl(var(--color-foreground))] font-medium">Careers</li>
-                  </ol>
-                </nav>
 
-                <HeroText>
-                  <h1 className="font-semibold tracking-tight mb-6">
-                    Build with us
-                  </h1>
-                </HeroText>
-                <HeroText delay={0.1}>
-                  <p className="text-xl text-[hsl(var(--color-foreground-muted))] leading-relaxed max-w-xl">
-                    Craefto is a creative tech studio where design and engineering are one discipline. We are looking for people who care about craft as much as we do.
-                  </p>
-                </HeroText>
-              </div>
-            </Container>
-          </Section>
-
-          {/* Why Craefto */}
+          {/* ── HERO ── */}
           <Section spacing="lg">
             <Container>
-              <div className="flex flex-col gap-14">
-                <AnimatedSection>
-                  <div className="flex flex-col gap-4">
-                    <SectionLabel number="01" label="Why Craefto" />
-                    <h2 className="font-semibold tracking-tight">
-                      Not your typical studio gig
-                    </h2>
-                    <p className="text-lg text-[hsl(var(--color-foreground-muted))] max-w-xl leading-relaxed mt-2">
-                      No corporate bureaucracy. No creative death by committee. Just real projects, real clients, and space to do work you are actually proud of.
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-end">
+                {/* Left: headline */}
+                <div className="lg:col-span-8">
+                  <nav className="mb-10" aria-label="Breadcrumb">
+                    <ol className="flex items-center gap-2 text-sm text-[hsl(var(--color-foreground-muted))]">
+                      <li>
+                        <Link href="/" className="hover:text-[hsl(var(--color-foreground))] transition-colors">Home</Link>
+                      </li>
+                      <li><span className="mx-2">/</span></li>
+                      <li className="text-[hsl(var(--color-foreground))] font-medium">Careers</li>
+                    </ol>
+                  </nav>
+
+                  <HeroText>
+                    <h1 className="font-semibold tracking-tight mb-0 leading-[0.92]">
+                      We make things
+                      <br />
+                      <span className="text-[hsl(var(--color-accent))]">worth looking at.</span>
+                      <br />
+                      Join us.
+                    </h1>
+                  </HeroText>
+                </div>
+
+                {/* Right: supporting text */}
+                <div className="lg:col-span-4">
+                  <HeroText delay={0.15}>
+                    <p className="text-lg text-[hsl(var(--color-foreground-muted))] leading-relaxed">
+                      Craefto is a creative tech studio where design is not decoration. We build brands, products, and visual systems for companies that take craft seriously.
                     </p>
-                  </div>
-                </AnimatedSection>
-
-                <Separator />
-
-                <StaggeredGrid className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  {whyCraefto.map((item) => (
-                    <StaggeredItem key={item.title}>
-                      <div className="group p-6 rounded-xl border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] hover:border-[hsl(var(--color-border-strong))] hover:shadow-sm transition-all">
-                        <div className="flex items-start gap-4">
-                          <div className="w-12 h-12 rounded-lg bg-[hsl(var(--color-background-muted))] flex items-center justify-center text-[hsl(var(--color-foreground-muted))] group-hover:text-[hsl(var(--color-accent))] transition-colors flex-shrink-0">
-                            {item.icon}
-                          </div>
-                          <div>
-                            <span className="text-xs font-semibold text-[hsl(var(--color-accent))] tabular-nums">
-                              {item.number}
-                            </span>
-                            <h3 className="font-semibold tracking-tight mt-1 mb-2">
-                              {item.title}
-                            </h3>
-                            <p className="text-sm text-[hsl(var(--color-foreground-muted))] leading-relaxed">
-                              {item.description}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    </StaggeredItem>
-                  ))}
-                </StaggeredGrid>
+                  </HeroText>
+                  <HeroText delay={0.25}>
+                    <div className="mt-8 flex items-center gap-4">
+                      <span className="inline-flex items-center gap-2 text-sm font-medium text-[hsl(var(--color-foreground-muted))]">
+                        <span className="w-2 h-2 rounded-full bg-[hsl(var(--color-accent))] animate-pulse" />
+                        {roles.length} open {roles.length === 1 ? "role" : "roles"}
+                      </span>
+                      <span className="text-sm text-[hsl(var(--color-foreground-subtle))]">·</span>
+                      <span className="text-sm text-[hsl(var(--color-foreground-muted))]">Remote</span>
+                    </div>
+                  </HeroText>
+                </div>
               </div>
             </Container>
           </Section>
 
-          {/* Culture */}
+          {/* ── FULL WIDTH DIVIDER ── */}
+          <Container>
+            <Separator />
+          </Container>
+
+          {/* ── PHILOSOPHY — EDITORIAL PROSE ── */}
           <Section spacing="lg">
             <Container>
-              <div className="flex flex-col gap-14">
-                <AnimatedSection>
-                  <div className="flex flex-col gap-4">
-                    <SectionLabel number="02" label="Culture" />
-                    <h2 className="font-semibold tracking-tight">
-                      How we work
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8">
+                <div className="lg:col-span-4">
+                  <AnimatedSection>
+                    <SectionLabel number="01" label="Philosophy" />
+                    <h2 className="font-semibold tracking-tight mt-4">
+                      Not your typical
+                      <br />
+                      studio gig
                     </h2>
-                  </div>
-                </AnimatedSection>
+                  </AnimatedSection>
+                </div>
 
-                <Separator />
-
-                <AnimatedSection delay={0.1}>
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
-                    <div className="space-y-6 text-lg text-[hsl(var(--color-foreground-muted))] leading-relaxed">
-                      <p>
-                        <strong className="text-[hsl(var(--color-foreground))]">Ship craft, not compromises.</strong> We would rather take an extra day to get it right than rush something out the door. Quality is not negotiable.
-                      </p>
-                      <p>
-                        <strong className="text-[hsl(var(--color-foreground))]">Own your work end to end.</strong> No silos, no handoffs into a void. You see your ideas through from concept to production.
-                      </p>
-                    </div>
-                    <div className="space-y-6 text-lg text-[hsl(var(--color-foreground-muted))] leading-relaxed">
-                      <p>
-                        <strong className="text-[hsl(var(--color-foreground))]">Learn by building real things.</strong> The fastest way to grow is by shipping meaningful work for real clients, not watching tutorials.
-                      </p>
-                      <p>
-                        <strong className="text-[hsl(var(--color-foreground))]">Trust over process.</strong> We hire capable people and give them room to operate. Clear communication replaces rigid workflows.
-                      </p>
-                    </div>
-                  </div>
-                </AnimatedSection>
-              </div>
-            </Container>
-          </Section>
-
-          {/* Open Positions */}
-          <Section spacing="lg">
-            <Container>
-              <div className="flex flex-col gap-14">
-                <AnimatedSection>
-                  <div className="flex flex-col gap-4">
-                    <SectionLabel number="03" label="Open Positions" />
-                    <h2 className="font-semibold tracking-tight">
-                      Current openings
-                    </h2>
-                    <p className="text-lg text-[hsl(var(--color-foreground-muted))] max-w-xl leading-relaxed mt-2">
-                      {roles.length > 0
-                        ? `We have ${roles.length} open ${roles.length === 1 ? "role" : "roles"} right now. Find yours.`
-                        : "No open positions right now, but we are always interested in meeting talented people."}
-                    </p>
-                  </div>
-                </AnimatedSection>
-
-                <Separator />
-
-                {roles.length > 0 ? (
-                  <StaggeredGrid className="flex flex-col gap-4">
-                    {roles.map((role) => (
-                      <StaggeredItem key={role.slug}>
-                        <Link
-                          href={`/careers/${role.slug}`}
-                          className="group block p-6 md:p-8 rounded-xl border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] hover:border-[hsl(var(--color-border-strong))] hover:shadow-md transition-all"
-                        >
-                          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                            <div className="flex flex-col gap-3">
-                              <div className="flex flex-wrap items-center gap-2">
-                                <Badge variant="accent">{role.department}</Badge>
-                                <Badge variant="secondary">{role.location}</Badge>
-                                <Badge variant="secondary">{role.type}</Badge>
-                              </div>
-                              <h3 className="text-xl font-semibold tracking-tight group-hover:text-[hsl(var(--color-accent))] transition-colors">
-                                {role.title}
-                              </h3>
-                              <p className="text-sm text-[hsl(var(--color-foreground-muted))] leading-relaxed max-w-lg">
-                                {role.description.slice(0, 140)}...
-                              </p>
-                            </div>
-                            <div className="flex items-center gap-2 text-sm font-medium text-[hsl(var(--color-foreground-muted))] group-hover:text-[hsl(var(--color-accent))] transition-colors flex-shrink-0">
-                              <span>View role</span>
-                              <svg
-                                className="w-4 h-4 transition-transform group-hover:translate-x-1"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                              </svg>
-                            </div>
-                          </div>
-                        </Link>
-                      </StaggeredItem>
-                    ))}
-                  </StaggeredGrid>
-                ) : (
+                <div className="lg:col-span-7 lg:col-start-6">
                   <AnimatedSection delay={0.1}>
-                    <div className="text-center py-12 px-6 rounded-xl border border-dashed border-[hsl(var(--color-border-strong))]">
-                      <p className="text-lg text-[hsl(var(--color-foreground-muted))] mb-4">
-                        No open positions right now.
+                    <div className="space-y-8 text-lg text-[hsl(var(--color-foreground-muted))] leading-[1.8]">
+                      <p>
+                        Most agencies hire creatives then micromanage them into mediocrity. We do the opposite. We set the vision together, then get out of your way. No design by committee. No pixel policing. If we hired you, we trust your taste.
                       </p>
-                      <Button asChild>
-                        <Link href="/contact">
-                          <span className="btn-text-wrapper">
-                            <span className="btn-text-primary">Send a general application</span>
-                            <span className="btn-text-secondary" aria-hidden="true">Introduce yourself</span>
-                          </span>
-                        </Link>
-                      </Button>
+                      <p>
+                        Projects here go live. You will build real brands, real campaigns, and real products that people actually see and interact with. Not pitch decks that collect dust in someone&apos;s inbox.
+                      </p>
+                      <p>
+                        One week you might be crafting a fintech brand identity. The next, social campaigns for a wellness startup. Then a presentation deck for a Series A raise. The variety keeps things fresh and your portfolio stacked.
+                      </p>
                     </div>
                   </AnimatedSection>
-                )}
+                </div>
               </div>
             </Container>
           </Section>
 
-          {/* Benefits */}
+          {/* ── PRINCIPLES — LINEAR STYLE NUMBERED LIST ── */}
           <Section spacing="lg">
             <Container>
-              <div className="flex flex-col gap-14">
-                <AnimatedSection>
-                  <div className="flex flex-col gap-4">
-                    <SectionLabel number="04" label="Benefits" />
-                    <h2 className="font-semibold tracking-tight">
-                      What you get
-                    </h2>
-                    <p className="text-lg text-[hsl(var(--color-foreground-muted))] max-w-xl leading-relaxed mt-2">
-                      Beyond the work itself, here is what comes with being part of Craefto.
-                    </p>
-                  </div>
-                </AnimatedSection>
+              <AnimatedSection>
+                <SectionLabel number="02" label="How we work" />
+              </AnimatedSection>
 
-                <Separator />
-
-                <StaggeredGrid className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {benefits.map((benefit) => (
-                    <StaggeredItem key={benefit.title}>
-                      <div className="p-6 rounded-xl border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] hover:border-[hsl(var(--color-border-strong))] hover:shadow-sm transition-all">
-                        <div className="w-10 h-10 rounded-lg bg-[hsl(var(--color-accent-subtle))] flex items-center justify-center text-[hsl(var(--color-accent))] mb-4">
-                          {benefit.icon}
-                        </div>
-                        <h3 className="font-semibold tracking-tight mb-2">
-                          {benefit.title}
-                        </h3>
-                        <p className="text-sm text-[hsl(var(--color-foreground-muted))] leading-relaxed">
-                          {benefit.description}
+              <div className="mt-12">
+                {principles.map((p, i) => (
+                  <AnimatedSection key={p.number} delay={i * 0.05}>
+                    <div className="group grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-8 py-6 md:py-7 border-b border-[hsl(var(--color-border))] last:border-b-0 transition-colors hover:bg-[hsl(var(--color-background-subtle))/50] -mx-4 px-4 md:-mx-6 md:px-6 rounded-lg">
+                      <div className="md:col-span-1">
+                        <span className="text-xs font-semibold text-[hsl(var(--color-accent))] tabular-nums">
+                          {p.number}
+                        </span>
+                      </div>
+                      <div className="md:col-span-11">
+                        <p className="text-lg md:text-xl font-medium text-[hsl(var(--color-foreground))] leading-snug tracking-tight">
+                          {p.text}
                         </p>
                       </div>
-                    </StaggeredItem>
-                  ))}
-                </StaggeredGrid>
+                    </div>
+                  </AnimatedSection>
+                ))}
               </div>
             </Container>
           </Section>
 
-          {/* General Application CTA */}
+          {/* ── OPEN POSITIONS ── */}
+          <Section spacing="lg">
+            <Container>
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8">
+                <div className="lg:col-span-4">
+                  <AnimatedSection>
+                    <SectionLabel number="03" label="Open roles" />
+                    <h2 className="font-semibold tracking-tight mt-4">
+                      Current
+                      <br />
+                      openings
+                    </h2>
+                  </AnimatedSection>
+                </div>
+
+                <div className="lg:col-span-7 lg:col-start-6">
+                  {roles.length > 0 ? (
+                    <div className="flex flex-col">
+                      {roles.map((role, i) => (
+                        <AnimatedSection key={role.slug} delay={i * 0.08}>
+                          <Link
+                            href={`/careers/${role.slug}`}
+                            className="group block py-8 border-b border-[hsl(var(--color-border))] first:pt-0 last:border-b-0 transition-colors"
+                          >
+                            {/* Department + Meta */}
+                            <div className="flex flex-wrap items-center gap-3 mb-4">
+                              <Badge variant="accent">{role.department}</Badge>
+                              <span className="text-xs text-[hsl(var(--color-foreground-subtle))]">{role.location}</span>
+                              <span className="text-xs text-[hsl(var(--color-foreground-subtle))]">·</span>
+                              <span className="text-xs text-[hsl(var(--color-foreground-subtle))]">{role.type}</span>
+                            </div>
+
+                            {/* Title */}
+                            <div className="flex items-center justify-between gap-6">
+                              <h3 className="text-2xl md:text-3xl font-semibold tracking-tight group-hover:text-[hsl(var(--color-accent))] transition-colors duration-300">
+                                {role.title}
+                              </h3>
+                              <div className="flex-shrink-0 w-10 h-10 rounded-full border border-[hsl(var(--color-border-strong))] flex items-center justify-center group-hover:bg-[hsl(var(--color-foreground))] group-hover:border-[hsl(var(--color-foreground))] transition-all duration-300">
+                                <svg
+                                  className="w-4 h-4 text-[hsl(var(--color-foreground-muted))] group-hover:text-[hsl(var(--color-background))] transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 17L17 7M17 7H7M17 7v10" />
+                                </svg>
+                              </div>
+                            </div>
+
+                            {/* Description */}
+                            <p className="mt-3 text-[hsl(var(--color-foreground-muted))] leading-relaxed max-w-lg">
+                              {role.description.length > 160
+                                ? role.description.slice(0, 160).trim() + "..."
+                                : role.description}
+                            </p>
+                          </Link>
+                        </AnimatedSection>
+                      ))}
+                    </div>
+                  ) : (
+                    <AnimatedSection delay={0.1}>
+                      <div className="py-16 text-center">
+                        <p className="text-lg text-[hsl(var(--color-foreground-muted))] mb-6">
+                          No open positions right now.
+                        </p>
+                        <Button asChild>
+                          <Link href="/contact">
+                            <span className="btn-text-wrapper">
+                              <span className="btn-text-primary">Send a general application</span>
+                              <span className="btn-text-secondary" aria-hidden="true">Introduce yourself</span>
+                            </span>
+                          </Link>
+                        </Button>
+                      </div>
+                    </AnimatedSection>
+                  )}
+                </div>
+              </div>
+            </Container>
+          </Section>
+
+          {/* ── PERKS — MINIMAL GRID ── */}
+          <Section spacing="lg">
+            <Container>
+              <AnimatedSection>
+                <SectionLabel number="04" label="What you get" />
+              </AnimatedSection>
+
+              <StaggeredGrid className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-0 mt-12 border-t border-[hsl(var(--color-border))]">
+                {perks.map((perk, i) => (
+                  <StaggeredItem key={perk.label}>
+                    <div className={`py-8 px-1 border-b border-[hsl(var(--color-border))] ${
+                      i % 3 !== 2 ? "lg:border-r" : ""
+                    } ${i % 2 !== 1 ? "sm:border-r lg:border-r-0" : "sm:border-r-0"} ${
+                      i % 3 !== 2 ? "lg:border-r" : "lg:border-r-0"
+                    } sm:px-6 lg:px-8`}>
+                      <p className="font-semibold tracking-tight text-[hsl(var(--color-foreground))] mb-2">
+                        {perk.label}
+                      </p>
+                      <p className="text-sm text-[hsl(var(--color-foreground-muted))] leading-relaxed">
+                        {perk.detail}
+                      </p>
+                    </div>
+                  </StaggeredItem>
+                ))}
+              </StaggeredGrid>
+            </Container>
+          </Section>
+
+          {/* ── OPEN APPLICATION CTA — FULL BLEED ── */}
           <Section spacing="xl">
             <Container>
               <AnimatedSection variant="scaleIn">
-                <div className="rounded-2xl bg-[hsl(var(--color-accent))] p-10 sm:p-14 md:p-20">
-                  <div className="flex flex-col items-center text-center gap-8 max-w-2xl mx-auto">
-                    <span className="text-xs font-medium uppercase tracking-widest text-white/70">
+                <div className="relative overflow-hidden rounded-2xl bg-[hsl(var(--color-foreground))] p-10 sm:p-16 md:p-24">
+                  {/* Decorative grid */}
+                  <div className="absolute inset-0 opacity-[0.03]" style={{
+                    backgroundImage: `linear-gradient(hsl(var(--color-background)) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--color-background)) 1px, transparent 1px)`,
+                    backgroundSize: "60px 60px",
+                  }} />
+
+                  <div className="relative z-10 max-w-2xl">
+                    <span className="text-xs font-medium uppercase tracking-widest text-white/40 mb-6 block">
                       Open application
                     </span>
-                    <h2 className="font-semibold tracking-tight !text-white">
+                    <h2 className="font-semibold tracking-tight !text-white text-3xl md:text-4xl lg:text-5xl leading-[1.05] mb-6">
                       Don&apos;t see your role?
+                      <br />
+                      <span className="text-white/50">Introduce yourself.</span>
                     </h2>
-                    <p className="text-white/80 text-lg leading-relaxed max-w-lg">
-                      We are always interested in meeting talented people. If you care about craft and want to build meaningful things, introduce yourself.
+                    <p className="text-white/60 text-lg leading-relaxed mb-10 max-w-md">
+                      We are always looking for people with sharp taste and genuine craft. If that is you, we want to hear from you.
                     </p>
                     <Button
                       size="lg"
                       variant="secondary"
-                      className="mt-2 !bg-white !text-[hsl(var(--color-accent))] hover:!bg-[hsl(var(--color-foreground))] hover:!text-white"
+                      className="!bg-white !text-[hsl(var(--color-foreground))] hover:!bg-[hsl(var(--color-accent))] hover:!text-white !border-0"
                       asChild
                     >
                       <Link href="/contact">
                         <span className="btn-text-wrapper">
                           <span className="btn-text-primary">
-                            Introduce yourself
+                            Get in touch
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 17L17 7M17 7H7M17 7v10" />
                             </svg>
                           </span>
                           <span className="btn-text-secondary" aria-hidden="true">
                             Say hello
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 17L17 7M17 7H7M17 7v10" />
                             </svg>
                           </span>
                         </span>
@@ -413,6 +325,7 @@ export default function CareersPage() {
               </AnimatedSection>
             </Container>
           </Section>
+
         </main>
       </PageTransition>
       <Footer />
