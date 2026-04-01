@@ -150,20 +150,18 @@ export function RolePageClient({ role, applyHref }: RolePageClientProps) {
                 </AnimatedSection>
               </div>
               <div className="lg:col-span-7 lg:col-start-6">
-                <div className="border-t border-[hsl(var(--color-border))]">
-                  {role.responsibilities.map((item, i) => (
-                    <AnimatedSection key={i} delay={i * 0.04}>
-                      <div className="flex gap-4 py-5 border-b border-[hsl(var(--color-border))]">
-                        <span className="text-xs font-semibold text-[hsl(var(--color-accent))] tabular-nums mt-1 flex-shrink-0">
-                          {String(i + 1).padStart(2, "0")}
-                        </span>
+                <AnimatedSection delay={0.1}>
+                  <ul className="space-y-4">
+                    {role.responsibilities.map((item, i) => (
+                      <li key={i} className="flex items-start gap-4">
+                        <span className="mt-2 w-1.5 h-1.5 rounded-full bg-[hsl(var(--color-accent))] flex-shrink-0" />
                         <p className="text-[hsl(var(--color-foreground-muted))] leading-relaxed">
                           {item}
                         </p>
-                      </div>
-                    </AnimatedSection>
-                  ))}
-                </div>
+                      </li>
+                    ))}
+                  </ul>
+                </AnimatedSection>
               </div>
             </div>
           </Container>
