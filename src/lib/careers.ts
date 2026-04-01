@@ -49,12 +49,12 @@ export const roles: Role[] = [
   },
   {
     slug: "bilingual-writer",
-    title: "Bilingual Writer (Mongolian / English)",
+    title: "Bilingual Writer",
     department: "Content",
     location: "Remote",
     type: "Contract",
     description:
-      "Write compelling editorial content, articles, and copy in both Mongolian and English. You will shape how brands sound across cultures, producing work that reads naturally in both languages. This role is for someone who thinks in two languages and writes with precision in each.",
+      "Write compelling editorial content, articles, and copy in both Mongolian and English. You will shape how brands sound across cultures, producing work that reads naturally in both languages. This role requires native fluency in Mongolian and English, someone who thinks in two languages and writes with precision in each.",
     responsibilities: [
       "Write and edit long form articles, case studies, and editorial pieces in Mongolian and English",
       "Craft brand copy, taglines, and messaging frameworks for client projects",
