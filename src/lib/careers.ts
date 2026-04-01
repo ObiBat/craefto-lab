@@ -47,6 +47,41 @@ export const roles: Role[] = [
     ],
     postedDate: "2026-04-01",
   },
+  {
+    slug: "bilingual-writer",
+    title: "Bilingual Writer (Mongolian / English)",
+    department: "Content",
+    location: "Remote",
+    type: "Contract",
+    description:
+      "Write compelling editorial content, articles, and copy in both Mongolian and English. You will shape how brands sound across cultures, producing work that reads naturally in both languages. This role is for someone who thinks in two languages and writes with precision in each.",
+    responsibilities: [
+      "Write and edit long form articles, case studies, and editorial pieces in Mongolian and English",
+      "Craft brand copy, taglines, and messaging frameworks for client projects",
+      "Produce website copy, landing pages, and product descriptions that convert",
+      "Adapt and localize content between Mongolian and English while preserving tone and intent",
+      "Write social media copy and captions tailored to each platform",
+      "Collaborate with designers and strategists to align copy with visual direction",
+      "Research topics thoroughly and produce factually accurate, well sourced content",
+    ],
+    requirements: [
+      "Native or near native fluency in both Mongolian and English (written and spoken)",
+      "2+ years of professional writing experience (editorial, copywriting, or content)",
+      "Strong portfolio demonstrating published work in both languages",
+      "Excellent grammar, tone control, and ability to match different brand voices",
+      "Experience writing for digital platforms (web, social media, email)",
+      "Ability to meet deadlines and manage multiple writing projects simultaneously",
+      "Eye for detail and commitment to accuracy in every piece",
+    ],
+    niceToHaves: [
+      "Experience in journalism, magazine writing, or editorial publishing",
+      "Background in SEO writing and content strategy",
+      "Familiarity with the Mongolian community in Australia",
+      "Experience writing for tech, design, or creative industry brands",
+      "Basic understanding of content management systems (WordPress, Notion, similar)",
+    ],
+    postedDate: "2026-04-01",
+  },
 ];
 
 export function getRoleBySlug(slug: string): Role | undefined {
