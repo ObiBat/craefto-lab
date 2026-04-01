@@ -48,8 +48,8 @@ export const roles: Role[] = [
     postedDate: "2026-04-01",
   },
   {
-    slug: "bilingual-writer",
-    title: "Bilingual Writer",
+    slug: "copywriter",
+    title: "Copywriter",
     department: "Content",
     location: "Remote",
     type: "Contract",
