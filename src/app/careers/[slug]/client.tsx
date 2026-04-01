@@ -150,18 +150,20 @@ export function RolePageClient({ role, applyHref }: RolePageClientProps) {
                 </AnimatedSection>
               </div>
               <div className="lg:col-span-7 lg:col-start-6">
-                <AnimatedSection delay={0.1}>
-                  <ul className="space-y-4">
-                    {role.responsibilities.map((item, i) => (
-                      <li key={i} className="flex items-start gap-4">
-                        <span className="mt-2 w-1.5 h-1.5 rounded-full bg-[hsl(var(--color-accent))] flex-shrink-0" />
+                <div className="border-t border-[hsl(var(--color-border))]">
+                  {role.responsibilities.map((item, i) => (
+                    <AnimatedSection key={i} delay={i * 0.03}>
+                      <div className="flex items-start gap-5 py-5 border-b border-[hsl(var(--color-border))]">
+                        <span className="text-xs font-semibold text-[hsl(var(--color-foreground-subtle))] tabular-nums mt-0.5 flex-shrink-0 w-5">
+                          {String(i + 1).padStart(2, "0")}
+                        </span>
                         <p className="text-[hsl(var(--color-foreground-muted))] leading-relaxed">
                           {item}
                         </p>
-                      </li>
-                    ))}
-                  </ul>
-                </AnimatedSection>
+                      </div>
+                    </AnimatedSection>
+                  ))}
+                </div>
               </div>
             </div>
           </Container>
@@ -212,16 +214,18 @@ export function RolePageClient({ role, applyHref }: RolePageClientProps) {
                 </div>
                 <div className="lg:col-span-7 lg:col-start-6">
                   <AnimatedSection delay={0.1}>
-                    <ul className="space-y-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       {role.niceToHaves.map((item, i) => (
-                        <li key={i} className="flex items-start gap-4">
-                          <span className="mt-2 w-1.5 h-1.5 rounded-full bg-[hsl(var(--color-border-strong))] flex-shrink-0" />
-                          <p className="text-[hsl(var(--color-foreground-subtle))] leading-relaxed">
+                        <div key={i} className="flex items-start gap-3 p-4 rounded-lg bg-[hsl(var(--color-background-subtle))]">
+                          <svg className="w-4 h-4 mt-0.5 text-[hsl(var(--color-accent))] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                          <p className="text-sm text-[hsl(var(--color-foreground-muted))] leading-relaxed">
                             {item}
                           </p>
-                        </li>
+                        </div>
                       ))}
-                    </ul>
+                    </div>
                   </AnimatedSection>
                 </div>
               </div>
