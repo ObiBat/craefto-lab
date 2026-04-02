@@ -9,6 +9,119 @@ import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/ui/logo";
 import { navigation } from "@/lib/constants";
 
+function MoreDropdown({ items, indexOffset }: { items: { name: string; href: string }[]; indexOffset: number }) {
+  const [isOpen, setIsOpen] = React.useState(false);
+  const timeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+  const containerRef = React.useRef<HTMLDivElement>(null);
+
+  const handleEnter = () => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    setIsOpen(true);
+  };
+
+  const handleLeave = () => {
+    timeoutRef.current = setTimeout(() => setIsOpen(false), 150);
+  };
+
+  // Close on escape
+  React.useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setIsOpen(false);
+    };
+    document.addEventListener("keydown", handleEscape);
+    return () => document.removeEventListener("keydown", handleEscape);
+  }, []);
+
+  // Close on click outside
+  React.useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  return (
+    <div
+      ref={containerRef}
+      className="relative"
+      onMouseEnter={handleEnter}
+      onMouseLeave={handleLeave}
+    >
+      <button
+        type="button"
+        className="nav-link group relative px-4 py-2 overflow-hidden"
+        onClick={() => setIsOpen(!isOpen)}
+        aria-expanded={isOpen}
+        aria-haspopup="true"
+      >
+        <span className="nav-link-text">
+          <span className="nav-link-text-primary flex items-center gap-1.5">
+            More
+            <svg
+              className={cn(
+                "w-3 h-3 transition-transform duration-300",
+                isOpen && "rotate-180"
+              )}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              strokeWidth={2}
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+            </svg>
+          </span>
+          <span className="nav-link-text-secondary flex items-center gap-1.5" aria-hidden="true">
+            More
+            <svg
+              className={cn(
+                "w-3 h-3 transition-transform duration-300",
+                isOpen && "rotate-180"
+              )}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              strokeWidth={2}
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+            </svg>
+          </span>
+        </span>
+      </button>
+
+      {/* Dropdown panel */}
+      <div
+        className={cn(
+          "absolute top-full right-0 mt-2 min-w-[200px] origin-top-right transition-all duration-200 ease-out",
+          isOpen
+            ? "opacity-100 scale-100 translate-y-0 visible"
+            : "opacity-0 scale-[0.97] -translate-y-1 invisible pointer-events-none"
+        )}
+      >
+        <div className="rounded-xl border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] shadow-lg shadow-black/5 overflow-hidden">
+          <div className="py-1.5">
+            {items.map((item, index) => (
+              <Link
+                key={item.name}
+                href={item.href}
+                className="group flex items-center gap-3 px-4 py-2.5 text-sm text-[hsl(var(--color-foreground-muted))] hover:text-[hsl(var(--color-foreground))] hover:bg-[hsl(var(--color-background-muted))] transition-colors duration-150"
+                onClick={() => setIsOpen(false)}
+              >
+                <span className="text-[0.625rem] font-medium opacity-0 group-hover:opacity-50 transition-opacity tabular-nums">
+                  {String(indexOffset + index + 1).padStart(2, "0")}
+                </span>
+                <span className="font-medium">{item.name}</span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function Header() {
   const pathname = usePathname();
   const router = useRouter();
@@ -114,6 +227,12 @@ export function Header() {
                   </span>
                 </Link>
               ))}
+
+              {/* More dropdown for secondary nav items */}
+              {navigation.secondary.length > 0 && (
+                <MoreDropdown items={navigation.secondary} indexOffset={navigation.main.length} />
+              )}
+
               <div className="ml-4">
                 <Button size="sm" asChild>
                   <Link href={navigation.cta.href}>
