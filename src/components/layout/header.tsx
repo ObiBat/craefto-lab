@@ -56,6 +56,7 @@ function MoreDropdown({ items, indexOffset }: { items: { name: string; href: str
         aria-expanded={isOpen}
         aria-haspopup="true"
       >
+        <span className="nav-link-index" aria-hidden="true">&nbsp;</span>
         <span className="nav-link-text">
           <span className="nav-link-text-primary flex items-center gap-1.5">
             More
