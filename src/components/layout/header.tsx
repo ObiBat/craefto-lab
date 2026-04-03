@@ -10,6 +10,7 @@ import { Logo } from "@/components/ui/logo";
 import { navigation } from "@/lib/constants";
 
 function MoreDropdown({ items, indexOffset }: { items: { name: string; href: string }[]; indexOffset: number }) {
+  const pathname = usePathname();
   const [isOpen, setIsOpen] = React.useState(false);
   const timeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
   const containerRef = React.useRef<HTMLDivElement>(null);
@@ -20,10 +21,9 @@ function MoreDropdown({ items, indexOffset }: { items: { name: string; href: str
   };
 
   const handleLeave = () => {
-    timeoutRef.current = setTimeout(() => setIsOpen(false), 150);
+    timeoutRef.current = setTimeout(() => setIsOpen(false), 200);
   };
 
-  // Close on escape
   React.useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape") setIsOpen(false);
@@ -32,7 +32,6 @@ function MoreDropdown({ items, indexOffset }: { items: { name: string; href: str
     return () => document.removeEventListener("keydown", handleEscape);
   }, []);
 
-  // Close on click outside
   React.useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
@@ -62,7 +61,7 @@ function MoreDropdown({ items, indexOffset }: { items: { name: string; href: str
             More
             <svg
               className={cn(
-                "w-3 h-3 transition-transform duration-300",
+                "w-3 h-3 transition-transform duration-300 ease-[cubic-bezier(0.76,0,0.24,1)]",
                 isOpen && "rotate-180"
               )}
               fill="none"
@@ -77,7 +76,7 @@ function MoreDropdown({ items, indexOffset }: { items: { name: string; href: str
             More
             <svg
               className={cn(
-                "w-3 h-3 transition-transform duration-300",
+                "w-3 h-3 transition-transform duration-300 ease-[cubic-bezier(0.76,0,0.24,1)]",
                 isOpen && "rotate-180"
               )}
               fill="none"
@@ -91,30 +90,82 @@ function MoreDropdown({ items, indexOffset }: { items: { name: string; href: str
         </span>
       </button>
 
+      {/* Invisible hover bridge — eliminates the dead zone between trigger and panel */}
+      <div
+        className={cn(
+          "absolute top-full right-0 h-3 w-full",
+          !isOpen && "pointer-events-none"
+        )}
+      />
+
       {/* Dropdown panel */}
       <div
         className={cn(
-          "absolute top-full right-0 mt-2 min-w-[200px] origin-top-right transition-all duration-200 ease-out",
+          "absolute top-[calc(100%+12px)] right-0 min-w-[220px]",
+          "transition-all duration-[250ms] ease-[cubic-bezier(0.16,1,0.3,1)]",
           isOpen
-            ? "opacity-100 scale-100 translate-y-0 visible"
-            : "opacity-0 scale-[0.97] -translate-y-1 invisible pointer-events-none"
+            ? "opacity-100 translate-y-0 visible"
+            : "opacity-0 -translate-y-2 invisible pointer-events-none"
         )}
       >
-        <div className="rounded-xl border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] shadow-lg shadow-black/5 overflow-hidden">
-          <div className="py-1.5">
-            {items.map((item, index) => (
-              <Link
-                key={item.name}
-                href={item.href}
-                className="group flex items-center gap-3 px-4 py-2.5 text-sm text-[hsl(var(--color-foreground-muted))] hover:text-[hsl(var(--color-foreground))] hover:bg-[hsl(var(--color-background-muted))] transition-colors duration-150"
-                onClick={() => setIsOpen(false)}
-              >
-                <span className="text-[0.625rem] font-medium opacity-0 group-hover:opacity-50 transition-opacity tabular-nums">
-                  {String(indexOffset + index + 1).padStart(2, "0")}
-                </span>
-                <span className="font-medium">{item.name}</span>
-              </Link>
-            ))}
+        <div
+          className={cn(
+            "rounded-2xl border border-[hsl(var(--color-border))]",
+            "bg-[hsl(var(--color-background))]/98 backdrop-blur-xl",
+            "shadow-[0_8px_30px_-4px_rgba(0,0,0,0.08),0_2px_8px_-2px_rgba(0,0,0,0.04)]",
+            "overflow-hidden"
+          )}
+        >
+          <div className="p-1.5">
+            {items.map((item, index) => {
+              const isActive = pathname.startsWith(item.href);
+              return (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  className={cn(
+                    "group relative flex items-center gap-3 px-3.5 py-3 rounded-xl",
+                    "text-sm transition-all duration-200",
+                    isActive
+                      ? "text-[hsl(var(--color-foreground))] bg-[hsl(var(--color-background-muted))]"
+                      : "text-[hsl(var(--color-foreground-muted))] hover:text-[hsl(var(--color-foreground))] hover:bg-[hsl(var(--color-background-muted))]"
+                  )}
+                  style={{
+                    transitionDelay: isOpen ? `${index * 50}ms` : "0ms",
+                    opacity: isOpen ? 1 : 0,
+                    transform: isOpen ? "translateX(0)" : "translateX(-6px)",
+                    transition: `opacity 250ms cubic-bezier(0.16,1,0.3,1) ${isOpen ? index * 50 : 0}ms, transform 250ms cubic-bezier(0.16,1,0.3,1) ${isOpen ? index * 50 : 0}ms, background-color 150ms ease, color 150ms ease`,
+                  }}
+                  onClick={() => setIsOpen(false)}
+                >
+                  <span
+                    className={cn(
+                      "text-[0.625rem] font-medium tabular-nums transition-all duration-200 min-w-[1rem]",
+                      isActive
+                        ? "opacity-50"
+                        : "opacity-0 -translate-x-1 group-hover:opacity-40 group-hover:translate-x-0"
+                    )}
+                  >
+                    {String(indexOffset + index + 1).padStart(2, "0")}
+                  </span>
+                  <span className="font-medium tracking-[-0.01em]">{item.name}</span>
+                  <svg
+                    className={cn(
+                      "ml-auto w-3.5 h-3.5 transition-all duration-200",
+                      isActive
+                        ? "opacity-40"
+                        : "opacity-0 -translate-x-2 group-hover:opacity-30 group-hover:translate-x-0"
+                    )}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75" />
+                  </svg>
+                </Link>
+              );
+            })}
           </div>
         </div>
       </div>
