@@ -71,32 +71,32 @@ interface Project {
 }
 
 const STATUS_CONFIG: Record<string, { label: string; color: string }> = {
-  planning: { label: "Planning", color: "bg-blue-500/20 text-blue-400 border-blue-500/30" },
-  in_progress: { label: "In Progress", color: "bg-[hsl(var(--color-accent))]/20 text-[hsl(var(--color-accent))] border-[hsl(var(--color-accent))]/30" },
-  review: { label: "Review", color: "bg-purple-500/20 text-purple-400 border-purple-500/30" },
-  completed: { label: "Completed", color: "bg-green-500/20 text-green-400 border-green-500/30" },
-  on_hold: { label: "On Hold", color: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30" },
-  cancelled: { label: "Cancelled", color: "bg-red-500/20 text-red-400 border-red-500/30" },
+  planning: { label: "Planning", color: "bg-blue-500/15 text-blue-400 border border-blue-500/20" },
+  in_progress: { label: "In Progress", color: "bg-[hsl(var(--color-accent))]/15 text-[hsl(var(--color-accent))] border border-[hsl(var(--color-accent))]/20" },
+  review: { label: "Review", color: "bg-purple-500/15 text-purple-400 border border-purple-500/20" },
+  completed: { label: "Completed", color: "bg-emerald-500/15 text-emerald-400 border border-emerald-500/20" },
+  on_hold: { label: "On Hold", color: "bg-amber-500/15 text-amber-400 border border-amber-500/20" },
+  cancelled: { label: "Cancelled", color: "bg-red-500/15 text-red-400 border border-red-500/20" },
 };
 
 const PRIORITY_CONFIG: Record<string, { label: string; color: string }> = {
-  low: { label: "Low", color: "bg-gray-500/20 text-gray-400 border-gray-500/30" },
-  medium: { label: "Medium", color: "bg-blue-500/20 text-blue-400 border-blue-500/30" },
-  high: { label: "High", color: "bg-orange-500/20 text-orange-400 border-orange-500/30" },
-  urgent: { label: "Urgent", color: "bg-red-500/20 text-red-400 border-red-500/30" },
+  low: { label: "Low", color: "bg-[hsl(var(--color-foreground-subtle))]/10 text-[hsl(var(--color-foreground-muted))] border border-[hsl(var(--color-border))]/30" },
+  medium: { label: "Medium", color: "bg-blue-500/15 text-blue-400 border border-blue-500/20" },
+  high: { label: "High", color: "bg-orange-500/15 text-orange-400 border border-orange-500/20" },
+  urgent: { label: "Urgent", color: "bg-red-500/15 text-red-400 border border-red-500/20" },
 };
 
 const HEALTH_CONFIG: Record<string, { label: string; color: string; dot: string }> = {
-  on_track: { label: "On Track", color: "bg-green-500/20 text-green-400 border-green-500/30", dot: "bg-green-500" },
-  at_risk: { label: "At Risk", color: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30", dot: "bg-yellow-500" },
-  delayed: { label: "Delayed", color: "bg-red-500/20 text-red-400 border-red-500/30", dot: "bg-red-500" },
-  blocked: { label: "Blocked", color: "bg-red-500/20 text-red-300 border-red-500/30", dot: "bg-red-400" },
+  on_track: { label: "On Track", color: "bg-emerald-500/15 text-emerald-400 border border-emerald-500/20", dot: "bg-emerald-500" },
+  at_risk: { label: "At Risk", color: "bg-amber-500/15 text-amber-400 border border-amber-500/20", dot: "bg-amber-500" },
+  delayed: { label: "Delayed", color: "bg-red-500/15 text-red-400 border border-red-500/20", dot: "bg-red-500" },
+  blocked: { label: "Blocked", color: "bg-red-500/15 text-red-300 border border-red-500/20", dot: "bg-red-400" },
 };
 
 const MILESTONE_STATUS: Record<string, { label: string; color: string }> = {
   pending: { label: "Pending", color: "text-[hsl(var(--color-foreground-subtle))]" },
   in_progress: { label: "In Progress", color: "text-[hsl(var(--color-accent))]" },
-  completed: { label: "Completed", color: "text-green-400" },
+  completed: { label: "Completed", color: "text-emerald-400" },
 };
 
 const staggerContainer = {
@@ -106,7 +106,7 @@ const staggerContainer = {
 
 const fadeUp = {
   hidden: { opacity: 0, y: 12 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.35, ease: [0, 0, 0.2, 1] as const } },
+  show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.25, 0.1, 0.25, 1] as const } },
 };
 
 function formatCurrency(value: number, currency = "AUD") {
@@ -176,7 +176,6 @@ export default function ProjectDetailPage() {
     if (!timeForm.contractor_id || !timeForm.hours) return;
     setSavingTime(true);
     try {
-      // Find the assignment for this contractor
       const assignment = project?.assignments.find(
         (a) => a.contractor?.id === timeForm.contractor_id
       );
@@ -194,10 +193,8 @@ export default function ProjectDetailPage() {
         }),
       });
 
-      // Fallback: if the time-logs API doesn't exist, insert directly
       if (!res.ok) {
-        // Try direct Supabase-style approach through a generic endpoint won't work,
-        // so just close and refresh
+        // Fallback: close and refresh
       }
 
       setShowTimeForm(false);
@@ -241,11 +238,13 @@ export default function ProjectDetailPage() {
 
   if (!project) {
     return (
-      <div className="text-center py-20">
-        <p className="text-[hsl(var(--color-foreground-muted))]">Project not found</p>
-        <Link href="/admin/projects" className="text-sm text-[hsl(var(--color-accent))] hover:underline mt-2 inline-block">
-          &larr; Back to projects
-        </Link>
+      <div className="min-h-[400px] flex flex-col items-center justify-center">
+        <div className="border-2 border-dashed border-[hsl(var(--color-border))]/30 rounded-2xl p-12 flex flex-col items-center text-center">
+          <p className="text-lg font-medium text-[hsl(var(--color-foreground-muted))] mb-2">Project not found</p>
+          <Link href="/admin/projects" className="text-sm text-[hsl(var(--color-accent))] hover:underline">
+            &larr; Back to projects
+          </Link>
+        </div>
       </div>
     );
   }
@@ -262,28 +261,29 @@ export default function ProjectDetailPage() {
 
   return (
     <motion.div
-      className="space-y-6"
+      className="space-y-8"
       variants={staggerContainer}
       initial="hidden"
       animate="show"
     >
-      {/* Back link */}
-      <motion.div variants={fadeUp}>
+      {/* Breadcrumb */}
+      <motion.div variants={fadeUp} className="flex items-center gap-2 text-sm">
         <Link
           href="/admin/projects"
-          className="text-sm text-[hsl(var(--color-foreground-muted))] hover:text-[hsl(var(--color-foreground))] transition-colors inline-flex items-center gap-1"
+          className="text-[hsl(var(--color-foreground-muted))] hover:text-[hsl(var(--color-foreground))] transition-colors"
         >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 19l-7-7 7-7" />
-          </svg>
           Projects
         </Link>
+        <svg className="w-4 h-4 text-[hsl(var(--color-foreground-subtle))]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5l7 7-7 7" />
+        </svg>
+        <span className="text-[hsl(var(--color-foreground))] font-medium truncate">{project.name}</span>
       </motion.div>
 
       {/* Header */}
       <motion.div variants={fadeUp} className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold mb-2">{project.name}</h1>
+          <h1 className="font-[family-name:var(--font-heading)] text-3xl font-semibold tracking-tight mb-2">{project.name}</h1>
           <div className="flex items-center gap-2 flex-wrap">
             {project.client && (
               <Link
@@ -293,13 +293,13 @@ export default function ProjectDetailPage() {
                 {project.client.name}
               </Link>
             )}
-            <span className={`px-2 py-0.5 rounded text-[10px] font-medium border ${statusConf.color}`}>
+            <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${statusConf.color}`}>
               {statusConf.label}
             </span>
-            <span className={`px-2 py-0.5 rounded text-[10px] font-medium border ${healthConf.color}`}>
+            <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${healthConf.color}`}>
               {healthConf.label}
             </span>
-            <span className={`px-2 py-0.5 rounded text-[10px] font-medium border ${priorityConf.color}`}>
+            <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${priorityConf.color}`}>
               {priorityConf.label}
             </span>
           </div>
@@ -311,7 +311,7 @@ export default function ProjectDetailPage() {
         </div>
         <button
           onClick={openEdit}
-          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] text-sm text-[hsl(var(--color-foreground-muted))] hover:text-[hsl(var(--color-foreground))] hover:border-[hsl(var(--color-border-strong))] transition-colors shrink-0"
+          className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-transparent border border-[hsl(var(--color-border))]/50 text-sm text-[hsl(var(--color-foreground-muted))] hover:text-[hsl(var(--color-foreground))] hover:border-[hsl(var(--color-border-strong))]/60 hover:bg-[hsl(var(--color-background-subtle))]/50 transition-all duration-200 shrink-0"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -322,13 +322,15 @@ export default function ProjectDetailPage() {
 
       {/* Progress bar */}
       <motion.div variants={fadeUp}>
-        <div className="flex items-center justify-between mb-1.5">
+        <div className="flex items-center justify-between mb-2">
           <span className="text-sm text-[hsl(var(--color-foreground-muted))]">Progress</span>
-          <span className="text-sm font-mono font-medium text-[hsl(var(--color-foreground))]">{project.progress}%</span>
+          <span className="text-sm font-mono tabular-nums font-medium text-[hsl(var(--color-foreground))]">{project.progress}%</span>
         </div>
-        <div className="h-2 bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-full overflow-hidden">
+        <div className="h-2 bg-[hsl(var(--color-background-muted))]/50 rounded-full overflow-hidden shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]">
           <div
-            className="h-full bg-[hsl(var(--color-accent))] rounded-full transition-all"
+            className={`h-full rounded-full transition-all duration-500 ${
+              project.progress > 80 ? "bg-emerald-500" : project.progress > 50 ? "bg-amber-400" : "bg-[hsl(var(--color-accent))]"
+            }`}
             style={{ width: `${project.progress}%` }}
           />
         </div>
@@ -339,57 +341,56 @@ export default function ProjectDetailPage() {
         {/* Financials Card */}
         <motion.div
           variants={fadeUp}
-          className="bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl"
+          className="bg-[hsl(var(--color-background-subtle))]/50 backdrop-blur-sm border border-[hsl(var(--color-border))]/50 rounded-2xl"
         >
-          <div className="p-5 border-b border-[hsl(var(--color-border))]">
-            <h2 className="text-base font-semibold">Financials</h2>
+          <div className="p-6 border-b border-[hsl(var(--color-border))]/30">
+            <h2 className="font-[family-name:var(--font-heading)] text-lg font-semibold">Financials</h2>
           </div>
-          <div className="p-5 space-y-4">
-            <div className="grid grid-cols-3 gap-4">
-              <div>
-                <p className="text-xs text-[hsl(var(--color-foreground-subtle))] mb-1">Revenue</p>
-                <p className="text-lg font-semibold font-mono text-[hsl(var(--color-foreground))]">
+          <div className="p-6 space-y-5">
+            {/* Revenue vs Cost horizontal bar */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-[hsl(var(--color-foreground-subtle))]">Revenue</span>
+                <span className="text-lg font-semibold font-mono tabular-nums text-[hsl(var(--color-foreground))]">
                   {formatCurrency(project.revenue, project.currency)}
-                </p>
+                </span>
               </div>
-              <div>
-                <p className="text-xs text-[hsl(var(--color-foreground-subtle))] mb-1">Cost</p>
-                <p className="text-lg font-semibold font-mono text-[hsl(var(--color-foreground))]">
+              <div className="h-3 bg-[hsl(var(--color-background-muted))]/50 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-emerald-500/60 rounded-full transition-all duration-500"
+                  style={{ width: project.revenue > 0 ? "100%" : "0%" }}
+                />
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-[hsl(var(--color-foreground-subtle))]">Cost</span>
+                <span className="text-lg font-semibold font-mono tabular-nums text-[hsl(var(--color-foreground))]">
                   {formatCurrency(project.cost, project.currency)}
-                </p>
+                </span>
               </div>
-              <div>
-                <p className="text-xs text-[hsl(var(--color-foreground-subtle))] mb-1">Margin</p>
-                <p className={`text-lg font-semibold font-mono ${
-                  margin >= 30 ? "text-green-400" : margin >= 15 ? "text-yellow-400" : "text-red-400"
-                }`}>
-                  {margin}%
-                </p>
+              <div className="h-3 bg-[hsl(var(--color-background-muted))]/50 rounded-full overflow-hidden">
+                <div
+                  className={`h-full rounded-full transition-all duration-500 ${
+                    burnRate > 80 ? "bg-red-500/60" : burnRate > 60 ? "bg-amber-500/60" : "bg-blue-500/60"
+                  }`}
+                  style={{ width: `${burnRate}%` }}
+                />
               </div>
             </div>
-            {/* Burn rate bar */}
-            {project.revenue > 0 && (
-              <div>
-                <div className="flex items-center justify-between mb-1">
-                  <span className="text-xs text-[hsl(var(--color-foreground-subtle))]">Burn Rate</span>
-                  <span className="text-xs font-mono text-[hsl(var(--color-foreground-muted))]">
-                    {formatCurrency(project.cost, project.currency)} / {formatCurrency(project.revenue, project.currency)}
-                  </span>
-                </div>
-                <div className="h-2 bg-[hsl(var(--color-background))] rounded-full overflow-hidden">
-                  <div
-                    className={`h-full rounded-full transition-all ${
-                      burnRate > 80 ? "bg-red-500" : burnRate > 60 ? "bg-yellow-500" : "bg-green-500"
-                    }`}
-                    style={{ width: `${burnRate}%` }}
-                  />
-                </div>
-              </div>
-            )}
+
+            {/* Margin */}
+            <div className="flex items-center justify-between pt-4 border-t border-[hsl(var(--color-border))]/30">
+              <span className="text-sm text-[hsl(var(--color-foreground-subtle))]">Margin</span>
+              <span className={`text-2xl font-semibold font-mono tabular-nums tracking-tight ${
+                margin >= 30 ? "text-emerald-400" : margin >= 15 ? "text-amber-400" : "text-red-400"
+              }`}>
+                {margin}%
+              </span>
+            </div>
+
             {project.budget > 0 && (
-              <div className="flex items-center justify-between text-sm pt-2 border-t border-[hsl(var(--color-border))]">
+              <div className="flex items-center justify-between text-sm pt-3 border-t border-[hsl(var(--color-border))]/30">
                 <span className="text-[hsl(var(--color-foreground-subtle))]">Budget</span>
-                <span className="font-mono text-[hsl(var(--color-foreground))]">
+                <span className="font-mono tabular-nums text-[hsl(var(--color-foreground))]">
                   {formatCurrency(project.budget, project.currency)}
                 </span>
               </div>
@@ -400,15 +401,15 @@ export default function ProjectDetailPage() {
         {/* Team Card */}
         <motion.div
           variants={fadeUp}
-          className="bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl"
+          className="bg-[hsl(var(--color-background-subtle))]/50 backdrop-blur-sm border border-[hsl(var(--color-border))]/50 rounded-2xl"
         >
-          <div className="p-5 border-b border-[hsl(var(--color-border))]">
-            <h2 className="text-base font-semibold">Team</h2>
+          <div className="p-6 border-b border-[hsl(var(--color-border))]/30">
+            <h2 className="font-[family-name:var(--font-heading)] text-lg font-semibold">Team</h2>
           </div>
-          <div className="divide-y divide-[hsl(var(--color-border))]">
+          <div className="divide-y divide-[hsl(var(--color-border))]/30">
             {project.assignments && project.assignments.length > 0 ? (
               project.assignments.map((a) => (
-                <div key={a.id} className="px-5 py-3 flex items-center gap-3">
+                <div key={a.id} className="px-6 py-4 flex items-center gap-3 hover:bg-[hsl(var(--color-background-muted))]/30 transition-colors">
                   {a.contractor && <Initials name={a.contractor.name} />}
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-[hsl(var(--color-foreground))] truncate">
@@ -419,7 +420,7 @@ export default function ProjectDetailPage() {
                     </p>
                   </div>
                   <div className="text-right shrink-0">
-                    <p className="text-sm font-mono text-[hsl(var(--color-foreground))]">
+                    <p className="text-sm font-mono tabular-nums text-[hsl(var(--color-foreground))]">
                       {Number(a.actual_hours).toFixed(1)}h / {Number(a.estimated_hours).toFixed(0)}h
                     </p>
                     <p className="text-[10px] text-[hsl(var(--color-foreground-subtle))]">
@@ -429,11 +430,14 @@ export default function ProjectDetailPage() {
                 </div>
               ))
             ) : (
-              <div className="p-8 text-center text-[hsl(var(--color-foreground-subtle))]">
-                <svg className="w-8 h-8 mx-auto mb-2 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-                </svg>
-                <p className="text-sm">No team members assigned</p>
+              <div className="min-h-[200px] flex flex-col items-center justify-center p-8">
+                <div className="border-2 border-dashed border-[hsl(var(--color-border))]/30 rounded-2xl p-6 flex flex-col items-center">
+                  <svg className="w-12 h-12 mb-3 text-[hsl(var(--color-foreground-subtle))]" fill="none" stroke="currentColor" strokeWidth={1} viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                  </svg>
+                  <p className="text-lg font-medium text-[hsl(var(--color-foreground-muted))] mb-1">No team members assigned</p>
+                  <p className="text-sm text-[hsl(var(--color-foreground-subtle))]">Assign contractors to this project</p>
+                </div>
               </div>
             )}
           </div>
@@ -443,21 +447,21 @@ export default function ProjectDetailPage() {
       {/* Milestones */}
       <motion.div
         variants={fadeUp}
-        className="bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl"
+        className="bg-[hsl(var(--color-background-subtle))]/50 backdrop-blur-sm border border-[hsl(var(--color-border))]/50 rounded-2xl"
       >
-        <div className="p-5 border-b border-[hsl(var(--color-border))]">
-          <h2 className="text-base font-semibold">Milestones</h2>
+        <div className="p-6 border-b border-[hsl(var(--color-border))]/30">
+          <h2 className="font-[family-name:var(--font-heading)] text-lg font-semibold">Milestones</h2>
         </div>
-        <div className="divide-y divide-[hsl(var(--color-border))]">
+        <div className="divide-y divide-[hsl(var(--color-border))]/30">
           {project.milestones && project.milestones.length > 0 ? (
             [...project.milestones]
               .sort((a, b) => a.sort_order - b.sort_order)
               .map((m) => {
                 const mStatus = MILESTONE_STATUS[m.status] || MILESTONE_STATUS.pending;
                 return (
-                  <div key={m.id} className="px-5 py-3.5 flex items-start gap-4">
-                    <div className={`w-2 h-2 rounded-full mt-1.5 shrink-0 ${
-                      m.status === "completed" ? "bg-green-500" : m.status === "in_progress" ? "bg-[hsl(var(--color-accent))]" : "bg-[hsl(var(--color-foreground-subtle))]"
+                  <div key={m.id} className="px-6 py-4 flex items-start gap-4 hover:bg-[hsl(var(--color-background-muted))]/30 transition-colors">
+                    <div className={`w-2.5 h-2.5 rounded-full mt-1.5 shrink-0 ${
+                      m.status === "completed" ? "bg-emerald-500" : m.status === "in_progress" ? "bg-[hsl(var(--color-accent))] animate-pulse" : "bg-[hsl(var(--color-foreground-subtle))]"
                     }`} />
                     <div className="flex-1 min-w-0">
                       <p className={`text-sm font-medium ${
@@ -485,11 +489,14 @@ export default function ProjectDetailPage() {
                 );
               })
           ) : (
-            <div className="p-8 text-center text-[hsl(var(--color-foreground-subtle))]">
-              <svg className="w-8 h-8 mx-auto mb-2 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-              </svg>
-              <p className="text-sm">No milestones defined</p>
+            <div className="min-h-[200px] flex flex-col items-center justify-center p-8">
+              <div className="border-2 border-dashed border-[hsl(var(--color-border))]/30 rounded-2xl p-6 flex flex-col items-center">
+                <svg className="w-12 h-12 mb-3 text-[hsl(var(--color-foreground-subtle))]" fill="none" stroke="currentColor" strokeWidth={1} viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
+                <p className="text-lg font-medium text-[hsl(var(--color-foreground-muted))] mb-1">No milestones defined</p>
+                <p className="text-sm text-[hsl(var(--color-foreground-subtle))]">Add milestones to track deliverables</p>
+              </div>
             </div>
           )}
         </div>
@@ -498,13 +505,13 @@ export default function ProjectDetailPage() {
       {/* Time Logs */}
       <motion.div
         variants={fadeUp}
-        className="bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl"
+        className="bg-[hsl(var(--color-background-subtle))]/50 backdrop-blur-sm border border-[hsl(var(--color-border))]/50 rounded-2xl"
       >
-        <div className="p-5 border-b border-[hsl(var(--color-border))] flex items-center justify-between">
-          <h2 className="text-base font-semibold">Time Logs</h2>
+        <div className="p-6 border-b border-[hsl(var(--color-border))]/30 flex items-center justify-between">
+          <h2 className="font-[family-name:var(--font-heading)] text-lg font-semibold">Time Logs</h2>
           <button
             onClick={() => setShowTimeForm(!showTimeForm)}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[hsl(var(--color-accent))]/10 text-[hsl(var(--color-foreground))] hover:bg-[hsl(var(--color-accent))]/20 transition-colors border border-[hsl(var(--color-accent))]/20 text-xs font-medium"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[hsl(var(--color-accent))]/10 text-[hsl(var(--color-foreground))] hover:bg-[hsl(var(--color-accent))]/20 transition-colors border border-[hsl(var(--color-accent))]/20 text-xs font-medium"
           >
             <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -520,16 +527,17 @@ export default function ProjectDetailPage() {
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
-              className="overflow-hidden border-b border-[hsl(var(--color-border))]"
+              transition={{ duration: 0.2 }}
+              className="overflow-hidden border-b border-[hsl(var(--color-border))]/30"
             >
-              <div className="p-5 bg-[hsl(var(--color-background-subtle))]">
+              <div className="p-6 bg-[hsl(var(--color-background-muted))]/30">
                 <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
                   <div>
-                    <label className="text-xs font-medium text-[hsl(var(--color-foreground-muted))] mb-1 block">Contractor *</label>
+                    <label className="text-sm font-medium text-[hsl(var(--color-foreground-muted))] mb-1.5 block">Contractor *</label>
                     <select
                       value={timeForm.contractor_id}
                       onChange={(e) => setTimeForm({ ...timeForm, contractor_id: e.target.value })}
-                      className="w-full px-3 py-2 rounded-lg bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground))] text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-ring))]"
+                      className="w-full px-4 py-3 rounded-xl bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground))] text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-accent))]/50 focus:border-[hsl(var(--color-accent))]/50"
                     >
                       <option value="">Select...</option>
                       {project.assignments
@@ -542,46 +550,46 @@ export default function ProjectDetailPage() {
                     </select>
                   </div>
                   <div>
-                    <label className="text-xs font-medium text-[hsl(var(--color-foreground-muted))] mb-1 block">Hours *</label>
+                    <label className="text-sm font-medium text-[hsl(var(--color-foreground-muted))] mb-1.5 block">Hours *</label>
                     <input
                       type="number"
                       step="0.5"
                       value={timeForm.hours}
                       onChange={(e) => setTimeForm({ ...timeForm, hours: e.target.value })}
-                      className="w-full px-3 py-2 rounded-lg bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground))] text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-ring))]"
+                      className="w-full px-4 py-3 rounded-xl bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground))] text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-accent))]/50 focus:border-[hsl(var(--color-accent))]/50"
                       placeholder="0"
                     />
                   </div>
                   <div>
-                    <label className="text-xs font-medium text-[hsl(var(--color-foreground-muted))] mb-1 block">Date</label>
+                    <label className="text-sm font-medium text-[hsl(var(--color-foreground-muted))] mb-1.5 block">Date</label>
                     <input
                       type="date"
                       value={timeForm.date}
                       onChange={(e) => setTimeForm({ ...timeForm, date: e.target.value })}
-                      className="w-full px-3 py-2 rounded-lg bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground))] text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-ring))]"
+                      className="w-full px-4 py-3 rounded-xl bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground))] text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-accent))]/50 focus:border-[hsl(var(--color-accent))]/50"
                     />
                   </div>
                   <div>
-                    <label className="text-xs font-medium text-[hsl(var(--color-foreground-muted))] mb-1 block">Description</label>
+                    <label className="text-sm font-medium text-[hsl(var(--color-foreground-muted))] mb-1.5 block">Description</label>
                     <input
                       value={timeForm.description}
                       onChange={(e) => setTimeForm({ ...timeForm, description: e.target.value })}
-                      className="w-full px-3 py-2 rounded-lg bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground))] text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-ring))]"
+                      className="w-full px-4 py-3 rounded-xl bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground))] text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-accent))]/50 focus:border-[hsl(var(--color-accent))]/50"
                       placeholder="What was done"
                     />
                   </div>
                 </div>
-                <div className="flex justify-end gap-2 mt-3">
+                <div className="flex justify-end gap-2 mt-4">
                   <button
                     onClick={() => setShowTimeForm(false)}
-                    className="px-3 py-1.5 text-xs text-[hsl(var(--color-foreground-muted))] hover:text-[hsl(var(--color-foreground))]"
+                    className="px-4 py-2 rounded-xl text-xs text-[hsl(var(--color-foreground-muted))] hover:text-[hsl(var(--color-foreground))] border border-[hsl(var(--color-border))] hover:bg-[hsl(var(--color-background-muted))]/50 transition-colors"
                   >
                     Cancel
                   </button>
                   <button
                     onClick={handleLogTime}
                     disabled={savingTime || !timeForm.contractor_id || !timeForm.hours}
-                    className="px-4 py-1.5 rounded-lg bg-[hsl(var(--color-accent))] text-white text-xs font-medium hover:bg-[hsl(var(--color-accent-hover))] transition-colors disabled:opacity-50"
+                    className="px-5 py-2 rounded-xl bg-[hsl(var(--color-accent))] text-white text-xs font-medium hover:bg-[hsl(var(--color-accent-hover))] transition-colors disabled:opacity-50"
                   >
                     {savingTime ? "Saving..." : "Log Time"}
                   </button>
@@ -591,10 +599,10 @@ export default function ProjectDetailPage() {
           )}
         </AnimatePresence>
 
-        <div className="divide-y divide-[hsl(var(--color-border))]">
+        <div className="divide-y divide-[hsl(var(--color-border))]/30">
           {project.time_logs && project.time_logs.length > 0 ? (
             project.time_logs.slice(0, 20).map((log) => (
-              <div key={log.id} className="px-5 py-3 flex items-center gap-3">
+              <div key={log.id} className="px-6 py-3.5 flex items-center gap-3 hover:bg-[hsl(var(--color-background-muted))]/30 transition-colors">
                 {log.contractor && <Initials name={log.contractor.name} />}
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-[hsl(var(--color-foreground))] truncate">
@@ -605,7 +613,7 @@ export default function ProjectDetailPage() {
                   </p>
                 </div>
                 <div className="text-right shrink-0">
-                  <p className="text-sm font-mono font-medium text-[hsl(var(--color-foreground))]">
+                  <p className="text-sm font-mono tabular-nums font-medium text-[hsl(var(--color-foreground))]">
                     {Number(log.hours).toFixed(1)}h
                   </p>
                   <p className="text-[10px] text-[hsl(var(--color-foreground-subtle))]">
@@ -615,11 +623,14 @@ export default function ProjectDetailPage() {
               </div>
             ))
           ) : (
-            <div className="p-8 text-center text-[hsl(var(--color-foreground-subtle))]">
-              <svg className="w-8 h-8 mx-auto mb-2 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              <p className="text-sm">No time logged yet</p>
+            <div className="min-h-[200px] flex flex-col items-center justify-center p-8">
+              <div className="border-2 border-dashed border-[hsl(var(--color-border))]/30 rounded-2xl p-6 flex flex-col items-center">
+                <svg className="w-12 h-12 mb-3 text-[hsl(var(--color-foreground-subtle))]" fill="none" stroke="currentColor" strokeWidth={1} viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <p className="text-lg font-medium text-[hsl(var(--color-foreground-muted))] mb-1">No time logged yet</p>
+                <p className="text-sm text-[hsl(var(--color-foreground-subtle))]">Use the button above to log hours</p>
+              </div>
             </div>
           )}
         </div>
@@ -637,21 +648,22 @@ export default function ProjectDetailPage() {
               onClick={() => setEditing(false)}
             />
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 20 }}
-              className="fixed inset-x-4 top-[15%] z-50 mx-auto max-w-md bg-[hsl(var(--color-background-subtle))] border border-[hsl(var(--color-border))] rounded-2xl"
+              initial={{ opacity: 0, scale: 0.97 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.97 }}
+              transition={{ duration: 0.2, ease: [0.25, 0.1, 0.25, 1] as const }}
+              className="fixed inset-x-4 top-[15%] z-50 mx-auto max-w-md bg-[hsl(var(--color-background-subtle))] border border-[hsl(var(--color-border))]/50 rounded-2xl shadow-2xl"
             >
               <div className="p-6">
-                <h2 className="text-lg font-semibold mb-6">Edit Project</h2>
+                <h2 className="font-[family-name:var(--font-heading)] text-lg font-semibold mb-6">Edit Project</h2>
                 <div className="space-y-4">
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="text-xs font-medium text-[hsl(var(--color-foreground-muted))] mb-1.5 block">Status</label>
+                      <label className="text-sm font-medium text-[hsl(var(--color-foreground-muted))] mb-1.5 block">Status</label>
                       <select
                         value={editForm.status}
                         onChange={(e) => setEditForm({ ...editForm, status: e.target.value })}
-                        className="w-full px-3 py-2 rounded-lg bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground))] text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-ring))]"
+                        className="w-full px-4 py-3 rounded-xl bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground))] text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-accent))]/50 focus:border-[hsl(var(--color-accent))]/50"
                       >
                         {Object.entries(STATUS_CONFIG).map(([k, v]) => (
                           <option key={k} value={k}>{v.label}</option>
@@ -659,11 +671,11 @@ export default function ProjectDetailPage() {
                       </select>
                     </div>
                     <div>
-                      <label className="text-xs font-medium text-[hsl(var(--color-foreground-muted))] mb-1.5 block">Health</label>
+                      <label className="text-sm font-medium text-[hsl(var(--color-foreground-muted))] mb-1.5 block">Health</label>
                       <select
                         value={editForm.health}
                         onChange={(e) => setEditForm({ ...editForm, health: e.target.value })}
-                        className="w-full px-3 py-2 rounded-lg bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground))] text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-ring))]"
+                        className="w-full px-4 py-3 rounded-xl bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground))] text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-accent))]/50 focus:border-[hsl(var(--color-accent))]/50"
                       >
                         {Object.entries(HEALTH_CONFIG).map(([k, v]) => (
                           <option key={k} value={k}>{v.label}</option>
@@ -673,11 +685,11 @@ export default function ProjectDetailPage() {
                   </div>
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="text-xs font-medium text-[hsl(var(--color-foreground-muted))] mb-1.5 block">Priority</label>
+                      <label className="text-sm font-medium text-[hsl(var(--color-foreground-muted))] mb-1.5 block">Priority</label>
                       <select
                         value={editForm.priority}
                         onChange={(e) => setEditForm({ ...editForm, priority: e.target.value })}
-                        className="w-full px-3 py-2 rounded-lg bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground))] text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-ring))]"
+                        className="w-full px-4 py-3 rounded-xl bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground))] text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-accent))]/50 focus:border-[hsl(var(--color-accent))]/50"
                       >
                         {Object.entries(PRIORITY_CONFIG).map(([k, v]) => (
                           <option key={k} value={k}>{v.label}</option>
@@ -685,7 +697,7 @@ export default function ProjectDetailPage() {
                       </select>
                     </div>
                     <div>
-                      <label className="text-xs font-medium text-[hsl(var(--color-foreground-muted))] mb-1.5 block">
+                      <label className="text-sm font-medium text-[hsl(var(--color-foreground-muted))] mb-1.5 block">
                         Progress ({editForm.progress}%)
                       </label>
                       <input
@@ -700,16 +712,16 @@ export default function ProjectDetailPage() {
                     </div>
                   </div>
                 </div>
-                <div className="flex items-center justify-end gap-3 mt-6 pt-4 border-t border-[hsl(var(--color-border))]">
+                <div className="flex items-center justify-end gap-3 mt-6 pt-4 border-t border-[hsl(var(--color-border))]/30">
                   <button
                     onClick={() => setEditing(false)}
-                    className="px-4 py-2 text-sm text-[hsl(var(--color-foreground-muted))] hover:text-[hsl(var(--color-foreground))]"
+                    className="px-5 py-2.5 rounded-xl bg-transparent border border-[hsl(var(--color-border))] hover:bg-[hsl(var(--color-background-muted))]/50 text-sm text-[hsl(var(--color-foreground-muted))] hover:text-[hsl(var(--color-foreground))] transition-colors"
                   >
                     Cancel
                   </button>
                   <button
                     onClick={handleSaveEdit}
-                    className="px-5 py-2 rounded-lg bg-[hsl(var(--color-accent))] text-white text-sm font-medium hover:bg-[hsl(var(--color-accent-hover))] transition-colors"
+                    className="px-5 py-2.5 rounded-xl bg-[hsl(var(--color-accent))] text-white text-sm font-medium hover:bg-[hsl(var(--color-accent-hover))] transition-colors"
                   >
                     Save Changes
                   </button>

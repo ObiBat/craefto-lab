@@ -135,9 +135,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       <div className="min-h-screen bg-[hsl(var(--color-background))] flex items-center justify-center p-4">
         <div className="w-full max-w-sm">
           <div className="text-center mb-8">
-            <h1 className="text-2xl font-semibold mb-1 text-[hsl(var(--color-foreground))]">Craefto</h1>
+            <h1 className="text-2xl font-[family-name:var(--font-heading)] font-semibold tracking-tight mb-1 text-[hsl(var(--color-foreground))]">Craefto</h1>
             <p className="text-xs tracking-[0.2em] uppercase text-[hsl(var(--color-foreground-subtle))] mb-4">Operations</p>
-            <p className="text-[hsl(var(--color-foreground-muted))]">Enter password to continue</p>
+            <p className="text-sm text-[hsl(var(--color-foreground-muted))]">Enter password to continue</p>
           </div>
           <form onSubmit={handleLogin} className="space-y-4">
             <input
@@ -145,7 +145,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Password"
-              className="w-full px-4 py-3 rounded-xl bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground))] placeholder:text-[hsl(var(--color-foreground-subtle))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-ring))] transition-colors"
+              className="w-full px-4 py-3 rounded-xl bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))]/50 text-[hsl(var(--color-foreground))] placeholder:text-[hsl(var(--color-foreground-subtle))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-accent))]/50 focus:border-[hsl(var(--color-accent))]/50 transition-all"
               autoFocus
             />
             {error && <p className="text-[hsl(var(--color-error))] text-sm">{error}</p>}
@@ -224,7 +224,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
         {/* Desktop header - Wordmark */}
         <div className="hidden lg:flex flex-col px-5 pt-6 pb-2">
-          <span className="text-xl font-semibold tracking-tight text-[hsl(var(--color-foreground))]">Craefto</span>
+          <span className="text-xl font-[family-name:var(--font-heading)] font-semibold tracking-tight text-[hsl(var(--color-foreground))]">Craefto</span>
           <span className="text-[10px] tracking-[0.2em] uppercase text-[hsl(var(--color-foreground-subtle))] mt-0.5">Operations</span>
         </div>
 
