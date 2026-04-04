@@ -3,9 +3,6 @@ import { createServerClient } from "@/lib/supabase";
 
 export const dynamic = "force-dynamic";
 
-/**
- * GET /api/admin/projects/[id] - Get a single project with milestones, assignments, and time logs
- */
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -14,38 +11,41 @@ export async function GET(
   const { id } = await params;
 
   try {
-    const [projectRes, timeLogsRes] = await Promise.all([
+    const [contractorRes, timeLogsRes] = await Promise.all([
       supabase
-        .from("projects")
+        .from("contractors")
         .select(`
           *,
-          client:clients(id, name, company, email),
-          milestones:milestones(*),
           assignments:project_assignments(
-            id, role, estimated_hours, actual_hours, start_date, end_date, status,
-            contractor:contractors(id, name, email, role, hourly_rate, currency, avatar_url)
+            id, role, status, estimated_hours, actual_hours,
+            project:projects(id, name, status, client:clients(name))
           )
         `)
         .eq("id", id)
         .single(),
       supabase
         .from("time_logs")
-        .select(`
-          id, date, hours, description, billable, created_at,
-          contractor:contractors(id, name, avatar_url)
-        `)
-        .eq("project_id", id)
+        .select("hours, date, project:projects(name)")
+        .eq("contractor_id", id)
         .order("date", { ascending: false })
         .limit(50),
     ]);
 
-    if (projectRes.error) {
-      return NextResponse.json({ error: projectRes.error.message }, { status: 500 });
+    if (contractorRes.error) {
+      return NextResponse.json({ error: contractorRes.error.message }, { status: 500 });
     }
 
+    const totalHours = (timeLogsRes.data || []).reduce(
+      (sum, log) => sum + Number(log.hours),
+      0
+    );
+    const totalEarnings = totalHours * Number(contractorRes.data.hourly_rate);
+
     return NextResponse.json({
-      ...projectRes.data,
-      time_logs: timeLogsRes.data || [],
+      ...contractorRes.data,
+      total_hours: totalHours,
+      total_earnings: totalEarnings,
+      recent_logs: timeLogsRes.data || [],
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown error";
@@ -53,10 +53,7 @@ export async function GET(
   }
 }
 
-/**
- * PUT /api/admin/projects/[id] - Update a project
- */
-export async function PUT(
+export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
@@ -65,26 +62,19 @@ export async function PUT(
 
   try {
     const body = await request.json();
-
-    const updateData: Record<string, unknown> = {
-      updated_at: new Date().toISOString(),
-    };
-
     const fields = [
-      "name", "description", "project_type", "status", "health",
-      "start_date", "target_end_date", "actual_end_date",
-      "budget", "spent", "progress", "revenue", "cost",
-      "margin_percent", "currency", "priority",
+      "name", "email", "role", "skills", "hourly_rate", "currency",
+      "timezone", "country", "portfolio_url", "availability",
+      "capacity_hours_weekly", "notes", "avatar_url", "status",
     ];
 
-    fields.forEach((field) => {
-      if (body[field] !== undefined) {
-        updateData[field] = body[field];
-      }
+    const updateData: Record<string, unknown> = {};
+    fields.forEach((f) => {
+      if (body[f] !== undefined) updateData[f] = body[f];
     });
 
     const { data, error } = await supabase
-      .from("projects")
+      .from("contractors")
       .update(updateData)
       .eq("id", id)
       .select()
@@ -101,9 +91,6 @@ export async function PUT(
   }
 }
 
-/**
- * DELETE /api/admin/projects/[id] - Delete a project
- */
 export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -112,7 +99,7 @@ export async function DELETE(
   const { id } = await params;
 
   try {
-    const { error } = await supabase.from("projects").delete().eq("id", id);
+    const { error } = await supabase.from("contractors").delete().eq("id", id);
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
