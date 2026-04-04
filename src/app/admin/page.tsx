@@ -2,112 +2,41 @@
 
 import * as React from "react";
 import Link from "next/link";
+import { motion } from "framer-motion";
 import { AdminLoader } from "@/components/admin/AdminLoader";
 
-interface DashboardStats {
-  totalLeads: number;
-  newLeads: number;
-  qualifiedLeads: number;
-  wonDeals: number;
-  conversionRate: number;
-  totalPageViews: number;
-  pipelineValue: number;
-  avgDealSize: number;
-  recentLeads: Array<{
+interface OpsStats {
+  monthlyRevenue: number;
+  activeProjectsCount: number;
+  teamUtilization: number;
+  avgMargin: number;
+  recentTimeLogs: Array<{
+    id: string;
+    date: string;
+    hours: number;
+    description: string | null;
+    contractor: { id: string; name: string; avatar_url: string | null } | null;
+    project: { id: string; name: string } | null;
+  }>;
+  upcomingMilestones: Array<{
     id: string;
     name: string;
-    email: string;
-    company: string | null;
-    service: string | null;
-    budget_range: string | null;
-    created_at: string;
-    stage: { name: string; color: string } | null;
+    due_date: string;
+    status: string;
+    project: { id: string; name: string; client: { name: string } | null } | null;
   }>;
-  weeklyLeads: number[];
-}
-
-function Sparkline({ data, color = "hsl(var(--color-accent))" }: { data: number[]; color?: string }) {
-  if (!data || data.length === 0) return null;
-  
-  const max = Math.max(...data, 1);
-  const min = Math.min(...data, 0);
-  const range = max - min || 1;
-  const width = 80;
-  const height = 24;
-  const padding = 2;
-  
-  const points = data.map((value, index) => {
-    const x = padding + (index / (data.length - 1)) * (width - 2 * padding);
-    const y = height - padding - ((value - min) / range) * (height - 2 * padding);
-    return `${x},${y}`;
-  }).join(" ");
-
-  return (
-    <svg width={width} height={height} className="inline-block">
-      <polyline
-        points={points}
-        fill="none"
-        stroke={color}
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
-function StatCard({
-  label,
-  value,
-  change,
-  icon,
-  sparklineData,
-  trend,
-}: {
-  label: string;
-  value: string | number;
-  change?: string;
-  icon: React.ReactNode;
-  sparklineData?: number[];
-  trend?: "up" | "down" | "neutral";
-}) {
-  return (
-    <div className="bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl p-6 hover:border-[hsl(var(--color-accent))]/30 transition-colors">
-      <div className="flex items-start justify-between">
-        <div className="flex-1">
-          <p className="text-[hsl(var(--color-foreground-muted))] text-sm mb-1">{label}</p>
-          <div className="flex items-baseline gap-3">
-            <p className="text-3xl font-semibold text-[hsl(var(--color-foreground))]">{value}</p>
-            {sparklineData && sparklineData.length > 0 && (
-              <Sparkline data={sparklineData} />
-            )}
-          </div>
-          {change && (
-            <p className={`text-sm mt-1 flex items-center gap-1 ${
-              trend === "up" ? "text-green-600" : 
-              trend === "down" ? "text-red-600" : 
-              "text-[hsl(var(--color-accent))]"
-            }`}>
-              {trend === "up" && (
-                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
-                </svg>
-              )}
-              {trend === "down" && (
-                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                </svg>
-              )}
-              {change}
-            </p>
-          )}
-        </div>
-        <div className="p-3 bg-[hsl(var(--color-background-subtle))] rounded-xl text-[hsl(var(--color-foreground-muted))]">
-          {icon}
-        </div>
-      </div>
-    </div>
-  );
+  activeProjects: Array<{
+    id: string;
+    name: string;
+    status: string;
+    health: string;
+    progress: number;
+    priority: string;
+    client: { id: string; name: string } | null;
+    assignments: Array<{
+      contractor: { id: string; name: string; avatar_url: string | null } | null;
+    }>;
+  }>;
 }
 
 function formatCurrency(value: number) {
@@ -119,73 +48,86 @@ function formatCurrency(value: number) {
   }).format(value);
 }
 
-function QuickAction({
-  label,
-  icon,
-  href,
-  variant = "default",
-}: {
-  label: string;
-  icon: React.ReactNode;
-  href: string;
-  variant?: "default" | "primary";
-}) {
+function formatDate(dateString: string) {
+  const date = new Date(dateString + "T00:00:00");
+  const now = new Date();
+  const diffMs = now.getTime() - date.getTime();
+  const diffDays = Math.floor(diffMs / 86400000);
+
+  if (diffDays === 0) return "Today";
+  if (diffDays === 1) return "Yesterday";
+  if (diffDays < 7) return `${diffDays}d ago`;
+  return date.toLocaleDateString("en-AU", { month: "short", day: "numeric" });
+}
+
+function formatDueDate(dateString: string) {
+  const date = new Date(dateString + "T00:00:00");
+  const now = new Date();
+  now.setHours(0, 0, 0, 0);
+  const diffMs = date.getTime() - now.getTime();
+  const diffDays = Math.round(diffMs / 86400000);
+
+  if (diffDays === 0) return "Today";
+  if (diffDays === 1) return "Tomorrow";
+  if (diffDays < 7) return `In ${diffDays}d`;
+  return date.toLocaleDateString("en-AU", { month: "short", day: "numeric" });
+}
+
+function Initials({ name, size = "sm" }: { name: string; size?: "sm" | "md" }) {
+  const initials = name
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
+  const sizeClasses = size === "sm" ? "w-7 h-7 text-[10px]" : "w-9 h-9 text-xs";
   return (
-    <Link
-      href={href}
-      className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-colors ${
-        variant === "primary"
-          ? "bg-[hsl(var(--color-accent))] text-black hover:bg-[hsl(var(--color-accent-hover))]"
-          : "bg-[hsl(var(--color-background-subtle))] text-[hsl(var(--color-foreground))] hover:bg-[hsl(var(--color-background-muted))]"
-      }`}
+    <div
+      className={`${sizeClasses} rounded-full bg-[hsl(var(--color-accent))]/20 text-[hsl(var(--color-accent))] flex items-center justify-center font-medium shrink-0`}
     >
-      {icon}
-      <span className="font-medium">{label}</span>
-    </Link>
+      {initials}
+    </div>
   );
 }
 
-function formatDate(dateString: string) {
-  const date = new Date(dateString);
-  const now = new Date();
-  const diffMs = now.getTime() - date.getTime();
-  const diffMins = Math.floor(diffMs / 60000);
-  const diffHours = Math.floor(diffMs / 3600000);
-  const diffDays = Math.floor(diffMs / 86400000);
+const HEALTH_COLORS: Record<string, string> = {
+  on_track: "bg-green-500/20 text-green-400 border-green-500/30",
+  at_risk: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
+  delayed: "bg-red-500/20 text-red-400 border-red-500/30",
+  blocked: "bg-red-500/20 text-red-300 border-red-500/30",
+};
 
-  if (diffMins < 60) return `${diffMins}m ago`;
-  if (diffHours < 24) return `${diffHours}h ago`;
-  if (diffDays < 7) return `${diffDays}d ago`;
-  return date.toLocaleDateString();
-}
+const HEALTH_LABELS: Record<string, string> = {
+  on_track: "On Track",
+  at_risk: "At Risk",
+  delayed: "Delayed",
+  blocked: "Blocked",
+};
 
-function getStageColor(color: string | null) {
-  const colors: Record<string, string> = {
-    blue: "bg-blue-500/20 text-blue-400",
-    cyan: "bg-cyan-500/20 text-cyan-400",
-    yellow: "bg-yellow-500/20 text-yellow-400",
-    purple: "bg-purple-500/20 text-purple-400",
-    orange: "bg-orange-500/20 text-orange-400",
-    green: "bg-green-500/20 text-green-400",
-    red: "bg-red-500/20 text-red-400",
-  };
-  return colors[color || "blue"] || colors.blue;
-}
+const staggerContainer = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.06 } },
+};
 
-export default function AdminDashboard() {
-  const [stats, setStats] = React.useState<DashboardStats | null>(null);
+const fadeUp = {
+  hidden: { opacity: 0, y: 12 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.35, ease: [0, 0, 0.2, 1] as const } },
+};
+
+export default function CommandCenter() {
+  const [stats, setStats] = React.useState<OpsStats | null>(null);
   const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
     async function fetchStats() {
       try {
-        const res = await fetch("/api/admin/stats");
+        const res = await fetch("/api/admin/ops/stats");
         if (res.ok) {
           const data = await res.json();
           setStats(data);
         }
       } catch (error) {
-        console.error("Failed to fetch stats:", error);
+        console.error("Failed to fetch ops stats:", error);
       } finally {
         setLoading(false);
       }
@@ -194,137 +136,323 @@ export default function AdminDashboard() {
   }, []);
 
   if (loading) {
-    return <AdminLoader message="Loading dashboard..." />;
+    return <AdminLoader message="Loading command center..." />;
   }
 
   return (
-    <div className="space-y-8">
-      {/* Header with Quick Actions */}
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-semibold mb-1">Dashboard</h1>
-          <p className="text-[hsl(var(--color-foreground-muted))]">Overview of your leads and performance</p>
-        </div>
-        <div className="flex flex-wrap items-center gap-3">
-          <QuickAction
-            label="New Lead"
-            href="/admin/leads"
+    <motion.div
+      className="space-y-8"
+      variants={staggerContainer}
+      initial="hidden"
+      animate="show"
+    >
+      {/* Header */}
+      <motion.div variants={fadeUp}>
+        <h1 className="text-2xl font-semibold mb-1">Command Center</h1>
+        <p className="text-[hsl(var(--color-foreground-muted))]">
+          Agency operations overview
+        </p>
+      </motion.div>
+
+      {/* Stats Grid */}
+      <motion.div
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"
+        variants={staggerContainer}
+      >
+        <motion.div variants={fadeUp}>
+          <StatCard
+            label="Monthly Revenue"
+            value={formatCurrency(stats?.monthlyRevenue || 0)}
             icon={
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             }
           />
-          <QuickAction
-            label="Run Scan"
-            href="/admin/pipeline"
-            variant="primary"
+        </motion.div>
+        <motion.div variants={fadeUp}>
+          <StatCard
+            label="Active Projects"
+            value={stats?.activeProjectsCount || 0}
             icon={
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
               </svg>
             }
           />
-        </div>
-      </div>
+        </motion.div>
+        <motion.div variants={fadeUp}>
+          <StatCard
+            label="Team Utilization"
+            value={`${stats?.teamUtilization || 0}%`}
+            icon={
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+              </svg>
+            }
+            accent={
+              (stats?.teamUtilization || 0) > 85
+                ? "warning"
+                : (stats?.teamUtilization || 0) > 60
+                ? "success"
+                : undefined
+            }
+          />
+        </motion.div>
+        <motion.div variants={fadeUp}>
+          <StatCard
+            label="Avg Margin"
+            value={`${stats?.avgMargin || 0}%`}
+            icon={
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+              </svg>
+            }
+          />
+        </motion.div>
+      </motion.div>
 
-      {/* Stats Grid - Enhanced */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatCard
-          label="Total Leads"
-          value={stats?.totalLeads || 0}
-          sparklineData={stats?.weeklyLeads}
-          icon={
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-            </svg>
-          }
-        />
-        <StatCard
-          label="New This Week"
-          value={stats?.newLeads || 0}
-          change={stats?.newLeads && stats.newLeads > 0 ? `+${stats.newLeads} this week` : undefined}
-          trend={stats?.newLeads && stats.newLeads > 2 ? "up" : stats?.newLeads === 0 ? "down" : "neutral"}
-          icon={
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
-            </svg>
-          }
-        />
-        <StatCard
-          label="Pipeline Value"
-          value={stats?.pipelineValue ? formatCurrency(stats.pipelineValue) : "$0"}
-          change={stats?.avgDealSize ? `Avg: ${formatCurrency(stats.avgDealSize)}` : undefined}
-          icon={
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          }
-        />
-        <StatCard
-          label="Conversion Rate"
-          value={stats?.conversionRate ? `${stats.conversionRate.toFixed(1)}%` : "0%"}
-          change={stats?.wonDeals ? `${stats.wonDeals} won deals` : undefined}
-          trend={stats?.conversionRate && stats.conversionRate > 20 ? "up" : undefined}
-          icon={
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          }
-        />
-      </div>
-
-      {/* Recent Leads */}
-      <div className="bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl">
-        <div className="p-6 border-b border-[hsl(var(--color-border))] flex items-center justify-between">
-          <div>
-            <h2 className="text-lg font-semibold">Recent Leads</h2>
-            <p className="text-[hsl(var(--color-foreground-muted))] text-sm">Latest inquiries from your website</p>
+      {/* Active Projects + Recent Time Logs */}
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+        {/* Active Projects */}
+        <motion.div
+          className="lg:col-span-3 bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl"
+          variants={fadeUp}
+        >
+          <div className="p-5 border-b border-[hsl(var(--color-border))] flex items-center justify-between">
+            <h2 className="text-base font-semibold">Active Projects</h2>
+            <Link
+              href="/admin/projects"
+              className="text-xs text-[hsl(var(--color-accent))] hover:underline"
+            >
+              View all &rarr;
+            </Link>
           </div>
-          <Link
-            href="/admin/leads"
-            className="text-sm text-[hsl(var(--color-accent))] hover:underline"
-          >
-            View all →
-          </Link>
-        </div>
-        <div className="divide-y divide-[hsl(var(--color-border))]">
-          {stats?.recentLeads && stats.recentLeads.length > 0 ? (
-            stats.recentLeads.map((lead) => (
-              <Link
-                key={lead.id}
-                href={`/admin/leads/${lead.id}`}
-                className="flex items-center justify-between p-4 hover:bg-[hsl(var(--color-background-subtle))] transition-colors"
-              >
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-full bg-[hsl(var(--color-accent))]/20 flex items-center justify-center text-[hsl(var(--color-accent))] font-medium">
-                    {lead.name.charAt(0).toUpperCase()}
+          <div className="divide-y divide-[hsl(var(--color-border))]">
+            {stats?.activeProjects && stats.activeProjects.length > 0 ? (
+              stats.activeProjects.map((project) => (
+                <Link
+                  key={project.id}
+                  href={`/admin/projects/${project.id}`}
+                  className="flex items-center gap-4 px-5 py-3.5 hover:bg-[hsl(var(--color-background-subtle))] transition-colors"
+                >
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <p className="font-medium text-sm text-[hsl(var(--color-foreground))] truncate">
+                        {project.name}
+                      </p>
+                      <span
+                        className={`px-1.5 py-0.5 rounded text-[10px] font-medium border ${
+                          HEALTH_COLORS[project.health] || HEALTH_COLORS.on_track
+                        }`}
+                      >
+                        {HEALTH_LABELS[project.health] || project.health}
+                      </span>
+                    </div>
+                    <p className="text-xs text-[hsl(var(--color-foreground-subtle))]">
+                      {project.client?.name || "No client"}
+                    </p>
+                    {/* Progress bar */}
+                    <div className="mt-2 h-1.5 bg-[hsl(var(--color-background))] rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-[hsl(var(--color-accent))] rounded-full transition-all"
+                        style={{ width: `${project.progress || 0}%` }}
+                      />
+                    </div>
                   </div>
-                  <div>
-                    <p className="font-medium text-[hsl(var(--color-foreground))]">{lead.name}</p>
-                    <p className="text-sm text-[hsl(var(--color-foreground-muted))]">
-                      {lead.company || lead.email}
+                  {/* Team avatars */}
+                  <div className="flex -space-x-1.5 shrink-0">
+                    {project.assignments?.slice(0, 3).map((a, i) =>
+                      a.contractor ? (
+                        <Initials key={i} name={a.contractor.name} />
+                      ) : null
+                    )}
+                    {(project.assignments?.length || 0) > 3 && (
+                      <div className="w-7 h-7 rounded-full bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] text-[10px] flex items-center justify-center text-[hsl(var(--color-foreground-muted))]">
+                        +{project.assignments.length - 3}
+                      </div>
+                    )}
+                  </div>
+                </Link>
+              ))
+            ) : (
+              <div className="p-8 text-center text-[hsl(var(--color-foreground-subtle))]">
+                <svg className="w-8 h-8 mx-auto mb-2 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+                </svg>
+                <p className="text-sm">No active projects</p>
+              </div>
+            )}
+          </div>
+        </motion.div>
+
+        {/* Recent Time Logs */}
+        <motion.div
+          className="lg:col-span-2 bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl"
+          variants={fadeUp}
+        >
+          <div className="p-5 border-b border-[hsl(var(--color-border))]">
+            <h2 className="text-base font-semibold">Recent Time Logs</h2>
+          </div>
+          <div className="divide-y divide-[hsl(var(--color-border))]">
+            {stats?.recentTimeLogs && stats.recentTimeLogs.length > 0 ? (
+              stats.recentTimeLogs.map((log) => (
+                <div key={log.id} className="px-5 py-3 flex items-center gap-3">
+                  {log.contractor && <Initials name={log.contractor.name} />}
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-[hsl(var(--color-foreground))] truncate">
+                      {log.contractor?.name || "Unknown"}
+                    </p>
+                    <p className="text-xs text-[hsl(var(--color-foreground-subtle))] truncate">
+                      {log.project?.name || "No project"}
+                    </p>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <p className="text-sm font-mono font-medium text-[hsl(var(--color-foreground))]">
+                      {Number(log.hours).toFixed(1)}h
+                    </p>
+                    <p className="text-[10px] text-[hsl(var(--color-foreground-subtle))]">
+                      {formatDate(log.date)}
                     </p>
                   </div>
                 </div>
-                <div className="flex items-center gap-4">
-                  {lead.stage && (
-                    <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${getStageColor(lead.stage.color)}`}>
-                      {lead.stage.name}
-                    </span>
-                  )}
-                  <span className="text-sm text-[hsl(var(--color-foreground-subtle))]">
-                    {formatDate(lead.created_at)}
+              ))
+            ) : (
+              <div className="p-8 text-center text-[hsl(var(--color-foreground-subtle))]">
+                <svg className="w-8 h-8 mx-auto mb-2 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <p className="text-sm">No time logs yet</p>
+              </div>
+            )}
+          </div>
+        </motion.div>
+      </div>
+
+      {/* Upcoming Deadlines + Quick Actions */}
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+        {/* Upcoming Deadlines */}
+        <motion.div
+          className="lg:col-span-3 bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl"
+          variants={fadeUp}
+        >
+          <div className="p-5 border-b border-[hsl(var(--color-border))]">
+            <h2 className="text-base font-semibold">Upcoming Deadlines</h2>
+            <p className="text-xs text-[hsl(var(--color-foreground-subtle))] mt-0.5">
+              Next 14 days
+            </p>
+          </div>
+          <div className="divide-y divide-[hsl(var(--color-border))]">
+            {stats?.upcomingMilestones && stats.upcomingMilestones.length > 0 ? (
+              stats.upcomingMilestones.map((milestone) => (
+                <div key={milestone.id} className="px-5 py-3.5 flex items-center gap-4">
+                  <div
+                    className={`w-2 h-2 rounded-full shrink-0 ${
+                      milestone.status === "in_progress"
+                        ? "bg-[hsl(var(--color-accent))]"
+                        : "bg-[hsl(var(--color-foreground-subtle))]"
+                    }`}
+                  />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-[hsl(var(--color-foreground))] truncate">
+                      {milestone.name}
+                    </p>
+                    <p className="text-xs text-[hsl(var(--color-foreground-subtle))]">
+                      {milestone.project?.name}
+                      {milestone.project?.client?.name && ` \u00b7 ${milestone.project.client.name}`}
+                    </p>
+                  </div>
+                  <span className="text-xs font-medium text-[hsl(var(--color-foreground-muted))] shrink-0">
+                    {formatDueDate(milestone.due_date)}
                   </span>
                 </div>
-              </Link>
-            ))
-          ) : (
-            <div className="p-8 text-center text-[hsl(var(--color-foreground-subtle))]">
-              <p>No leads yet</p>
-              <p className="text-sm mt-1">Leads will appear here when someone submits the contact form</p>
-            </div>
-          )}
+              ))
+            ) : (
+              <div className="p-8 text-center text-[hsl(var(--color-foreground-subtle))]">
+                <svg className="w-8 h-8 mx-auto mb-2 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <p className="text-sm">No upcoming deadlines</p>
+              </div>
+            )}
+          </div>
+        </motion.div>
+
+        {/* Quick Actions */}
+        <motion.div className="lg:col-span-2 space-y-3" variants={fadeUp}>
+          <h2 className="text-base font-semibold mb-4">Quick Actions</h2>
+          <Link
+            href="/admin/projects"
+            className="flex items-center gap-3 px-4 py-3 rounded-xl bg-[hsl(var(--color-accent))]/10 text-[hsl(var(--color-foreground))] hover:bg-[hsl(var(--color-accent))]/20 transition-colors border border-[hsl(var(--color-accent))]/20"
+          >
+            <svg className="w-4 h-4 text-[hsl(var(--color-accent))]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+            <span className="text-sm font-medium">New Project</span>
+          </Link>
+          <Link
+            href="/admin/team"
+            className="flex items-center gap-3 px-4 py-3 rounded-xl bg-[hsl(var(--color-background-muted))] text-[hsl(var(--color-foreground))] hover:bg-[hsl(var(--color-background-subtle))] transition-colors border border-[hsl(var(--color-border))]"
+          >
+            <svg className="w-4 h-4 text-[hsl(var(--color-foreground-muted))]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span className="text-sm font-medium">Add Time</span>
+          </Link>
+          <Link
+            href="/admin/finances"
+            className="flex items-center gap-3 px-4 py-3 rounded-xl bg-[hsl(var(--color-background-muted))] text-[hsl(var(--color-foreground))] hover:bg-[hsl(var(--color-background-subtle))] transition-colors border border-[hsl(var(--color-border))]"
+          >
+            <svg className="w-4 h-4 text-[hsl(var(--color-foreground-muted))]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            <span className="text-sm font-medium">Create Invoice</span>
+          </Link>
+          <Link
+            href="/admin/team"
+            className="flex items-center gap-3 px-4 py-3 rounded-xl bg-[hsl(var(--color-background-muted))] text-[hsl(var(--color-foreground))] hover:bg-[hsl(var(--color-background-subtle))] transition-colors border border-[hsl(var(--color-border))]"
+          >
+            <svg className="w-4 h-4 text-[hsl(var(--color-foreground-muted))]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+            </svg>
+            <span className="text-sm font-medium">Add Team Member</span>
+          </Link>
+        </motion.div>
+      </div>
+    </motion.div>
+  );
+}
+
+function StatCard({
+  label,
+  value,
+  icon,
+  accent,
+}: {
+  label: string;
+  value: string | number;
+  icon: React.ReactNode;
+  accent?: "success" | "warning";
+}) {
+  return (
+    <div className="bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl p-5 hover:border-[hsl(var(--color-border-strong))] transition-colors">
+      <div className="flex items-start justify-between">
+        <div>
+          <p className="text-xs text-[hsl(var(--color-foreground-muted))] mb-1.5">{label}</p>
+          <p
+            className={`text-2xl font-semibold ${
+              accent === "warning"
+                ? "text-[hsl(var(--color-warning))]"
+                : accent === "success"
+                ? "text-[hsl(var(--color-success))]"
+                : "text-[hsl(var(--color-foreground))]"
+            }`}
+          >
+            {value}
+          </p>
+        </div>
+        <div className="p-2.5 bg-[hsl(var(--color-background-subtle))] rounded-lg text-[hsl(var(--color-foreground-muted))]">
+          {icon}
         </div>
       </div>
     </div>
