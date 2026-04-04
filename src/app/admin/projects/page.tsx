@@ -40,36 +40,36 @@ interface Client {
 }
 
 const STATUS_CONFIG: Record<string, { label: string; color: string }> = {
-  planning: { label: "Planning", color: "bg-blue-500/20 text-blue-400 border-blue-500/30" },
-  in_progress: { label: "In Progress", color: "bg-[hsl(var(--color-accent))]/20 text-[hsl(var(--color-accent))] border-[hsl(var(--color-accent))]/30" },
-  review: { label: "Review", color: "bg-purple-500/20 text-purple-400 border-purple-500/30" },
-  completed: { label: "Completed", color: "bg-green-500/20 text-green-400 border-green-500/30" },
-  on_hold: { label: "On Hold", color: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30" },
-  cancelled: { label: "Cancelled", color: "bg-red-500/20 text-red-400 border-red-500/30" },
+  planning: { label: "Planning", color: "bg-blue-500/15 text-blue-400 border border-blue-500/20" },
+  in_progress: { label: "In Progress", color: "bg-[hsl(var(--color-accent))]/15 text-[hsl(var(--color-accent))] border border-[hsl(var(--color-accent))]/20" },
+  review: { label: "Review", color: "bg-purple-500/15 text-purple-400 border border-purple-500/20" },
+  completed: { label: "Completed", color: "bg-emerald-500/15 text-emerald-400 border border-emerald-500/20" },
+  on_hold: { label: "On Hold", color: "bg-amber-500/15 text-amber-400 border border-amber-500/20" },
+  cancelled: { label: "Cancelled", color: "bg-red-500/15 text-red-400 border border-red-500/20" },
 };
 
-const PRIORITY_CONFIG: Record<string, { label: string; color: string }> = {
-  low: { label: "Low", color: "bg-gray-500/20 text-gray-400 border-gray-500/30" },
-  medium: { label: "Medium", color: "bg-blue-500/20 text-blue-400 border-blue-500/30" },
-  high: { label: "High", color: "bg-orange-500/20 text-orange-400 border-orange-500/30" },
-  urgent: { label: "Urgent", color: "bg-red-500/20 text-red-400 border-red-500/30" },
+const PRIORITY_DOTS: Record<string, string> = {
+  low: "bg-gray-400",
+  medium: "bg-blue-400",
+  high: "bg-orange-400",
+  urgent: "bg-red-400",
 };
 
 const HEALTH_COLORS: Record<string, string> = {
-  on_track: "bg-green-500",
-  at_risk: "bg-yellow-500",
+  on_track: "bg-emerald-500",
+  at_risk: "bg-amber-500",
   delayed: "bg-red-500",
   blocked: "bg-red-400",
 };
 
 const staggerContainer = {
   hidden: {},
-  show: { transition: { staggerChildren: 0.05 } },
+  show: { transition: { staggerChildren: 0.06 } },
 };
 
 const fadeUp = {
   hidden: { opacity: 0, y: 12 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.3, ease: [0, 0, 0.2, 1] as const } },
+  show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.25, 0.1, 0.25, 1] as const } },
 };
 
 function formatCurrency(value: number, currency = "AUD") {
@@ -89,7 +89,7 @@ function Initials({ name }: { name: string }) {
     .toUpperCase()
     .slice(0, 2);
   return (
-    <div className="w-7 h-7 rounded-full bg-[hsl(var(--color-accent))]/20 text-[hsl(var(--color-accent))] flex items-center justify-center font-medium text-[10px] shrink-0">
+    <div className="w-7 h-7 rounded-full bg-[hsl(var(--color-accent))]/20 text-[hsl(var(--color-accent))] flex items-center justify-center font-medium text-[10px] shrink-0 ring-2 ring-[hsl(var(--color-background-subtle))]">
       {initials}
     </div>
   );
@@ -183,18 +183,23 @@ export default function ProjectsPage() {
   if (loading) return <AdminLoader message="Loading projects..." />;
 
   return (
-    <div className="space-y-6">
+    <motion.div
+      className="space-y-8"
+      variants={staggerContainer}
+      initial="hidden"
+      animate="show"
+    >
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <motion.div variants={fadeUp} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold mb-1">Projects</h1>
+          <h1 className="font-[family-name:var(--font-heading)] text-3xl font-semibold tracking-tight mb-1">Projects</h1>
           <p className="text-[hsl(var(--color-foreground-muted))]">
             {projects.length} project{projects.length !== 1 ? "s" : ""}
           </p>
         </div>
         <div className="flex items-center gap-3 flex-wrap">
           {/* Status filter */}
-          <div className="flex rounded-lg border border-[hsl(var(--color-border))] overflow-hidden">
+          <div className="flex rounded-xl border border-[hsl(var(--color-border))]/50 overflow-hidden">
             {(["all", "planning", "in_progress", "completed"] as const).map((f) => (
               <button
                 key={f}
@@ -213,14 +218,14 @@ export default function ProjectsPage() {
           <select
             value={sort}
             onChange={(e) => setSort(e.target.value)}
-            className="px-3 py-1.5 text-xs rounded-lg bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground))] focus:outline-none"
+            className="px-3 py-1.5 text-xs rounded-xl bg-[hsl(var(--color-background-subtle))]/50 border border-[hsl(var(--color-border))]/50 text-[hsl(var(--color-foreground))] focus:outline-none"
           >
             <option value="updated_at">Recent</option>
             <option value="name">Name</option>
           </select>
           <button
             onClick={openForm}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[hsl(var(--color-accent))]/10 text-[hsl(var(--color-foreground))] hover:bg-[hsl(var(--color-accent))]/20 transition-colors border border-[hsl(var(--color-accent))]/20 text-sm font-medium"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[hsl(var(--color-accent))] text-white hover:bg-[hsl(var(--color-accent-hover))] transition-colors text-sm font-medium"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -228,76 +233,85 @@ export default function ProjectsPage() {
             New Project
           </button>
         </div>
-      </div>
+      </motion.div>
 
       {/* Grid */}
       {projects.length === 0 ? (
-        <div className="bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl p-12 text-center">
-          <svg className="w-10 h-10 mx-auto mb-3 text-[hsl(var(--color-foreground-subtle))] opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
-          </svg>
-          <p className="text-[hsl(var(--color-foreground-muted))]">No projects yet</p>
-          <button onClick={openForm} className="mt-3 text-sm text-[hsl(var(--color-accent))] hover:underline">
-            Create your first project
-          </button>
-        </div>
+        <motion.div variants={fadeUp}>
+          <div className="min-h-[400px] flex items-center justify-center">
+            <div className="border-2 border-dashed border-[hsl(var(--color-border))]/30 rounded-2xl p-12 flex flex-col items-center text-center max-w-md">
+              <svg className="w-12 h-12 mb-4 text-[hsl(var(--color-foreground-subtle))]" fill="none" stroke="currentColor" strokeWidth={1} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+              </svg>
+              <p className="text-lg font-medium text-[hsl(var(--color-foreground-muted))] mb-1">No projects yet</p>
+              <p className="text-sm text-[hsl(var(--color-foreground-subtle))] mb-5">Start tracking your client work</p>
+              <button
+                onClick={openForm}
+                className="px-5 py-2.5 bg-[hsl(var(--color-accent))] hover:bg-[hsl(var(--color-accent-hover))] text-white rounded-xl text-sm font-medium transition-colors"
+              >
+                Create your first project
+              </button>
+            </div>
+          </div>
+        </motion.div>
       ) : (
         <motion.div
-          className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"
+          className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"
           variants={staggerContainer}
-          initial="hidden"
-          animate="show"
         >
           {projects.map((project) => {
             const statusConf = STATUS_CONFIG[project.status] || STATUS_CONFIG.planning;
-            const priorityConf = PRIORITY_CONFIG[project.priority] || PRIORITY_CONFIG.medium;
+            const priorityDot = PRIORITY_DOTS[project.priority] || PRIORITY_DOTS.medium;
             const healthColor = HEALTH_COLORS[project.health] || HEALTH_COLORS.on_track;
             const margin = project.revenue > 0
               ? Math.round(((project.revenue - project.cost) / project.revenue) * 100)
               : 0;
+            const progress = project.progress || 0;
 
             return (
               <motion.div key={project.id} variants={fadeUp}>
                 <Link
                   href={`/admin/projects/${project.id}`}
-                  className="block bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl hover:border-[hsl(var(--color-border-strong))] transition-colors"
+                  className="block bg-[hsl(var(--color-background-subtle))]/50 backdrop-blur-sm border border-[hsl(var(--color-border))]/50 rounded-2xl hover:border-[hsl(var(--color-border-strong))]/60 hover:bg-[hsl(var(--color-background-subtle))]/80 hover:shadow-lg hover:shadow-black/5 transition-all duration-200"
                 >
-                  <div className="p-5">
-                    {/* Top: name + health dot */}
-                    <div className="flex items-start gap-3 mb-3">
-                      <div className={`w-2.5 h-2.5 rounded-full shrink-0 mt-1.5 ${healthColor}`} />
-                      <div className="flex-1 min-w-0">
-                        <p className="font-medium text-[hsl(var(--color-foreground))] truncate">
-                          {project.name}
-                        </p>
-                        <p className="text-sm text-[hsl(var(--color-foreground-muted))] truncate">
-                          {project.client?.name || "No client"}
-                        </p>
+                  <div className="p-6">
+                    {/* Client name + priority dot */}
+                    <div className="flex items-center justify-between mb-2">
+                      <p className="text-xs text-[hsl(var(--color-foreground-subtle))] uppercase tracking-wider">
+                        {project.client?.name || "No client"}
+                      </p>
+                      <div className="flex items-center gap-2">
+                        <div className={`w-2 h-2 rounded-full ${priorityDot}`} title={project.priority} />
+                        <div className={`w-2 h-2 rounded-full ${healthColor}`} />
                       </div>
                     </div>
 
-                    {/* Badges */}
+                    {/* Project name */}
+                    <h3 className="font-medium text-[hsl(var(--color-foreground))] truncate mb-3">
+                      {project.name}
+                    </h3>
+
+                    {/* Status badge */}
                     <div className="flex flex-wrap gap-1.5 mb-4">
-                      <span className={`px-2 py-0.5 rounded text-[10px] font-medium border ${statusConf.color}`}>
+                      <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${statusConf.color}`}>
                         {statusConf.label}
-                      </span>
-                      <span className={`px-2 py-0.5 rounded text-[10px] font-medium border ${priorityConf.color}`}>
-                        {priorityConf.label}
                       </span>
                     </div>
 
                     {/* Progress bar */}
                     <div className="mb-4">
-                      <div className="flex items-center justify-between mb-1">
+                      <div className="flex items-center justify-between mb-1.5">
                         <span className="text-xs text-[hsl(var(--color-foreground-subtle))]">Progress</span>
-                        <span className="text-xs font-mono text-[hsl(var(--color-foreground-muted))]">
-                          {project.progress || 0}%
+                        <span className="text-xs font-mono tabular-nums text-[hsl(var(--color-foreground-muted))]">
+                          {progress}%
                         </span>
                       </div>
-                      <div className="h-1.5 bg-[hsl(var(--color-background))] rounded-full overflow-hidden">
+                      <div className="h-2 bg-[hsl(var(--color-background-muted))]/50 rounded-full overflow-hidden shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]">
                         <div
-                          className="h-full bg-[hsl(var(--color-accent))] rounded-full transition-all"
-                          style={{ width: `${project.progress || 0}%` }}
+                          className={`h-full rounded-full transition-all duration-500 ${
+                            progress > 80 ? "bg-emerald-500" : progress > 50 ? "bg-amber-400" : "bg-[hsl(var(--color-accent))]"
+                          }`}
+                          style={{ width: `${progress}%` }}
                         />
                       </div>
                     </div>
@@ -307,7 +321,7 @@ export default function ProjectsPage() {
                       {(project.revenue > 0 || project.cost > 0) && (
                         <div className="flex items-center justify-between">
                           <span className="text-[hsl(var(--color-foreground-subtle))]">Revenue / Cost</span>
-                          <span className="font-mono text-[hsl(var(--color-foreground))]">
+                          <span className="font-mono tabular-nums text-[hsl(var(--color-foreground))]">
                             {formatCurrency(project.revenue, project.currency)} / {formatCurrency(project.cost, project.currency)}
                           </span>
                         </div>
@@ -316,11 +330,11 @@ export default function ProjectsPage() {
                         <div className="flex items-center justify-between">
                           <span className="text-[hsl(var(--color-foreground-subtle))]">Margin</span>
                           <span
-                            className={`font-mono font-medium ${
+                            className={`font-mono tabular-nums font-medium ${
                               margin >= 30
-                                ? "text-green-400"
+                                ? "text-emerald-400"
                                 : margin >= 15
-                                ? "text-yellow-400"
+                                ? "text-amber-400"
                                 : "text-red-400"
                             }`}
                           >
@@ -331,7 +345,7 @@ export default function ProjectsPage() {
                       {project.budget > 0 && (
                         <div className="flex items-center justify-between">
                           <span className="text-[hsl(var(--color-foreground-subtle))]">Budget</span>
-                          <span className="font-mono text-[hsl(var(--color-foreground))]">
+                          <span className="font-mono tabular-nums text-[hsl(var(--color-foreground))]">
                             {formatCurrency(project.budget, project.currency)}
                           </span>
                         </div>
@@ -340,15 +354,15 @@ export default function ProjectsPage() {
 
                     {/* Team avatars */}
                     {project.assignments && project.assignments.length > 0 && (
-                      <div className="flex items-center gap-2 pt-3 border-t border-[hsl(var(--color-border))]">
-                        <div className="flex -space-x-1.5">
+                      <div className="flex items-center gap-2 pt-4 border-t border-[hsl(var(--color-border))]/30">
+                        <div className="flex -space-x-2">
                           {project.assignments.slice(0, 4).map((a, i) =>
                             a.contractor ? (
                               <Initials key={i} name={a.contractor.name} />
                             ) : null
                           )}
                           {project.assignments.length > 4 && (
-                            <div className="w-7 h-7 rounded-full bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] text-[10px] flex items-center justify-center text-[hsl(var(--color-foreground-muted))]">
+                            <div className="w-7 h-7 rounded-full bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] text-[10px] flex items-center justify-center text-[hsl(var(--color-foreground-muted))] ring-2 ring-[hsl(var(--color-background-subtle))]">
                               +{project.assignments.length - 4}
                             </div>
                           )}
@@ -378,19 +392,20 @@ export default function ProjectsPage() {
               onClick={() => setShowForm(false)}
             />
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 20 }}
-              className="fixed inset-x-4 top-[5%] bottom-[5%] z-50 mx-auto max-w-lg bg-[hsl(var(--color-background-subtle))] border border-[hsl(var(--color-border))] rounded-2xl overflow-y-auto"
+              initial={{ opacity: 0, scale: 0.97 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.97 }}
+              transition={{ duration: 0.2, ease: [0.25, 0.1, 0.25, 1] as const }}
+              className="fixed inset-x-4 top-[5%] bottom-[5%] z-50 mx-auto max-w-lg bg-[hsl(var(--color-background-subtle))] border border-[hsl(var(--color-border))]/50 rounded-2xl shadow-2xl overflow-y-auto"
             >
               <div className="p-6">
-                <h2 className="text-lg font-semibold mb-6">New Project</h2>
+                <h2 className="font-[family-name:var(--font-heading)] text-lg font-semibold mb-6">New Project</h2>
                 <div className="space-y-4">
                   <FormField label="Project Name *">
                     <input
                       value={form.name}
                       onChange={(e) => setForm({ ...form, name: e.target.value })}
-                      className="w-full px-3 py-2 rounded-lg bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground))] text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-ring))]"
+                      className="w-full px-4 py-3 rounded-xl bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground))] text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-accent))]/50 focus:border-[hsl(var(--color-accent))]/50"
                       placeholder="Project name"
                     />
                   </FormField>
@@ -399,7 +414,7 @@ export default function ProjectsPage() {
                       value={form.description}
                       onChange={(e) => setForm({ ...form, description: e.target.value })}
                       rows={3}
-                      className="w-full px-3 py-2 rounded-lg bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground))] text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-ring))] resize-none"
+                      className="w-full px-4 py-3 rounded-xl bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground))] text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-accent))]/50 focus:border-[hsl(var(--color-accent))]/50 resize-none"
                       placeholder="Brief description"
                     />
                   </FormField>
@@ -407,7 +422,7 @@ export default function ProjectsPage() {
                     <select
                       value={form.client_id}
                       onChange={(e) => setForm({ ...form, client_id: e.target.value })}
-                      className="w-full px-3 py-2 rounded-lg bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground))] text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-ring))]"
+                      className="w-full px-4 py-3 rounded-xl bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground))] text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-accent))]/50 focus:border-[hsl(var(--color-accent))]/50"
                     >
                       <option value="">No client</option>
                       {clients.map((c) => (
@@ -422,7 +437,7 @@ export default function ProjectsPage() {
                       <select
                         value={form.status}
                         onChange={(e) => setForm({ ...form, status: e.target.value })}
-                        className="w-full px-3 py-2 rounded-lg bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground))] text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-ring))]"
+                        className="w-full px-4 py-3 rounded-xl bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground))] text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-accent))]/50 focus:border-[hsl(var(--color-accent))]/50"
                       >
                         <option value="planning">Planning</option>
                         <option value="in_progress">In Progress</option>
@@ -434,7 +449,7 @@ export default function ProjectsPage() {
                       <select
                         value={form.priority}
                         onChange={(e) => setForm({ ...form, priority: e.target.value })}
-                        className="w-full px-3 py-2 rounded-lg bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground))] text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-ring))]"
+                        className="w-full px-4 py-3 rounded-xl bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground))] text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-accent))]/50 focus:border-[hsl(var(--color-accent))]/50"
                       >
                         <option value="low">Low</option>
                         <option value="medium">Medium</option>
@@ -449,7 +464,7 @@ export default function ProjectsPage() {
                         type="date"
                         value={form.start_date}
                         onChange={(e) => setForm({ ...form, start_date: e.target.value })}
-                        className="w-full px-3 py-2 rounded-lg bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground))] text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-ring))]"
+                        className="w-full px-4 py-3 rounded-xl bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground))] text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-accent))]/50 focus:border-[hsl(var(--color-accent))]/50"
                       />
                     </FormField>
                     <FormField label="Target End Date">
@@ -457,7 +472,7 @@ export default function ProjectsPage() {
                         type="date"
                         value={form.target_end_date}
                         onChange={(e) => setForm({ ...form, target_end_date: e.target.value })}
-                        className="w-full px-3 py-2 rounded-lg bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground))] text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-ring))]"
+                        className="w-full px-4 py-3 rounded-xl bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground))] text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-accent))]/50 focus:border-[hsl(var(--color-accent))]/50"
                       />
                     </FormField>
                   </div>
@@ -467,7 +482,7 @@ export default function ProjectsPage() {
                         type="number"
                         value={form.revenue || ""}
                         onChange={(e) => setForm({ ...form, revenue: Number(e.target.value) })}
-                        className="w-full px-3 py-2 rounded-lg bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground))] text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-ring))]"
+                        className="w-full px-4 py-3 rounded-xl bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground))] text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-accent))]/50 focus:border-[hsl(var(--color-accent))]/50"
                         placeholder="0"
                       />
                     </FormField>
@@ -476,7 +491,7 @@ export default function ProjectsPage() {
                         type="number"
                         value={form.budget || ""}
                         onChange={(e) => setForm({ ...form, budget: Number(e.target.value) })}
-                        className="w-full px-3 py-2 rounded-lg bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground))] text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-ring))]"
+                        className="w-full px-4 py-3 rounded-xl bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground))] text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-accent))]/50 focus:border-[hsl(var(--color-accent))]/50"
                         placeholder="0"
                       />
                     </FormField>
@@ -484,7 +499,7 @@ export default function ProjectsPage() {
                       <select
                         value={form.currency}
                         onChange={(e) => setForm({ ...form, currency: e.target.value })}
-                        className="w-full px-3 py-2 rounded-lg bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground))] text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-ring))]"
+                        className="w-full px-4 py-3 rounded-xl bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground))] text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-accent))]/50 focus:border-[hsl(var(--color-accent))]/50"
                       >
                         <option value="AUD">AUD</option>
                         <option value="EUR">EUR</option>
@@ -494,17 +509,17 @@ export default function ProjectsPage() {
                     </FormField>
                   </div>
                 </div>
-                <div className="flex items-center justify-end gap-3 mt-6 pt-4 border-t border-[hsl(var(--color-border))]">
+                <div className="flex items-center justify-end gap-3 mt-6 pt-4 border-t border-[hsl(var(--color-border))]/30">
                   <button
                     onClick={() => setShowForm(false)}
-                    className="px-4 py-2 text-sm text-[hsl(var(--color-foreground-muted))] hover:text-[hsl(var(--color-foreground))]"
+                    className="px-5 py-2.5 rounded-xl bg-transparent border border-[hsl(var(--color-border))] hover:bg-[hsl(var(--color-background-muted))]/50 text-sm text-[hsl(var(--color-foreground-muted))] hover:text-[hsl(var(--color-foreground))] transition-colors"
                   >
                     Cancel
                   </button>
                   <button
                     onClick={handleSave}
                     disabled={saving || !form.name}
-                    className="px-5 py-2 rounded-lg bg-[hsl(var(--color-accent))] text-white text-sm font-medium hover:bg-[hsl(var(--color-accent-hover))] transition-colors disabled:opacity-50"
+                    className="px-5 py-2.5 rounded-xl bg-[hsl(var(--color-accent))] text-white text-sm font-medium hover:bg-[hsl(var(--color-accent-hover))] transition-colors disabled:opacity-50"
                   >
                     {saving ? "Creating..." : "Create Project"}
                   </button>
@@ -514,14 +529,14 @@ export default function ProjectsPage() {
           </>
         )}
       </AnimatePresence>
-    </div>
+    </motion.div>
   );
 }
 
 function FormField({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
-      <label className="text-xs font-medium text-[hsl(var(--color-foreground-muted))] mb-1.5 block">
+      <label className="text-sm font-medium text-[hsl(var(--color-foreground-muted))] mb-1.5 block">
         {label}
       </label>
       {children}

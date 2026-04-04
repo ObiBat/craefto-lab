@@ -22,16 +22,16 @@ interface Document {
   } | null;
 }
 
-const STATUS_CONFIG: Record<string, { label: string; color: string }> = {
-  draft: { label: "Draft", color: "bg-gray-500/20 text-gray-400 border-gray-500/30" },
-  sent: { label: "Sent", color: "bg-blue-500/20 text-blue-400 border-blue-500/30" },
-  pending_signature: { label: "Sent", color: "bg-blue-500/20 text-blue-400 border-blue-500/30" },
-  viewed: { label: "Viewed", color: "bg-purple-500/20 text-purple-400 border-purple-500/30" },
-  signed: { label: "Accepted", color: "bg-green-500/20 text-green-400 border-green-500/30" },
-  accepted: { label: "Accepted", color: "bg-green-500/20 text-green-400 border-green-500/30" },
-  rejected: { label: "Rejected", color: "bg-red-500/20 text-red-400 border-red-500/30" },
-  declined: { label: "Rejected", color: "bg-red-500/20 text-red-400 border-red-500/30" },
-  expired: { label: "Expired", color: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30" },
+const STATUS_CONFIG: Record<string, { label: string; color: string; step: number }> = {
+  draft: { label: "Draft", color: "bg-[hsl(var(--color-foreground-subtle))]/10 text-[hsl(var(--color-foreground-muted))] border border-[hsl(var(--color-border))]/30", step: 0 },
+  sent: { label: "Sent", color: "bg-blue-500/15 text-blue-400 border border-blue-500/20", step: 1 },
+  pending_signature: { label: "Sent", color: "bg-blue-500/15 text-blue-400 border border-blue-500/20", step: 1 },
+  viewed: { label: "Viewed", color: "bg-purple-500/15 text-purple-400 border border-purple-500/20", step: 2 },
+  signed: { label: "Accepted", color: "bg-emerald-500/15 text-emerald-400 border border-emerald-500/20", step: 3 },
+  accepted: { label: "Accepted", color: "bg-emerald-500/15 text-emerald-400 border border-emerald-500/20", step: 3 },
+  rejected: { label: "Rejected", color: "bg-red-500/15 text-red-400 border border-red-500/20", step: -1 },
+  declined: { label: "Rejected", color: "bg-red-500/15 text-red-400 border border-red-500/20", step: -1 },
+  expired: { label: "Expired", color: "bg-amber-500/15 text-amber-400 border border-amber-500/20", step: -1 },
 };
 
 const TYPE_LABELS: Record<string, string> = {
@@ -41,14 +41,16 @@ const TYPE_LABELS: Record<string, string> = {
   invoice: "Invoice",
 };
 
+const FLOW_STEPS = ["Draft", "Sent", "Viewed", "Accepted"];
+
 const staggerContainer = {
   hidden: {},
-  show: { transition: { staggerChildren: 0.05 } },
+  show: { transition: { staggerChildren: 0.06 } },
 };
 
 const fadeUp = {
   hidden: { opacity: 0, y: 12 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.3, ease: [0, 0, 0.2, 1] as const } },
+  show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.25, 0.1, 0.25, 1] as const } },
 };
 
 function formatDate(dateString: string) {
@@ -78,6 +80,44 @@ function formatCurrency(value: number) {
   }).format(value);
 }
 
+function StatusFlow({ step }: { step: number }) {
+  return (
+    <div className="flex items-center gap-1 mb-4">
+      {FLOW_STEPS.map((label, i) => {
+        const isActive = step >= 0 && i <= step;
+        const isCurrent = i === step;
+        return (
+          <React.Fragment key={label}>
+            <div className="flex flex-col items-center gap-1">
+              <div
+                className={`w-2 h-2 rounded-full transition-colors ${
+                  isCurrent
+                    ? "bg-[hsl(var(--color-accent))]"
+                    : isActive
+                    ? "bg-emerald-500"
+                    : "bg-[hsl(var(--color-foreground-subtle))]/30"
+                }`}
+              />
+              <span className={`text-[9px] ${
+                isActive ? "text-[hsl(var(--color-foreground-muted))]" : "text-[hsl(var(--color-foreground-subtle))]/50"
+              }`}>
+                {label}
+              </span>
+            </div>
+            {i < FLOW_STEPS.length - 1 && (
+              <div
+                className={`flex-1 h-px mt-[-10px] ${
+                  step >= 0 && i < step ? "bg-emerald-500/50" : "bg-[hsl(var(--color-foreground-subtle))]/20"
+                }`}
+              />
+            )}
+          </React.Fragment>
+        );
+      })}
+    </div>
+  );
+}
+
 export default function ProposalsPage() {
   const [documents, setDocuments] = React.useState<Document[]>([]);
   const [loading, setLoading] = React.useState(true);
@@ -87,7 +127,6 @@ export default function ProposalsPage() {
     async function fetchDocuments() {
       try {
         const params = new URLSearchParams({ limit: "50" });
-        // Exclude invoices - this page is for proposals/sows
         if (filter !== "all") {
           params.set("type", filter);
         }
@@ -95,7 +134,6 @@ export default function ProposalsPage() {
         if (res.ok) {
           const data = await res.json();
           let docs = data.documents || [];
-          // If showing all, filter out invoices
           if (filter === "all") {
             docs = docs.filter((d: Document) => d.document_type !== "invoice");
           }
@@ -113,17 +151,22 @@ export default function ProposalsPage() {
   if (loading) return <AdminLoader message="Loading proposals..." />;
 
   return (
-    <div className="space-y-6">
+    <motion.div
+      className="space-y-8"
+      variants={staggerContainer}
+      initial="hidden"
+      animate="show"
+    >
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <motion.div variants={fadeUp} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold mb-1">Proposals</h1>
+          <h1 className="font-[family-name:var(--font-heading)] text-3xl font-semibold tracking-tight mb-1">Proposals</h1>
           <p className="text-[hsl(var(--color-foreground-muted))]">
             {documents.length} document{documents.length !== 1 ? "s" : ""}
           </p>
         </div>
         <div className="flex items-center gap-3 flex-wrap">
-          <div className="flex rounded-lg border border-[hsl(var(--color-border))] overflow-hidden">
+          <div className="flex rounded-xl border border-[hsl(var(--color-border))]/50 overflow-hidden">
             {(["all", "proposal", "sow", "change_order"] as const).map((f) => (
               <button
                 key={f}
@@ -140,7 +183,7 @@ export default function ProposalsPage() {
           </div>
           <Link
             href="/admin/documents/new"
-            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[hsl(var(--color-accent))]/10 text-[hsl(var(--color-foreground))] hover:bg-[hsl(var(--color-accent))]/20 transition-colors border border-[hsl(var(--color-accent))]/20 text-sm font-medium"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[hsl(var(--color-accent))] text-white hover:bg-[hsl(var(--color-accent-hover))] transition-colors text-sm font-medium"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -148,25 +191,31 @@ export default function ProposalsPage() {
             Create Proposal
           </Link>
         </div>
-      </div>
+      </motion.div>
 
       {/* Cards */}
       {documents.length === 0 ? (
-        <div className="bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl p-12 text-center">
-          <svg className="w-10 h-10 mx-auto mb-3 text-[hsl(var(--color-foreground-subtle))] opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-          </svg>
-          <p className="text-[hsl(var(--color-foreground-muted))]">No proposals yet</p>
-          <Link href="/admin/documents/new" className="mt-3 text-sm text-[hsl(var(--color-accent))] hover:underline inline-block">
-            Create your first proposal
-          </Link>
-        </div>
+        <motion.div variants={fadeUp}>
+          <div className="min-h-[400px] flex items-center justify-center">
+            <div className="border-2 border-dashed border-[hsl(var(--color-border))]/30 rounded-2xl p-12 flex flex-col items-center text-center max-w-md">
+              <svg className="w-12 h-12 mb-4 text-[hsl(var(--color-foreground-subtle))]" fill="none" stroke="currentColor" strokeWidth={1} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              <p className="text-lg font-medium text-[hsl(var(--color-foreground-muted))] mb-1">No proposals yet</p>
+              <p className="text-sm text-[hsl(var(--color-foreground-subtle))] mb-5">Create proposals, SOWs, and change orders for your clients</p>
+              <Link
+                href="/admin/documents/new"
+                className="px-5 py-2.5 bg-[hsl(var(--color-accent))] hover:bg-[hsl(var(--color-accent-hover))] text-white rounded-xl text-sm font-medium transition-colors"
+              >
+                Create your first proposal
+              </Link>
+            </div>
+          </div>
+        </motion.div>
       ) : (
         <motion.div
-          className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"
+          className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"
           variants={staggerContainer}
-          initial="hidden"
-          animate="show"
         >
           {documents.map((doc) => {
             const statusConf = STATUS_CONFIG[doc.status] || STATUS_CONFIG.draft;
@@ -178,15 +227,18 @@ export default function ProposalsPage() {
               <motion.div key={doc.id} variants={fadeUp}>
                 <Link
                   href={`/admin/documents/${doc.id}`}
-                  className="block bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl hover:border-[hsl(var(--color-border-strong))] transition-colors"
+                  className="block bg-[hsl(var(--color-background-subtle))]/50 backdrop-blur-sm border border-[hsl(var(--color-border))]/50 rounded-2xl hover:border-[hsl(var(--color-border-strong))]/60 hover:bg-[hsl(var(--color-background-subtle))]/80 hover:shadow-lg hover:shadow-black/5 transition-all duration-200"
                 >
-                  <div className="p-5">
+                  <div className="p-6">
+                    {/* Status flow */}
+                    <StatusFlow step={statusConf.step} />
+
                     {/* Type badge + status */}
                     <div className="flex items-center justify-between mb-3">
                       <span className="text-[10px] font-medium uppercase tracking-wider text-[hsl(var(--color-foreground-subtle))]">
                         {typeName}
                       </span>
-                      <span className={`px-2 py-0.5 rounded text-[10px] font-medium border ${statusConf.color}`}>
+                      <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${statusConf.color}`}>
                         {statusConf.label}
                       </span>
                     </div>
@@ -196,15 +248,15 @@ export default function ProposalsPage() {
                       {doc.title}
                     </h3>
 
-                    {/* Client */}
+                    {/* Recipient */}
                     <p className="text-sm text-[hsl(var(--color-foreground-muted))] mb-3">
                       {doc.lead?.company || doc.lead?.name || "No client"}
                     </p>
 
                     {/* Footer: amount + date */}
-                    <div className="flex items-center justify-between pt-3 border-t border-[hsl(var(--color-border))]">
+                    <div className="flex items-center justify-between pt-4 border-t border-[hsl(var(--color-border))]/30">
                       {amount > 0 ? (
-                        <span className="text-sm font-mono font-medium text-[hsl(var(--color-foreground))]">
+                        <span className="text-sm font-mono tabular-nums font-medium text-[hsl(var(--color-foreground))]">
                           {formatCurrency(amount)}
                         </span>
                       ) : (
@@ -223,6 +275,6 @@ export default function ProposalsPage() {
           })}
         </motion.div>
       )}
-    </div>
+    </motion.div>
   );
 }

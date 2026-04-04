@@ -32,10 +32,10 @@ interface Contractor {
 }
 
 const AVAILABILITY_CONFIG: Record<string, { label: string; color: string }> = {
-  available: { label: "Available", color: "bg-green-500/20 text-green-400 border-green-500/30" },
-  busy: { label: "Busy", color: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30" },
-  unavailable: { label: "Unavailable", color: "bg-red-500/20 text-red-400 border-red-500/30" },
-  on_leave: { label: "On Leave", color: "bg-gray-500/20 text-gray-400 border-gray-500/30" },
+  available: { label: "Available", color: "bg-emerald-500/15 text-emerald-400 border border-emerald-500/20" },
+  busy: { label: "Busy", color: "bg-amber-500/15 text-amber-400 border border-amber-500/20" },
+  unavailable: { label: "Unavailable", color: "bg-red-500/15 text-red-400 border border-red-500/20" },
+  on_leave: { label: "On Leave", color: "bg-[hsl(var(--color-foreground-subtle))]/10 text-[hsl(var(--color-foreground-muted))] border border-[hsl(var(--color-border))]/30" },
 };
 
 const COUNTRY_FLAGS: Record<string, string> = {
@@ -63,14 +63,31 @@ const COUNTRY_FLAGS: Record<string, string> = {
   "South Africa": "\u{1F1FF}\u{1F1E6}", ZA: "\u{1F1FF}\u{1F1E6}",
 };
 
+const AVATAR_GRADIENTS = [
+  "from-violet-500/30 to-indigo-500/30",
+  "from-cyan-500/30 to-blue-500/30",
+  "from-rose-500/30 to-pink-500/30",
+  "from-amber-500/30 to-orange-500/30",
+  "from-emerald-500/30 to-teal-500/30",
+  "from-fuchsia-500/30 to-purple-500/30",
+];
+
+function getGradient(name: string) {
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return AVATAR_GRADIENTS[Math.abs(hash) % AVATAR_GRADIENTS.length];
+}
+
 const staggerContainer = {
   hidden: {},
-  show: { transition: { staggerChildren: 0.05 } },
+  show: { transition: { staggerChildren: 0.06 } },
 };
 
 const fadeUp = {
   hidden: { opacity: 0, y: 12 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.3, ease: [0, 0, 0.2, 1] as const } },
+  show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.25, 0.1, 0.25, 1] as const } },
 };
 
 const EMPTY_FORM: Omit<Contractor, "id" | "hours_this_week" | "assignments"> = {
@@ -200,17 +217,22 @@ export default function TeamPage() {
   if (loading) return <AdminLoader message="Loading team..." />;
 
   return (
-    <div className="space-y-6">
+    <motion.div
+      className="space-y-8"
+      variants={staggerContainer}
+      initial="hidden"
+      animate="show"
+    >
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <motion.div variants={fadeUp} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold mb-1">Team</h1>
+          <h1 className="font-[family-name:var(--font-heading)] text-3xl font-semibold tracking-tight mb-1">Team</h1>
           <p className="text-[hsl(var(--color-foreground-muted))]">
             {contractors.length} team member{contractors.length !== 1 ? "s" : ""}
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <div className="flex rounded-lg border border-[hsl(var(--color-border))] overflow-hidden">
+          <div className="flex rounded-xl border border-[hsl(var(--color-border))]/50 overflow-hidden">
             {(["all", "active", "inactive"] as const).map((f) => (
               <button
                 key={f}
@@ -227,7 +249,7 @@ export default function TeamPage() {
           </div>
           <button
             onClick={openAddForm}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[hsl(var(--color-accent))]/10 text-[hsl(var(--color-foreground))] hover:bg-[hsl(var(--color-accent))]/20 transition-colors border border-[hsl(var(--color-accent))]/20 text-sm font-medium"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[hsl(var(--color-accent))] text-white hover:bg-[hsl(var(--color-accent-hover))] transition-colors text-sm font-medium"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -235,25 +257,31 @@ export default function TeamPage() {
             Add Member
           </button>
         </div>
-      </div>
+      </motion.div>
 
       {/* Grid */}
       {filtered.length === 0 ? (
-        <div className="bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl p-12 text-center">
-          <svg className="w-10 h-10 mx-auto mb-3 text-[hsl(var(--color-foreground-subtle))] opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-          </svg>
-          <p className="text-[hsl(var(--color-foreground-muted))]">No team members yet</p>
-          <button onClick={openAddForm} className="mt-3 text-sm text-[hsl(var(--color-accent))] hover:underline">
-            Add your first team member
-          </button>
-        </div>
+        <motion.div variants={fadeUp}>
+          <div className="min-h-[400px] flex items-center justify-center">
+            <div className="border-2 border-dashed border-[hsl(var(--color-border))]/30 rounded-2xl p-12 flex flex-col items-center text-center max-w-md">
+              <svg className="w-12 h-12 mb-4 text-[hsl(var(--color-foreground-subtle))]" fill="none" stroke="currentColor" strokeWidth={1} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+              </svg>
+              <p className="text-lg font-medium text-[hsl(var(--color-foreground-muted))] mb-1">No team members yet</p>
+              <p className="text-sm text-[hsl(var(--color-foreground-subtle))] mb-5">Add contractors and freelancers to your team</p>
+              <button
+                onClick={openAddForm}
+                className="px-5 py-2.5 bg-[hsl(var(--color-accent))] hover:bg-[hsl(var(--color-accent-hover))] text-white rounded-xl text-sm font-medium transition-colors"
+              >
+                Add your first team member
+              </button>
+            </div>
+          </div>
+        </motion.div>
       ) : (
         <motion.div
-          className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"
+          className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"
           variants={staggerContainer}
-          initial="hidden"
-          animate="show"
         >
           {filtered.map((c) => {
             const isExpanded = expandedId === c.id;
@@ -265,17 +293,18 @@ export default function TeamPage() {
             const activeProjects = (c.assignments || []).filter(
               (a) => a.status === "active" && a.project?.status !== "completed"
             );
+            const gradient = getGradient(c.name);
 
             return (
               <motion.div
                 key={c.id}
                 variants={fadeUp}
-                className="bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl hover:border-[hsl(var(--color-border-strong))] transition-colors"
+                className="bg-[hsl(var(--color-background-subtle))]/50 backdrop-blur-sm border border-[hsl(var(--color-border))]/50 rounded-2xl hover:border-[hsl(var(--color-border-strong))]/60 hover:bg-[hsl(var(--color-background-subtle))]/80 hover:shadow-lg hover:shadow-black/5 transition-all duration-200"
               >
-                <div className="p-5">
+                <div className="p-6">
                   {/* Top row */}
-                  <div className="flex items-start gap-3 mb-4">
-                    <div className="w-11 h-11 rounded-full bg-[hsl(var(--color-accent))]/15 text-[hsl(var(--color-accent))] flex items-center justify-center font-semibold text-sm shrink-0">
+                  <div className="flex items-start gap-4 mb-4">
+                    <div className={`w-14 h-14 rounded-full bg-gradient-to-br ${gradient} text-[hsl(var(--color-foreground))] flex items-center justify-center font-semibold text-base shrink-0`}>
                       {c.name
                         .split(" ")
                         .map((n) => n[0])
@@ -291,7 +320,7 @@ export default function TeamPage() {
                         {c.role}
                       </p>
                     </div>
-                    <span className={`px-2 py-0.5 rounded text-[10px] font-medium border ${avail.color}`}>
+                    <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${avail.color}`}>
                       {avail.label}
                     </span>
                   </div>
@@ -300,7 +329,7 @@ export default function TeamPage() {
                   <div className="space-y-2.5 text-sm">
                     <div className="flex items-center justify-between">
                       <span className="text-[hsl(var(--color-foreground-subtle))]">Rate</span>
-                      <span className="font-mono text-[hsl(var(--color-foreground))]">
+                      <span className="font-mono tabular-nums text-[hsl(var(--color-foreground))]">
                         {c.currency} {Number(c.hourly_rate).toFixed(0)}/hr
                       </span>
                     </div>
@@ -315,19 +344,21 @@ export default function TeamPage() {
                     )}
                     {/* Capacity bar */}
                     <div>
-                      <div className="flex items-center justify-between mb-1">
+                      <div className="flex items-center justify-between mb-1.5">
                         <span className="text-[hsl(var(--color-foreground-subtle))]">This week</span>
-                        <span className="text-xs font-mono text-[hsl(var(--color-foreground-muted))]">
+                        <span className="text-xs font-mono tabular-nums text-[hsl(var(--color-foreground-muted))]">
                           {c.hours_this_week.toFixed(1)}h / {c.capacity_hours_weekly}h
                         </span>
                       </div>
-                      <div className="h-1.5 bg-[hsl(var(--color-background))] rounded-full overflow-hidden">
+                      <div className="h-2 bg-[hsl(var(--color-background-muted))]/50 rounded-full overflow-hidden shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]">
                         <div
-                          className={`h-full rounded-full transition-all ${
+                          className={`h-full rounded-full transition-all duration-500 ${
                             utilization > 90
-                              ? "bg-[hsl(var(--color-error))]"
+                              ? "bg-red-500"
                               : utilization > 70
-                              ? "bg-[hsl(var(--color-warning))]"
+                              ? "bg-amber-500"
+                              : utilization > 50
+                              ? "bg-amber-400"
                               : "bg-[hsl(var(--color-accent))]"
                           }`}
                           style={{ width: `${Math.min(utilization, 100)}%` }}
@@ -338,17 +369,17 @@ export default function TeamPage() {
 
                   {/* Skills */}
                   {c.skills && c.skills.length > 0 && (
-                    <div className="flex flex-wrap gap-1.5 mt-3">
+                    <div className="flex flex-wrap gap-1.5 mt-4">
                       {c.skills.slice(0, 4).map((skill) => (
                         <span
                           key={skill}
-                          className="px-2 py-0.5 text-[10px] rounded bg-[hsl(var(--color-background-subtle))] text-[hsl(var(--color-foreground-muted))] border border-[hsl(var(--color-border))]"
+                          className="px-2.5 py-1 text-[10px] rounded-full bg-[hsl(var(--color-foreground-subtle))]/10 text-[hsl(var(--color-foreground-muted))] border border-[hsl(var(--color-border))]/30"
                         >
                           {skill}
                         </span>
                       ))}
                       {c.skills.length > 4 && (
-                        <span className="px-2 py-0.5 text-[10px] rounded text-[hsl(var(--color-foreground-subtle))]">
+                        <span className="px-2.5 py-1 text-[10px] rounded-full text-[hsl(var(--color-foreground-subtle))]">
                           +{c.skills.length - 4}
                         </span>
                       )}
@@ -356,7 +387,7 @@ export default function TeamPage() {
                   )}
 
                   {/* Actions */}
-                  <div className="flex items-center gap-2 mt-4 pt-3 border-t border-[hsl(var(--color-border))]">
+                  <div className="flex items-center gap-2 mt-4 pt-4 border-t border-[hsl(var(--color-border))]/30">
                     <button
                       onClick={() => setExpandedId(isExpanded ? null : c.id)}
                       className="text-xs text-[hsl(var(--color-accent))] hover:underline"
@@ -373,7 +404,7 @@ export default function TeamPage() {
                     <span className="text-[hsl(var(--color-border))]">&middot;</span>
                     <button
                       onClick={() => handleDelete(c.id)}
-                      className="text-xs text-[hsl(var(--color-error))] hover:underline"
+                      className="text-xs text-red-400 hover:underline"
                     >
                       Delete
                     </button>
@@ -388,12 +419,12 @@ export default function TeamPage() {
                       animate={{ height: "auto", opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
                       transition={{ duration: 0.2 }}
-                      className="overflow-hidden border-t border-[hsl(var(--color-border))]"
+                      className="overflow-hidden border-t border-[hsl(var(--color-border))]/30"
                     >
-                      <div className="p-5 space-y-4">
+                      <div className="p-6 space-y-4">
                         {activeProjects.length > 0 && (
                           <div>
-                            <p className="text-xs font-medium text-[hsl(var(--color-foreground-muted))] mb-2">
+                            <p className="text-xs font-medium uppercase tracking-wider text-[hsl(var(--color-foreground-subtle))] mb-2">
                               Active Projects
                             </p>
                             <div className="space-y-1.5">
@@ -405,7 +436,7 @@ export default function TeamPage() {
                                   <span className="text-[hsl(var(--color-foreground))]">
                                     {a.project?.name || "Unknown"}
                                   </span>
-                                  <span className="text-xs font-mono text-[hsl(var(--color-foreground-subtle))]">
+                                  <span className="text-xs font-mono tabular-nums text-[hsl(var(--color-foreground-subtle))]">
                                     {Number(a.actual_hours).toFixed(1)}h / {Number(a.estimated_hours).toFixed(0)}h
                                   </span>
                                 </div>
@@ -447,21 +478,25 @@ export default function TeamPage() {
               onClick={() => setShowForm(false)}
             />
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 20 }}
-              className="fixed inset-x-4 top-[5%] bottom-[5%] z-50 mx-auto max-w-lg bg-[hsl(var(--color-background-subtle))] border border-[hsl(var(--color-border))] rounded-2xl overflow-y-auto"
+              initial={{ opacity: 0, scale: 0.97 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.97 }}
+              transition={{ duration: 0.2, ease: [0.25, 0.1, 0.25, 1] as const }}
+              className="fixed inset-x-4 top-[5%] bottom-[5%] z-50 mx-auto max-w-lg bg-[hsl(var(--color-background-subtle))] border border-[hsl(var(--color-border))]/50 rounded-2xl shadow-2xl overflow-y-auto"
             >
               <div className="p-6">
-                <h2 className="text-lg font-semibold mb-6">
+                <h2 className="font-[family-name:var(--font-heading)] text-lg font-semibold mb-6">
                   {editingId ? "Edit Team Member" : "Add Team Member"}
                 </h2>
+
+                {/* Personal Info Section */}
                 <div className="space-y-4">
+                  <p className="text-xs font-medium uppercase tracking-wider text-[hsl(var(--color-foreground-subtle))]">Personal Info</p>
                   <FormField label="Name *">
                     <input
                       value={form.name}
                       onChange={(e) => setForm({ ...form, name: e.target.value })}
-                      className="w-full px-3 py-2 rounded-lg bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground))] text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-ring))]"
+                      className="w-full px-4 py-3 rounded-xl bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground))] text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-accent))]/50 focus:border-[hsl(var(--color-accent))]/50"
                       placeholder="Full name"
                     />
                   </FormField>
@@ -470,15 +505,38 @@ export default function TeamPage() {
                       type="email"
                       value={form.email || ""}
                       onChange={(e) => setForm({ ...form, email: e.target.value || null })}
-                      className="w-full px-3 py-2 rounded-lg bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground))] text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-ring))]"
+                      className="w-full px-4 py-3 rounded-xl bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground))] text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-accent))]/50 focus:border-[hsl(var(--color-accent))]/50"
                       placeholder="email@example.com"
                     />
                   </FormField>
+                  <div className="grid grid-cols-2 gap-3">
+                    <FormField label="Country">
+                      <input
+                        value={form.country || ""}
+                        onChange={(e) => setForm({ ...form, country: e.target.value || null })}
+                        className="w-full px-4 py-3 rounded-xl bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground))] text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-accent))]/50 focus:border-[hsl(var(--color-accent))]/50"
+                        placeholder="e.g. Germany"
+                      />
+                    </FormField>
+                    <FormField label="Timezone">
+                      <input
+                        value={form.timezone || ""}
+                        onChange={(e) => setForm({ ...form, timezone: e.target.value || null })}
+                        className="w-full px-4 py-3 rounded-xl bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground))] text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-accent))]/50 focus:border-[hsl(var(--color-accent))]/50"
+                        placeholder="Europe/Berlin"
+                      />
+                    </FormField>
+                  </div>
+                </div>
+
+                {/* Professional Section */}
+                <div className="space-y-4 mt-6 pt-6 border-t border-[hsl(var(--color-border))]/30">
+                  <p className="text-xs font-medium uppercase tracking-wider text-[hsl(var(--color-foreground-subtle))]">Professional</p>
                   <FormField label="Role *">
                     <input
                       value={form.role}
                       onChange={(e) => setForm({ ...form, role: e.target.value })}
-                      className="w-full px-3 py-2 rounded-lg bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground))] text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-ring))]"
+                      className="w-full px-4 py-3 rounded-xl bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground))] text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-accent))]/50 focus:border-[hsl(var(--color-accent))]/50"
                       placeholder="e.g. UI Designer, Developer"
                     />
                   </FormField>
@@ -488,7 +546,7 @@ export default function TeamPage() {
                         type="number"
                         value={form.hourly_rate || ""}
                         onChange={(e) => setForm({ ...form, hourly_rate: Number(e.target.value) })}
-                        className="w-full px-3 py-2 rounded-lg bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground))] text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-ring))]"
+                        className="w-full px-4 py-3 rounded-xl bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground))] text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-accent))]/50 focus:border-[hsl(var(--color-accent))]/50"
                         placeholder="0"
                       />
                     </FormField>
@@ -496,54 +554,12 @@ export default function TeamPage() {
                       <select
                         value={form.currency}
                         onChange={(e) => setForm({ ...form, currency: e.target.value })}
-                        className="w-full px-3 py-2 rounded-lg bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground))] text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-ring))]"
+                        className="w-full px-4 py-3 rounded-xl bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground))] text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-accent))]/50 focus:border-[hsl(var(--color-accent))]/50"
                       >
                         <option value="EUR">EUR</option>
                         <option value="USD">USD</option>
                         <option value="AUD">AUD</option>
                         <option value="GBP">GBP</option>
-                      </select>
-                    </FormField>
-                  </div>
-                  <div className="grid grid-cols-2 gap-3">
-                    <FormField label="Country">
-                      <input
-                        value={form.country || ""}
-                        onChange={(e) => setForm({ ...form, country: e.target.value || null })}
-                        className="w-full px-3 py-2 rounded-lg bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground))] text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-ring))]"
-                        placeholder="e.g. Germany"
-                      />
-                    </FormField>
-                    <FormField label="Timezone">
-                      <input
-                        value={form.timezone || ""}
-                        onChange={(e) => setForm({ ...form, timezone: e.target.value || null })}
-                        className="w-full px-3 py-2 rounded-lg bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground))] text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-ring))]"
-                        placeholder="Europe/Berlin"
-                      />
-                    </FormField>
-                  </div>
-                  <div className="grid grid-cols-2 gap-3">
-                    <FormField label="Weekly Capacity (hrs)">
-                      <input
-                        type="number"
-                        value={form.capacity_hours_weekly}
-                        onChange={(e) => setForm({ ...form, capacity_hours_weekly: Number(e.target.value) })}
-                        className="w-full px-3 py-2 rounded-lg bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground))] text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-ring))]"
-                      />
-                    </FormField>
-                    <FormField label="Availability">
-                      <select
-                        value={form.availability}
-                        onChange={(e) =>
-                          setForm({ ...form, availability: e.target.value as Contractor["availability"] })
-                        }
-                        className="w-full px-3 py-2 rounded-lg bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground))] text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-ring))]"
-                      >
-                        <option value="available">Available</option>
-                        <option value="busy">Busy</option>
-                        <option value="unavailable">Unavailable</option>
-                        <option value="on_leave">On Leave</option>
                       </select>
                     </FormField>
                   </div>
@@ -558,13 +574,13 @@ export default function TeamPage() {
                             addSkill();
                           }
                         }}
-                        className="flex-1 px-3 py-2 rounded-lg bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground))] text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-ring))]"
+                        className="flex-1 px-4 py-3 rounded-xl bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground))] text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-accent))]/50 focus:border-[hsl(var(--color-accent))]/50"
                         placeholder="Add skill + Enter"
                       />
                       <button
                         type="button"
                         onClick={addSkill}
-                        className="px-3 py-2 rounded-lg bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] text-sm text-[hsl(var(--color-foreground-muted))] hover:text-[hsl(var(--color-foreground))]"
+                        className="px-4 py-3 rounded-xl bg-transparent border border-[hsl(var(--color-border))] hover:bg-[hsl(var(--color-background-muted))]/50 text-sm text-[hsl(var(--color-foreground-muted))] hover:text-[hsl(var(--color-foreground))] transition-colors"
                       >
                         Add
                       </button>
@@ -574,13 +590,13 @@ export default function TeamPage() {
                         {form.skills.map((skill) => (
                           <span
                             key={skill}
-                            className="inline-flex items-center gap-1 px-2 py-0.5 text-xs rounded bg-[hsl(var(--color-background))] text-[hsl(var(--color-foreground-muted))] border border-[hsl(var(--color-border))]"
+                            className="inline-flex items-center gap-1 px-2.5 py-1 text-xs rounded-full bg-[hsl(var(--color-foreground-subtle))]/10 text-[hsl(var(--color-foreground-muted))] border border-[hsl(var(--color-border))]/30"
                           >
                             {skill}
                             <button
                               type="button"
                               onClick={() => removeSkill(skill)}
-                              className="text-[hsl(var(--color-foreground-subtle))] hover:text-[hsl(var(--color-error))]"
+                              className="text-[hsl(var(--color-foreground-subtle))] hover:text-red-400"
                             >
                               &times;
                             </button>
@@ -589,27 +605,57 @@ export default function TeamPage() {
                       </div>
                     )}
                   </FormField>
+                </div>
+
+                {/* Availability Section */}
+                <div className="space-y-4 mt-6 pt-6 border-t border-[hsl(var(--color-border))]/30">
+                  <p className="text-xs font-medium uppercase tracking-wider text-[hsl(var(--color-foreground-subtle))]">Availability</p>
+                  <div className="grid grid-cols-2 gap-3">
+                    <FormField label="Weekly Capacity (hrs)">
+                      <input
+                        type="number"
+                        value={form.capacity_hours_weekly}
+                        onChange={(e) => setForm({ ...form, capacity_hours_weekly: Number(e.target.value) })}
+                        className="w-full px-4 py-3 rounded-xl bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground))] text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-accent))]/50 focus:border-[hsl(var(--color-accent))]/50"
+                      />
+                    </FormField>
+                    <FormField label="Availability">
+                      <select
+                        value={form.availability}
+                        onChange={(e) =>
+                          setForm({ ...form, availability: e.target.value as Contractor["availability"] })
+                        }
+                        className="w-full px-4 py-3 rounded-xl bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground))] text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-accent))]/50 focus:border-[hsl(var(--color-accent))]/50"
+                      >
+                        <option value="available">Available</option>
+                        <option value="busy">Busy</option>
+                        <option value="unavailable">Unavailable</option>
+                        <option value="on_leave">On Leave</option>
+                      </select>
+                    </FormField>
+                  </div>
                   <FormField label="Notes">
                     <textarea
                       value={form.notes || ""}
                       onChange={(e) => setForm({ ...form, notes: e.target.value || null })}
                       rows={3}
-                      className="w-full px-3 py-2 rounded-lg bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground))] text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-ring))] resize-none"
+                      className="w-full px-4 py-3 rounded-xl bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground))] text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-accent))]/50 focus:border-[hsl(var(--color-accent))]/50 resize-none"
                       placeholder="Any notes..."
                     />
                   </FormField>
                 </div>
-                <div className="flex items-center justify-end gap-3 mt-6 pt-4 border-t border-[hsl(var(--color-border))]">
+
+                <div className="flex items-center justify-end gap-3 mt-6 pt-4 border-t border-[hsl(var(--color-border))]/30">
                   <button
                     onClick={() => setShowForm(false)}
-                    className="px-4 py-2 text-sm text-[hsl(var(--color-foreground-muted))] hover:text-[hsl(var(--color-foreground))]"
+                    className="px-5 py-2.5 rounded-xl bg-transparent border border-[hsl(var(--color-border))] hover:bg-[hsl(var(--color-background-muted))]/50 text-sm text-[hsl(var(--color-foreground-muted))] hover:text-[hsl(var(--color-foreground))] transition-colors"
                   >
                     Cancel
                   </button>
                   <button
                     onClick={handleSave}
                     disabled={saving || !form.name || !form.role || !form.hourly_rate}
-                    className="px-5 py-2 rounded-lg bg-[hsl(var(--color-accent))] text-white text-sm font-medium hover:bg-[hsl(var(--color-accent-hover))] transition-colors disabled:opacity-50"
+                    className="px-5 py-2.5 rounded-xl bg-[hsl(var(--color-accent))] text-white text-sm font-medium hover:bg-[hsl(var(--color-accent-hover))] transition-colors disabled:opacity-50"
                   >
                     {saving ? "Saving..." : editingId ? "Update" : "Add Member"}
                   </button>
@@ -619,14 +665,14 @@ export default function TeamPage() {
           </>
         )}
       </AnimatePresence>
-    </div>
+    </motion.div>
   );
 }
 
 function FormField({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
-      <label className="text-xs font-medium text-[hsl(var(--color-foreground-muted))] mb-1.5 block">
+      <label className="text-sm font-medium text-[hsl(var(--color-foreground-muted))] mb-1.5 block">
         {label}
       </label>
       {children}
