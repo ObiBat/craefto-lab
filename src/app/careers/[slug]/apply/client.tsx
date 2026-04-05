@@ -522,7 +522,8 @@ function ProgressIndicator({
 }) {
   return (
     <div className="mb-10">
-      <div className="flex items-center justify-between max-w-lg mx-auto" style={{ height: 56 }}>
+      {/* Row with circles + connectors — fixed height, all circles perfectly aligned */}
+      <div className="flex items-center justify-between max-w-lg mx-auto">
         {STEPS.map((label, i) => {
           const isCompleted = i < currentStep;
           const isActive = i === currentStep;
@@ -530,59 +531,45 @@ function ProgressIndicator({
 
           return (
             <React.Fragment key={label}>
-              <div className="flex flex-col items-center gap-1.5">
-                <button
-                  type="button"
-                  onClick={() => onStepClick(i)}
-                  disabled={isUpcoming}
-                  className={`relative flex items-center justify-center transition-transform duration-200 ${
-                    isCompleted ? "hover:scale-110 cursor-pointer" : ""
-                  } ${isUpcoming ? "cursor-default" : ""}`}
-                  aria-label={`Step ${i + 1}: ${label}`}
-                >
-                  <motion.div
-                    className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold border-2 transition-colors duration-200 ${
-                      isActive
-                        ? "bg-[hsl(var(--color-foreground))] border-[hsl(var(--color-foreground))] text-[hsl(var(--color-background))]"
-                        : isCompleted
-                        ? "bg-[hsl(var(--color-foreground))]/10 border-[hsl(var(--color-foreground))]/30 text-[hsl(var(--color-foreground))]"
-                        : "bg-transparent border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground-muted))]"
-                    }`}
-                    layout
-                    transition={{ duration: 0.2, ease: "easeOut" }}
-                  >
-                    {isCompleted ? (
-                      <motion.svg
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        className="w-3.5 h-3.5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-                      </motion.svg>
-                    ) : (
-                      <span>{i + 1}</span>
-                    )}
-                  </motion.div>
-                </button>
-                {/* Step label — hidden on mobile except active */}
-                <span
-                  className={`text-[10px] font-medium tracking-wide ${
+              <button
+                type="button"
+                onClick={() => onStepClick(i)}
+                disabled={isUpcoming}
+                className={`relative flex items-center justify-center flex-shrink-0 transition-transform duration-200 ${
+                  isCompleted ? "hover:scale-110 cursor-pointer" : ""
+                } ${isUpcoming ? "cursor-default" : ""}`}
+                aria-label={`Step ${i + 1}: ${label}`}
+              >
+                <motion.div
+                  className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold border-2 transition-colors duration-200 ${
                     isActive
-                      ? "text-[hsl(var(--color-foreground))]"
+                      ? "bg-[hsl(var(--color-foreground))] border-[hsl(var(--color-foreground))] text-[hsl(var(--color-background))]"
                       : isCompleted
-                      ? "text-[hsl(var(--color-foreground-muted))] hidden sm:block"
-                      : "text-[hsl(var(--color-foreground-subtle))] hidden sm:block"
+                      ? "bg-[hsl(var(--color-foreground))]/10 border-[hsl(var(--color-foreground))]/30 text-[hsl(var(--color-foreground))]"
+                      : "bg-transparent border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground-muted))]"
                   }`}
+                  layout
+                  transition={{ duration: 0.2, ease: "easeOut" }}
                 >
-                  {label}
-                </span>
-              </div>
-              {/* Connector line */}
+                  {isCompleted ? (
+                    <motion.svg
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      className="w-3.5 h-3.5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                    </motion.svg>
+                  ) : (
+                    <span>{i + 1}</span>
+                  )}
+                </motion.div>
+              </button>
+              {/* Connector line between circles */}
               {i < STEPS.length - 1 && (
-                <div className="flex-1 h-0.5 mx-1 mt-[-12px] self-start" style={{ marginTop: 15 }}>
+                <div className="flex-1 h-0.5 mx-1.5">
                   <div className="h-full bg-[hsl(var(--color-border))] rounded-full overflow-hidden">
                     <motion.div
                       className="h-full bg-[hsl(var(--color-foreground))]/30 rounded-full"
@@ -596,6 +583,17 @@ function ProgressIndicator({
             </React.Fragment>
           );
         })}
+      </div>
+
+      {/* Current step label — centered below, outside the circle row so it never
+          affects circle alignment */}
+      <div className="mt-3 text-center">
+        <span className="text-xs font-medium tracking-wide text-[hsl(var(--color-foreground))]">
+          {STEPS[currentStep]}
+          <span className="text-[hsl(var(--color-foreground-subtle))] font-normal ml-2">
+            · Step {currentStep + 1} of {STEPS.length}
+          </span>
+        </span>
       </div>
     </div>
   );
@@ -776,38 +774,47 @@ function StepNav({
   onSubmit?: () => void;
 }) {
   return (
-    <div className="flex items-center justify-between mt-10 pt-6 border-t border-[hsl(var(--color-border))]">
-      <div className="flex items-center gap-4">
-        {onPrev ? (
-          <Button variant="ghost" onClick={onPrev}>
-            <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-            Back
-          </Button>
-        ) : (
-          <div />
-        )}
-        <span className="text-xs text-[hsl(var(--color-foreground-subtle))]">
-          Step {step + 1} of {totalSteps} — {STEPS[step]}
-        </span>
+    <div className="mt-10 pt-6 border-t border-[hsl(var(--color-border))]">
+      <div className="flex items-center justify-between gap-4">
+        {/* Left: Back button (or spacer) */}
+        <div className="flex-shrink-0">
+          {onPrev ? (
+            <Button variant="ghost" onClick={onPrev}>
+              <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+              Back
+            </Button>
+          ) : (
+            <div />
+          )}
+        </div>
+
+        {/* Right: Continue or Submit */}
+        <div className="flex-shrink-0">
+          {onNext && (
+            <Button onClick={onNext}>
+              Continue
+              <svg className="w-4 h-4 ml-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </Button>
+          )}
+          {onSubmit && (
+            <Button variant="accent" onClick={onSubmit}>
+              Submit application
+              <svg className="w-4 h-4 ml-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+            </Button>
+          )}
+        </div>
       </div>
-      {onNext && (
-        <Button onClick={onNext}>
-          Continue
-          <svg className="w-4 h-4 ml-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-          </svg>
-        </Button>
-      )}
-      {onSubmit && (
-        <Button variant="accent" size="lg" onClick={onSubmit}>
-          Submit application
-          <svg className="w-4 h-4 ml-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-          </svg>
-        </Button>
-      )}
+
+      {/* Step counter — centered below, hidden on mobile (redundant with progress bar) */}
+      <p className="hidden sm:block text-center mt-4 text-xs text-[hsl(var(--color-foreground-subtle))]">
+        Step {step + 1} of {totalSteps} · {STEPS[step]}
+      </p>
     </div>
   );
 }
