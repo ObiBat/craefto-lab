@@ -1017,10 +1017,10 @@ function CompensationField({
 
   return (
     <div
-      className={`flex items-stretch rounded-xl border overflow-hidden transition-all duration-200 ${
+      className={`flex items-stretch rounded-xl border overflow-hidden transition-all duration-300 ease-out ${
         error
-          ? "border-red-500/50"
-          : "border-[hsl(var(--color-border))] focus-within:border-[hsl(var(--color-foreground))] focus-within:ring-2 focus-within:ring-[hsl(var(--color-foreground))]/5"
+          ? "border-red-500/60 focus-within:border-red-500 focus-within:ring-4 focus-within:ring-red-500/15"
+          : "border-[hsl(var(--color-border))] hover:border-[hsl(var(--color-foreground))]/40 focus-within:border-[hsl(var(--color-foreground))] focus-within:ring-4 focus-within:ring-[hsl(var(--color-foreground))]/10 focus-within:shadow-[0_4px_24px_-8px_hsl(var(--color-foreground)/0.15)]"
       }`}
     >
       <input
@@ -1237,9 +1237,9 @@ function ReviewSection({
   children: React.ReactNode;
 }) {
   return (
-    <div className="bg-[hsl(var(--color-background-subtle))] border border-[hsl(var(--color-border))] rounded-xl p-5">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-xs font-semibold text-[hsl(var(--color-foreground-subtle))] uppercase tracking-wider">
+    <div className="bg-[hsl(var(--color-background-subtle))] border border-[hsl(var(--color-border))] rounded-xl p-6">
+      <div className="flex items-center justify-between mb-5">
+        <h3 className="font-serif text-lg tracking-tight text-[hsl(var(--color-foreground))]">
           {title}
         </h3>
         <button
@@ -1301,7 +1301,7 @@ function FormField({
 function inputClass(error?: string) {
   return `w-full px-4 py-4 bg-[hsl(var(--color-background))] border ${
     error
-      ? "border-red-500/50 focus:ring-red-500/20"
-      : "border-[hsl(var(--color-border))] focus:border-[hsl(var(--color-foreground))] focus:ring-[hsl(var(--color-foreground))]/5"
-  } rounded-xl text-sm text-[hsl(var(--color-foreground))] placeholder-[hsl(var(--color-foreground-subtle))] focus:outline-none focus:ring-2 transition-all duration-200`;
+      ? "border-red-500/60 focus:border-red-500 focus:ring-red-500/15"
+      : "border-[hsl(var(--color-border))] hover:border-[hsl(var(--color-foreground))]/40 focus:border-[hsl(var(--color-foreground))] focus:ring-[hsl(var(--color-foreground))]/10 focus:shadow-[0_4px_24px_-8px_hsl(var(--color-foreground)/0.15)]"
+  } rounded-xl text-sm text-[hsl(var(--color-foreground))] placeholder-[hsl(var(--color-foreground-subtle))] focus:outline-none focus:ring-4 transition-all duration-300 ease-out`;
 }
