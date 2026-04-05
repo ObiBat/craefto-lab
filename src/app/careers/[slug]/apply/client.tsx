@@ -316,7 +316,8 @@ export function ApplicationFormClient({ role }: { role: Role }) {
             {/* Compact header row */}
             <div className="flex flex-wrap items-center justify-between gap-4">
               <h1
-                className="font-serif tracking-tight text-[hsl(var(--color-foreground))] !text-[28px] md:!text-[34px] !leading-[1.15]"
+                className="font-serif tracking-tight text-[hsl(var(--color-foreground))]"
+                style={{ fontSize: "clamp(1.6rem, 2.6vw, 2rem)", lineHeight: 1.15, letterSpacing: "-0.01em" }}
               >
                 Apply for {role.title}
               </h1>
