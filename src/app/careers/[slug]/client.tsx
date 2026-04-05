@@ -90,7 +90,7 @@ export function RolePageClient({ role, applyHref }: RolePageClientProps) {
 
                 <HeroText delay={0.3}>
                   <Button size="lg" className="w-full" asChild>
-                    <a href={applyHref}>
+                    <Link href={applyHref}>
                       <span className="btn-text-wrapper">
                         <span className="btn-text-primary">
                           Apply now
@@ -105,7 +105,7 @@ export function RolePageClient({ role, applyHref }: RolePageClientProps) {
                           </svg>
                         </span>
                       </span>
-                    </a>
+                    </Link>
                   </Button>
                 </HeroText>
               </div>
@@ -260,7 +260,7 @@ export function RolePageClient({ role, applyHref }: RolePageClientProps) {
                       className="!bg-white !text-[hsl(var(--color-foreground))] hover:!bg-[hsl(var(--color-accent))] hover:!text-white !border-0"
                       asChild
                     >
-                      <a href={applyHref}>
+                      <Link href={applyHref}>
                         <span className="btn-text-wrapper">
                           <span className="btn-text-primary">
                             Apply for this role
@@ -275,7 +275,7 @@ export function RolePageClient({ role, applyHref }: RolePageClientProps) {
                             </svg>
                           </span>
                         </span>
-                      </a>
+                      </Link>
                     </Button>
                     <Button
                       size="lg"

@@ -12,6 +12,7 @@ const NAV_ITEMS = [
   { href: "/admin/projects", label: "Projects", icon: "folder" },
   { href: "/admin/finances", label: "Finances", icon: "dollar" },
   { href: "/admin/leads", label: "Leads", icon: "target" },
+  { href: "/admin/applications", label: "Applications", icon: "inbox" },
   { href: "/admin/proposals", label: "Proposals", icon: "file" },
 ];
 
@@ -64,6 +65,12 @@ function NavIcon({ icon }: { icon: string }) {
           <circle cx="12" cy="12" r="10" strokeWidth={1.5} />
           <circle cx="12" cy="12" r="6" strokeWidth={1.5} />
           <circle cx="12" cy="12" r="2" strokeWidth={1.5} />
+        </svg>
+      );
+    case "inbox":
+      return (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
         </svg>
       );
     case "file":

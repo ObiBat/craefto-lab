@@ -1,3 +1,22 @@
+export type ApplicationQuestionType =
+  | "single-select"
+  | "multi-select"
+  | "short-text"
+  | "long-text"
+  | "number";
+
+export interface ApplicationQuestion {
+  id: string;
+  label: string;
+  helperText?: string;
+  type: ApplicationQuestionType;
+  required: boolean;
+  options?: string[];
+  minLength?: number;
+  maxLength?: number;
+  placeholder?: string;
+}
+
 export interface Role {
   slug: string;
   title: string;
@@ -9,6 +28,7 @@ export interface Role {
   requirements: string[];
   niceToHaves: string[];
   postedDate: string;
+  questions: ApplicationQuestion[];
 }
 
 export const roles: Role[] = [
@@ -46,6 +66,82 @@ export const roles: Role[] = [
       "Experience in a studio, agency, or freelance environment",
     ],
     postedDate: "2026-04-01",
+    questions: [
+      {
+        id: "experience_years",
+        label: "How many years of professional design experience do you have?",
+        type: "single-select",
+        required: true,
+        options: ["0–1 years", "1–2 years", "2–4 years", "4–7 years", "7+ years"],
+      },
+      {
+        id: "commitment",
+        label: "What type of engagement are you looking for?",
+        type: "single-select",
+        required: true,
+        options: ["Full-time", "Part-time", "Contract", "Project-based"],
+      },
+      {
+        id: "availability",
+        label: "How soon could you start?",
+        type: "single-select",
+        required: true,
+        options: ["Immediately", "Within 2 weeks", "Within 1 month", "1–2 months", "Flexible"],
+      },
+      {
+        id: "tools",
+        label: "Which tools are you proficient in?",
+        helperText: "Select all that apply",
+        type: "multi-select",
+        required: true,
+        options: [
+          "Figma",
+          "Adobe Illustrator",
+          "Adobe Photoshop",
+          "Adobe InDesign",
+          "After Effects",
+          "Blender / Spline",
+          "Webflow",
+          "Canva",
+        ],
+      },
+      {
+        id: "rate_expectation",
+        label: "What is your rate or salary expectation?",
+        helperText: "Hourly, daily, or annual — whichever you prefer",
+        type: "short-text",
+        required: true,
+        placeholder: "e.g. $50/hr or $80k/year",
+      },
+      {
+        id: "portfolio_link",
+        label: "Link to your portfolio or Behance / Dribbble",
+        helperText: "We'd love to see your best work",
+        type: "short-text",
+        required: true,
+        placeholder: "https://",
+      },
+      {
+        id: "why_craefto",
+        label: "Why do you want to work with Craefto?",
+        helperText: "What excites you about the studio and the kind of work we do?",
+        type: "long-text",
+        required: true,
+        minLength: 200,
+        maxLength: 1000,
+        placeholder: "Tell us what drew you to Craefto and how you see yourself contributing...",
+      },
+      {
+        id: "proud_project",
+        label: "Describe a project you shipped that you're proud of",
+        helperText: "What was the brief, your role, and the outcome?",
+        type: "long-text",
+        required: true,
+        minLength: 200,
+        maxLength: 1000,
+        placeholder: "Walk us through a project from brief to delivery...",
+      },
+    ],
   },
   {
     slug: "copywriter",
@@ -81,6 +177,70 @@ export const roles: Role[] = [
       "Basic understanding of content management systems (WordPress, Notion, similar)",
     ],
     postedDate: "2026-04-01",
+    questions: [
+      {
+        id: "experience_years",
+        label: "How many years of professional writing experience do you have?",
+        type: "single-select",
+        required: true,
+        options: ["0–1 years", "1–2 years", "2–4 years", "4–7 years", "7+ years"],
+      },
+      {
+        id: "commitment",
+        label: "What type of engagement are you looking for?",
+        type: "single-select",
+        required: true,
+        options: ["Full-time", "Part-time", "Contract", "Project-based"],
+      },
+      {
+        id: "availability",
+        label: "How soon could you start?",
+        type: "single-select",
+        required: true,
+        options: ["Immediately", "Within 2 weeks", "Within 1 month", "1–2 months", "Flexible"],
+      },
+      {
+        id: "languages",
+        label: "Which languages are you fluent in?",
+        helperText: "Select all that apply",
+        type: "multi-select",
+        required: true,
+        options: ["Mongolian (native)", "English (native)", "English (fluent)", "Other"],
+      },
+      {
+        id: "rate_expectation",
+        label: "What is your rate or salary expectation?",
+        helperText: "Per word, per article, hourly, or annual",
+        type: "short-text",
+        required: true,
+        placeholder: "e.g. $0.15/word or $60/hr",
+      },
+      {
+        id: "writing_samples",
+        label: "Link to your writing samples or published work",
+        helperText: "Portfolio, Medium, personal site — anything that showcases your voice",
+        type: "short-text",
+        required: true,
+        placeholder: "https://",
+      },
+      {
+        id: "location_timezone",
+        label: "Where are you based? (city and timezone)",
+        type: "short-text",
+        required: true,
+        placeholder: "e.g. Ulaanbaatar, GMT+8",
+      },
+      {
+        id: "why_craefto",
+        label: "Why do you want to write for Craefto?",
+        helperText: "What about our work or mission resonates with you?",
+        type: "long-text",
+        required: true,
+        minLength: 200,
+        maxLength: 1000,
+        placeholder: "Tell us what drew you to Craefto and what you'd bring to the team...",
+      },
+    ],
   },
 ];
 

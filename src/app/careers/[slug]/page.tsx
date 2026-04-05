@@ -1,12 +1,7 @@
 import { notFound } from "next/navigation";
-import Link from "next/link";
 import type { Metadata } from "next";
-import { Header, Footer, Container, Section } from "@/components/layout";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { SectionLabel } from "@/components/ui/section-label";
-import { roles, getRoleBySlug, getAllRoleSlugs } from "@/lib/careers";
+import { Header, Footer } from "@/components/layout";
+import { getRoleBySlug, getAllRoleSlugs } from "@/lib/careers";
 import { RolePageClient } from "./client";
 
 interface PageProps {
@@ -64,11 +59,7 @@ export default async function RolePage({ params }: PageProps) {
     notFound();
   }
 
-  const applySubject = encodeURIComponent(`Application: ${role.title}`);
-  const applyBody = encodeURIComponent(
-    `Hi Craefto,\n\nI am interested in the ${role.title} position.\n\n[Please attach your portfolio/resume and tell us a bit about yourself]\n\nBest regards`
-  );
-  const applyHref = `mailto:hello@craefto.com?subject=${applySubject}&body=${applyBody}`;
+  const applyHref = `/careers/${role.slug}/apply`;
 
   // JSON-LD Structured Data
   const jsonLd = {
