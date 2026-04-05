@@ -6,6 +6,10 @@ import {
   ApplicationNotificationEmail,
   getApplicationNotificationSubject,
 } from "@/emails/application-notification";
+import {
+  ApplicationConfirmationEmail,
+  getApplicationConfirmationSubject,
+} from "@/emails/application-confirmation";
 
 const rateLimitMap = new Map<string, { count: number; timestamp: number }>();
 const RATE_LIMIT = 5;
@@ -118,8 +122,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Send admin notification email
+    // Send emails (admin notification + applicant confirmation)
     if (process.env.RESEND_API_KEY) {
+      // Admin notification to obi@craefto.com
       try {
         await resend.emails.send({
           from: EMAIL_FROM,
@@ -147,7 +152,24 @@ export async function POST(request: NextRequest) {
           }),
         });
       } catch {
-        // Email failure should not block the application
+        // Admin email failure should not block the application
+      }
+
+      // Confirmation to the applicant
+      try {
+        await resend.emails.send({
+          from: EMAIL_FROM,
+          to: application.email,
+          replyTo: "obi@craefto.com",
+          subject: getApplicationConfirmationSubject(role.title),
+          html: ApplicationConfirmationEmail({
+            full_name: application.full_name,
+            role_title: application.role_title,
+            role_slug: application.role_slug,
+          }),
+        });
+      } catch {
+        // Confirmation email failure should not block the application
       }
     }
 
