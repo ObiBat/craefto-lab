@@ -90,6 +90,28 @@ export function ApplicationFormClient({ role }: { role: Role }) {
   const [submitted, setSubmitted] = React.useState(false);
   const [uploadProgress, setUploadProgress] = React.useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = React.useState(false);
+  const formTopRef = React.useRef<HTMLDivElement>(null);
+  const isFirstRender = React.useRef(true);
+
+  // Scroll the form to the top whenever the step changes (fixes mobile UX
+  // where tapping Continue/Submit left the viewport at the bottom of the
+  // previous step). Skip on the very first render so we do not hijack the
+  // user's scroll position when the page loads.
+  React.useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    if (typeof window === "undefined") return;
+    const el = formTopRef.current;
+    if (!el) return;
+    // Use rAF to wait for the new step to paint, then scroll
+    requestAnimationFrame(() => {
+      const rect = el.getBoundingClientRect();
+      const target = window.scrollY + rect.top - 80; // 80px offset for sticky header
+      window.scrollTo({ top: Math.max(0, target), behavior: "smooth" });
+    });
+  }, [step, submitted]);
 
   // Load draft from localStorage
   React.useEffect(() => {
@@ -346,7 +368,7 @@ export function ApplicationFormClient({ role }: { role: Role }) {
           <Container>
             <div className="lg:grid lg:grid-cols-12 gap-10">
               {/* Left column: form */}
-              <div className="lg:col-span-8">
+              <div ref={formTopRef} className="lg:col-span-8 scroll-mt-24">
                 {/* Mobile role summary accordion */}
                 <div className="lg:hidden mb-8">
                   <button
