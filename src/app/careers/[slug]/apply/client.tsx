@@ -59,6 +59,17 @@ function formatFileSize(bytes: number): string {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
+// Unified chip style — single-select and multi-select use the exact same visual
+// so selections are always consistent black with no layout shift.
+function chipClass(selected: boolean): string {
+  const base =
+    "px-5 py-2.5 rounded-full text-sm font-medium border transition-all duration-200 select-none";
+  if (selected) {
+    return `${base} bg-[hsl(var(--color-foreground))] border-[hsl(var(--color-foreground))] text-[hsl(var(--color-background))] hover:opacity-90`;
+  }
+  return `${base} bg-transparent border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground-muted))] hover:border-[hsl(var(--color-foreground))] hover:text-[hsl(var(--color-foreground))]`;
+}
+
 // ── Main component ──
 
 export function ApplicationFormClient({ role }: { role: Role }) {
@@ -341,7 +352,7 @@ export function ApplicationFormClient({ role }: { role: Role }) {
                   <button
                     type="button"
                     onClick={() => setSidebarOpen(!sidebarOpen)}
-                    className="w-full flex items-center justify-between p-4 bg-[hsl(var(--color-background-subtle))] border border-[hsl(var(--color-border))] rounded-xl text-sm"
+                    className="w-full flex items-center justify-between p-4 bg-[hsl(var(--color-background-subtle))] border border-[hsl(var(--color-border))] rounded-xl text-sm hover:border-[hsl(var(--color-foreground))] transition-colors duration-200"
                   >
                     <span className="text-[hsl(var(--color-foreground-muted))]">
                       Applying for <span className="font-semibold text-[hsl(var(--color-foreground))]">{role.title}</span>
@@ -502,11 +513,13 @@ function ProgressIndicator({
                   type="button"
                   onClick={() => onStepClick(i)}
                   disabled={isUpcoming}
-                  className="relative flex items-center justify-center"
+                  className={`relative flex items-center justify-center transition-transform duration-200 ${
+                    isCompleted ? "hover:scale-110 cursor-pointer" : ""
+                  } ${isUpcoming ? "cursor-default" : ""}`}
                   aria-label={`Step ${i + 1}: ${label}`}
                 >
                   <motion.div
-                    className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold border-2 transition-colors ${
+                    className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold border-2 transition-colors duration-200 ${
                       isActive
                         ? "bg-[hsl(var(--color-foreground))] border-[hsl(var(--color-foreground))] text-[hsl(var(--color-background))]"
                         : isCompleted
@@ -900,11 +913,7 @@ function StepQuestions({
                   key={opt}
                   type="button"
                   onClick={() => update(q.id, opt)}
-                  className={`px-5 py-2.5 rounded-full text-sm font-medium border transition-all duration-200 ${
-                    answers[q.id] === opt
-                      ? "bg-[hsl(var(--color-foreground))] border-[hsl(var(--color-foreground))] text-[hsl(var(--color-background))]"
-                      : "bg-transparent border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground-muted))] hover:border-[hsl(var(--color-foreground))]"
-                  }`}
+                  className={chipClass(answers[q.id] === opt)}
                 >
                   {opt}
                 </button>
@@ -927,17 +936,8 @@ function StepQuestions({
                         selected ? current.filter((v) => v !== opt) : [...current, opt]
                       );
                     }}
-                    className={`px-5 py-2.5 rounded-full text-sm font-medium border transition-all duration-200 ${
-                      selected
-                        ? "bg-[hsl(var(--color-foreground))] border-[hsl(var(--color-foreground))] text-[hsl(var(--color-background))]"
-                        : "bg-transparent border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground-muted))] hover:border-[hsl(var(--color-foreground))]"
-                    }`}
+                    className={chipClass(selected)}
                   >
-                    {selected && (
-                      <svg className="w-3.5 h-3.5 inline mr-1.5 -ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-                      </svg>
-                    )}
                     {opt}
                   </button>
                 );
