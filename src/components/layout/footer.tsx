@@ -161,12 +161,12 @@ export function Footer() {
                     </a>
                   </li>
                   <li>
-                    <a
-                      href={`mailto:${siteConfig.email}`}
+                    <Link
+                      href="/contact"
                       className="text-sm text-white/70 hover:text-white transition-colors"
                     >
-                      Email
-                    </a>
+                      Contact
+                    </Link>
                   </li>
                   {siteConfig.links.linkedin && (
                     <li>
