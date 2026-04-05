@@ -4,6 +4,8 @@ import * as React from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { AdminLoader } from "@/components/admin/AdminLoader";
+import { IconDollar, IconFolder, IconUsers, IconChart, IconPlus, IconClock, IconFileText, IconUserPlus, IconCalendar } from "@/components/admin/icons";
+import { StatCard, EmptyState, Card } from "@/components/admin/ui";
 
 interface OpsStats {
   monthlyRevenue: number;
@@ -180,33 +182,21 @@ export default function CommandCenter() {
           <StatCard
             label="Monthly Revenue"
             value={formatCurrency(stats?.monthlyRevenue || 0)}
-            icon={
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            }
+            icon={<IconDollar size={20} />}
           />
         </motion.div>
         <motion.div variants={fadeUp}>
           <StatCard
             label="Active Projects"
             value={stats?.activeProjectsCount || 0}
-            icon={
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
-              </svg>
-            }
+            icon={<IconFolder size={20} />}
           />
         </motion.div>
         <motion.div variants={fadeUp}>
           <StatCard
             label="Team Utilization"
             value={`${stats?.teamUtilization || 0}%`}
-            icon={
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-              </svg>
-            }
+            icon={<IconUsers size={20} />}
             accent={
               (stats?.teamUtilization || 0) > 85
                 ? "warning"
@@ -220,11 +210,7 @@ export default function CommandCenter() {
           <StatCard
             label="Avg Margin"
             value={`${stats?.avgMargin || 0}%`}
-            icon={
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-              </svg>
-            }
+            icon={<IconChart size={20} />}
           />
         </motion.div>
       </motion.div>
@@ -293,21 +279,19 @@ export default function CommandCenter() {
                 </Link>
               ))
             ) : (
-              <div className="min-h-[300px] flex flex-col items-center justify-center p-8">
-                <div className="border-2 border-dashed border-[hsl(var(--color-border))]/30 rounded-2xl p-8 flex flex-col items-center">
-                  <svg className="w-12 h-12 mb-4 text-[hsl(var(--color-foreground-subtle))]" fill="none" stroke="currentColor" strokeWidth={1} viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
-                  </svg>
-                  <p className="text-lg font-medium text-[hsl(var(--color-foreground-muted))] mb-1">No active projects</p>
-                  <p className="text-sm text-[hsl(var(--color-foreground-subtle))] mb-4">Create a project to get started</p>
+              <EmptyState
+                icon={<IconFolder size={48} />}
+                title="No active projects"
+                description="Create a project to get started"
+                action={
                   <Link
                     href="/admin/projects"
                     className="px-5 py-2.5 bg-[hsl(var(--color-accent))] hover:bg-[hsl(var(--color-accent-hover))] text-white rounded-xl text-sm font-medium transition-colors"
                   >
                     New Project
                   </Link>
-                </div>
-              </div>
+                }
+              />
             )}
           </div>
         </motion.div>
@@ -344,15 +328,11 @@ export default function CommandCenter() {
                 </div>
               ))
             ) : (
-              <div className="min-h-[300px] flex flex-col items-center justify-center p-8">
-                <div className="border-2 border-dashed border-[hsl(var(--color-border))]/30 rounded-2xl p-8 flex flex-col items-center">
-                  <svg className="w-12 h-12 mb-4 text-[hsl(var(--color-foreground-subtle))]" fill="none" stroke="currentColor" strokeWidth={1} viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  <p className="text-lg font-medium text-[hsl(var(--color-foreground-muted))] mb-1">No time logs yet</p>
-                  <p className="text-sm text-[hsl(var(--color-foreground-subtle))]">Time entries will appear here</p>
-                </div>
-              </div>
+              <EmptyState
+                icon={<IconClock size={48} />}
+                title="No time logs yet"
+                description="Time entries will appear here"
+              />
             )}
           </div>
         </motion.div>
@@ -397,15 +377,11 @@ export default function CommandCenter() {
                 </div>
               ))
             ) : (
-              <div className="min-h-[250px] flex flex-col items-center justify-center p-8">
-                <div className="border-2 border-dashed border-[hsl(var(--color-border))]/30 rounded-2xl p-8 flex flex-col items-center">
-                  <svg className="w-12 h-12 mb-4 text-[hsl(var(--color-foreground-subtle))]" fill="none" stroke="currentColor" strokeWidth={1} viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                  </svg>
-                  <p className="text-lg font-medium text-[hsl(var(--color-foreground-muted))] mb-1">No upcoming deadlines</p>
-                  <p className="text-sm text-[hsl(var(--color-foreground-subtle))]">All clear for the next 14 days</p>
-                </div>
-              </div>
+              <EmptyState
+                icon={<IconCalendar size={48} />}
+                title="No upcoming deadlines"
+                description="All clear for the next 14 days"
+              />
             )}
           </div>
         </motion.div>
@@ -418,36 +394,28 @@ export default function CommandCenter() {
               href="/admin/projects"
               className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-[hsl(var(--color-accent))]/10 text-[hsl(var(--color-foreground))] hover:bg-[hsl(var(--color-accent))]/20 transition-all duration-200 border border-[hsl(var(--color-accent))]/20 hover:border-[hsl(var(--color-accent))]/40"
             >
-              <svg className="w-4 h-4 text-[hsl(var(--color-accent))]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-              </svg>
+              <IconPlus size={16} className="text-[hsl(var(--color-accent))]" />
               <span className="text-sm font-medium">New Project</span>
             </Link>
             <Link
               href="/admin/team"
               className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-[hsl(var(--color-background-subtle))]/50 text-[hsl(var(--color-foreground))] hover:bg-[hsl(var(--color-background-subtle))]/80 transition-all duration-200 border border-[hsl(var(--color-border))]/50 hover:border-[hsl(var(--color-border-strong))]/60"
             >
-              <svg className="w-4 h-4 text-[hsl(var(--color-foreground-muted))]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
+              <IconClock size={16} className="text-[hsl(var(--color-foreground-muted))]" />
               <span className="text-sm font-medium">Add Time</span>
             </Link>
             <Link
               href="/admin/finances"
               className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-[hsl(var(--color-background-subtle))]/50 text-[hsl(var(--color-foreground))] hover:bg-[hsl(var(--color-background-subtle))]/80 transition-all duration-200 border border-[hsl(var(--color-border))]/50 hover:border-[hsl(var(--color-border-strong))]/60"
             >
-              <svg className="w-4 h-4 text-[hsl(var(--color-foreground-muted))]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
+              <IconFileText size={16} className="text-[hsl(var(--color-foreground-muted))]" />
               <span className="text-sm font-medium">Create Invoice</span>
             </Link>
             <Link
               href="/admin/team"
               className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-[hsl(var(--color-background-subtle))]/50 text-[hsl(var(--color-foreground))] hover:bg-[hsl(var(--color-background-subtle))]/80 transition-all duration-200 border border-[hsl(var(--color-border))]/50 hover:border-[hsl(var(--color-border-strong))]/60"
             >
-              <svg className="w-4 h-4 text-[hsl(var(--color-foreground-muted))]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
-              </svg>
+              <IconUserPlus size={16} className="text-[hsl(var(--color-foreground-muted))]" />
               <span className="text-sm font-medium">Add Team Member</span>
             </Link>
           </div>
@@ -457,38 +425,3 @@ export default function CommandCenter() {
   );
 }
 
-function StatCard({
-  label,
-  value,
-  icon,
-  accent,
-}: {
-  label: string;
-  value: string | number;
-  icon: React.ReactNode;
-  accent?: "success" | "warning";
-}) {
-  return (
-    <div className="bg-[hsl(var(--color-background-subtle))]/50 backdrop-blur-sm border border-[hsl(var(--color-border))]/50 rounded-2xl p-6 hover:border-[hsl(var(--color-border-strong))]/60 hover:bg-[hsl(var(--color-background-subtle))]/80 hover:shadow-lg hover:shadow-black/5 transition-all duration-200">
-      <div className="flex items-start justify-between">
-        <div>
-          <p className="text-xs text-[hsl(var(--color-foreground-muted))] mb-2">{label}</p>
-          <p
-            className={`text-3xl font-semibold tracking-tight tabular-nums font-mono ${
-              accent === "warning"
-                ? "text-amber-400"
-                : accent === "success"
-                ? "text-emerald-400"
-                : "text-[hsl(var(--color-foreground))]"
-            }`}
-          >
-            {value}
-          </p>
-        </div>
-        <div className="p-2.5 bg-[hsl(var(--color-background-muted))]/50 rounded-xl text-[hsl(var(--color-foreground-muted))]">
-          {icon}
-        </div>
-      </div>
-    </div>
-  );
-}

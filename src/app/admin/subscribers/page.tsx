@@ -106,7 +106,7 @@ export default function SubscribersPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold mb-1">Subscribers</h1>
+          <h1 className="font-[family-name:var(--font-heading)] text-3xl md:text-4xl tracking-tight font-semibold mb-1">Subscribers</h1>
           <p className="text-[hsl(var(--color-foreground-subtle))]">Journal newsletter subscribers</p>
         </div>
         <button

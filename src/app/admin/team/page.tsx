@@ -3,6 +3,8 @@
 import * as React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { AdminLoader } from "@/components/admin/AdminLoader";
+import { PageHeader, EmptyState } from "@/components/admin/ui";
+import { IconPlus, IconUsers, IconEdit, IconTrash, IconGlobe, IconMail, IconX } from "@/components/admin/icons";
 
 interface Contractor {
   id: string;
@@ -251,9 +253,7 @@ export default function TeamPage() {
             onClick={openAddForm}
             className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[hsl(var(--color-accent))] text-white hover:bg-[hsl(var(--color-accent-hover))] transition-colors text-sm font-medium"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-            </svg>
+            <IconPlus size={16} />
             Add Member
           </button>
         </div>
@@ -264,9 +264,7 @@ export default function TeamPage() {
         <motion.div variants={fadeUp}>
           <div className="min-h-[400px] flex items-center justify-center">
             <div className="border-2 border-dashed border-[hsl(var(--color-border))]/30 rounded-2xl p-12 flex flex-col items-center text-center max-w-md">
-              <svg className="w-12 h-12 mb-4 text-[hsl(var(--color-foreground-subtle))]" fill="none" stroke="currentColor" strokeWidth={1} viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-              </svg>
+              <IconUsers size={48} className="mb-4 text-[hsl(var(--color-foreground-subtle))]" />
               <p className="text-lg font-medium text-[hsl(var(--color-foreground-muted))] mb-1">No team members yet</p>
               <p className="text-sm text-[hsl(var(--color-foreground-subtle))] mb-5">Add contractors and freelancers to your team</p>
               <button
@@ -424,7 +422,7 @@ export default function TeamPage() {
                       <div className="p-6 space-y-4">
                         {activeProjects.length > 0 && (
                           <div>
-                            <p className="text-xs font-medium uppercase tracking-wider text-[hsl(var(--color-foreground-subtle))] mb-2">
+                            <p className="text-xs font-medium text-[hsl(var(--color-foreground-subtle))] mb-2">
                               Active Projects
                             </p>
                             <div className="space-y-1.5">
@@ -491,7 +489,7 @@ export default function TeamPage() {
 
                 {/* Personal Info Section */}
                 <div className="space-y-4">
-                  <p className="text-xs font-medium uppercase tracking-wider text-[hsl(var(--color-foreground-subtle))]">Personal Info</p>
+                  <p className="text-xs font-medium text-[hsl(var(--color-foreground-subtle))]">Personal Info</p>
                   <FormField label="Name *">
                     <input
                       value={form.name}
@@ -531,7 +529,7 @@ export default function TeamPage() {
 
                 {/* Professional Section */}
                 <div className="space-y-4 mt-6 pt-6 border-t border-[hsl(var(--color-border))]/30">
-                  <p className="text-xs font-medium uppercase tracking-wider text-[hsl(var(--color-foreground-subtle))]">Professional</p>
+                  <p className="text-xs font-medium text-[hsl(var(--color-foreground-subtle))]">Professional</p>
                   <FormField label="Role *">
                     <input
                       value={form.role}
@@ -609,7 +607,7 @@ export default function TeamPage() {
 
                 {/* Availability Section */}
                 <div className="space-y-4 mt-6 pt-6 border-t border-[hsl(var(--color-border))]/30">
-                  <p className="text-xs font-medium uppercase tracking-wider text-[hsl(var(--color-foreground-subtle))]">Availability</p>
+                  <p className="text-xs font-medium text-[hsl(var(--color-foreground-subtle))]">Availability</p>
                   <div className="grid grid-cols-2 gap-3">
                     <FormField label="Weekly Capacity (hrs)">
                       <input

@@ -4,6 +4,8 @@ import * as React from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { AdminLoader } from "@/components/admin/AdminLoader";
+import { PageHeader, DetailSection, InfoField } from "@/components/admin/ui";
+import { IconChevronLeft, IconFileText, IconLightbulb, IconMail, IconArrowRight, IconEdit, IconInfo } from "@/components/admin/icons";
 
 interface Lead {
   id: string;
@@ -131,41 +133,17 @@ function formatTimeline(timeline: string | null) {
 function getActivityIcon(type: string) {
   switch (type) {
     case "form_submission":
-      return (
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-        </svg>
-      );
+      return <IconFileText size={16} />;
     case "ai_analysis":
-      return (
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-        </svg>
-      );
+      return <IconLightbulb size={16} />;
     case "email_sent":
-      return (
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-        </svg>
-      );
+      return <IconMail size={16} />;
     case "stage_change":
-      return (
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-        </svg>
-      );
+      return <IconArrowRight size={16} />;
     case "note":
-      return (
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-        </svg>
-      );
+      return <IconEdit size={16} />;
     default:
-      return (
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-      );
+      return <IconInfo size={16} />;
   }
 }
 
@@ -331,16 +309,14 @@ export default function LeadDetailPage() {
             href="/admin/leads"
             className="p-2 hover:bg-[hsl(var(--color-background-subtle))] rounded-xl transition-colors"
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 19l-7-7 7-7" />
-            </svg>
+            <IconChevronLeft size={16} />
           </Link>
           <div className="flex items-center gap-4">
             <div className="w-14 h-14 rounded-full bg-[hsl(var(--color-accent))]/20 flex items-center justify-center text-[hsl(var(--color-accent))] font-semibold text-xl">
               {lead.name.charAt(0).toUpperCase()}
             </div>
             <div>
-              <h1 className="text-2xl font-semibold">{lead.name}</h1>
+              <h1 className="font-[family-name:var(--font-heading)] text-2xl md:text-3xl tracking-tight font-semibold">{lead.name}</h1>
               <p>{lead.company || lead.email}</p>
             </div>
           </div>
@@ -370,7 +346,7 @@ export default function LeadDetailPage() {
         <div className="lg:col-span-2 space-y-6">
           {/* Message */}
           <div className="bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl p-6">
-            <h2 className="text-lg font-semibold mb-4">Project Details</h2>
+            <h2 className="font-[family-name:var(--font-heading)] text-lg font-semibold text-[hsl(var(--color-foreground))] mb-4">Project Details</h2>
             <div className="prose prose-invert max-w-none">
               <p className="text-[hsl(var(--color-foreground-muted))] whitespace-pre-wrap">{lead.message || "No message provided"}</p>
             </div>
@@ -378,7 +354,7 @@ export default function LeadDetailPage() {
 
           {/* Details Grid */}
           <div className="bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl p-6">
-            <h2 className="text-lg font-semibold mb-4">Lead Information</h2>
+            <h2 className="font-[family-name:var(--font-heading)] text-lg font-semibold text-[hsl(var(--color-foreground))] mb-4">Lead Information</h2>
             <div className="grid grid-cols-2 gap-6">
               <div>
                 <p className="text-[hsl(var(--color-foreground-subtle))] text-sm mb-1">Email</p>
@@ -416,7 +392,7 @@ export default function LeadDetailPage() {
           {/* Attribution */}
           {(lead.utm_source || lead.landing_page) && (
             <div className="bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl p-6">
-              <h2 className="text-lg font-semibold mb-4">Attribution</h2>
+              <h2 className="font-[family-name:var(--font-heading)] text-lg font-semibold text-[hsl(var(--color-foreground))] mb-4">Attribution</h2>
               <div className="grid grid-cols-2 gap-6">
                 {lead.utm_source && (
                   <div>
@@ -449,7 +425,7 @@ export default function LeadDetailPage() {
           {/* AI Intelligence */}
           <div className="bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl p-6">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold">AI Intelligence</h2>
+              <h2 className="font-[family-name:var(--font-heading)] text-lg font-semibold text-[hsl(var(--color-foreground))]">AI Intelligence</h2>
               {!analysis && (
                 <button
                   onClick={handleAnalyze}
@@ -719,7 +695,7 @@ export default function LeadDetailPage() {
 
           {/* Timeline */}
           <div className="bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl p-6">
-            <h2 className="text-lg font-semibold mb-4">Activity</h2>
+            <h2 className="font-[family-name:var(--font-heading)] text-lg font-semibold text-[hsl(var(--color-foreground))] mb-4">Activity</h2>
             <div className="space-y-4">
               {activities.length > 0 ? (
                 activities.map((activity, index) => (
@@ -748,7 +724,7 @@ export default function LeadDetailPage() {
 
           {/* Quick Actions */}
           <div className="bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl p-6">
-            <h2 className="text-lg font-semibold mb-4">Quick Actions</h2>
+            <h2 className="font-[family-name:var(--font-heading)] text-lg font-semibold text-[hsl(var(--color-foreground))] mb-4">Quick Actions</h2>
             <div className="space-y-2">
               <a
                 href={`mailto:${lead.email}`}

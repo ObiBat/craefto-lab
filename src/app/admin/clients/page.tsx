@@ -3,6 +3,8 @@
 import * as React from "react";
 import Link from "next/link";
 import { AdminLoader } from "@/components/admin/AdminLoader";
+import { PageHeader, StatCard, FilterBar, FilterChip, EmptyState } from "@/components/admin/ui";
+import { IconPlus, IconUsers, IconChevronRight, IconMail } from "@/components/admin/icons";
 
 interface ClientStats {
   activeProjects: number;
@@ -134,23 +136,19 @@ export default function ClientsPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex justify-between items-start">
-        <div>
-          <h1 className="text-2xl font-semibold">Client Hub</h1>
-          <p className="text-[hsl(var(--color-foreground-subtle))] text-sm mt-1">
-            Manage clients, projects, and track their progress
-          </p>
-        </div>
-        <button
-          onClick={() => setShowNewModal(true)}
-          className="px-4 py-2.5 bg-[hsl(var(--color-accent))] text-black font-medium rounded-xl hover:bg-[hsl(var(--color-accent-hover))] transition-colors inline-flex items-center gap-2"
-        >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-          </svg>
-          New Client
-        </button>
-      </div>
+      <PageHeader
+        title="Clients"
+        subtitle="Manage clients, projects, and track their progress"
+        actions={
+          <button
+            onClick={() => setShowNewModal(true)}
+            className="px-4 py-2.5 bg-[hsl(var(--color-accent))] text-black font-medium rounded-xl hover:bg-[hsl(var(--color-accent-hover))] transition-colors inline-flex items-center gap-2"
+          >
+            <IconPlus size={20} />
+            New Client
+          </button>
+        }
+      />
 
       {/* Summary Stats */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
@@ -196,21 +194,19 @@ export default function ClientsPage() {
       {/* Clients List */}
       <div className="space-y-3">
         {clients.length === 0 ? (
-          <div className="bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl p-12 text-center">
-            <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-[hsl(var(--color-background-subtle))] flex items-center justify-center">
-              <svg className="w-6 h-6 text-[hsl(var(--color-foreground-subtle))]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-              </svg>
-            </div>
-            <p className="text-[hsl(var(--color-foreground))] font-medium mb-2">No clients yet</p>
-            <p className="text-[hsl(var(--color-foreground-subtle))] text-sm mb-4">Add your first client to get started</p>
-            <button
-              onClick={() => setShowNewModal(true)}
-              className="px-4 py-2 bg-[hsl(var(--color-accent))] text-black text-sm font-medium rounded-xl hover:bg-[hsl(var(--color-accent-hover))] transition-colors"
-            >
-              Add Client
-            </button>
-          </div>
+          <EmptyState
+            icon={<IconUsers size={48} />}
+            title="No clients yet"
+            description="Add your first client to get started"
+            action={
+              <button
+                onClick={() => setShowNewModal(true)}
+                className="px-4 py-2 bg-[hsl(var(--color-accent))] text-black text-sm font-medium rounded-xl hover:bg-[hsl(var(--color-accent-hover))] transition-colors"
+              >
+                Add Client
+              </button>
+            }
+          />
         ) : (
           clients.map((client) => {
             const statusConfig = getStatusConfig(client.status);
@@ -251,9 +247,7 @@ export default function ClientsPage() {
                     <div className="flex flex-wrap gap-4 text-xs text-[hsl(var(--color-foreground-subtle))]">
                       {client.email && (
                         <span className="flex items-center gap-1">
-                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                          </svg>
+                          <IconMail size={14} />
                           {client.email}
                         </span>
                       )}
@@ -283,9 +277,7 @@ export default function ClientsPage() {
                         </p>
                       </div>
                     )}
-                    <svg className="w-5 h-5 text-[hsl(var(--color-foreground-subtle))]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
+                    <IconChevronRight size={20} className="text-[hsl(var(--color-foreground-subtle))]" />
                   </div>
                 </div>
               </Link>

@@ -4,6 +4,8 @@ import * as React from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { AdminLoader } from "@/components/admin/AdminLoader";
+import { EmptyState } from "@/components/admin/ui";
+import { IconPlus, IconFileText } from "@/components/admin/icons";
 
 interface Document {
   id: string;
@@ -185,9 +187,7 @@ export default function ProposalsPage() {
             href="/admin/documents/new"
             className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[hsl(var(--color-accent))] text-white hover:bg-[hsl(var(--color-accent-hover))] transition-colors text-sm font-medium"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-            </svg>
+            <IconPlus size={16} />
             Create Proposal
           </Link>
         </div>
@@ -197,19 +197,19 @@ export default function ProposalsPage() {
       {documents.length === 0 ? (
         <motion.div variants={fadeUp}>
           <div className="min-h-[400px] flex items-center justify-center">
-            <div className="border-2 border-dashed border-[hsl(var(--color-border))]/30 rounded-2xl p-12 flex flex-col items-center text-center max-w-md">
-              <svg className="w-12 h-12 mb-4 text-[hsl(var(--color-foreground-subtle))]" fill="none" stroke="currentColor" strokeWidth={1} viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
-              <p className="text-lg font-medium text-[hsl(var(--color-foreground-muted))] mb-1">No proposals yet</p>
-              <p className="text-sm text-[hsl(var(--color-foreground-subtle))] mb-5">Create proposals, SOWs, and change orders for your clients</p>
-              <Link
-                href="/admin/documents/new"
-                className="px-5 py-2.5 bg-[hsl(var(--color-accent))] hover:bg-[hsl(var(--color-accent-hover))] text-white rounded-xl text-sm font-medium transition-colors"
-              >
-                Create your first proposal
-              </Link>
-            </div>
+            <EmptyState
+              icon={<IconFileText size={48} />}
+              title="No proposals yet"
+              description="Create proposals, SOWs, and change orders for your clients"
+              action={
+                <Link
+                  href="/admin/documents/new"
+                  className="px-5 py-2.5 bg-[hsl(var(--color-accent))] hover:bg-[hsl(var(--color-accent-hover))] text-white rounded-xl text-sm font-medium transition-colors"
+                >
+                  Create your first proposal
+                </Link>
+              }
+            />
           </div>
         </motion.div>
       ) : (

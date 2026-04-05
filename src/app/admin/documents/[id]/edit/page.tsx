@@ -1065,7 +1065,7 @@ export default function EditDocumentPage() {
             {/* Scalar fields by section */}
             {orderedSections.map((section) => (
               <div key={section}>
-                <h3 className="text-xs font-semibold text-[hsl(var(--color-foreground-muted))] uppercase tracking-wider mb-3">
+                <h3 className="text-xs font-semibold text-[hsl(var(--color-foreground-muted))] mb-3">
                   {section}
                 </h3>
                 <div className="space-y-3">
@@ -1128,7 +1128,7 @@ export default function EditDocumentPage() {
             {/* Array fields */}
             {arrayFields.length > 0 && (
               <div className="pt-4 border-t border-[hsl(var(--color-border))]">
-                <h3 className="text-xs font-semibold text-[hsl(var(--color-foreground-muted))] uppercase tracking-wider mb-3">
+                <h3 className="text-xs font-semibold text-[hsl(var(--color-foreground-muted))] mb-3">
                   Lists & Collections
                 </h3>
                 <div className="space-y-5">

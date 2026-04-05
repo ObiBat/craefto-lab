@@ -297,7 +297,7 @@ export default function PipelineDashboard() {
       {schedules.length > 0 && (
         <div className="bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-sm font-medium text-[hsl(var(--color-foreground-subtle))] uppercase tracking-wider">Scheduled Scans</h2>
+            <h2 className="font-[family-name:var(--font-heading)] text-lg font-semibold text-[hsl(var(--color-foreground))]">Scheduled Scans</h2>
           </div>
           <div className="space-y-3">
             {schedules.map((schedule) => (
@@ -349,7 +349,7 @@ export default function PipelineDashboard() {
 
       {/* Workflow Guide */}
       <div className="bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl p-6">
-        <h2 className="text-sm font-medium text-[hsl(var(--color-foreground-subtle))] uppercase tracking-wider mb-4">Workflow</h2>
+        <h2 className="font-[family-name:var(--font-heading)] text-lg font-semibold text-[hsl(var(--color-foreground))] mb-4">Workflow</h2>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-full bg-purple-500/20 text-purple-600 flex items-center justify-center text-sm font-medium">1</div>

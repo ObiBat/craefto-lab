@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { AdminLoader } from "@/components/admin/AdminLoader";
+import { PageHeader, DetailSection, EmptyState } from "@/components/admin/ui";
+import { IconChevronLeft, IconPlus, IconClock, IconCheck } from "@/components/admin/icons";
 
 interface Assignment {
   id: string;
@@ -513,9 +515,7 @@ export default function ProjectDetailPage() {
             onClick={() => setShowTimeForm(!showTimeForm)}
             className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[hsl(var(--color-accent))]/10 text-[hsl(var(--color-foreground))] hover:bg-[hsl(var(--color-accent))]/20 transition-colors border border-[hsl(var(--color-accent))]/20 text-xs font-medium"
           >
-            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-            </svg>
+            <IconPlus size={16} />
             Log Time
           </button>
         </div>
@@ -625,9 +625,7 @@ export default function ProjectDetailPage() {
           ) : (
             <div className="min-h-[200px] flex flex-col items-center justify-center p-8">
               <div className="border-2 border-dashed border-[hsl(var(--color-border))]/30 rounded-2xl p-6 flex flex-col items-center">
-                <svg className="w-12 h-12 mb-3 text-[hsl(var(--color-foreground-subtle))]" fill="none" stroke="currentColor" strokeWidth={1} viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
+                <IconClock size={16} />
                 <p className="text-lg font-medium text-[hsl(var(--color-foreground-muted))] mb-1">No time logged yet</p>
                 <p className="text-sm text-[hsl(var(--color-foreground-subtle))]">Use the button above to log hours</p>
               </div>

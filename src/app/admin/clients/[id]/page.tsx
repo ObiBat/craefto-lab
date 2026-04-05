@@ -4,6 +4,8 @@ import * as React from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { AdminLoader } from "@/components/admin/AdminLoader";
+import { PageHeader, StatCard, FilterChip, EmptyState } from "@/components/admin/ui";
+import { IconChevronRight, IconPlus, IconCheck, IconFileText } from "@/components/admin/icons";
 
 interface Milestone {
   id: string;
@@ -212,16 +214,14 @@ export default function ClientDetailPage() {
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-sm text-[hsl(var(--color-foreground-subtle))]">
         <Link href="/admin/clients" className="hover:text-[hsl(var(--color-foreground))] transition-colors">Clients</Link>
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5l7 7-7 7" />
-        </svg>
+        <IconChevronRight size={16} />
         <span className="text-[hsl(var(--color-foreground))]">{client.name}</span>
       </div>
 
       {/* Header */}
       <div className="flex justify-between items-start">
         <div>
-          <h1 className="text-2xl font-semibold">{client.name}</h1>
+          <h1 className="font-[family-name:var(--font-heading)] text-2xl md:text-3xl tracking-tight font-semibold">{client.name}</h1>
           {client.company && <p className="text-[hsl(var(--color-foreground-muted))]">{client.company}</p>}
           <div className="flex gap-4 mt-2 text-sm text-[hsl(var(--color-foreground-subtle))]">
             {client.email && <span>{client.email}</span>}
@@ -237,9 +237,7 @@ export default function ClientDetailPage() {
           onClick={() => setShowNewProjectModal(true)}
           className="px-4 py-2.5 bg-[hsl(var(--color-accent))] text-black font-medium rounded-xl hover:bg-[hsl(var(--color-accent-hover))] transition-colors inline-flex items-center gap-2"
         >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-          </svg>
+          <IconPlus size={20} />
           New Project
         </button>
       </div>
@@ -354,12 +352,7 @@ export default function ClientDetailPage() {
                             <p className="text-lg font-semibold text-[hsl(var(--color-foreground))]">{formatCurrency(project.budget)}</p>
                           </div>
                         )}
-                        <svg
-                          className={`w-5 h-5 text-[hsl(var(--color-foreground-subtle))] transition-transform ${isExpanded ? "rotate-90" : ""}`}
-                          fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                        >
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
+                        <IconChevronRight size={20} className={`text-[hsl(var(--color-foreground-subtle))] transition-transform ${isExpanded ? "rotate-90" : ""}`} />
                       </div>
                     </div>
                   </div>
@@ -367,7 +360,7 @@ export default function ClientDetailPage() {
                   {/* Milestones Timeline */}
                   {isExpanded && project.milestones.length > 0 && (
                     <div className="border-t border-[hsl(var(--color-border))] p-5 bg-[hsl(var(--color-background-subtle))]">
-                      <h4 className="text-sm font-medium text-[hsl(var(--color-foreground-subtle))] uppercase tracking-wider mb-4">
+                      <h4 className="font-[family-name:var(--font-heading)] text-base font-semibold text-[hsl(var(--color-foreground))] mb-4">
                         Milestones
                       </h4>
                       <div className="relative">
@@ -467,11 +460,11 @@ export default function ClientDetailPage() {
             <table className="w-full">
               <thead className="bg-[hsl(var(--color-background-subtle))]">
                 <tr>
-                  <th className="text-left text-xs font-medium text-[hsl(var(--color-foreground-subtle))] uppercase tracking-wider px-6 py-3">Invoice</th>
-                  <th className="text-left text-xs font-medium text-[hsl(var(--color-foreground-subtle))] uppercase tracking-wider px-6 py-3">Amount</th>
-                  <th className="text-left text-xs font-medium text-[hsl(var(--color-foreground-subtle))] uppercase tracking-wider px-6 py-3">Status</th>
-                  <th className="text-left text-xs font-medium text-[hsl(var(--color-foreground-subtle))] uppercase tracking-wider px-6 py-3">Due Date</th>
-                  <th className="text-left text-xs font-medium text-[hsl(var(--color-foreground-subtle))] uppercase tracking-wider px-6 py-3">Paid</th>
+                  <th className="text-left text-xs font-semibold text-[hsl(var(--color-foreground-muted))] px-6 py-3">Invoice</th>
+                  <th className="text-left text-xs font-semibold text-[hsl(var(--color-foreground-muted))] px-6 py-3">Amount</th>
+                  <th className="text-left text-xs font-semibold text-[hsl(var(--color-foreground-muted))] px-6 py-3">Status</th>
+                  <th className="text-left text-xs font-semibold text-[hsl(var(--color-foreground-muted))] px-6 py-3">Due Date</th>
+                  <th className="text-left text-xs font-semibold text-[hsl(var(--color-foreground-muted))] px-6 py-3">Paid</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[hsl(var(--color-border))]">
@@ -515,9 +508,7 @@ export default function ClientDetailPage() {
               >
                 <div className="flex items-start gap-3">
                   <div className="w-10 h-10 rounded-xl bg-[hsl(var(--color-background-subtle))] flex items-center justify-center">
-                    <svg className="w-5 h-5 text-[hsl(var(--color-foreground-muted))]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
+                    <IconFileText size={20} className="text-[hsl(var(--color-foreground-muted))]" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="font-medium text-[hsl(var(--color-foreground))] truncate">{doc.name}</p>

@@ -3,6 +3,8 @@
 import * as React from "react";
 import { motion } from "framer-motion";
 import { AdminLoader } from "@/components/admin/AdminLoader";
+import { PageHeader, StatCard, EmptyState } from "@/components/admin/ui";
+import { IconPlus, IconFileText } from "@/components/admin/icons";
 
 interface FinancesData {
   monthlyRevenue: number;
@@ -112,10 +114,7 @@ export default function FinancesPage() {
     >
       {/* Header */}
       <motion.div variants={fadeUp}>
-        <h1 className="font-[family-name:var(--font-heading)] text-3xl font-semibold tracking-tight mb-1">Finances</h1>
-        <p className="text-[hsl(var(--color-foreground-muted))]">
-          Revenue, costs, and invoicing
-        </p>
+        <PageHeader title="Finances" subtitle="Revenue, costs, and invoicing" />
       </motion.div>
 
       {/* Tab Navigation — underline style */}
@@ -267,9 +266,7 @@ export default function FinancesPage() {
                 href="/admin/documents/new"
                 className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[hsl(var(--color-accent))] text-white hover:bg-[hsl(var(--color-accent-hover))] transition-colors text-xs font-medium"
               >
-                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                </svg>
+                <IconPlus size={14} />
                 Create Invoice
               </a>
             </div>
@@ -278,11 +275,11 @@ export default function FinancesPage() {
                 <table className="w-full">
                   <thead>
                     <tr className="border-b border-[hsl(var(--color-border))]/30">
-                      <th className="text-left px-6 py-3 text-xs uppercase tracking-wider font-medium text-[hsl(var(--color-foreground-subtle))]">Invoice #</th>
-                      <th className="text-left px-6 py-3 text-xs uppercase tracking-wider font-medium text-[hsl(var(--color-foreground-subtle))]">Amount</th>
-                      <th className="text-left px-6 py-3 text-xs uppercase tracking-wider font-medium text-[hsl(var(--color-foreground-subtle))]">Status</th>
-                      <th className="text-left px-6 py-3 text-xs uppercase tracking-wider font-medium text-[hsl(var(--color-foreground-subtle))]">Due Date</th>
-                      <th className="text-left px-6 py-3 text-xs uppercase tracking-wider font-medium text-[hsl(var(--color-foreground-subtle))]">Created</th>
+                      <th className="text-left px-6 py-3 text-xs font-semibold text-[hsl(var(--color-foreground-muted))]">Invoice #</th>
+                      <th className="text-left px-6 py-3 text-xs font-semibold text-[hsl(var(--color-foreground-muted))]">Amount</th>
+                      <th className="text-left px-6 py-3 text-xs font-semibold text-[hsl(var(--color-foreground-muted))]">Status</th>
+                      <th className="text-left px-6 py-3 text-xs font-semibold text-[hsl(var(--color-foreground-muted))]">Due Date</th>
+                      <th className="text-left px-6 py-3 text-xs font-semibold text-[hsl(var(--color-foreground-muted))]">Created</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[hsl(var(--color-border))]/30">
@@ -315,21 +312,19 @@ export default function FinancesPage() {
                 </table>
               </div>
             ) : (
-              <div className="min-h-[400px] flex items-center justify-center p-8">
-                <div className="border-2 border-dashed border-[hsl(var(--color-border))]/30 rounded-2xl p-12 flex flex-col items-center text-center max-w-md">
-                  <svg className="w-12 h-12 mb-4 text-[hsl(var(--color-foreground-subtle))]" fill="none" stroke="currentColor" strokeWidth={1} viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                  </svg>
-                  <p className="text-lg font-medium text-[hsl(var(--color-foreground-muted))] mb-1">No invoices yet</p>
-                  <p className="text-sm text-[hsl(var(--color-foreground-subtle))] mb-5">Create your first invoice to get started</p>
+              <EmptyState
+                icon={<IconFileText size={48} />}
+                title="No invoices yet"
+                description="Create your first invoice to get started"
+                action={
                   <a
                     href="/admin/documents/new"
                     className="px-5 py-2.5 bg-[hsl(var(--color-accent))] hover:bg-[hsl(var(--color-accent-hover))] text-white rounded-xl text-sm font-medium transition-colors"
                   >
                     Create Invoice
                   </a>
-                </div>
-              </div>
+                }
+              />
             )}
           </div>
         </motion.div>
@@ -352,10 +347,10 @@ export default function FinancesPage() {
                 <table className="w-full">
                   <thead>
                     <tr className="border-b border-[hsl(var(--color-border))]/30">
-                      <th className="text-left px-6 py-3 text-xs uppercase tracking-wider font-medium text-[hsl(var(--color-foreground-subtle))]">Name</th>
-                      <th className="text-right px-6 py-3 text-xs uppercase tracking-wider font-medium text-[hsl(var(--color-foreground-subtle))]">Hours</th>
-                      <th className="text-right px-6 py-3 text-xs uppercase tracking-wider font-medium text-[hsl(var(--color-foreground-subtle))]">Rate</th>
-                      <th className="text-right px-6 py-3 text-xs uppercase tracking-wider font-medium text-[hsl(var(--color-foreground-subtle))]">Total</th>
+                      <th className="text-left px-6 py-3 text-xs font-semibold text-[hsl(var(--color-foreground-muted))]">Name</th>
+                      <th className="text-right px-6 py-3 text-xs font-semibold text-[hsl(var(--color-foreground-muted))]">Hours</th>
+                      <th className="text-right px-6 py-3 text-xs font-semibold text-[hsl(var(--color-foreground-muted))]">Rate</th>
+                      <th className="text-right px-6 py-3 text-xs font-semibold text-[hsl(var(--color-foreground-muted))]">Total</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[hsl(var(--color-border))]/30">
@@ -405,10 +400,10 @@ export default function FinancesPage() {
                 <table className="w-full">
                   <thead>
                     <tr className="border-b border-[hsl(var(--color-border))]/30">
-                      <th className="text-left px-6 py-3 text-xs uppercase tracking-wider font-medium text-[hsl(var(--color-foreground-subtle))]">Project</th>
-                      <th className="text-right px-6 py-3 text-xs uppercase tracking-wider font-medium text-[hsl(var(--color-foreground-subtle))]">Hours</th>
-                      <th className="text-right px-6 py-3 text-xs uppercase tracking-wider font-medium text-[hsl(var(--color-foreground-subtle))]">Cost</th>
-                      <th className="text-right px-6 py-3 text-xs uppercase tracking-wider font-medium text-[hsl(var(--color-foreground-subtle))]">Revenue</th>
+                      <th className="text-left px-6 py-3 text-xs font-semibold text-[hsl(var(--color-foreground-muted))]">Project</th>
+                      <th className="text-right px-6 py-3 text-xs font-semibold text-[hsl(var(--color-foreground-muted))]">Hours</th>
+                      <th className="text-right px-6 py-3 text-xs font-semibold text-[hsl(var(--color-foreground-muted))]">Cost</th>
+                      <th className="text-right px-6 py-3 text-xs font-semibold text-[hsl(var(--color-foreground-muted))]">Revenue</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[hsl(var(--color-border))]/30">
@@ -441,29 +436,3 @@ export default function FinancesPage() {
   );
 }
 
-function StatCard({
-  label,
-  value,
-  accent,
-}: {
-  label: string;
-  value: string | number;
-  accent?: "success" | "warning";
-}) {
-  return (
-    <div className="bg-[hsl(var(--color-background-subtle))]/50 backdrop-blur-sm border border-[hsl(var(--color-border))]/50 rounded-2xl p-6 hover:border-[hsl(var(--color-border-strong))]/60 hover:bg-[hsl(var(--color-background-subtle))]/80 hover:shadow-lg hover:shadow-black/5 transition-all duration-200">
-      <p className="text-xs text-[hsl(var(--color-foreground-muted))] mb-2">{label}</p>
-      <p
-        className={`text-3xl font-semibold tracking-tight tabular-nums font-mono ${
-          accent === "warning"
-            ? "text-amber-400"
-            : accent === "success"
-            ? "text-emerald-400"
-            : "text-[hsl(var(--color-foreground))]"
-        }`}
-      >
-        {value}
-      </p>
-    </div>
-  );
-}

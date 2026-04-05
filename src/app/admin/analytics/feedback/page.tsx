@@ -198,7 +198,7 @@ export default function FeedbackDashboardPage() {
         </div>
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-semibold">Agent Feedback Loop</h1>
+            <h1 className="font-[family-name:var(--font-heading)] text-3xl md:text-4xl tracking-tight font-semibold">Agent Feedback Loop</h1>
             <p className="text-sm text-[hsl(var(--color-foreground-subtle))] mt-1">
               Track AI agent performance and improve content generation
             </p>

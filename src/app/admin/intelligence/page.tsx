@@ -114,7 +114,7 @@ export default function IntelligencePage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-semibold mb-1">Client Intelligence</h1>
+        <h1 className="font-[family-name:var(--font-heading)] text-3xl md:text-4xl tracking-tight font-semibold mb-1">Client Intelligence</h1>
         <p className="text-[hsl(var(--color-foreground-muted))]">AI-powered analysis of incoming leads</p>
       </div>
 

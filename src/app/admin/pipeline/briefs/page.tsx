@@ -154,7 +154,7 @@ export default function BriefsPage() {
           </svg>
           <span className="text-[hsl(var(--color-foreground))]">Briefs</span>
         </div>
-        <h1 className="text-2xl font-semibold">Content Briefs</h1>
+        <h1 className="font-[family-name:var(--font-heading)] text-3xl md:text-4xl tracking-tight font-semibold">Content Briefs</h1>
         <p className="text-[hsl(var(--color-foreground-subtle))] text-sm mt-1">Structured outlines ready for writing</p>
       </div>
 

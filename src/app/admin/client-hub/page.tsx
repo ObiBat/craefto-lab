@@ -151,7 +151,7 @@ export default function ClientHubPage() {
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-semibold mb-1">Client Operations Hub</h1>
+        <h1 className="font-[family-name:var(--font-heading)] text-3xl md:text-4xl tracking-tight font-semibold mb-1">Client Operations Hub</h1>
         <p className="text-[hsl(var(--color-foreground-muted))]">
           Templates and tools for client acquisition, qualification, and onboarding
         </p>

@@ -4,6 +4,8 @@ import * as React from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { AdminLoader } from "@/components/admin/AdminLoader";
+import { PageHeader, EmptyState } from "@/components/admin/ui";
+import { IconPlus, IconFolder } from "@/components/admin/icons";
 
 interface Project {
   id: string;
@@ -227,9 +229,7 @@ export default function ProjectsPage() {
             onClick={openForm}
             className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[hsl(var(--color-accent))] text-white hover:bg-[hsl(var(--color-accent-hover))] transition-colors text-sm font-medium"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-            </svg>
+            <IconPlus size={16} />
             New Project
           </button>
         </div>
@@ -239,19 +239,19 @@ export default function ProjectsPage() {
       {projects.length === 0 ? (
         <motion.div variants={fadeUp}>
           <div className="min-h-[400px] flex items-center justify-center">
-            <div className="border-2 border-dashed border-[hsl(var(--color-border))]/30 rounded-2xl p-12 flex flex-col items-center text-center max-w-md">
-              <svg className="w-12 h-12 mb-4 text-[hsl(var(--color-foreground-subtle))]" fill="none" stroke="currentColor" strokeWidth={1} viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
-              </svg>
-              <p className="text-lg font-medium text-[hsl(var(--color-foreground-muted))] mb-1">No projects yet</p>
-              <p className="text-sm text-[hsl(var(--color-foreground-subtle))] mb-5">Start tracking your client work</p>
-              <button
-                onClick={openForm}
-                className="px-5 py-2.5 bg-[hsl(var(--color-accent))] hover:bg-[hsl(var(--color-accent-hover))] text-white rounded-xl text-sm font-medium transition-colors"
-              >
-                Create your first project
-              </button>
-            </div>
+            <EmptyState
+              icon={<IconFolder size={48} />}
+              title="No projects yet"
+              description="Start tracking your client work"
+              action={
+                <button
+                  onClick={openForm}
+                  className="px-5 py-2.5 bg-[hsl(var(--color-accent))] hover:bg-[hsl(var(--color-accent-hover))] text-white rounded-xl text-sm font-medium transition-colors"
+                >
+                  Create your first project
+                </button>
+              }
+            />
           </div>
         </motion.div>
       ) : (
@@ -277,7 +277,7 @@ export default function ProjectsPage() {
                   <div className="p-6">
                     {/* Client name + priority dot */}
                     <div className="flex items-center justify-between mb-2">
-                      <p className="text-xs text-[hsl(var(--color-foreground-subtle))] uppercase tracking-wider">
+                      <p className="text-xs text-[hsl(var(--color-foreground-subtle))]">
                         {project.client?.name || "No client"}
                       </p>
                       <div className="flex items-center gap-2">

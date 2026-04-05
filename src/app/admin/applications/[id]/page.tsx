@@ -4,6 +4,8 @@ import * as React from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { AdminLoader } from "@/components/admin/AdminLoader";
+import { DetailSection, InfoField } from "@/components/admin/ui";
+import { IconChevronLeft, IconDownload } from "@/components/admin/icons";
 
 interface ApplicationAnswer {
   question_id: string;
@@ -161,9 +163,7 @@ export default function ApplicationDetailPage() {
         href="/admin/applications"
         className="inline-flex items-center gap-2 text-sm text-[hsl(var(--color-foreground-muted))] hover:text-[hsl(var(--color-foreground))] transition-colors"
       >
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 19l-7-7 7-7" />
-        </svg>
+        <IconChevronLeft size={16} />
         All applications
       </Link>
 
@@ -171,7 +171,7 @@ export default function ApplicationDetailPage() {
       <div className="bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl p-6">
         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-semibold mb-1">{application.full_name}</h1>
+            <h1 className="font-[family-name:var(--font-heading)] text-2xl md:text-3xl tracking-tight font-semibold mb-1">{application.full_name}</h1>
             <p className="text-[hsl(var(--color-foreground-muted))]">{application.role_title}</p>
             <p className="text-sm text-[hsl(var(--color-foreground-subtle))] mt-1">
               Applied {formatDate(application.created_at)}
@@ -220,7 +220,7 @@ export default function ApplicationDetailPage() {
 
       {/* Personal info */}
       <div className="bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl p-6">
-        <h2 className="text-sm font-medium text-[hsl(var(--color-foreground-subtle))] uppercase tracking-wider mb-4">
+        <h2 className="font-[family-name:var(--font-heading)] text-lg font-semibold text-[hsl(var(--color-foreground))] mb-4">
           Contact Information
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -233,7 +233,7 @@ export default function ApplicationDetailPage() {
       {/* Links */}
       {(application.portfolio_url || application.linkedin_url || application.github_url) && (
         <div className="bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl p-6">
-          <h2 className="text-sm font-medium text-[hsl(var(--color-foreground-subtle))] uppercase tracking-wider mb-4">
+          <h2 className="font-[family-name:var(--font-heading)] text-lg font-semibold text-[hsl(var(--color-foreground))] mb-4">
             Links
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -252,7 +252,7 @@ export default function ApplicationDetailPage() {
 
       {/* Questions + Answers */}
       <div className="bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl p-6">
-        <h2 className="text-sm font-medium text-[hsl(var(--color-foreground-subtle))] uppercase tracking-wider mb-4">
+        <h2 className="font-[family-name:var(--font-heading)] text-lg font-semibold text-[hsl(var(--color-foreground))] mb-4">
           Qualifying Answers
         </h2>
         <div className="space-y-5">
@@ -270,7 +270,7 @@ export default function ApplicationDetailPage() {
       {/* Files */}
       {(application.resume_url || application.cover_letter_url) && (
         <div className="bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl p-6">
-          <h2 className="text-sm font-medium text-[hsl(var(--color-foreground-subtle))] uppercase tracking-wider mb-4">
+          <h2 className="font-[family-name:var(--font-heading)] text-lg font-semibold text-[hsl(var(--color-foreground))] mb-4">
             Attachments
           </h2>
           <div className="flex flex-wrap gap-3">
@@ -281,9 +281,7 @@ export default function ApplicationDetailPage() {
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-4 py-2.5 bg-[hsl(var(--color-background-subtle))] border border-[hsl(var(--color-border))] rounded-lg text-sm text-[hsl(var(--color-foreground))] hover:border-[hsl(var(--color-accent))] transition-colors"
               >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
+                <IconDownload size={16} />
                 {application.resume_filename || "Resume"}
               </a>
             )}
@@ -294,9 +292,7 @@ export default function ApplicationDetailPage() {
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-4 py-2.5 bg-[hsl(var(--color-background-subtle))] border border-[hsl(var(--color-border))] rounded-lg text-sm text-[hsl(var(--color-foreground))] hover:border-[hsl(var(--color-accent))] transition-colors"
               >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
+                <IconDownload size={16} />
                 {application.cover_letter_filename || "Cover Letter"}
               </a>
             )}
@@ -317,7 +313,7 @@ export default function ApplicationDetailPage() {
 
       {/* Admin notes */}
       <div className="bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl p-6">
-        <h2 className="text-sm font-medium text-[hsl(var(--color-foreground-subtle))] uppercase tracking-wider mb-4">
+        <h2 className="font-[family-name:var(--font-heading)] text-lg font-semibold text-[hsl(var(--color-foreground))] mb-4">
           Admin Notes
         </h2>
         <textarea
@@ -335,7 +331,7 @@ export default function ApplicationDetailPage() {
 
       {/* Timeline */}
       <div className="bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl p-6">
-        <h2 className="text-sm font-medium text-[hsl(var(--color-foreground-subtle))] uppercase tracking-wider mb-4">
+        <h2 className="font-[family-name:var(--font-heading)] text-lg font-semibold text-[hsl(var(--color-foreground))] mb-4">
           Timeline
         </h2>
         <div className="space-y-3">
@@ -349,7 +345,7 @@ export default function ApplicationDetailPage() {
 
       {/* Actions */}
       <div className="bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl p-6">
-        <h2 className="text-sm font-medium text-[hsl(var(--color-foreground-subtle))] uppercase tracking-wider mb-4">
+        <h2 className="font-[family-name:var(--font-heading)] text-lg font-semibold text-[hsl(var(--color-foreground))] mb-4">
           Actions
         </h2>
         <div className="flex flex-wrap gap-3">
@@ -403,7 +399,7 @@ function InfoRow({
 }) {
   return (
     <div>
-      <p className="text-xs text-[hsl(var(--color-foreground-subtle))] uppercase tracking-wider mb-1">{label}</p>
+      <p className="text-xs text-[hsl(var(--color-foreground-subtle))] mb-1">{label}</p>
       {href ? (
         <a
           href={href}

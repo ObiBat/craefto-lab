@@ -222,7 +222,7 @@ export default function ABTestingPage() {
           <span className="text-[hsl(var(--color-foreground))]">A/B Testing</span>
         </div>
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-semibold">A/B Testing</h1>
+          <h1 className="font-[family-name:var(--font-heading)] text-3xl md:text-4xl tracking-tight font-semibold">A/B Testing</h1>
           <button
             onClick={() => setShowCreateModal(true)}
             className="px-4 py-2 bg-[hsl(var(--color-accent))] text-black rounded-xl font-medium hover:bg-[hsl(var(--color-accent-hover))] transition-colors"

@@ -3,6 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { AdminLoader } from "@/components/admin/AdminLoader";
+import { PageHeader, SearchInput, FilterBar, FilterChip } from "@/components/admin/ui";
 
 interface Lead {
   id: string;
@@ -140,63 +141,34 @@ export default function LeadsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold mb-1">Leads</h1>
-          <p>{leads.length} total leads</p>
-        </div>
-      </div>
+      <PageHeader
+        title="Leads"
+        subtitle={`${leads.length} total leads`}
+      />
 
       {/* Filters */}
-      <div className="flex flex-wrap items-center gap-4">
-        <div className="relative flex-1 max-w-sm">
-          <svg
-            className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[hsl(var(--color-foreground-subtle))]"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={1.5}
-              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-            />
-          </svg>
-          <input
-            type="text"
-            placeholder="Search leads..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 bg-[hsl(var(--color-background-muted))] border border-[hsl(var(--color-border))] rounded-xl text-[hsl(var(--color-foreground))] placeholder-[hsl(var(--color-foreground-subtle))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-ring))]"
-          />
-        </div>
+      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+        <SearchInput
+          value={search}
+          onChange={setSearch}
+          placeholder="Search leads..."
+        />
 
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => setFilter("all")}
-            className={`px-3 py-2 rounded-xl text-sm font-medium transition-colors ${
-              filter === "all"
-                ? "bg-[hsl(var(--color-accent))]/20 text-[hsl(var(--color-accent))]"
-                : "text-[hsl(var(--color-foreground-muted))] hover:text-[hsl(var(--color-foreground))] hover:bg-[hsl(var(--color-background-muted))]"
-            }`}
-          >
+        <FilterBar>
+          <FilterChip active={filter === "all"} onClick={() => setFilter("all")}>
             All
-          </button>
+          </FilterChip>
           {stages.map((stage) => (
-            <button
+            <FilterChip
               key={stage.id}
+              active={filter === stage.id}
               onClick={() => setFilter(stage.id)}
-              className={`px-3 py-2 rounded-xl text-sm font-medium transition-colors ${
-                filter === stage.id
-                  ? getStageColor(stage.color)
-                  : "text-[hsl(var(--color-foreground-muted))] hover:text-[hsl(var(--color-foreground))] hover:bg-[hsl(var(--color-background-muted))]"
-              }`}
+              className={filter === stage.id ? getStageColor(stage.color) : undefined}
             >
               {stage.name}
-            </button>
+            </FilterChip>
           ))}
-        </div>
+        </FilterBar>
       </div>
 
       {/* Leads Table */}
