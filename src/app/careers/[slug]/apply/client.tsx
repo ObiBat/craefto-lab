@@ -6,15 +6,18 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Container, Section } from "@/components/layout";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
-  PageTransition,
-  AnimatedSection,
-  HeroText,
-} from "@/components/ui";
+import { PageTransition, AnimatedSection } from "@/components/ui";
 import type { Role, ApplicationQuestion } from "@/lib/careers";
 import { supabase } from "@/lib/supabase";
 
 const STEPS = ["Personal", "Questions", "Files", "Review", "Submit"] as const;
+const STEP_SUBTITLES = [
+  "Tell us who you are and how to reach you.",
+  "A few quick questions about your experience.",
+  "Upload your resume and any supporting documents.",
+  "Double-check everything before submitting.",
+  "Sending your application.",
+];
 const STORAGE_KEY_PREFIX = "craefto_apply_";
 const ACCEPTED_FILE_TYPES = [
   "application/pdf",
@@ -22,6 +25,9 @@ const ACCEPTED_FILE_TYPES = [
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
 ];
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+
+const CURRENCIES = ["AUD", "USD", "EUR", "GBP"] as const;
+const PERIODS = ["hour", "day", "week", "month", "year"] as const;
 
 interface PersonalInfo {
   full_name: string;
@@ -47,6 +53,14 @@ function getStorageKey(slug: string) {
   return `${STORAGE_KEY_PREFIX}${slug}`;
 }
 
+function formatFileSize(bytes: number): string {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+// ── Main component ──
+
 export function ApplicationFormClient({ role }: { role: Role }) {
   const [step, setStep] = React.useState(0);
   const [personal, setPersonal] = React.useState<PersonalInfo>({
@@ -64,6 +78,7 @@ export function ApplicationFormClient({ role }: { role: Role }) {
   const [errors, setErrors] = React.useState<FormErrors>({});
   const [submitted, setSubmitted] = React.useState(false);
   const [uploadProgress, setUploadProgress] = React.useState<string | null>(null);
+  const [sidebarOpen, setSidebarOpen] = React.useState(false);
 
   // Load draft from localStorage
   React.useEffect(() => {
@@ -110,6 +125,13 @@ export function ApplicationFormClient({ role }: { role: Role }) {
         if (!val || (Array.isArray(val) && val.length === 0)) {
           newErrors[q.id] = "This field is required";
         } else if (typeof val === "string") {
+          if (q.type === "compensation") {
+            // Validate the compound compensation value
+            const parts = val.split(" ");
+            if (parts.length < 4 || !parts[0] || parts[0] === "0") {
+              newErrors[q.id] = "Please enter a valid amount";
+            }
+          }
           if (q.minLength && val.length < q.minLength) {
             newErrors[q.id] = `Minimum ${q.minLength} characters`;
           }
@@ -254,196 +276,421 @@ export function ApplicationFormClient({ role }: { role: Role }) {
     }
   };
 
+  const postedFormatted = React.useMemo(() => {
+    try {
+      return new Date(role.postedDate).toLocaleDateString("en-AU", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
+    } catch {
+      return role.postedDate;
+    }
+  }, [role.postedDate]);
+
   return (
     <PageTransition>
       <main id="main-content" className="pt-20">
-        <Section spacing="lg">
+        {/* Compact top band */}
+        <Section spacing="sm">
           <Container>
             {/* Breadcrumb */}
-            <nav className="mb-10" aria-label="Breadcrumb">
-              <ol className="flex items-center gap-2 text-sm text-[hsl(var(--color-foreground-muted))]">
+            <nav className="mb-6" aria-label="Breadcrumb">
+              <ol className="flex items-center gap-2 text-xs text-[hsl(var(--color-foreground-muted))]">
                 <li>
                   <Link href="/" className="hover:text-[hsl(var(--color-foreground))] transition-colors">Home</Link>
                 </li>
-                <li><span className="mx-2">/</span></li>
+                <li><span className="mx-1">/</span></li>
                 <li>
                   <Link href="/careers" className="hover:text-[hsl(var(--color-foreground))] transition-colors">Careers</Link>
                 </li>
-                <li><span className="mx-2">/</span></li>
+                <li><span className="mx-1">/</span></li>
                 <li>
                   <Link href={`/careers/${role.slug}`} className="hover:text-[hsl(var(--color-foreground))] transition-colors">{role.title}</Link>
                 </li>
-                <li><span className="mx-2">/</span></li>
+                <li><span className="mx-1">/</span></li>
                 <li className="text-[hsl(var(--color-foreground))] font-medium">Apply</li>
               </ol>
             </nav>
 
-            <HeroText>
-              <div className="flex flex-wrap items-center gap-3 mb-4">
-                <Badge variant="accent">{role.department}</Badge>
-                <Badge variant="secondary">{role.location}</Badge>
-              </div>
-            </HeroText>
-            <HeroText delay={0.1}>
-              <h1 className="font-semibold tracking-tight text-3xl md:text-4xl mb-2">
+            {/* Compact header row */}
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <h1 className="font-serif text-2xl md:text-3xl tracking-tight text-[hsl(var(--color-foreground))]">
                 Apply for {role.title}
               </h1>
-            </HeroText>
-            <HeroText delay={0.2}>
-              <p className="text-[hsl(var(--color-foreground-muted))] text-lg max-w-2xl">
-                Complete the form below. Your progress is saved automatically.
-              </p>
-            </HeroText>
+              <div className="flex items-center gap-2">
+                <Badge variant="accent">{role.department}</Badge>
+                <Badge variant="secondary">{role.location}</Badge>
+                <Badge variant="secondary">{role.type}</Badge>
+              </div>
+            </div>
           </Container>
         </Section>
 
+        {/* Main content area */}
         <Section spacing="md">
-          <Container size="md">
-            {/* Progress bar */}
-            {!submitted && (
-              <AnimatedSection>
-                <div className="mb-10">
-                  <div className="flex items-center justify-between mb-3">
-                    {STEPS.map((label, i) => (
-                      <button
-                        key={label}
-                        onClick={() => goToStep(i)}
-                        className={`text-xs font-medium transition-colors ${
-                          i === step
-                            ? "text-[hsl(var(--color-accent))]"
-                            : i < step
-                            ? "text-[hsl(var(--color-foreground))] cursor-pointer hover:text-[hsl(var(--color-accent))]"
-                            : "text-[hsl(var(--color-foreground-subtle))] cursor-default"
-                        }`}
-                        disabled={i > step}
-                        aria-label={`Step ${i + 1}: ${label}`}
+          <Container>
+            <div className="lg:grid lg:grid-cols-12 gap-10">
+              {/* Left column: form */}
+              <div className="lg:col-span-8">
+                {/* Mobile role summary accordion */}
+                <div className="lg:hidden mb-8">
+                  <button
+                    type="button"
+                    onClick={() => setSidebarOpen(!sidebarOpen)}
+                    className="w-full flex items-center justify-between p-4 bg-[hsl(var(--color-background-subtle))] border border-[hsl(var(--color-border))] rounded-xl text-sm"
+                  >
+                    <span className="text-[hsl(var(--color-foreground-muted))]">
+                      Applying for <span className="font-semibold text-[hsl(var(--color-foreground))]">{role.title}</span>
+                    </span>
+                    <svg
+                      className={`w-4 h-4 text-[hsl(var(--color-foreground-muted))] transition-transform duration-200 ${sidebarOpen ? "rotate-180" : ""}`}
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                  <AnimatePresence>
+                    {sidebarOpen && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="overflow-hidden"
                       >
-                        <span className="hidden sm:inline">{label}</span>
-                        <span className="sm:hidden">{i + 1}</span>
-                      </button>
-                    ))}
-                  </div>
-                  <div className="h-1 bg-[hsl(var(--color-border))] rounded-full overflow-hidden">
-                    <motion.div
-                      className="h-full bg-[hsl(var(--color-accent))] rounded-full"
-                      initial={false}
-                      animate={{ width: `${((step + 1) / STEPS.length) * 100}%` }}
-                      transition={{ duration: 0.3, ease: "easeInOut" }}
-                    />
-                  </div>
-                  <p className="text-xs text-[hsl(var(--color-foreground-subtle))] mt-2">
-                    Step {step + 1} of {STEPS.length}
-                  </p>
+                        <RoleSummaryContent role={role} postedDate={postedFormatted} />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
-              </AnimatedSection>
-            )}
 
-            {/* Form steps */}
-            <AnimatePresence mode="wait">
-              {step === 0 && !submitted && (
-                <StepWrapper key="personal">
-                  <StepPersonal
-                    personal={personal}
-                    setPersonal={setPersonal}
-                    errors={errors}
-                    setErrors={setErrors}
-                  />
-                  <StepNav onNext={goNext} />
-                </StepWrapper>
-              )}
+                {/* Progress indicator */}
+                {!submitted && (
+                  <AnimatedSection>
+                    <ProgressIndicator currentStep={step} onStepClick={goToStep} />
+                  </AnimatedSection>
+                )}
 
-              {step === 1 && !submitted && (
-                <StepWrapper key="questions">
-                  <StepQuestions
-                    questions={role.questions}
-                    answers={answers}
-                    setAnswers={setAnswers}
-                    errors={errors}
-                    setErrors={setErrors}
-                  />
-                  <StepNav onPrev={goPrev} onNext={goNext} />
-                </StepWrapper>
-              )}
-
-              {step === 2 && !submitted && (
-                <StepWrapper key="files">
-                  <StepFiles
-                    resume={resume}
-                    coverLetter={coverLetter}
-                    onResumeChange={(e) => handleFileSelect(e, setResume, "resume")}
-                    onCoverLetterChange={(e) => handleFileSelect(e, setCoverLetter, "cover_letter")}
-                    onRemoveResume={() => setResume({ file: null, url: "", filename: "" })}
-                    onRemoveCoverLetter={() => setCoverLetter({ file: null, url: "", filename: "" })}
-                    errors={errors}
-                  />
-                  <StepNav onPrev={goPrev} onNext={goNext} />
-                </StepWrapper>
-              )}
-
-              {step === 3 && !submitted && (
-                <StepWrapper key="review">
-                  <StepReview
-                    personal={personal}
-                    answers={answers}
-                    questions={role.questions}
-                    resume={resume}
-                    coverLetter={coverLetter}
-                    onEditStep={setStep}
-                  />
-                  {errors.submit && (
-                    <div className="mt-4 p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-sm">
-                      {errors.submit}
-                    </div>
+                {/* Form steps */}
+                <AnimatePresence mode="wait">
+                  {step === 0 && !submitted && (
+                    <StepWrapper key="personal">
+                      <StepHeading title="Personal information" subtitle={STEP_SUBTITLES[0]} />
+                      <StepPersonal
+                        personal={personal}
+                        setPersonal={setPersonal}
+                        errors={errors}
+                        setErrors={setErrors}
+                      />
+                      <StepNav step={step} totalSteps={STEPS.length} onNext={goNext} />
+                    </StepWrapper>
                   )}
-                  <StepNav onPrev={goPrev} onSubmit={handleSubmit} />
-                </StepWrapper>
-              )}
 
-              {step === 4 && !submitted && (
-                <StepWrapper key="submitting">
-                  <div className="flex flex-col items-center justify-center py-20 gap-6">
-                    <div className="relative">
-                      <div className="w-12 h-12 rounded-full border-2 border-[hsl(var(--color-border))]" />
-                      <div className="animate-spin absolute inset-0 w-12 h-12 rounded-full border-2 border-transparent border-t-[hsl(var(--color-accent))]" />
-                    </div>
-                    <p className="text-[hsl(var(--color-foreground-muted))] animate-pulse">
-                      {uploadProgress || "Submitting..."}
-                    </p>
-                  </div>
-                </StepWrapper>
-              )}
+                  {step === 1 && !submitted && (
+                    <StepWrapper key="questions">
+                      <StepHeading title="A few questions" subtitle={STEP_SUBTITLES[1]} />
+                      <StepQuestions
+                        questions={role.questions}
+                        answers={answers}
+                        setAnswers={setAnswers}
+                        errors={errors}
+                        setErrors={setErrors}
+                      />
+                      <StepNav step={step} totalSteps={STEPS.length} onPrev={goPrev} onNext={goNext} />
+                    </StepWrapper>
+                  )}
 
-              {submitted && (
-                <StepWrapper key="success">
-                  <div className="text-center py-16">
-                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-500/20 mb-6">
-                      <svg className="w-8 h-8 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                    </div>
-                    <h2 className="text-2xl font-semibold mb-3">Application submitted</h2>
-                    <p className="text-[hsl(var(--color-foreground-muted))] max-w-md mx-auto mb-2">
-                      Thank you for applying to be a <strong>{role.title}</strong> at Craefto.
-                    </p>
-                    <p className="text-[hsl(var(--color-foreground-subtle))] text-sm max-w-md mx-auto mb-8">
-                      We review every application carefully. Expect to hear from us within a week. In the meantime, check out our other open positions.
-                    </p>
-                    <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                      <Button asChild>
-                        <Link href="/careers">View other roles</Link>
-                      </Button>
-                      <Button variant="ghost" asChild>
-                        <Link href="/">Back to home</Link>
-                      </Button>
-                    </div>
-                  </div>
-                </StepWrapper>
-              )}
-            </AnimatePresence>
+                  {step === 2 && !submitted && (
+                    <StepWrapper key="files">
+                      <StepHeading title="Upload your documents" subtitle={STEP_SUBTITLES[2]} />
+                      <StepFiles
+                        resume={resume}
+                        coverLetter={coverLetter}
+                        onResumeChange={(e) => handleFileSelect(e, setResume, "resume")}
+                        onCoverLetterChange={(e) => handleFileSelect(e, setCoverLetter, "cover_letter")}
+                        onRemoveResume={() => setResume({ file: null, url: "", filename: "" })}
+                        onRemoveCoverLetter={() => setCoverLetter({ file: null, url: "", filename: "" })}
+                        errors={errors}
+                      />
+                      <StepNav step={step} totalSteps={STEPS.length} onPrev={goPrev} onNext={goNext} />
+                    </StepWrapper>
+                  )}
+
+                  {step === 3 && !submitted && (
+                    <StepWrapper key="review">
+                      <StepHeading title="Review your application" subtitle={STEP_SUBTITLES[3]} />
+                      <StepReview
+                        personal={personal}
+                        answers={answers}
+                        questions={role.questions}
+                        resume={resume}
+                        coverLetter={coverLetter}
+                        onEditStep={setStep}
+                      />
+                      {errors.submit && (
+                        <div className="mt-4 p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-red-500 text-sm">
+                          {errors.submit}
+                        </div>
+                      )}
+                      <StepNav step={step} totalSteps={STEPS.length} onPrev={goPrev} onSubmit={handleSubmit} />
+                    </StepWrapper>
+                  )}
+
+                  {step === 4 && !submitted && (
+                    <StepWrapper key="submitting">
+                      <div className="flex flex-col items-center justify-center py-20 gap-6">
+                        <div className="relative">
+                          <div className="w-12 h-12 rounded-full border-2 border-[hsl(var(--color-border))]" />
+                          <div className="animate-spin absolute inset-0 w-12 h-12 rounded-full border-2 border-transparent border-t-[hsl(var(--color-foreground))]" />
+                        </div>
+                        <p className="text-[hsl(var(--color-foreground-muted))] animate-pulse">
+                          {uploadProgress || "Submitting..."}
+                        </p>
+                      </div>
+                    </StepWrapper>
+                  )}
+
+                  {submitted && (
+                    <StepWrapper key="success">
+                      <SuccessScreen firstName={personal.full_name.split(" ")[0]} roleTitle={role.title} />
+                    </StepWrapper>
+                  )}
+                </AnimatePresence>
+              </div>
+
+              {/* Right column: sticky sidebar (desktop only) */}
+              <div className="hidden lg:block lg:col-span-4">
+                <div className="lg:sticky lg:top-24">
+                  <RoleSummaryCard role={role} postedDate={postedFormatted} />
+                </div>
+              </div>
+            </div>
           </Container>
         </Section>
       </main>
     </PageTransition>
+  );
+}
+
+// ── Progress Indicator ──
+
+function ProgressIndicator({
+  currentStep,
+  onStepClick,
+}: {
+  currentStep: number;
+  onStepClick: (step: number) => void;
+}) {
+  return (
+    <div className="mb-10">
+      <div className="flex items-center justify-between max-w-lg mx-auto" style={{ height: 56 }}>
+        {STEPS.map((label, i) => {
+          const isCompleted = i < currentStep;
+          const isActive = i === currentStep;
+          const isUpcoming = i > currentStep;
+
+          return (
+            <React.Fragment key={label}>
+              <div className="flex flex-col items-center gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => onStepClick(i)}
+                  disabled={isUpcoming}
+                  className="relative flex items-center justify-center"
+                  aria-label={`Step ${i + 1}: ${label}`}
+                >
+                  <motion.div
+                    className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold border-2 transition-colors ${
+                      isActive
+                        ? "bg-[hsl(var(--color-foreground))] border-[hsl(var(--color-foreground))] text-[hsl(var(--color-background))]"
+                        : isCompleted
+                        ? "bg-[hsl(var(--color-foreground))]/10 border-[hsl(var(--color-foreground))]/30 text-[hsl(var(--color-foreground))]"
+                        : "bg-transparent border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground-muted))]"
+                    }`}
+                    layout
+                    transition={{ duration: 0.2, ease: "easeOut" }}
+                  >
+                    {isCompleted ? (
+                      <motion.svg
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        className="w-3.5 h-3.5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                      </motion.svg>
+                    ) : (
+                      <span>{i + 1}</span>
+                    )}
+                  </motion.div>
+                </button>
+                {/* Step label — hidden on mobile except active */}
+                <span
+                  className={`text-[10px] font-medium tracking-wide ${
+                    isActive
+                      ? "text-[hsl(var(--color-foreground))]"
+                      : isCompleted
+                      ? "text-[hsl(var(--color-foreground-muted))] hidden sm:block"
+                      : "text-[hsl(var(--color-foreground-subtle))] hidden sm:block"
+                  }`}
+                >
+                  {label}
+                </span>
+              </div>
+              {/* Connector line */}
+              {i < STEPS.length - 1 && (
+                <div className="flex-1 h-0.5 mx-1 mt-[-12px] self-start" style={{ marginTop: 15 }}>
+                  <div className="h-full bg-[hsl(var(--color-border))] rounded-full overflow-hidden">
+                    <motion.div
+                      className="h-full bg-[hsl(var(--color-foreground))]/30 rounded-full"
+                      initial={false}
+                      animate={{ width: i < currentStep ? "100%" : "0%" }}
+                      transition={{ duration: 0.3, ease: "easeOut" }}
+                    />
+                  </div>
+                </div>
+              )}
+            </React.Fragment>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// ── Role Summary Card (desktop sidebar) ──
+
+function RoleSummaryCard({ role, postedDate }: { role: Role; postedDate: string }) {
+  return (
+    <div className="bg-[hsl(var(--color-background-subtle))] border border-[hsl(var(--color-border))] rounded-2xl p-6 shadow-sm">
+      <RoleSummaryContent role={role} postedDate={postedDate} />
+    </div>
+  );
+}
+
+function RoleSummaryContent({ role, postedDate }: { role: Role; postedDate: string }) {
+  return (
+    <div className="p-4 lg:p-0">
+      <p className="text-[10px] uppercase tracking-widest text-[hsl(var(--color-foreground-muted))] font-semibold mb-2">
+        Applying for
+      </p>
+      <h3 className="font-serif text-xl tracking-tight text-[hsl(var(--color-foreground))] mb-4">
+        {role.title}
+      </h3>
+
+      <div className="space-y-2 mb-5">
+        <MetaRow label="Department" value={role.department} />
+        <MetaRow label="Location" value={role.location} />
+        <MetaRow label="Type" value={role.type} />
+      </div>
+
+      <div className="border-t border-[hsl(var(--color-border))] pt-4 mb-5">
+        <p className="text-xs font-semibold text-[hsl(var(--color-foreground))] mb-2">Key responsibilities</p>
+        <ul className="space-y-1.5">
+          {role.responsibilities.slice(0, 3).map((r) => (
+            <li key={r} className="flex items-start gap-2 text-xs text-[hsl(var(--color-foreground-muted))]">
+              <span className="mt-1 w-1 h-1 rounded-full bg-[hsl(var(--color-foreground-muted))] shrink-0" />
+              <span>{r}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div className="border-t border-[hsl(var(--color-border))] pt-4">
+        <p className="text-xs text-[hsl(var(--color-foreground-subtle))]">
+          Posted {postedDate}
+        </p>
+        <Link
+          href={`/careers/${role.slug}`}
+          className="inline-block mt-3 text-xs text-[hsl(var(--color-foreground-muted))] hover:text-[hsl(var(--color-foreground))] transition-colors underline underline-offset-2"
+        >
+          Back to role details
+        </Link>
+      </div>
+    </div>
+  );
+}
+
+function MetaRow({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex items-center justify-between text-xs">
+      <span className="text-[hsl(var(--color-foreground-subtle))]">{label}</span>
+      <span className="text-[hsl(var(--color-foreground))] font-medium">{value}</span>
+    </div>
+  );
+}
+
+// ── Success Screen ──
+
+function SuccessScreen({ firstName, roleTitle }: { firstName: string; roleTitle: string }) {
+  return (
+    <motion.div
+      className="text-center py-16"
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
+    >
+      <motion.div
+        className="inline-flex items-center justify-center w-16 h-16 rounded-full border-2 border-[hsl(var(--color-foreground))]/20 mb-6"
+        initial={{ scale: 0 }}
+        animate={{ scale: 1 }}
+        transition={{ delay: 0.1, duration: 0.3, ease: "easeOut" }}
+      >
+        <motion.svg
+          className="w-7 h-7 text-[hsl(var(--color-foreground))]"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          initial={{ pathLength: 0 }}
+          animate={{ pathLength: 1 }}
+          transition={{ delay: 0.3, duration: 0.4 }}
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 13l4 4L19 7" />
+        </motion.svg>
+      </motion.div>
+      <motion.h2
+        className="font-serif text-2xl md:text-3xl tracking-tight mb-3"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2, duration: 0.3 }}
+      >
+        Thanks {firstName}, we have your application.
+      </motion.h2>
+      <motion.p
+        className="text-[hsl(var(--color-foreground-muted))] max-w-md mx-auto mb-2"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.35 }}
+      >
+        You applied for <strong>{roleTitle}</strong> at Craefto.
+      </motion.p>
+      <motion.p
+        className="text-[hsl(var(--color-foreground-subtle))] text-sm max-w-md mx-auto mb-8"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.45 }}
+      >
+        We review every application carefully. Expect to hear from us within a week.
+      </motion.p>
+      <motion.div
+        className="flex flex-col sm:flex-row items-center justify-center gap-4"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5 }}
+      >
+        <Button asChild>
+          <Link href="/careers">View other roles</Link>
+        </Button>
+        <Button variant="ghost" asChild>
+          <Link href="/">Back to Craefto</Link>
+        </Button>
+      </motion.div>
+    </motion.div>
   );
 }
 
@@ -462,41 +709,63 @@ function StepWrapper({ children }: { children: React.ReactNode }) {
   );
 }
 
+// ── Step heading ──
+
+function StepHeading({ title, subtitle }: { title: string; subtitle: string }) {
+  return (
+    <div className="mb-8">
+      <h2 className="font-serif text-2xl md:text-3xl tracking-tight text-[hsl(var(--color-foreground))] mb-1.5">
+        {title}
+      </h2>
+      <p className="text-sm text-[hsl(var(--color-foreground-muted))]">{subtitle}</p>
+    </div>
+  );
+}
+
 // ── Step navigation ──
 
 function StepNav({
+  step,
+  totalSteps,
   onPrev,
   onNext,
   onSubmit,
 }: {
+  step: number;
+  totalSteps: number;
   onPrev?: () => void;
   onNext?: () => void;
   onSubmit?: () => void;
 }) {
   return (
-    <div className="flex items-center justify-between mt-8 pt-6 border-t border-[hsl(var(--color-border))]">
-      {onPrev ? (
-        <Button variant="ghost" onClick={onPrev}>
-          <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
-          Back
-        </Button>
-      ) : (
-        <div />
-      )}
+    <div className="flex items-center justify-between mt-10 pt-6 border-t border-[hsl(var(--color-border))]">
+      <div className="flex items-center gap-4">
+        {onPrev ? (
+          <Button variant="ghost" onClick={onPrev}>
+            <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            Back
+          </Button>
+        ) : (
+          <div />
+        )}
+        <span className="text-xs text-[hsl(var(--color-foreground-subtle))]">
+          Step {step + 1} of {totalSteps} — {STEPS[step]}
+        </span>
+      </div>
       {onNext && (
         <Button onClick={onNext}>
           Continue
-          <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-4 h-4 ml-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
           </svg>
         </Button>
       )}
       {onSubmit && (
-        <Button variant="accent" onClick={onSubmit}>
+        <Button variant="accent" size="lg" onClick={onSubmit}>
           Submit application
-          <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-4 h-4 ml-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
           </svg>
         </Button>
@@ -525,7 +794,6 @@ function StepPersonal({
 
   return (
     <div className="space-y-5">
-      <h2 className="text-xl font-semibold mb-6">Personal information</h2>
       <FormField label="Full name" required error={errors.full_name}>
         <input
           type="text"
@@ -619,21 +887,20 @@ function StepQuestions({
   };
 
   return (
-    <div className="space-y-6">
-      <h2 className="text-xl font-semibold mb-6">A few questions</h2>
+    <div className="space-y-7">
       {questions.map((q) => (
         <FormField key={q.id} label={q.label} required={q.required} helperText={q.helperText} error={errors[q.id]}>
           {q.type === "single-select" && q.options && (
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2.5">
               {q.options.map((opt) => (
                 <button
                   key={opt}
                   type="button"
                   onClick={() => update(q.id, opt)}
-                  className={`px-4 py-2 rounded-xl text-sm font-medium border transition-all ${
+                  className={`px-5 py-2.5 rounded-full text-sm font-medium border transition-all duration-200 ${
                     answers[q.id] === opt
-                      ? "bg-[hsl(var(--color-accent))]/20 text-[hsl(var(--color-accent))] border-[hsl(var(--color-accent))]/50"
-                      : "bg-[hsl(var(--color-background-subtle))] text-[hsl(var(--color-foreground-muted))] border-[hsl(var(--color-border))] hover:border-[hsl(var(--color-foreground-subtle))]"
+                      ? "bg-[hsl(var(--color-foreground))] border-[hsl(var(--color-foreground))] text-[hsl(var(--color-background))]"
+                      : "bg-transparent border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground-muted))] hover:border-[hsl(var(--color-foreground))]"
                   }`}
                 >
                   {opt}
@@ -643,7 +910,7 @@ function StepQuestions({
           )}
 
           {q.type === "multi-select" && q.options && (
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2.5">
               {q.options.map((opt) => {
                 const selected = Array.isArray(answers[q.id]) && (answers[q.id] as string[]).includes(opt);
                 return (
@@ -657,15 +924,15 @@ function StepQuestions({
                         selected ? current.filter((v) => v !== opt) : [...current, opt]
                       );
                     }}
-                    className={`px-4 py-2 rounded-xl text-sm font-medium border transition-all ${
+                    className={`px-5 py-2.5 rounded-full text-sm font-medium border transition-all duration-200 ${
                       selected
-                        ? "bg-[hsl(var(--color-accent))]/20 text-[hsl(var(--color-accent))] border-[hsl(var(--color-accent))]/50"
-                        : "bg-[hsl(var(--color-background-subtle))] text-[hsl(var(--color-foreground-muted))] border-[hsl(var(--color-border))] hover:border-[hsl(var(--color-foreground-subtle))]"
+                        ? "bg-[hsl(var(--color-foreground))] border-[hsl(var(--color-foreground))] text-[hsl(var(--color-background))]"
+                        : "bg-transparent border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground-muted))] hover:border-[hsl(var(--color-foreground))]"
                     }`}
                   >
                     {selected && (
-                      <svg className="w-3.5 h-3.5 inline mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      <svg className="w-3.5 h-3.5 inline mr-1.5 -ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
                       </svg>
                     )}
                     {opt}
@@ -673,6 +940,14 @@ function StepQuestions({
                 );
               })}
             </div>
+          )}
+
+          {q.type === "compensation" && (
+            <CompensationField
+              value={(answers[q.id] as string) || ""}
+              onChange={(val) => update(q.id, val)}
+              error={errors[q.id]}
+            />
           )}
 
           {q.type === "short-text" && (
@@ -691,23 +966,19 @@ function StepQuestions({
                 value={(answers[q.id] as string) || ""}
                 onChange={(e) => update(q.id, e.target.value)}
                 placeholder={q.placeholder}
-                rows={5}
-                className={`${inputClass(errors[q.id])} resize-y min-h-[140px]`}
+                rows={4}
+                className={`${inputClass(errors[q.id])} resize-y min-h-[120px]`}
               />
-              {(q.minLength || q.maxLength) && (
-                <div className="flex justify-between mt-1.5">
-                  <span className="text-xs text-[hsl(var(--color-foreground-subtle))]">
-                    {q.minLength ? `Min ${q.minLength} chars` : ""}
-                  </span>
+              {q.maxLength && (
+                <div className="flex justify-end mt-1.5">
                   <span
                     className={`text-xs ${
-                      q.maxLength && ((answers[q.id] as string) || "").length > q.maxLength
-                        ? "text-red-400"
+                      ((answers[q.id] as string) || "").length > q.maxLength
+                        ? "text-red-500"
                         : "text-[hsl(var(--color-foreground-subtle))]"
                     }`}
                   >
-                    {((answers[q.id] as string) || "").length}
-                    {q.maxLength ? ` / ${q.maxLength}` : ""}
+                    {((answers[q.id] as string) || "").length} / {q.maxLength}
                   </span>
                 </div>
               )}
@@ -715,6 +986,70 @@ function StepQuestions({
           )}
         </FormField>
       ))}
+    </div>
+  );
+}
+
+// ── Compensation Field ──
+
+function CompensationField({
+  value,
+  onChange,
+  error,
+}: {
+  value: string;
+  onChange: (val: string) => void;
+  error?: string;
+}) {
+  // Parse existing value like "100 AUD / hour"
+  const parts = value.split(" ");
+  const amount = parts[0] || "";
+  const currency = (parts[1] as typeof CURRENCIES[number]) || "AUD";
+  const period = (parts[3] as typeof PERIODS[number]) || "hour";
+
+  const buildValue = (a: string, c: string, p: string) => {
+    if (!a) return "";
+    return `${a} ${c} / ${p}`;
+  };
+
+  return (
+    <div
+      className={`flex items-stretch rounded-xl border overflow-hidden transition-all duration-200 ${
+        error
+          ? "border-red-500/50"
+          : "border-[hsl(var(--color-border))] focus-within:border-[hsl(var(--color-foreground))] focus-within:ring-2 focus-within:ring-[hsl(var(--color-foreground))]/5"
+      }`}
+    >
+      <input
+        type="number"
+        min="0"
+        value={amount}
+        onChange={(e) => onChange(buildValue(e.target.value, currency, period))}
+        placeholder="0"
+        className="w-28 flex-shrink-0 px-4 py-4 bg-[hsl(var(--color-background))] text-[hsl(var(--color-foreground))] placeholder-[hsl(var(--color-foreground-subtle))] focus:outline-none text-sm [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+      />
+      <div className="w-px bg-[hsl(var(--color-border))]" />
+      <select
+        value={currency}
+        onChange={(e) => onChange(buildValue(amount, e.target.value, period))}
+        className="px-3 py-4 bg-[hsl(var(--color-background))] text-[hsl(var(--color-foreground))] text-sm focus:outline-none cursor-pointer appearance-none"
+        style={{ backgroundImage: "none" }}
+      >
+        {CURRENCIES.map((c) => (
+          <option key={c} value={c}>{c}</option>
+        ))}
+      </select>
+      <div className="w-px bg-[hsl(var(--color-border))]" />
+      <select
+        value={period}
+        onChange={(e) => onChange(buildValue(amount, currency, e.target.value))}
+        className="flex-1 px-3 py-4 bg-[hsl(var(--color-background))] text-[hsl(var(--color-foreground))] text-sm focus:outline-none cursor-pointer appearance-none"
+        style={{ backgroundImage: "none" }}
+      >
+        {PERIODS.map((p) => (
+          <option key={p} value={p}>per {p}</option>
+        ))}
+      </select>
     </div>
   );
 }
@@ -739,9 +1074,7 @@ function StepFiles({
   errors: FormErrors;
 }) {
   return (
-    <div className="space-y-6">
-      <h2 className="text-xl font-semibold mb-6">Upload your documents</h2>
-
+    <div className="space-y-7">
       <FormField label="Resume" required error={errors.resume}>
         <FileUploadZone
           file={resume}
@@ -760,7 +1093,7 @@ function StepFiles({
         />
       </FormField>
 
-      <p className="text-xs text-[hsl(var(--color-foreground-subtle))]">
+      <p className="text-xs text-[hsl(var(--color-foreground-subtle))] italic">
         Accepted formats: PDF, DOC, DOCX. Max 10 MB per file.
       </p>
     </div>
@@ -778,23 +1111,43 @@ function FileUploadZone({
   onRemove: () => void;
   id: string;
 }) {
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+
   if (file.filename) {
     return (
-      <div className="flex items-center gap-3 p-4 bg-[hsl(var(--color-background-subtle))] border border-[hsl(var(--color-border))] rounded-xl">
-        <svg className="w-5 h-5 text-[hsl(var(--color-accent))] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div className="flex items-center gap-4 p-4 bg-[hsl(var(--color-background-subtle))] border border-[hsl(var(--color-border))] rounded-xl">
+        <svg className="w-6 h-6 text-[hsl(var(--color-foreground))] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
         </svg>
-        <span className="flex-1 text-sm text-[hsl(var(--color-foreground))] truncate">{file.filename}</span>
-        <button
-          type="button"
-          onClick={onRemove}
-          className="text-[hsl(var(--color-foreground-subtle))] hover:text-[hsl(var(--color-foreground))] transition-colors"
-          aria-label="Remove file"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
+        <div className="flex-1 min-w-0">
+          <p className="text-sm text-[hsl(var(--color-foreground))] truncate font-medium">{file.filename}</p>
+          {file.file && (
+            <p className="text-xs text-[hsl(var(--color-foreground-subtle))]">{formatFileSize(file.file.size)}</p>
+          )}
+        </div>
+        <div className="flex items-center gap-2 flex-shrink-0">
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            className="text-xs text-[hsl(var(--color-foreground-muted))] hover:text-[hsl(var(--color-foreground))] transition-colors underline underline-offset-2"
+          >
+            Replace
+          </button>
+          <button
+            type="button"
+            onClick={onRemove}
+            className="text-xs text-[hsl(var(--color-foreground-subtle))] hover:text-red-500 transition-colors underline underline-offset-2"
+          >
+            Remove
+          </button>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".pdf,.doc,.docx"
+            onChange={onChange}
+            className="hidden"
+          />
+        </div>
       </div>
     );
   }
@@ -802,14 +1155,16 @@ function FileUploadZone({
   return (
     <label
       htmlFor={id}
-      className="flex flex-col items-center justify-center gap-2 p-8 border-2 border-dashed border-[hsl(var(--color-border))] rounded-xl cursor-pointer hover:border-[hsl(var(--color-accent))]/50 transition-colors"
+      className="flex flex-col items-center justify-center gap-3 min-h-[160px] border-2 border-dashed border-[hsl(var(--color-border))] rounded-xl cursor-pointer hover:border-[hsl(var(--color-foreground))] transition-colors duration-200"
     >
-      <svg className="w-8 h-8 text-[hsl(var(--color-foreground-subtle))]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg className="w-10 h-10 text-[hsl(var(--color-foreground-subtle))]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
       </svg>
-      <span className="text-sm text-[hsl(var(--color-foreground-muted))]">
-        Click to upload or drag and drop
-      </span>
+      <div className="text-center">
+        <span className="text-sm font-semibold text-[hsl(var(--color-foreground))]">Click to upload</span>
+        <br />
+        <span className="text-xs text-[hsl(var(--color-foreground-muted))]">or drag and drop</span>
+      </div>
       <input
         id={id}
         type="file"
@@ -840,8 +1195,6 @@ function StepReview({
 }) {
   return (
     <div className="space-y-6">
-      <h2 className="text-xl font-semibold mb-6">Review your application</h2>
-
       {/* Personal */}
       <ReviewSection title="Personal information" onEdit={() => onEditStep(0)}>
         <ReviewRow label="Name" value={personal.full_name} />
@@ -883,13 +1236,13 @@ function ReviewSection({
   return (
     <div className="bg-[hsl(var(--color-background-subtle))] border border-[hsl(var(--color-border))] rounded-xl p-5">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-sm font-medium text-[hsl(var(--color-foreground-subtle))] uppercase tracking-wider">
+        <h3 className="text-xs font-semibold text-[hsl(var(--color-foreground-subtle))] uppercase tracking-wider">
           {title}
         </h3>
         <button
           type="button"
           onClick={onEdit}
-          className="text-xs text-[hsl(var(--color-accent))] hover:underline"
+          className="text-xs text-[hsl(var(--color-foreground-muted))] hover:text-[hsl(var(--color-foreground))] underline underline-offset-2 transition-colors"
         >
           Edit
         </button>
@@ -925,16 +1278,16 @@ function FormField({
 }) {
   return (
     <div>
-      <label className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-1.5">
+      <label className="block text-sm font-semibold tracking-tight text-[hsl(var(--color-foreground))] mb-2">
         {label}
-        {required && <span className="text-[hsl(var(--color-accent))] ml-1">*</span>}
+        {required && <span className="text-[hsl(var(--color-foreground-muted))] ml-1">*</span>}
       </label>
       {helperText && (
-        <p className="text-xs text-[hsl(var(--color-foreground-subtle))] mb-2">{helperText}</p>
+        <p className="text-xs text-[hsl(var(--color-foreground-subtle))] mb-2 italic">{helperText}</p>
       )}
       {children}
       {error && (
-        <p className="text-xs text-red-400 mt-1.5" role="alert" aria-live="polite">
+        <p className="text-xs text-red-500 mt-1.5" role="alert" aria-live="polite">
           {error}
         </p>
       )}
@@ -943,9 +1296,9 @@ function FormField({
 }
 
 function inputClass(error?: string) {
-  return `w-full px-4 py-3 bg-[hsl(var(--color-background-subtle))] border ${
+  return `w-full px-4 py-4 bg-[hsl(var(--color-background))] border ${
     error
-      ? "border-red-500/50 focus:ring-red-500/50"
-      : "border-[hsl(var(--color-border))] focus:ring-[hsl(var(--color-ring))]"
-  } rounded-xl text-[hsl(var(--color-foreground))] placeholder-[hsl(var(--color-foreground-subtle))] focus:outline-none focus:ring-2 transition-all`;
+      ? "border-red-500/50 focus:ring-red-500/20"
+      : "border-[hsl(var(--color-border))] focus:border-[hsl(var(--color-foreground))] focus:ring-[hsl(var(--color-foreground))]/5"
+  } rounded-xl text-sm text-[hsl(var(--color-foreground))] placeholder-[hsl(var(--color-foreground-subtle))] focus:outline-none focus:ring-2 transition-all duration-200`;
 }
