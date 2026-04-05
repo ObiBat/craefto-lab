@@ -413,12 +413,13 @@ export function Header() {
               style={{ transitionDelay: isMobileMenuOpen ? "550ms" : "0ms" }}
             >
               <p className="text-sm text-white/60 mb-2">Get in touch</p>
-              <a
-                href="mailto:hello@craefto.com"
-                className="text-white font-medium hover:underline"
+              <button
+                type="button"
+                onClick={() => handleMobileNav("/contact")}
+                className="text-white font-medium hover:underline text-left"
               >
                 hello@craefto.com
-              </a>
+              </button>
             </div>
           </div>
         </div>
