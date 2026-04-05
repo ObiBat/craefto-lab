@@ -315,7 +315,9 @@ export function ApplicationFormClient({ role }: { role: Role }) {
 
             {/* Compact header row */}
             <div className="flex flex-wrap items-center justify-between gap-4">
-              <h1 className="font-serif text-2xl md:text-3xl tracking-tight text-[hsl(var(--color-foreground))]">
+              <h1
+                className="font-serif tracking-tight text-[hsl(var(--color-foreground))] !text-[28px] md:!text-[34px] !leading-[1.15]"
+              >
                 Apply for {role.title}
               </h1>
               <div className="flex items-center gap-2">
