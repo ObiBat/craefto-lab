@@ -3,17 +3,33 @@ import { createClient, SupabaseClient } from '@supabase/supabase-js';
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 
+// Lazy-throwing stand-in used when env vars are missing. Allows the module to
+// import successfully (so unrelated code paths still work) but surfaces a
+// clear, actionable error the moment any consumer tries to use the client.
+function makeUnconfiguredClient(message: string): SupabaseClient {
+  return new Proxy({} as SupabaseClient, {
+    get() {
+      throw new Error(message);
+    },
+  });
+}
+
 // Client-side Supabase client (uses anon key)
-export const supabase: SupabaseClient = supabaseUrl && supabaseAnonKey
-  ? createClient(supabaseUrl, supabaseAnonKey)
-  : (null as unknown as SupabaseClient);
+export const supabase: SupabaseClient =
+  supabaseUrl && supabaseAnonKey
+    ? createClient(supabaseUrl, supabaseAnonKey)
+    : makeUnconfiguredClient(
+        'Supabase client is not configured. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY.'
+      );
 
 // Server-side Supabase client (uses service role key)
-export function createServerClient() {
+export function createServerClient(): SupabaseClient {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!url || !serviceRoleKey) {
-    return null as unknown as SupabaseClient;
+    throw new Error(
+      'Supabase server client is not configured. Set NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY.'
+    );
   }
   return createClient(url, serviceRoleKey, {
     auth: {

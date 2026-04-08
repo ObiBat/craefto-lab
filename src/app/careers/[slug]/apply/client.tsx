@@ -10,13 +10,14 @@ import { PageTransition, AnimatedSection } from "@/components/ui";
 import type { Role, ApplicationQuestion } from "@/lib/careers";
 import { supabase } from "@/lib/supabase";
 
-const STEPS = ["Personal", "Questions", "Files", "Review", "Submit"] as const;
+// User-facing steps. The submission spinner is rendered as an overlay rather
+// than a fake step so the progress indicator and step counter stay accurate.
+const STEPS = ["Personal", "Questions", "Files", "Review"] as const;
 const STEP_SUBTITLES = [
   "Tell us who you are and how to reach you.",
   "A few quick questions about your experience.",
   "Upload your resume and any supporting documents.",
   "Double-check everything before submitting.",
-  "Sending your application.",
 ];
 const STORAGE_KEY_PREFIX = "craefto_apply_";
 const ACCEPTED_FILE_TYPES = [
@@ -88,6 +89,7 @@ export function ApplicationFormClient({ role }: { role: Role }) {
   const [coverLetter, setCoverLetter] = React.useState<FileInfo>({ file: null, url: "", filename: "" });
   const [errors, setErrors] = React.useState<FormErrors>({});
   const [submitted, setSubmitted] = React.useState(false);
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [uploadProgress, setUploadProgress] = React.useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = React.useState(false);
   const formTopRef = React.useRef<HTMLDivElement>(null);
@@ -113,7 +115,10 @@ export function ApplicationFormClient({ role }: { role: Role }) {
     });
   }, [step, submitted]);
 
-  // Load draft from localStorage
+  // Load draft from localStorage. We persist text fields and current step,
+  // but file uploads cannot survive a refresh — so cap the restored step at
+  // the Files step (index 2). Otherwise users would land on Review with an
+  // empty resume slot and trip a confusing validation error on submit.
   React.useEffect(() => {
     try {
       const saved = localStorage.getItem(getStorageKey(role.slug));
@@ -121,7 +126,9 @@ export function ApplicationFormClient({ role }: { role: Role }) {
         const data = JSON.parse(saved);
         if (data.personal) setPersonal(data.personal);
         if (data.answers) setAnswers(data.answers);
-        if (data.step !== undefined) setStep(data.step);
+        if (typeof data.step === "number") {
+          setStep(Math.min(Math.max(data.step, 0), 2));
+        }
       }
     } catch {
       // ignore
@@ -191,6 +198,9 @@ export function ApplicationFormClient({ role }: { role: Role }) {
 
   const goPrev = () => setStep((s) => Math.max(s - 1, 0));
 
+  // Backward navigation only. Going back never invalidates earlier steps, so
+  // it is safe to jump to any prior step. Forward navigation must always go
+  // through goNext() so the current step is re-validated before advancing.
   const goToStep = (s: number) => {
     if (s < step) setStep(s);
   };
@@ -220,43 +230,78 @@ export function ApplicationFormClient({ role }: { role: Role }) {
     setter({ file, url: "", filename: file.name });
   };
 
-  const uploadFile = async (fileInfo: FileInfo): Promise<{ url: string; filename: string } | null> => {
-    if (!fileInfo.file) return fileInfo.url ? { url: fileInfo.url, filename: fileInfo.filename } : null;
+  // Upload via a server-issued signed URL. The browser never holds an API key
+  // capable of writing to storage — the server validates role, filename, size,
+  // and mime type before issuing a short-lived token scoped to a single path.
+  const uploadFile = async (
+    fileInfo: FileInfo,
+    kind: "resume" | "cover_letter"
+  ): Promise<{ url: string; filename: string } | null> => {
+    if (!fileInfo.file) {
+      return fileInfo.url ? { url: fileInfo.url, filename: fileInfo.filename } : null;
+    }
+    const file = fileInfo.file;
 
-    const timestamp = Date.now();
-    const safeName = fileInfo.file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
-    const path = `${role.slug}/${timestamp}-${safeName}`;
+    // 1. Ask the server for a signed upload URL.
+    const urlRes = await fetch("/api/careers/upload-url", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        role_slug: role.slug,
+        filename: file.name,
+        size: file.size,
+        type: file.type,
+        kind,
+      }),
+    });
 
+    if (!urlRes.ok) {
+      const err = await urlRes.json().catch(() => ({}));
+      throw new Error(err.error || "Could not prepare upload.");
+    }
+
+    const { token, path, publicUrl } = (await urlRes.json()) as {
+      signedUrl: string;
+      token: string;
+      path: string;
+      publicUrl: string;
+    };
+
+    // 2. Upload the file to the signed URL. The token authorises this single
+    // path; no anon key is required.
     const { error } = await supabase.storage
       .from("job-applications")
-      .upload(path, fileInfo.file, { cacheControl: "3600", upsert: false });
+      .uploadToSignedUrl(path, token, file);
 
     if (error) throw new Error(`Upload failed: ${error.message}`);
 
-    const { data: urlData } = supabase.storage
-      .from("job-applications")
-      .getPublicUrl(path);
-
-    return { url: urlData.publicUrl, filename: fileInfo.file.name };
+    return { url: publicUrl, filename: file.name };
   };
 
   const handleSubmit = async () => {
-    if (!validateStep(2)) {
-      setStep(2);
-      return;
+    // Re-validate every prior step in order. If any step is invalid (e.g.
+    // because the user edited a field via the Review screen and cleared
+    // something required) jump back to that step rather than trusting the
+    // server to surface the error.
+    for (const s of [0, 1, 2] as const) {
+      if (!validateStep(s)) {
+        setStep(s);
+        return;
+      }
     }
 
-    setStep(4); // move to submit step
+    setIsSubmitting(true);
+    setErrors({});
 
     try {
-      // Upload files
+      // Upload files via signed URLs
       setUploadProgress("Uploading resume...");
-      const resumeResult = await uploadFile(resume);
+      const resumeResult = await uploadFile(resume, "resume");
 
       let coverLetterResult: { url: string; filename: string } | null = null;
       if (coverLetter.file) {
         setUploadProgress("Uploading cover letter...");
-        coverLetterResult = await uploadFile(coverLetter);
+        coverLetterResult = await uploadFile(coverLetter, "cover_letter");
       }
 
       setUploadProgress("Submitting application...");
@@ -302,9 +347,15 @@ export function ApplicationFormClient({ role }: { role: Role }) {
 
       setSubmitted(true);
     } catch (err) {
-      setErrors({ submit: err instanceof Error ? err.message : "Something went wrong. Please try again." });
-      setStep(3); // back to review
+      setErrors({
+        submit:
+          err instanceof Error
+            ? err.message
+            : "Something went wrong. Please try again.",
+      });
+      // Stay on the Review step so the user sees the error in context.
     } finally {
+      setIsSubmitting(false);
       setUploadProgress(null);
     }
   };
@@ -410,6 +461,16 @@ export function ApplicationFormClient({ role }: { role: Role }) {
                   </AnimatedSection>
                 )}
 
+                {/* Persistent screen-reader announcement of the current step.
+                    Always rendered so SR/AT reliably picks up text changes. */}
+                <div role="status" aria-live="polite" className="sr-only">
+                  {submitted
+                    ? "Application submitted."
+                    : isSubmitting
+                    ? uploadProgress || "Submitting application."
+                    : `Step ${step + 1} of ${STEPS.length}: ${STEPS[step]}. ${STEP_SUBTITLES[step]}`}
+                </div>
+
                 {/* Form steps */}
                 <AnimatePresence mode="wait">
                   {step === 0 && !submitted && (
@@ -475,20 +536,6 @@ export function ApplicationFormClient({ role }: { role: Role }) {
                     </StepWrapper>
                   )}
 
-                  {step === 4 && !submitted && (
-                    <StepWrapper key="submitting">
-                      <div className="flex flex-col items-center justify-center py-20 gap-6">
-                        <div className="relative">
-                          <div className="w-12 h-12 rounded-full border-2 border-[hsl(var(--color-border))]" />
-                          <div className="animate-spin absolute inset-0 w-12 h-12 rounded-full border-2 border-transparent border-t-[hsl(var(--color-foreground))]" />
-                        </div>
-                        <p className="text-[hsl(var(--color-foreground-muted))] animate-pulse">
-                          {uploadProgress || "Submitting..."}
-                        </p>
-                      </div>
-                    </StepWrapper>
-                  )}
-
                   {submitted && (
                     <StepWrapper key="success">
                       <SuccessScreen firstName={personal.full_name.split(" ")[0]} roleTitle={role.title} />
@@ -506,6 +553,10 @@ export function ApplicationFormClient({ role }: { role: Role }) {
             </div>
           </Container>
         </Section>
+
+        <AnimatePresence>
+          {isSubmitting && <SubmittingOverlay progress={uploadProgress} />}
+        </AnimatePresence>
       </main>
     </PageTransition>
   );
@@ -539,6 +590,7 @@ function ProgressIndicator({
                   isCompleted ? "hover:scale-110 cursor-pointer" : ""
                 } ${isUpcoming ? "cursor-default" : ""}`}
                 aria-label={`Step ${i + 1}: ${label}`}
+                aria-current={isActive ? "step" : undefined}
               >
                 <motion.div
                   className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold border-2 transition-colors duration-200 ${
@@ -658,6 +710,32 @@ function MetaRow({ label, value }: { label: string; value: string }) {
       <span className="text-[hsl(var(--color-foreground-subtle))]">{label}</span>
       <span className="text-[hsl(var(--color-foreground))] font-medium">{value}</span>
     </div>
+  );
+}
+
+// ── Submitting Overlay ──
+
+function SubmittingOverlay({ progress }: { progress: string | null }) {
+  return (
+    <motion.div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-[hsl(var(--color-background))]/80 backdrop-blur-sm"
+      role="status"
+      aria-live="polite"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+    >
+      <div className="flex flex-col items-center gap-6">
+        <div className="relative">
+          <div className="w-12 h-12 rounded-full border-2 border-[hsl(var(--color-border))]" />
+          <div className="animate-spin absolute inset-0 w-12 h-12 rounded-full border-2 border-transparent border-t-[hsl(var(--color-foreground))]" />
+        </div>
+        <p className="text-[hsl(var(--color-foreground-muted))] animate-pulse">
+          {progress || "Submitting..."}
+        </p>
+      </div>
+    </motion.div>
   );
 }
 
@@ -839,71 +917,85 @@ function StepPersonal({
 
   return (
     <div className="space-y-5">
-      <FormField label="Full name" required error={errors.full_name}>
+      <FormField label="Full name" htmlFor="apply-full-name" required error={errors.full_name}>
         <input
+          id="apply-full-name"
           type="text"
           value={personal.full_name}
           onChange={(e) => update("full_name", e.target.value)}
           placeholder="Your full name"
           className={inputClass(errors.full_name)}
           autoFocus
+          autoComplete="name"
         />
       </FormField>
-      <FormField label="Email address" required error={errors.email}>
+      <FormField label="Email address" htmlFor="apply-email" required error={errors.email}>
         <input
+          id="apply-email"
           type="email"
           value={personal.email}
           onChange={(e) => update("email", e.target.value)}
           placeholder="you@example.com"
           className={inputClass(errors.email)}
+          autoComplete="email"
         />
       </FormField>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-        <FormField label="Phone">
+        <FormField label="Phone" htmlFor="apply-phone">
           <input
+            id="apply-phone"
             type="tel"
             value={personal.phone}
             onChange={(e) => update("phone", e.target.value)}
             placeholder="+61 ..."
             className={inputClass()}
+            autoComplete="tel"
           />
         </FormField>
-        <FormField label="City / Country">
+        <FormField label="City / Country" htmlFor="apply-location">
           <input
+            id="apply-location"
             type="text"
             value={personal.location}
             onChange={(e) => update("location", e.target.value)}
             placeholder="Sydney, Australia"
             className={inputClass()}
+            autoComplete="address-level2"
           />
         </FormField>
       </div>
-      <FormField label="Portfolio URL">
+      <FormField label="Portfolio URL" htmlFor="apply-portfolio">
         <input
+          id="apply-portfolio"
           type="url"
           value={personal.portfolio_url}
           onChange={(e) => update("portfolio_url", e.target.value)}
           placeholder="https://yourportfolio.com"
           className={inputClass()}
+          autoComplete="url"
         />
       </FormField>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-        <FormField label="LinkedIn">
+        <FormField label="LinkedIn" htmlFor="apply-linkedin">
           <input
+            id="apply-linkedin"
             type="url"
             value={personal.linkedin_url}
             onChange={(e) => update("linkedin_url", e.target.value)}
             placeholder="https://linkedin.com/in/..."
             className={inputClass()}
+            autoComplete="url"
           />
         </FormField>
-        <FormField label="GitHub">
+        <FormField label="GitHub" htmlFor="apply-github">
           <input
+            id="apply-github"
             type="url"
             value={personal.github_url}
             onChange={(e) => update("github_url", e.target.value)}
             placeholder="https://github.com/..."
             className={inputClass()}
+            autoComplete="url"
           />
         </FormField>
       </div>
@@ -933,91 +1025,130 @@ function StepQuestions({
 
   return (
     <div className="space-y-7">
-      {questions.map((q) => (
-        <FormField key={q.id} label={q.label} required={q.required} helperText={q.helperText} error={errors[q.id]}>
-          {q.type === "single-select" && q.options && (
-            <div className="flex flex-wrap gap-2.5">
-              {q.options.map((opt) => (
-                <button
-                  key={opt}
-                  type="button"
-                  onClick={() => update(q.id, opt)}
-                  className={chipClass(answers[q.id] === opt)}
-                >
-                  {opt}
-                </button>
-              ))}
-            </div>
-          )}
+      {questions.map((q) => {
+        const labelId = `q-${q.id}-label`;
+        const inputId = `q-${q.id}`;
+        const isFreeText =
+          q.type === "short-text" ||
+          q.type === "long-text" ||
+          q.type === "compensation";
 
-          {q.type === "multi-select" && q.options && (
-            <div className="flex flex-wrap gap-2.5">
-              {q.options.map((opt) => {
-                const selected = Array.isArray(answers[q.id]) && (answers[q.id] as string[]).includes(opt);
-                return (
-                  <button
-                    key={opt}
-                    type="button"
-                    onClick={() => {
-                      const current = (Array.isArray(answers[q.id]) ? answers[q.id] : []) as string[];
-                      update(
-                        q.id,
-                        selected ? current.filter((v) => v !== opt) : [...current, opt]
-                      );
-                    }}
-                    className={chipClass(selected)}
-                  >
-                    {opt}
-                  </button>
-                );
-              })}
-            </div>
-          )}
+        return (
+          <FormField
+            key={q.id}
+            label={q.label}
+            required={q.required}
+            helperText={q.helperText}
+            error={errors[q.id]}
+            labelId={labelId}
+            htmlFor={isFreeText ? inputId : undefined}
+          >
+            {q.type === "single-select" && q.options && (
+              <div
+                role="radiogroup"
+                aria-labelledby={labelId}
+                className="flex flex-wrap gap-2.5"
+              >
+                {q.options.map((opt) => {
+                  const selected = answers[q.id] === opt;
+                  return (
+                    <button
+                      key={opt}
+                      type="button"
+                      role="radio"
+                      aria-checked={selected}
+                      onClick={() => update(q.id, opt)}
+                      className={chipClass(selected)}
+                    >
+                      {opt}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
 
-          {q.type === "compensation" && (
-            <CompensationField
-              value={(answers[q.id] as string) || ""}
-              onChange={(val) => update(q.id, val)}
-              error={errors[q.id]}
-            />
-          )}
+            {q.type === "multi-select" && q.options && (
+              <div
+                role="group"
+                aria-labelledby={labelId}
+                className="flex flex-wrap gap-2.5"
+              >
+                {q.options.map((opt) => {
+                  const selected =
+                    Array.isArray(answers[q.id]) &&
+                    (answers[q.id] as string[]).includes(opt);
+                  return (
+                    <button
+                      key={opt}
+                      type="button"
+                      role="checkbox"
+                      aria-checked={selected}
+                      onClick={() => {
+                        const current = (Array.isArray(answers[q.id])
+                          ? answers[q.id]
+                          : []) as string[];
+                        update(
+                          q.id,
+                          selected ? current.filter((v) => v !== opt) : [...current, opt]
+                        );
+                      }}
+                      className={chipClass(selected)}
+                    >
+                      {opt}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
 
-          {q.type === "short-text" && (
-            <input
-              type="text"
-              value={(answers[q.id] as string) || ""}
-              onChange={(e) => update(q.id, e.target.value)}
-              placeholder={q.placeholder}
-              className={inputClass(errors[q.id])}
-            />
-          )}
+            {q.type === "compensation" && (
+              <CompensationField
+                amountId={inputId}
+                value={(answers[q.id] as string) || ""}
+                onChange={(val) => update(q.id, val)}
+                error={errors[q.id]}
+              />
+            )}
 
-          {q.type === "long-text" && (
-            <div>
-              <textarea
+            {q.type === "short-text" && (
+              <input
+                id={inputId}
+                type="text"
                 value={(answers[q.id] as string) || ""}
                 onChange={(e) => update(q.id, e.target.value)}
                 placeholder={q.placeholder}
-                rows={4}
-                className={`${inputClass(errors[q.id])} resize-y min-h-[120px]`}
+                className={inputClass(errors[q.id])}
               />
-              {q.maxLength && (
-                <div className="flex justify-end mt-1.5">
-                  <span
-                    className={`text-xs ${
-                      ((answers[q.id] as string) || "").length > q.maxLength
-                        ? "text-red-500"
-                        : "text-[hsl(var(--color-foreground-subtle))]"
-                    }`}
-                  >
-                    {((answers[q.id] as string) || "").length} / {q.maxLength}
-                  </span>
-                </div>
-              )}
-            </div>
-          )}
-        </FormField>
-      ))}
+            )}
+
+            {q.type === "long-text" && (
+              <div>
+                <textarea
+                  id={inputId}
+                  value={(answers[q.id] as string) || ""}
+                  onChange={(e) => update(q.id, e.target.value)}
+                  placeholder={q.placeholder}
+                  rows={4}
+                  className={`${inputClass(errors[q.id])} resize-y min-h-[120px]`}
+                />
+                {q.maxLength && (
+                  <div className="flex justify-end mt-1.5">
+                    <span
+                      className={`text-xs ${
+                        ((answers[q.id] as string) || "").length > q.maxLength
+                          ? "text-red-500"
+                          : "text-[hsl(var(--color-foreground-subtle))]"
+                      }`}
+                    >
+                      {((answers[q.id] as string) || "").length} / {q.maxLength}
+                    </span>
+                  </div>
+                )}
+              </div>
+            )}
+          </FormField>
+        );
+      })}
     </div>
   );
 }
@@ -1025,10 +1156,12 @@ function StepQuestions({
 // ── Compensation Field ──
 
 function CompensationField({
+  amountId,
   value,
   onChange,
   error,
 }: {
+  amountId: string;
   value: string;
   onChange: (val: string) => void;
   error?: string;
@@ -1053,17 +1186,20 @@ function CompensationField({
       }`}
     >
       <input
+        id={amountId}
         type="number"
         min="0"
         value={amount}
         onChange={(e) => onChange(buildValue(e.target.value, currency, period))}
         placeholder="0"
+        aria-label="Amount"
         className="w-28 flex-shrink-0 px-4 py-4 bg-[hsl(var(--color-background))] text-[hsl(var(--color-foreground))] placeholder-[hsl(var(--color-foreground-subtle))] focus:outline-none text-sm [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
       />
       <div className="w-px bg-[hsl(var(--color-border))]" />
       <select
         value={currency}
         onChange={(e) => onChange(buildValue(amount, e.target.value, period))}
+        aria-label="Currency"
         className="px-3 py-4 bg-[hsl(var(--color-background))] text-[hsl(var(--color-foreground))] text-sm focus:outline-none cursor-pointer appearance-none"
         style={{ backgroundImage: "none" }}
       >
@@ -1075,6 +1211,7 @@ function CompensationField({
       <select
         value={period}
         onChange={(e) => onChange(buildValue(amount, currency, e.target.value))}
+        aria-label="Period"
         className="flex-1 px-3 py-4 bg-[hsl(var(--color-background))] text-[hsl(var(--color-foreground))] text-sm focus:outline-none cursor-pointer appearance-none"
         style={{ backgroundImage: "none" }}
       >
@@ -1107,7 +1244,7 @@ function StepFiles({
 }) {
   return (
     <div className="space-y-7">
-      <FormField label="Resume" required error={errors.resume}>
+      <FormField label="Resume" htmlFor="resume-upload" required error={errors.resume}>
         <FileUploadZone
           file={resume}
           onChange={onResumeChange}
@@ -1116,7 +1253,7 @@ function StepFiles({
         />
       </FormField>
 
-      <FormField label="Cover letter" helperText="Optional but recommended">
+      <FormField label="Cover letter" htmlFor="cover-letter-upload" helperText="Optional but recommended">
         <FileUploadZone
           file={coverLetter}
           onChange={onCoverLetterChange}
@@ -1297,12 +1434,21 @@ function ReviewRow({ label, value }: { label: string; value: string }) {
 
 function FormField({
   label,
+  htmlFor,
+  labelId,
   required,
   helperText,
   error,
   children,
 }: {
   label: string;
+  /** id of the input the label refers to. Required for proper a11y on
+   *  single-input fields. Omit only when wrapping a group of controls
+   *  (chip selects, multi-input compounds), and pair with `labelId`. */
+  htmlFor?: string;
+  /** Stable id for the label element so groups of controls can reference
+   *  it via `aria-labelledby`. */
+  labelId?: string;
   required?: boolean;
   helperText?: string;
   error?: string;
@@ -1310,7 +1456,11 @@ function FormField({
 }) {
   return (
     <div>
-      <label className="block text-sm font-semibold tracking-tight text-[hsl(var(--color-foreground))] mb-2">
+      <label
+        htmlFor={htmlFor}
+        id={labelId}
+        className="block text-sm font-semibold tracking-tight text-[hsl(var(--color-foreground))] mb-2"
+      >
         {label}
         {required && <span className="text-[hsl(var(--color-foreground-muted))] ml-1">*</span>}
       </label>
@@ -1318,11 +1468,15 @@ function FormField({
         <p className="text-xs text-[hsl(var(--color-foreground-subtle))] mb-2 italic">{helperText}</p>
       )}
       {children}
-      {error && (
-        <p className="text-xs text-red-500 mt-1.5" role="alert" aria-live="polite">
-          {error}
-        </p>
-      )}
+      {/* Always-rendered live region — text-only updates are reliably
+          announced by screen readers, unlike conditionally inserted nodes. */}
+      <p
+        className={`text-xs text-red-500 mt-1.5 ${error ? "" : "sr-only"}`}
+        role="alert"
+        aria-live="polite"
+      >
+        {error || ""}
+      </p>
     </div>
   );
 }

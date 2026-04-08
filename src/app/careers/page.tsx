@@ -15,15 +15,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { roles } from "@/lib/careers";
 
-function formatDate(dateString: string): string {
-  const date = new Date(dateString + "T00:00:00");
-  return date.toLocaleDateString("en-AU", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
-}
-
 const principles = [
   { text: "Ship real work. No spec projects, no fake briefs." },
   { text: "Trust taste over process. We hire creatives, not task completers." },

@@ -1,3 +1,5 @@
+import { escapeHtml } from "./_escape";
+
 const FONT_STACK = "'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif";
 const SERIF_STACK = "'Source Serif 4', 'Source Serif Pro', Georgia, 'Times New Roman', serif";
 
@@ -142,13 +144,4 @@ export function ApplicationConfirmationEmail({
 </body>
 </html>
 `;
-}
-
-function escapeHtml(s: string): string {
-  return s
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;");
 }

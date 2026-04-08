@@ -11,34 +11,65 @@ import {
   getApplicationConfirmationSubject,
 } from "@/emails/application-confirmation";
 
-const rateLimitMap = new Map<string, { count: number; timestamp: number }>();
 const RATE_LIMIT = 5;
-const RATE_LIMIT_WINDOW = 60 * 60 * 1000;
+const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000; // 1 hour
+const STORAGE_BUCKET = "job-applications";
 
-function isRateLimited(ip: string): boolean {
-  const now = Date.now();
-  const record = rateLimitMap.get(ip);
-  if (!record || now - record.timestamp > RATE_LIMIT_WINDOW) {
-    rateLimitMap.set(ip, { count: 1, timestamp: now });
-    return false;
-  }
-  if (record.count >= RATE_LIMIT) return true;
-  record.count++;
-  return false;
+// Allowed prefix for resume / cover letter URLs. We only accept storage URLs
+// that we issued ourselves via the signed-upload flow, scoped to the
+// `job-applications` bucket on our own Supabase project.
+function getStoragePublicPrefix(): string | null {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  if (!supabaseUrl) return null;
+  return `${supabaseUrl.replace(/\/$/, "")}/storage/v1/object/public/${STORAGE_BUCKET}/`;
+}
+
+function isValidStorageUrl(url: string | null | undefined): boolean {
+  if (!url) return true; // optional fields
+  const prefix = getStoragePublicPrefix();
+  if (!prefix) return false;
+  if (typeof url !== "string") return false;
+  if (!url.startsWith(prefix)) return false;
+  // Reject any path-traversal or query-string trickery.
+  const tail = url.slice(prefix.length);
+  if (tail.includes("..") || tail.includes("?") || tail.includes("#")) return false;
+  return true;
 }
 
 export async function POST(request: NextRequest) {
   try {
     const ip =
-      request.headers.get("x-forwarded-for")?.split(",")[0] ||
+      request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
       request.headers.get("x-real-ip") ||
       "unknown";
 
-    if (isRateLimited(ip)) {
+    let supabase;
+    try {
+      supabase = createServerClient();
+    } catch {
       return NextResponse.json(
-        { error: "Too many requests. Please try again later." },
-        { status: 429 }
+        { error: "Service is not configured. Please try again later." },
+        { status: 500 }
       );
+    }
+
+    // Persistent rate limiting: count submissions from this IP in the last
+    // hour using the `job_applications` table itself. Survives cold starts and
+    // is consistent across serverless instances.
+    if (ip !== "unknown") {
+      const since = new Date(Date.now() - RATE_LIMIT_WINDOW_MS).toISOString();
+      const { count, error: rateError } = await supabase
+        .from("job_applications")
+        .select("id", { count: "exact", head: true })
+        .eq("ip_address", ip)
+        .gte("created_at", since);
+
+      if (!rateError && typeof count === "number" && count >= RATE_LIMIT) {
+        return NextResponse.json(
+          { error: "Too many requests. Please try again later." },
+          { status: 429 }
+        );
+      }
     }
 
     const body = await request.json();
@@ -72,7 +103,11 @@ export async function POST(request: NextRequest) {
       const answer = answers.find(
         (a: { question_id: string }) => a.question_id === q.id
       );
-      if (!answer || !answer.answer || (Array.isArray(answer.answer) && answer.answer.length === 0)) {
+      if (
+        !answer ||
+        !answer.answer ||
+        (Array.isArray(answer.answer) && answer.answer.length === 0)
+      ) {
         return NextResponse.json(
           { error: `Please answer: ${q.label}` },
           { status: 400 }
@@ -80,10 +115,16 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Validate resume URL format if provided
-    if (body.resume_url && !body.resume_url.startsWith("http")) {
+    // Validate file URLs — must be from our own storage bucket only.
+    if (!isValidStorageUrl(body.resume_url)) {
       return NextResponse.json(
         { error: "Invalid resume URL." },
+        { status: 400 }
+      );
+    }
+    if (!isValidStorageUrl(body.cover_letter_url)) {
+      return NextResponse.json(
+        { error: "Invalid cover letter URL." },
         { status: 400 }
       );
     }
@@ -108,7 +149,6 @@ export async function POST(request: NextRequest) {
       user_agent: request.headers.get("user-agent") || null,
     };
 
-    const supabase = createServerClient();
     const { data: application, error: insertError } = await supabase
       .from("job_applications")
       .insert(applicationData)

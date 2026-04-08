@@ -61,6 +61,31 @@ const categoryConfig: Record<ChangeCategory, { label: string; color: string }> =
 
 const changelog: ChangelogEntry[] = [
   {
+    date: "April 8, 2026",
+    version: "2.4.1",
+    milestone: "Careers Hardening",
+    changes: [
+      {
+        title: "Careers form security pass",
+        description: "Hardened the job application flow before public traffic. Every applicant-supplied value in the admin notification email is now HTML-escaped (closing an XSS vector via filename / URL / free-text answers). File uploads now flow through server-issued signed URLs — the browser never holds a key that can write to storage, and a new migration revokes the public-insert policy on the storage bucket. The applications endpoint validates that resume and cover letter URLs originate from our own bucket, and the in-process rate limiter has been replaced with a persistent count over recent submissions so the 5/hour ceiling survives serverless cold starts. Supabase clients now fail loudly on missing env vars instead of throwing opaque errors at first use.",
+        categories: ["security", "engineering"],
+        commits: 5,
+      },
+      {
+        title: "Apply form accessibility pass",
+        description: "Every input on the application form is now programmatically associated with its label via htmlFor / id, so screen readers announce labels on focus and clicking the label focuses the input. Chip-style single-select and multi-select questions are exposed as semantic radio and checkbox groups. The active progress step is marked aria-current, and a persistent live region announces step transitions and field errors to assistive tech.",
+        categories: ["engineering", "design"],
+        commits: 2,
+      },
+      {
+        title: "Apply flow UX fixes",
+        description: "Removed the fake \"Submit\" pseudo-step that was breaking the progress counter — submission is now an overlay rather than a fifth step. handleSubmit re-validates every prior step so editing fields from the Review screen can no longer slip past validation. Draft restore now caps the resumed step at Files, since file uploads cannot survive a refresh. Cleaned up dead formatDate helpers on the careers index and role detail pages.",
+        categories: ["engineering", "design"],
+        commits: 3,
+      },
+    ],
+  },
+  {
     date: "March 29, 2026",
     version: "2.4.0",
     milestone: "Services Experience Overhaul",
