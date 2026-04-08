@@ -15,24 +15,74 @@ const RATE_LIMIT = 5;
 const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000; // 1 hour
 const STORAGE_BUCKET = "job-applications";
 
-// Allowed prefix for resume / cover letter URLs. We only accept storage URLs
-// that we issued ourselves via the signed-upload flow, scoped to the
-// `job-applications` bucket on our own Supabase project.
-function getStoragePublicPrefix(): string | null {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  if (!supabaseUrl) return null;
-  return `${supabaseUrl.replace(/\/$/, "")}/storage/v1/object/public/${STORAGE_BUCKET}/`;
-}
-
+// We only accept storage URLs we issued ourselves via the signed-upload flow,
+// scoped to the `job-applications` bucket on our own Supabase project.
+//
+// Comparison is structural (origin + pathname) rather than a string prefix
+// match so it survives hostname case normalization, trailing whitespace in
+// env vars, and the `xyz.storage.supabase.co` host variant that supabase-js
+// uses when `useNewHostname` is enabled.
 function isValidStorageUrl(url: string | null | undefined): boolean {
   if (!url) return true; // optional fields
-  const prefix = getStoragePublicPrefix();
-  if (!prefix) return false;
   if (typeof url !== "string") return false;
-  if (!url.startsWith(prefix)) return false;
-  // Reject any path-traversal or query-string trickery.
-  const tail = url.slice(prefix.length);
-  if (tail.includes("..") || tail.includes("?") || tail.includes("#")) return false;
+
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
+  if (!supabaseUrl) {
+    console.warn("[careers/apply] NEXT_PUBLIC_SUPABASE_URL is not set");
+    return false;
+  }
+
+  let parsed: URL;
+  let expected: URL;
+  try {
+    parsed = new URL(url);
+    expected = new URL(supabaseUrl);
+  } catch {
+    console.warn("[careers/apply] storage URL or env var is not a valid URL", { url });
+    return false;
+  }
+
+  // Allow either the canonical Supabase host (xyz.supabase.co) or the
+  // storage subdomain variant (xyz.storage.supabase.co) that supabase-js
+  // uses when the new hostname option is enabled.
+  const canonicalHost = expected.hostname.toLowerCase();
+  const storageHost = canonicalHost.replace(
+    /^([^.]+)\.(supabase\.(?:co|in|red))$/,
+    "$1.storage.$2"
+  );
+  const actualHost = parsed.hostname.toLowerCase();
+  if (actualHost !== canonicalHost && actualHost !== storageHost) {
+    console.warn("[careers/apply] storage URL host mismatch", {
+      actualHost,
+      canonicalHost,
+      storageHost,
+    });
+    return false;
+  }
+
+  // Pathname must point inside our public bucket.
+  const pathPrefix = `/storage/v1/object/public/${STORAGE_BUCKET}/`;
+  if (!parsed.pathname.startsWith(pathPrefix)) {
+    console.warn("[careers/apply] storage URL pathname mismatch", {
+      pathname: parsed.pathname,
+      pathPrefix,
+    });
+    return false;
+  }
+
+  const fileTail = parsed.pathname.slice(pathPrefix.length);
+  if (!fileTail) return false;
+  if (fileTail.includes("..") || fileTail.includes("//")) return false;
+
+  // We never issue URLs with query strings or hash fragments.
+  if (parsed.search || parsed.hash) {
+    console.warn("[careers/apply] storage URL has unexpected query or hash", {
+      search: parsed.search,
+      hash: parsed.hash,
+    });
+    return false;
+  }
+
   return true;
 }
 
