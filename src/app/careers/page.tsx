@@ -109,9 +109,9 @@ export default function CareersPage() {
                   <AnimatedSection>
                     <SectionLabel number="01" label="Philosophy" />
                     <h2 className="font-semibold tracking-tight mt-4">
-                      Not your typical
+                      Built for the
                       <br />
-                      studio gig
+                      obsessive
                     </h2>
                   </AnimatedSection>
                 </div>
