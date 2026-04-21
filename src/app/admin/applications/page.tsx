@@ -31,7 +31,7 @@ const STATUS_OPTIONS = [
 const ROLE_OPTIONS = [
   { value: "all", label: "All Roles" },
   { value: "creative-designer", label: "Creative Designer" },
-  { value: "copywriter", label: "Copywriter" },
+  { value: "marketing-manager", label: "Marketing Manager" },
 ];
 
 function getStatusStyle(status: string) {
