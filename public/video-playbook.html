@@ -872,6 +872,213 @@
     .drawer-header { padding: 14px 22px; }
   }
 
+  /* === World-class benchmark cards === */
+  .benchmark-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+    gap: 16px;
+    margin: 22px 0;
+  }
+  .benchmark-card {
+    background: var(--cream-subtle);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+  }
+  .benchmark-card .brand {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--sage);
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+  .benchmark-card h4 {
+    font-family: var(--serif);
+    font-size: 19px;
+    margin: 0 0 10px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    text-transform: none;
+  }
+  .benchmark-card .desc {
+    font-size: 13.5px;
+    line-height: 1.55;
+    margin: 0 0 14px;
+    color: var(--ink-muted);
+  }
+  .benchmark-card .lesson {
+    background: var(--sage-subtle);
+    padding: 10px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    line-height: 1.5;
+    margin-bottom: 14px;
+    color: var(--ink);
+  }
+  .benchmark-card .lesson strong {
+    display: block;
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--sage);
+    margin-bottom: 3px;
+    font-weight: 600;
+  }
+  .benchmark-card .watch {
+    margin-top: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--sage);
+    text-decoration: none;
+    font-weight: 600;
+    align-self: flex-start;
+    padding: 7px 12px;
+    background: var(--cream);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    transition: all 120ms;
+  }
+  .benchmark-card .watch:hover {
+    color: #fff;
+    background: var(--sage);
+    border-color: var(--sage);
+  }
+  .benchmark-card .watch .arrow { display: inline-block; transition: transform 120ms; }
+  .benchmark-card .watch:hover .arrow { transform: translateX(2px); }
+
+  /* === AI gloss vs editorial comparison === */
+  .compare-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+    gap: 14px;
+    margin: 18px 0 26px;
+  }
+  .compare-card {
+    border-radius: 10px;
+    padding: 18px 20px;
+    border: 1px solid;
+  }
+  .compare-card.avoid { background: #FAF1DC; border-color: #E8CC8E; }
+  .compare-card.aim { background: var(--sage-subtle); border-color: var(--sage); }
+  .compare-card h4 {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin: 0 0 12px;
+    font-family: var(--sans);
+    font-weight: 700;
+  }
+  .compare-card.avoid h4 { color: #8A6112; }
+  .compare-card.aim h4 { color: var(--sage); }
+  .compare-card ul { list-style: none; padding: 0; margin: 0; }
+  .compare-card li {
+    padding: 7px 0 7px 22px;
+    font-size: 14px;
+    line-height: 1.45;
+    border-bottom: 1px solid rgba(26, 23, 20, 0.06);
+    position: relative;
+  }
+  .compare-card li:last-child { border-bottom: none; }
+  .compare-card li::before {
+    position: absolute;
+    left: 0;
+    top: 7px;
+    font-weight: 700;
+    font-size: 13px;
+  }
+  .compare-card.avoid li::before { content: '✕'; color: #B8821C; }
+  .compare-card.aim li::before { content: '✓'; color: var(--sage); }
+
+  /* === Practice cards === */
+  .practice-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
+    gap: 12px;
+    margin: 18px 0 26px;
+  }
+  .practice-card {
+    background: var(--cream-subtle);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px 16px;
+  }
+  .practice-card .num {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    background: var(--ink);
+    color: var(--cream);
+    padding: 3px 8px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+  }
+  .practice-card h5 {
+    font-family: var(--serif);
+    font-size: 16px;
+    margin: 0 0 6px;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.25;
+  }
+  .practice-card p {
+    font-size: 13.5px;
+    margin: 0;
+    color: var(--ink-muted);
+    line-height: 1.5;
+  }
+
+  /* === Reference watchlist === */
+  .watchlist {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
+    gap: 10px;
+    margin: 18px 0 24px;
+  }
+  .watchlist a {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 12px 14px;
+    background: var(--cream-subtle);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 120ms;
+    color: var(--ink);
+  }
+  .watchlist a:hover {
+    background: var(--cream);
+    border-color: var(--sage);
+    transform: translateY(-1px);
+  }
+  .watchlist .ref-name {
+    font-family: var(--serif);
+    font-size: 15px;
+    color: var(--ink);
+    font-weight: 600;
+    line-height: 1.3;
+  }
+  .watchlist .ref-name::after {
+    content: ' →';
+    color: var(--sage);
+    font-family: var(--sans);
+    font-weight: normal;
+  }
+  .watchlist .ref-note {
+    font-size: 12px;
+    color: var(--ink-subtle);
+    line-height: 1.4;
+  }
+
   /* Phone — native bottom sheet */
   @media (max-width: 700px) {
     .drawer {
@@ -1179,18 +1386,54 @@
       <h2><span class="num">07</span>World-class benchmarks</h2>
       <p class="sub">What world-class brands and agencies actually shipped with AI video in 2025–26 — and the lesson worth copying.</p>
 
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>Brand / Agency</th><th>What they did</th><th>Lesson for CRAEFTO</th></tr></thead>
-          <tbody>
-            <tr><td><strong>Coca-Cola</strong></td><td>Re-released the 1995 "Holidays Are Coming" ad fully AI-generated, run through three studios (LA, SF, KL) staffed by creative technologists trained on both gen-AI and storytelling. Beat their own and competitor Christmas benchmarks.</td><td>Pair gen-AI with directing discipline. Creative technologists &gt; prompt engineers.</td></tr>
-            <tr><td><strong>Mango (Sunset Dream)</strong></td><td>Photographed real garments first, then trained a generative model on those photos to produce editorial-quality campaign images across 95 markets.</td><td>Reference-driven generation beats text-only. Always anchor in real photography of the subject.</td></tr>
-            <tr><td><strong>Toys "R" Us</strong></td><td>66-second Geoffrey-the-Giraffe origin film entirely from text prompts (Sora). Cinematic on a lean budget.</td><td>A single hero film is the proof artefact for the whole pipeline.</td></tr>
-            <tr><td><strong>Heinz</strong></td><td>DALL·E 2 ketchup imagery → 850M impressions. Higher engagement than past campaigns.</td><td>AI video earns reach because the AI-ness is part of the talkable hook — but only if it's on-brand.</td></tr>
-            <tr><td><strong>Nike</strong> (Serena 1999 vs 2017)</td><td>Recreated a virtual match between two eras of the same athlete using AI motion analysis.</td><td>Specific, narratively-charged premise beats generic "look what AI can do".</td></tr>
-            <tr><td><strong>FIS × Marketbridge</strong> (2026)</td><td>Three-part cinematic ABM video series mixing live action, immersive sound, stylized animation, AI-assisted design.</td><td>Hybrid wins. AI for impossible shots, human craft for everything that touches feeling.</td></tr>
-          </tbody>
-        </table>
+      <div class="benchmark-grid">
+        <article class="benchmark-card">
+          <div class="brand">Coca-Cola · 2024</div>
+          <h4>Holidays Are Coming · AI re-release</h4>
+          <p class="desc">Re-released the 1995 ad fully AI-generated, run through three studios (Secret Level, Silverside AI, Wild Card) using four generative models and 70,000 clips. Despite mixed online reception, scored higher for craving-induction and brand recall than the 2020 version in independent testing.</p>
+          <div class="lesson"><strong>Lesson for CRAEFTO</strong>Pair gen-AI with directing discipline. Creative technologists &gt; prompt engineers.</div>
+          <a class="watch" href="https://www.youtube.com/watch?v=IQWUKWM2JrQ" target="_blank" rel="noopener">Watch · YouTube <span class="arrow">→</span></a>
+        </article>
+
+        <article class="benchmark-card">
+          <div class="brand">Mango · 2024</div>
+          <h4>Sunset Dream · Mango Teen</h4>
+          <p class="desc">Photographed real garments first, then trained a generative model on those photos to produce editorial-quality campaign images across 95 markets — the first major fashion campaign generated entirely with AI. Art team retouched and mastered the AI outputs in their studio.</p>
+          <div class="lesson"><strong>Lesson for CRAEFTO</strong>Reference-driven generation beats text-only. Always anchor in real photography of the subject.</div>
+          <a class="watch" href="https://www.mangofashiongroup.com/en/w/mango-launches-its-first-campaign-entirely-generated-by-artificial-intelligence" target="_blank" rel="noopener">Read case study <span class="arrow">→</span></a>
+        </article>
+
+        <article class="benchmark-card">
+          <div class="brand">Toys "R" Us · 2024 · Cannes Lions</div>
+          <h4>The Origin of Toys "R" Us</h4>
+          <p class="desc">66-second Geoffrey-the-Giraffe founding-story film, almost entirely Sora-generated with corrective VFX and an original score. The first major brand film made with AI — Native Foreign condensed hundreds of iterative shots to a couple dozen, in weeks.</p>
+          <div class="lesson"><strong>Lesson for CRAEFTO</strong>A single hero film is the proof artefact for the whole pipeline.</div>
+          <a class="watch" href="https://www.youtube.com/watch?v=V1bnVxqb1pQ" target="_blank" rel="noopener">Watch · YouTube <span class="arrow">→</span></a>
+        </article>
+
+        <article class="benchmark-card">
+          <div class="brand">Nike × AKQA · 2022 · Cannes Grand Prix</div>
+          <h4>Never Done Evolving · Serena</h4>
+          <p class="desc">Used machine learning to re-render 1999 Serena vs 2017 Serena from archival footage in a virtual match, building on Stanford's vid2player technique. 130,000 simulated games. 1.69M live YouTube viewers. Cannes Lions Grand Prix in Digital Craft 2023.</p>
+          <div class="lesson"><strong>Lesson for CRAEFTO</strong>Specific, narratively-charged premise beats generic "look what AI can do".</div>
+          <a class="watch" href="https://www.youtube.com/watch?v=2ehJczf2FEk" target="_blank" rel="noopener">Watch case study · YouTube <span class="arrow">→</span></a>
+        </article>
+
+        <article class="benchmark-card">
+          <div class="brand">Heinz · 2022</div>
+          <h4>AI Ketchup</h4>
+          <p class="desc">DALL·E 2 prompts for "ketchup" returned overwhelmingly Heinz-shaped imagery. Heinz built the campaign around that fact — owned the AI-generates-our-bottle moment. 850M impressions, higher engagement than past campaigns.</p>
+          <div class="lesson"><strong>Lesson for CRAEFTO</strong>AI video earns reach because the AI-ness is part of the talkable hook — but only if it's on-brand.</div>
+          <a class="watch" href="https://www.heinz.com/newsroom/heinz-ai-ketchup" target="_blank" rel="noopener">Read case study <span class="arrow">→</span></a>
+        </article>
+
+        <article class="benchmark-card">
+          <div class="brand">FIS × Marketbridge · 2026</div>
+          <h4>Three-part cinematic ABM series</h4>
+          <p class="desc">Three cinematic ABM (account-based marketing) videos mixing live action, immersive sound design, stylised animation, and AI-assisted design. Hybrid production explicitly — AI used for impossible shots, human craft for everything emotional.</p>
+          <div class="lesson"><strong>Lesson for CRAEFTO</strong>Hybrid wins. AI for impossible shots, human craft for everything that touches feeling.</div>
+          <a class="watch" href="https://www.marketbridge.com/case-studies/fis" target="_blank" rel="noopener">Read case study <span class="arrow">→</span></a>
+        </article>
       </div>
 
       <div class="callout">
@@ -1801,6 +2044,126 @@ Negative: no neon, no shiny chrome, no lens flare, no people's faces.</div>
       <div class="callout">
         <strong>The default mix for a CRAEFTO 60–90s film</strong>
         ~50% Path A (still-first via Midjourney → Runway Gen-4) for editorial atmosphere · ~30% Path B (Veo 3.1 direct) for synced-audio hero shots · ~15% Path C (Descript live capture) for real UI · ~5% Path D (composition) for end cards. Adjust per idea — the per-shot tool column in each Idea Explorer card tells you which path is recommended.
+      </div>
+
+      <h3>AI gloss vs editorial AI · the difference at a glance</h3>
+      <p>What separates Aesop / Loewe / Apple-grade AI video from generic AI marketing slop. The left column is what every default Veo 3.1 / Runway prompt produces unless you fight it. The right is what world-class brands ship — and what every CRAEFTO output should match.</p>
+
+      <div class="compare-grid">
+        <div class="compare-card avoid">
+          <h4>Avoid · AI gloss tells</h4>
+          <ul>
+            <li>Over-smooth skin, plastic specularity</li>
+            <li>Glassy reflective surfaces everywhere</li>
+            <li>1-second metronome cut rhythm</li>
+            <li>Saturated hyper-color, neon highlights</li>
+            <li>Flat overhead key light</li>
+            <li>Generic stock-photo smiles, AI-uncanny eyes</li>
+            <li>Floating cursors, glowing UI elements</li>
+            <li>Whip-pans, dramatic crane reveals</li>
+            <li>Symmetrical perfect faces</li>
+            <li>Bouncy easing curves on motion</li>
+          </ul>
+        </div>
+        <div class="compare-card aim">
+          <h4>Aim for · editorial markers</h4>
+          <ul>
+            <li>Visible 35mm film grain</li>
+            <li>Matte surfaces, paper texture obsession</li>
+            <li>1.5–3-second considered cuts</li>
+            <li>Restrained palette — 3 hex codes maximum</li>
+            <li>Single warm window source, camera-left</li>
+            <li>Real, subtle micro-expressions or no faces</li>
+            <li>Real hand interactions, never floating</li>
+            <li>≤2-degree dollies, eye-line composition</li>
+            <li>Imperfect — slight asymmetry reads as real</li>
+            <li>Real-world hand speed, no slow-motion default</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>Eight practices that produce world-class output</h3>
+      <p>The discipline behind every Aesop, Loewe, and Apple-grade AI campaign. Adopt these as non-negotiable for any CRAEFTO production — internal or client.</p>
+
+      <div class="practice-grid">
+        <article class="practice-card">
+          <span class="num">01</span>
+          <h5>Pull references first</h5>
+          <p>Build a 30-image Pinterest board <em>before</em> writing a prompt. Aesop, Loewe, Apple, Eames. Don't generate without a target.</p>
+        </article>
+        <article class="practice-card">
+          <span class="num">02</span>
+          <h5>Iterate stills 20+ times</h5>
+          <p>Stills are ~$0.04 each in Midjourney. Iterate until the frame looks photographed, not generated. <em>Then</em> animate.</p>
+        </article>
+        <article class="practice-card">
+          <span class="num">03</span>
+          <h5>Lock the brand kit</h5>
+          <p>HeyGen brand kit + Runway style refs + Midjourney <code>--sref</code> all locked to the exact Paper &amp; Ink palette. Reject anything that drifts.</p>
+        </article>
+        <article class="practice-card">
+          <span class="num">04</span>
+          <h5>Run the AI gloss test</h5>
+          <p>For every shot, ask: would this pass a Vimeo Staff Picks editor? If skin is too smooth or surfaces too glassy, re-prompt with more grain language.</p>
+        </article>
+        <article class="practice-card">
+          <span class="num">05</span>
+          <h5>Slow down — 2.5s is the new 1s</h5>
+          <p>Default AI cut rhythm is one cut per second. World-class is 1.5–3s holds. Brand films can hold a single shot for 8 seconds.</p>
+        </article>
+        <article class="practice-card">
+          <span class="num">06</span>
+          <h5>Single warm window light</h5>
+          <p>Every prompt names one motivated light source — usually a window from camera-left. Never overhead fluorescents. Never flat.</p>
+        </article>
+        <article class="practice-card">
+          <span class="num">07</span>
+          <h5>Real audio over synthesized SFX</h5>
+          <p>Veo 3.1's strength is native audio. For Path A shots, use real Foley or capture real sound. Synthesized SFX gives the AI tell instantly.</p>
+        </article>
+        <article class="practice-card">
+          <span class="num">08</span>
+          <h5>Restrict color to 3 hex codes</h5>
+          <p>Cream <code>#FAF7F2</code>, ink <code>#1A1714</code>, sage <code>#4B6B57</code>. Anything else (teal, purple, neon) gets re-prompted with tighter negatives.</p>
+        </article>
+      </div>
+
+      <h3>Reference watchlist · films and campaigns to study</h3>
+      <p>None of these are AI. They define the bar. Watch them, study the framing, the pacing, the restraint — then prompt to match. Your Pinterest mood board for any new CRAEFTO production should pull from at least three of these.</p>
+
+      <div class="watchlist">
+        <a href="https://www.youtube.com/results?search_query=aesop+brand+film" target="_blank" rel="noopener">
+          <span class="ref-name">Aesop fragrance &amp; product films</span>
+          <span class="ref-note">Restraint, paper texture, single window light. The single biggest reference for CRAEFTO.</span>
+        </a>
+        <a href="https://www.youtube.com/@LOEWE" target="_blank" rel="noopener">
+          <span class="ref-name">Loewe campaigns</span>
+          <span class="ref-note">Editorial portrait composition, intentional backgrounds, restrained motion.</span>
+        </a>
+        <a href="https://www.youtube.com/results?search_query=apple+crafted+in+california" target="_blank" rel="noopener">
+          <span class="ref-name">Apple "Crafted in California"</span>
+          <span class="ref-note">Reverence, slow cuts, music as narrator, type as photography.</span>
+        </a>
+        <a href="https://www.youtube.com/@bottegaveneta" target="_blank" rel="noopener">
+          <span class="ref-name">Bottega Veneta short films</span>
+          <span class="ref-note">Material studies, atmospheric POV, near-silent pacing.</span>
+        </a>
+        <a href="https://www.youtube.com/@A24" target="_blank" rel="noopener">
+          <span class="ref-name">A24 trailer style</span>
+          <span class="ref-note">Editorial typography, controlled palette, sound restraint.</span>
+        </a>
+        <a href="https://www.youtube.com/watch?v=0fKBhvDjuy0" target="_blank" rel="noopener">
+          <span class="ref-name">Eames · Powers of Ten</span>
+          <span class="ref-note">Charles &amp; Ray Eames teaching film. Generous time per shot, no irony.</span>
+        </a>
+        <a href="https://vimeo.com/staffpicks" target="_blank" rel="noopener">
+          <span class="ref-name">Vimeo Staff Picks</span>
+          <span class="ref-note">The single most useful filter on the internet for editorial film references.</span>
+        </a>
+        <a href="https://www.youtube.com/results?search_query=hermes+carre+film" target="_blank" rel="noopener">
+          <span class="ref-name">Hermès Carré films</span>
+          <span class="ref-note">Object-as-subject still-life cinema. Direct reference for §17 "The Type Specimen".</span>
+        </a>
       </div>
     </section>
 
