@@ -1079,6 +1079,21 @@
     line-height: 1.4;
   }
 
+  /* === 3-prompt set (start frame · end frame · animation) === */
+  .prompt-set {
+    border-left: 2px solid var(--sage);
+    padding-left: 14px;
+    margin: 12px 0 24px;
+  }
+  .prompt-set .prompt {
+    margin: 8px 0;
+  }
+  .prompt-set .prompt:first-child { margin-top: 0; }
+  .prompt-set .prompt:last-child { margin-bottom: 0; }
+  .prompt-set .prompt::before {
+    color: var(--sage);
+  }
+
   /* === Category sections (Idea Explorer grouping) === */
   .ideas-grid.grouped { display: block; }
   .category-section { margin-top: 32px; }
@@ -2152,6 +2167,32 @@ real-world speed; no slow-motion unless explicitly noted.</div>
         <li><strong>Type as photography.</strong> Wordmarks letterpressed and shot like still life — not animated logos.</li>
         <li><strong>No visible interface.</strong> UI shown only when narratively required. No fake cursors flying.</li>
       </ol>
+
+      <h3>The 3-prompt pattern · start frame · end frame · animation</h3>
+      <p>The 2026 best practice for any Path A shot. Image-to-video models that support <strong>first-and-last-frame interpolation</strong> — Runway Gen-4 (their Frames feature), Kling 2.0+, and Luma Ray2 — produce dramatically better results than single-frame image-to-video: less drift, no morphing, deterministic motion path.</p>
+
+      <p>A single start frame leaves the model guessing the trajectory. Two frames lock both the start AND end pose; the model only interpolates between them. The result is cinema-grade controlled motion instead of generative drift — and is now table stakes for any studio claiming editorial AI quality. Note: ElevenLabs handles the voiceover step; the start/end/animation pattern is for the image-to-video tools (Runway / Kling / Luma).</p>
+
+      <h4>The three prompts</h4>
+      <ol>
+        <li><strong>Start frame prompt</strong> — Midjourney v7 or Flux Pro generates the first frame still. Iterate 10–20 times until the composition is exactly right.</li>
+        <li><strong>End frame prompt</strong> — same tool, locked to the same <code>--seed</code> and <code>--sref</code> as the start. Generates the last frame still — only the destination of the motion changes; everything else is identical.</li>
+        <li><strong>Animation prompt</strong> — Runway Gen-4 Frames or Kling 2.0 first-and-last-frame mode. Describes the motion <em>between</em> the two uploaded stills.</li>
+      </ol>
+
+      <h4>Five rules · 2026 consensus best practices</h4>
+      <ol>
+        <li><strong>Continuity is sacred.</strong> Start and end frames must share lighting, palette, framing, lens. Use Midjourney <code>--seed</code> or <code>--sref</code> to lock visual consistency. Drift here equals morphing in the final video.</li>
+        <li><strong>One verb per shot.</strong> The motion between frames describes ONE action: <em>lifts</em>, <em>tilts</em>, <em>pushes in</em>, <em>extends</em>. Multiple verbs require multiple shots.</li>
+        <li><strong>Specify what stays still.</strong> Models default to generative motion everywhere — you must explicitly tell them what does NOT move. Background elements, props, the chair when only the light should change.</li>
+        <li><strong>Real-world physics.</strong> Always specify "real-world hand speed" or "natural footstep rhythm" or "gentle deliberate motion". The AI default is slow-motion swoosh; you have to fight it on every prompt.</li>
+        <li><strong>Negative prompts for AI tells.</strong> Bake "no morphing, no glitching, no rubber-band motion, no swooping camera, no slow-motion default, no warp" into every animation prompt. Without these, AI motion betrays itself within the first second.</li>
+      </ol>
+
+      <div class="callout">
+        <strong>The full pipeline for one Path A shot</strong>
+        Midjourney v7 → start frame still (iterate 10–20 times) → end frame still (same seed) → upload both to Runway Gen-4 Frames or Kling 2.0 first-and-last-frame → paste animation prompt → render → repeat with 2–3 variants → pick best. Budget: ~$0.10 in stills + ~$3–6 in video = $3–6 per shot. Time: ~15 minutes including iteration. <strong>Famous Scenes Recast Episode 1 (in the Idea Explorer below) uses this exact pattern for Shots 01 and 04 — open the drawer to copy the fully-written start / end / animation prompts.</strong>
+      </div>
 
       <h3>Worked example · Shot 01 of the brand film, three ways</h3>
       <p>Same shot ("hands at letterpress lifting metal type"), three approaches:</p>
@@ -3429,12 +3470,11 @@ Negative: no glow, no stylized splash, no rainbow refraction, no fast motion, no
       script: 'Episode 1 — "The Boardroom" · 35 seconds:\n[00:00–00:05] (silent · slow track-in on an empty chair at the head of a long oak table)\n[00:05–00:12] (wide · founder enters, sets a leather-bound brief on the table; four silhouettes seated around it)\n[00:12–00:18] founder (calm): "You don\'t need three vendors."\n[00:18–00:25] founder (slight forward lean): "You need one studio that ships brand, build, and audit on the same Friday."\n[00:25–00:30] (extreme macro · camera tilts to a stylised fragment of vertical Mongolian script etched into the table edge)\n[00:30–00:35] end card · "CRAEFTO. The same Friday."',
       shots: [
         {
-          num: '01', time: '00:00–00:05', tool: 'Veo 3.1', aspect: '9:16',
+          num: '01', time: '00:00–00:05', tool: 'Midjourney v7 → Runway Gen-4 Frames', aspect: '9:16',
           purpose: 'Empty-chair anticipation hook',
-          prompt: `Slow 1-degree dolly-in, 35mm lens, vertical 9:16, shallow depth of field. Long oak boardroom table viewed from low-angle three-quarter perspective. A single high-back chair sits at the head of the table — empty, slightly turned away from camera. A sage-coloured felt panel is visible on the chair back. Floor-to-ceiling Sydney CBD harbour view through full-height window behind, soft golden-hour light raking from camera-left, dust motes visible in the beam. Cream paper notes on the table; a closed leather-bound brief sits centred. The room is dim, lit primarily by the window. 5 seconds, no other motion.
-SFX: distant Sydney street ambience filtered through glass; the very faint tick of a wall clock; pure room tone.
-Style: 35mm film grain, restrained warmth, atelier mood, cinematic.
-Negative: no neon, no glow, no flying papers, no people in this shot, no animated UI, no overhead fluorescents.`
+          startFrame: `editorial cinematic still, vertical 9:16 aspect, a single empty high-back leather boardroom chair photographed from low-angle three-quarter perspective at the head of a long oak meeting table, sage-coloured felt panel applied to chair back, the chair is slightly turned away from camera, late golden-hour light raking from camera-left through floor-to-ceiling Sydney harbour-view window in deep background, dust motes catching the warm beam, cream paper notes scattered across the table surface, a closed leather-bound brief sits centred on the table, room is dim except for the directional window light, deep oak wood tones, sage felt accent, cream paper, deep ink shadows, 35mm film grain, shallow depth of field, photorealistic, restrained editorial mood, museum-quality cinematography, no people in frame, --ar 9:16 --style raw --v 7 --seed 174203`,
+          endFrame: `editorial cinematic still, vertical 9:16 aspect, the same single empty high-back leather boardroom chair from identical low-angle three-quarter perspective at the head of the same long oak meeting table, sage-coloured felt panel on chair back unchanged, chair position IDENTICAL to start frame, late golden-hour light raking from camera-left through the same floor-to-ceiling Sydney harbour-view window — light now slightly more amber and angled lower as if the sun has descended a fraction, more visible dust motes in the deeper amber beam, the same cream paper notes on the table in identical positions, the same closed leather-bound brief centred unchanged, room slightly dimmer than start frame, same deep oak wood tones, same sage felt accent, same cream paper, slightly deeper shadows, 35mm film grain, shallow depth of field, photorealistic, restrained editorial mood, museum-quality cinematography, no people in frame, --ar 9:16 --style raw --v 7 --seed 174203`,
+          animation: `Animate from the start frame to the end frame over 5 seconds using first-and-last-frame interpolation. Camera: locked tripod, absolutely NO camera movement — no dolly, no pan, no zoom, no rotation. Subject: the chair, the brief, and the cream paper notes on the table all stay COMPLETELY still throughout — they do not move, drift, or warp. The only motion is environmental: the warm window light gradually shifts angle from camera-left, becoming subtly more amber as if the sun is descending in real time. Dust motes drift gently in the beam at real-world speed (no slow-motion). Shadows on the floor and table subtly deepen across the 5 seconds. Audio: layer in post — distant Sydney street ambience filtered through glass, the very faint tick of a wall clock, pure room tone. Negative: no morphing on the chair leather or felt panel, no glitching on the brief or paper notes, no rubber-band motion, no swooping camera, no zoom, no pan, no dolly, no warp, no slow-motion default, no rotating camera, no AI gloss. Real-world physics throughout, gentle as life.`
         },
         {
           num: '02', time: '00:05–00:12', tool: 'Veo 3.1', aspect: '9:16',
@@ -3455,12 +3495,11 @@ Slight forward lean on the second line; a half-second pause between the two line
 Negative: no exaggerated expression, no theatrical inflection, no music swell on the lines.`
         },
         {
-          num: '04', time: '00:25–00:30', tool: 'Veo 3.1', aspect: '9:16',
+          num: '04', time: '00:25–00:30', tool: 'Midjourney v7 → Runway Gen-4 Frames', aspect: '9:16',
           purpose: 'Mongolian-Sydney cultural texture beat',
-          prompt: `Extreme macro tilt, 100mm lens, vertical 9:16. Camera tilts down along the oak table edge to reveal a small, stylised fragment of vertical Mongolian "Bichig" script form, hand-etched into the table edge in deep ink-black. The etching is rendered as design — abstract calligraphic strokes inspired by the visual rhythm of vertical Mongolian script, NOT literal reproducible text. The etching catches the warm side-light briefly. Camera holds for 2 seconds, then a slow 1-degree push-in. 5 seconds total.
-SFX: faint room tone only; near-silence.
-Style: 35mm grain, atelier, restrained warmth, museum-archive aesthetic.
-Negative: no glow, no animation, no specific reproducible characters, no neon, no glow.`
+          startFrame: `editorial cinematic still, vertical 9:16 aspect, extreme macro photograph of an oak boardroom table edge with a stylised vertical-calligraphic-pattern etching hand-carved into the wood in deep ink-black, the etching consists of abstract calligraphic strokes rendered as graphic-design pattern (not literal reproducible text), warm golden-hour side-light raking from camera-left catching the high points of the carved strokes, deep shadows pooling in the carved valleys, oak grain visible at macro scale, single warm window light in soft-focus background, museum-archive aesthetic, 100mm macro lens, very shallow depth of field, 35mm film grain, photorealistic, restrained mood, no people in frame, --ar 9:16 --style raw --v 7 --seed 285716`,
+          endFrame: `editorial cinematic still, vertical 9:16 aspect, extreme macro photograph of the same oak boardroom table edge with the same stylised vertical-calligraphic-pattern etching hand-carved into the wood in deep ink-black — the etching is the IDENTICAL pattern of abstract calligraphic strokes (rendered as graphic-design, not literal reproducible text), camera has pushed in approximately 8% closer making the etching slightly larger in the frame, warm golden-hour side-light from camera-left catching the high points with slightly more amber tone, deep shadows in carved valleys slightly deeper, oak grain visible at macro scale, single warm window light in soft-focus background, museum-archive aesthetic, 100mm macro lens, very shallow depth of field, 35mm film grain, photorealistic, restrained mood, no people in frame, --ar 9:16 --style raw --v 7 --seed 285716`,
+          animation: `Animate from the start frame to the end frame over 5 seconds using first-and-last-frame interpolation. Camera: very slow 1-degree push-in across the duration — gentle, tripod-stable, almost imperceptible, exactly as a steady hand on a focus ring. Subject: the etched pattern in the oak edge stays COMPLETELY still — it is carved into wood, it is not living, it must not morph or shift between frames. The only motion is the subtle camera push-in and a gradual warming of the side-light from golden to slightly more amber. Audio: layer in post — faint room tone only, near-silence. Negative: no morphing on the carved strokes or characters, no glitching, no rubber-band motion, no fast push, no zoom punch, no slow-motion default, no warp, no rotation, no AI gloss. Real-world camera physics — gentle, tripod-stable push, exactly as a steady human hand on a focus knob.`
         },
         {
           num: '05', time: '00:30–00:35', tool: 'Descript', aspect: '9:16',
@@ -3679,10 +3718,19 @@ Negative: no glow, no animation, no specific reproducible characters, no neon, n
         </table>
       </div>`;
 
-    const perShot = idea.shots.map(s => `
-      <h5>Shot ${escapeHtml(s.num)} — ${escapeHtml(s.purpose)} · ${escapeHtml(s.tool)}</h5>
-      <div class="prompt" data-label="${escapeHtml(s.tool)} · ${escapeHtml(s.time)} · ${escapeHtml(s.aspect || '16:9')}"><button class="copy-btn" type="button">Copy</button>${escapeHtml(s.prompt)}</div>
-    `).join('');
+    const perShot = idea.shots.map(s => {
+      const head = `<h5>Shot ${escapeHtml(s.num)} — ${escapeHtml(s.purpose)} · ${escapeHtml(s.tool)}</h5>`;
+      if (s.startFrame && s.endFrame && s.animation) {
+        return head + `
+          <div class="prompt-set">
+            <div class="prompt" data-label="START FRAME · Midjourney v7 / Flux Pro · ${escapeHtml(s.aspect || '16:9')}"><button class="copy-btn" type="button">Copy</button>${escapeHtml(s.startFrame)}</div>
+            <div class="prompt" data-label="END FRAME · Midjourney v7 / Flux Pro · same seed as start"><button class="copy-btn" type="button">Copy</button>${escapeHtml(s.endFrame)}</div>
+            <div class="prompt" data-label="ANIMATION · Runway Gen-4 Frames / Kling 2.0 first-and-last-frame · ${escapeHtml(s.time)}"><button class="copy-btn" type="button">Copy</button>${escapeHtml(s.animation)}</div>
+          </div>
+        `;
+      }
+      return head + `<div class="prompt" data-label="${escapeHtml(s.tool)} · ${escapeHtml(s.time)} · ${escapeHtml(s.aspect || '16:9')}"><button class="copy-btn" type="button">Copy</button>${escapeHtml(s.prompt || '')}</div>`;
+    }).join('');
 
     return `
       <h2>${escapeHtml(idea.title)}</h2>
