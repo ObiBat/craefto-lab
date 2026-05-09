@@ -1079,6 +1079,135 @@
     line-height: 1.4;
   }
 
+  /* === Category sections (Idea Explorer grouping) === */
+  .ideas-grid.grouped { display: block; }
+  .category-section { margin-top: 32px; }
+  .category-section:first-of-type { margin-top: 8px; }
+  .category-header {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+  .category-header h3 {
+    font-family: var(--serif);
+    font-size: 19px;
+    margin: 0;
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  .category-header .desc {
+    font-family: var(--sans);
+    font-size: 12.5px;
+    color: var(--ink-subtle);
+    font-style: italic;
+    flex: 1 1 200px;
+    min-width: 0;
+  }
+  .category-header .count {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--sage);
+    background: var(--sage-subtle);
+    padding: 2px 9px;
+    border-radius: 100px;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+  .cat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr));
+    gap: 14px;
+  }
+
+  /* === Season catalog (in idea drawer) === */
+  .season-catalog {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin: 16px 0 24px;
+  }
+  .season-card {
+    background: var(--cream-subtle);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px 16px;
+  }
+  .season-card .ep-num {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 10px;
+    background: var(--ink);
+    color: var(--cream);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    vertical-align: middle;
+    margin-right: 8px;
+  }
+  .season-card h5 {
+    font-family: var(--serif);
+    font-size: 17px;
+    margin: 0;
+    font-weight: 600;
+    display: inline-block;
+    vertical-align: middle;
+  }
+  .season-card .archetype {
+    font-family: var(--sans);
+    font-size: 11px;
+    color: var(--sage);
+    margin: 6px 0 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 600;
+  }
+  .season-card .ep-meta {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-subtle);
+    flex-wrap: wrap;
+  }
+  .season-card .ep-meta .status {
+    background: var(--cream-muted);
+    color: var(--ink-muted);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+  .season-card .ep-meta .status.production-ready {
+    background: var(--ink);
+    color: var(--cream);
+  }
+  .season-card .premise {
+    font-size: 13.5px;
+    line-height: 1.55;
+    margin: 0 0 10px;
+    color: var(--ink);
+  }
+  .season-card .ep-detail {
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: var(--ink-muted);
+    margin: 4px 0;
+  }
+  .season-card .ep-detail strong {
+    color: var(--sage);
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 700;
+    margin-right: 4px;
+  }
+
   /* Phone — native bottom sheet */
   @media (max-width: 700px) {
     .drawer {
@@ -2374,6 +2503,32 @@ Negative: no neon, no shiny chrome, no lens flare, no people's faces.</div>
   sectionEls.forEach(s => topbarObserver.observe(s));
 
   // ===== IDEA EXPLORER =====
+  // Professional categorisation — each idea maps to one of six categories.
+  // When no filter is active, the explorer renders grouped by category with section headers.
+  const CATEGORIES = {
+    'teardown-tuesday':     'teardown',
+    'sixty-second-audit':   'authority',
+    'tier-list':            'teardown',
+    'shipped-friday':       'behind-scenes',
+    'pixel-postmortem':     'authority',
+    'stop-using-x':         'authority',
+    'sketch-to-ship':       'hero-film',
+    'code-for-designers':   'educational',
+    'same-friday':          'hero-film',
+    'day-in-studio':        'hero-film',
+    'type-specimen':        'hero-film',
+    'material-studies':     'cinematic-series',
+    'famous-scenes-recast': 'cinematic-series'
+  };
+  const CATEGORY_META = {
+    'hero-film':         { name: 'Hero films',          desc: 'Premium one-off cinematic anthems · low cadence, max production value', order: 1 },
+    'cinematic-series':  { name: 'Cinematic series',    desc: 'Recurring cinematic formats that build a brand world over time',         order: 2 },
+    'authority':         { name: 'Authority & opinion', desc: 'Provocative thought leadership · security, design, engineering takes',  order: 3 },
+    'teardown':          { name: 'Public teardowns',    desc: 'Real work shown publicly · landing pages, tier lists, redesigns',       order: 4 },
+    'behind-scenes':     { name: 'Behind the scenes',   desc: 'POV, faceless, process content · the recurring rhythm',                 order: 5 },
+    'educational':       { name: 'Educational',         desc: 'Teaching the audience · concepts via metaphor',                         order: 6 }
+  };
+
   const IDEAS = [
     {
       id: 'teardown-tuesday',
@@ -3329,7 +3484,89 @@ Negative: no glow, no animation, no specific reproducible characters, no neon, n
       ],
       distribution: 'TikTok primary (cinematic short-form wins on TikTok in 2026). Reels and LinkedIn secondary — LinkedIn is where Sydney business owners actually engage. X tertiary. Pin the full-season playlist on each channel. Recurring Tuesday slot creates anticipation; never break the cadence.',
       publishWhere: 'TikTok, Reels, LinkedIn, X · Tuesday 9am Sydney. Pinned season playlist per channel. Embedded /work/series page on craefto.com after episode 4.',
-      kpis: 'Pattern-recognition signal: ≥30% of comments name the cinematic archetype within 24h ("this is so [genre]"). Series follower growth ≥+10% per episode. Inbound from "I saw your boardroom video" attribution in sales-call notes — track in Linear. Sydney/AU region engagement ≥40% of total views (proxy for the target business-owner audience). Mongolian community engagement signal — track shares from MN-AU accounts as a soft KPI.'
+      kpis: 'Pattern-recognition signal: ≥30% of comments name the cinematic archetype within 24h ("this is so [genre]"). Series follower growth ≥+10% per episode. Inbound from "I saw your boardroom video" attribution in sales-call notes — track in Linear. Sydney/AU region engagement ≥40% of total views (proxy for the target business-owner audience). Mongolian community engagement signal — track shares from MN-AU accounts as a soft KPI.',
+      seasonCatalog: [
+        {
+          num: '01',
+          title: 'The Boardroom',
+          archetype: 'Decision-room standoff',
+          length: '35s',
+          premise: 'Founder enters a tense Sydney CBD boardroom, sets a leather-bound brief, delivers two original lines naming the cost of multi-vendor sprawl and the ship-the-whole-stack alternative. The four silhouetted figures around the table do not speak. Cultural texture beat closes on an etched-edge detail.',
+          culturalBeat: 'A stylised vertical-script fragment etched into the oak table edge — rendered as design motif, not literal reproducible text.',
+          trend: 'Economy-of-dialogue formal-room scenes are universally legible across age and culture in 2026 corporate content. Strongest pattern-recognition opener for the season — viewers settle into the format from frame one.',
+          fullyPrompted: true
+        },
+        {
+          num: '02',
+          title: 'The Training Montage',
+          archetype: 'Focused-work-becoming-mastery',
+          length: '40s',
+          premise: 'Five working days, five disciplines, one ship date. Quick-cut sequence: a paper sketch, a Figma frame, a code commit, an audit-checklist tick, a deployed URL. No dialogue. Original Suno score builds from a single felted-piano note to a gentle uplift. Founder appears once for two seconds at the centre of the montage.',
+          culturalBeat: 'A sage felt panel becomes briefly visible as the founder leaves the studio at golden hour.',
+          trend: 'Wordless effort-proof montages are dominating 2026 LinkedIn — perceived as proof without bragging. Among the highest save-rate formats on the platform per recent industry data.',
+          fullyPrompted: false
+        },
+        {
+          num: '03',
+          title: 'The Slow Approach',
+          archetype: 'Hero walking with purpose',
+          length: '30s',
+          premise: 'Founder walks through Sydney CBD at golden hour carrying the leather-bound brief. Sparse voiceover — one paragraph about why the weight of a brief matters, why every page is a decision the studio will own. Reaches a glass-fronted client building, takes the elevator, arrives at a closed door. Cut to black before the meeting begins.',
+          culturalBeat: 'Founder briefly passes a stylised street sign rendered in vertical-script-inspired graphic design (no literal reproducible text).',
+          trend: 'Cinematic POV walking with voiceover is one of TikTok\'s dominant 2026 formats — built for the in-between scrolling of busy founders, lawyers, creative directors. Reaches the target business-owner audience precisely.',
+          fullyPrompted: false
+        },
+        {
+          num: '04',
+          title: 'The Kitchen Table',
+          archetype: 'Intimate one-on-one truth',
+          length: '45s',
+          premise: 'Founder at a home kitchen table at golden hour, cream paper underfoot. A Mongolian milk-tea bowl sits beside a coffee cup — central to the frame. Speaking conversationally to camera about why most agencies cannot ship the whole stack on the same Friday. Never theatrical, never raised. Closes on the founder lifting the bowl.',
+          culturalBeat: 'The milk-tea bowl alongside the coffee cup is the visual anchor for the entire 45 seconds — authentic cultural texture rather than costume.',
+          trend: 'Intimate kitchen-table monologues are exploding on LinkedIn in 2026. Conversational authority is outperforming performative founder content. Strongest cultural-anchor opportunity in the season — directly speaks to the Mongolian-Sydney audience while remaining universally legible.',
+          fullyPrompted: false
+        },
+        {
+          num: '05',
+          title: 'The Heist Briefing',
+          archetype: 'Ensemble crew planning',
+          length: '35s',
+          premise: 'Studio whiteboard wall. Three figures — the designer, the engineer, the security lead — listen as the founder walks them through the Friday plan. Each figure gets a four-second moment of recognition: a single original line of dialogue confirming their role and readiness. Rhythmic mid-tempo Suno score.',
+          culturalBeat: 'A felt board on the wall used as the planning surface, pinned with brass tacks — referencing nomadic-craft tradition without literal reproduction.',
+          trend: 'Ensemble briefings are trending in 2026 as agencies show team depth on social. Reinforces "we have a real specialist team" — directly counters the most common business-owner objection that smaller studios are one-person shops.',
+          fullyPrompted: false
+        },
+        {
+          num: '06',
+          title: 'The Locker-Room Speech',
+          archetype: 'Underdog motivational',
+          length: '40s',
+          premise: 'Founder addresses the team — camera slowly pans across a silent room of focused faces — about why this Friday matters. Original lines reframing CRAEFTO as the studio that chose to ship the whole stack rather than specialise into a single discipline. Slight forward lean on the resolution. Closes on a single nod from the founder, no music swell.',
+          culturalBeat: 'A wall behind the team carries a stylised graphic motif inspired by traditional Mongolian wrestling-sash patterning — rendered as graphic design only.',
+          trend: 'Direct-address motivational content peaks engagement on LinkedIn for SMB business owners in 2026. The empathy hook reads "I needed someone to say this to me" — fits CRAEFTO\'s target audience precisely without resorting to hustle-bro tropes.',
+          fullyPrompted: false
+        },
+        {
+          num: '07',
+          title: 'The Courtroom',
+          archetype: 'Calm rebuttal moment',
+          length: '35s',
+          premise: 'Founder seated at a desk-style cream-paper-covered surface. An off-camera voice (audio only) makes a vague accusation that the studio cannot possibly do all four disciplines — design, build, audit, brand — at the same level. Founder responds calmly, evidence-based, with a single physical gesture: lifts a closed audit folder. Closes on the folder hitting the table.',
+          culturalBeat: 'The audit folder is leather-bound with silver corner detail — referencing traditional Mongolian metalwork tradition without literal reproduction.',
+          trend: 'Calm-rebuttal videos are a power format for security/audit content in 2026. Reinforces the audit-service line that no Sydney design competitor offers. Highest-margin episode of the season for direct sales attribution.',
+          fullyPrompted: false
+        },
+        {
+          num: '08',
+          title: 'The Pre-Launch Ritual',
+          archetype: 'Atmospheric moment-before',
+          length: '45s',
+          premise: 'Studio at 6 PM Friday, just before deploy. Hands close laptops. A coffee cup is set aside. A sage felt panel pinned to the wall in close-up. Founder voiceover (sparse) — a single paragraph about what shipping means at CRAEFTO. Final shot: a cursor moves to a deploy button. Cut to black. Season finale.',
+          culturalBeat: 'Sage felt panel pinned with brass tacks — full-frame texture moment, holds for five full seconds. The strongest single craft-cultural beat of the season.',
+          trend: 'Atmospheric "moment-before" content is dominant on LinkedIn for premium B2B in 2026 — reads as confidence rather than hustle. Strong season finale that primes the audience for Season 2.',
+          fullyPrompted: false
+        }
+      ]
     }
   ];
 
@@ -3354,8 +3591,24 @@ Negative: no glow, no animation, no specific reproducible characters, no neon, n
     return haystack.includes(q);
   }
 
+  function ideaCardHTML(i) {
+    return `
+      <button class="idea-card" data-id="${escapeHtml(i.id)}" type="button">
+        <div class="meta">
+          <span class="badge">${escapeHtml(i.formatLabel)}</span>
+          ${i.trending ? '<span class="badge trending">★ Trending</span>' : ''}
+          <span class="length">${escapeHtml(i.length)}</span>
+        </div>
+        <h3>${escapeHtml(i.title)}</h3>
+        <p class="tagline">${escapeHtml(i.tagline)}</p>
+        <p class="hook">"${escapeHtml(i.hookShort)}"</p>
+      </button>
+    `;
+  }
+
   function renderIdeas() {
     const q = activeSearch.toLowerCase().trim();
+    const useGrouping = activeFilter === 'all' && !q;
     const filtered = IDEAS.filter(i => {
       if (activeFilter === 'trending') {
         if (!i.trending) return false;
@@ -3367,22 +3620,39 @@ Negative: no glow, no animation, no specific reproducible characters, no neon, n
     });
 
     if (!filtered.length) {
-      grid.innerHTML = '<div class="empty-state">No ideas match — try a different search or filter.<br><br>Try: <em>teardown</em>, <em>security</em>, <em>tier list</em>, <em>POV</em>, <em>linkedin</em>.</div>';
+      grid.innerHTML = '<div class="empty-state">No ideas match — try a different search or filter.<br><br>Try: <em>teardown</em>, <em>security</em>, <em>tier list</em>, <em>POV</em>, <em>linkedin</em>, <em>cinematic</em>.</div>';
       return;
     }
 
-    grid.innerHTML = filtered.map(i => `
-      <button class="idea-card" data-id="${escapeHtml(i.id)}" type="button">
-        <div class="meta">
-          <span class="badge">${escapeHtml(i.formatLabel)}</span>
-          ${i.trending ? '<span class="badge trending">★ Trending</span>' : ''}
-          <span class="length">${escapeHtml(i.length)}</span>
-        </div>
-        <h3>${escapeHtml(i.title)}</h3>
-        <p class="tagline">${escapeHtml(i.tagline)}</p>
-        <p class="hook">"${escapeHtml(i.hookShort)}"</p>
-      </button>
-    `).join('');
+    if (useGrouping) {
+      // Group by category
+      const groups = {};
+      filtered.forEach(i => {
+        const cat = CATEGORIES[i.id] || 'other';
+        if (!groups[cat]) groups[cat] = [];
+        groups[cat].push(i);
+      });
+      const sortedCats = Object.keys(groups).sort((a, b) => (CATEGORY_META[a]?.order || 99) - (CATEGORY_META[b]?.order || 99));
+
+      grid.classList.add('grouped');
+      grid.innerHTML = sortedCats.map(cat => {
+        const meta = CATEGORY_META[cat] || { name: 'Other', desc: '' };
+        const ideas = groups[cat];
+        return `
+          <section class="category-section">
+            <header class="category-header">
+              <h3>${escapeHtml(meta.name)}</h3>
+              <span class="desc">${escapeHtml(meta.desc)}</span>
+              <span class="count">${ideas.length}</span>
+            </header>
+            <div class="cat-grid">${ideas.map(ideaCardHTML).join('')}</div>
+          </section>
+        `;
+      }).join('');
+    } else {
+      grid.classList.remove('grouped');
+      grid.innerHTML = filtered.map(ideaCardHTML).join('');
+    }
 
     grid.querySelectorAll('.idea-card').forEach(c => {
       c.addEventListener('click', () => openIdea(c.dataset.id));
@@ -3431,6 +3701,28 @@ Negative: no glow, no animation, no specific reproducible characters, no neon, n
 
       <h4>Concept</h4>
       <p>${escapeHtml(idea.concept)}</p>
+
+      ${idea.seasonCatalog ? `
+      <div class="section-divider"></div>
+      <h4>Season 1 · 8-episode catalog</h4>
+      <p>Each episode borrows a different recognised genre archetype. Sequenced to alternate dialogue / no-dialogue, formal / intimate, individual / ensemble — so the season builds without repeating itself. Episode 1 is fully prompted below; the rest are concept-locked, ready to spec at production time.</p>
+      <div class="season-catalog">
+        ${idea.seasonCatalog.map(ep => `
+          <article class="season-card">
+            <span class="ep-num">EP ${escapeHtml(ep.num)}</span>
+            <h5>${escapeHtml(ep.title)}</h5>
+            <div class="archetype">${escapeHtml(ep.archetype)}</div>
+            <div class="ep-meta">
+              <span>${escapeHtml(ep.length)}</span>
+              <span class="status${ep.fullyPrompted ? ' production-ready' : ''}">${ep.fullyPrompted ? 'Fully prompted' : 'Concept locked'}</span>
+            </div>
+            <p class="premise">${escapeHtml(ep.premise)}</p>
+            <p class="ep-detail"><strong>Cultural beat</strong>${escapeHtml(ep.culturalBeat)}</p>
+            <p class="ep-detail"><strong>2026 trend</strong>${escapeHtml(ep.trend)}</p>
+          </article>
+        `).join('')}
+      </div>
+      ` : ''}
 
       ${idea.script ? `
       <h4>Script · timed</h4>
