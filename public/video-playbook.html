@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>CRAEFTO — AI Marketing Video Production Playbook</title>
+<meta name="description" content="Internal playbook: AI marketing video stack, brand-fit guardrails, prompt grammars, and a fully-prompted first brand-film production for CRAEFTO.">
+<link rel="icon" href="/favicon.svg">
+<style>
+  :root {
+    --cream: #FAF7F2;
+    --cream-subtle: #F3EDE5;
+    --cream-muted: #EAE4DB;
+    --ink: #1A1714;
+    --ink-muted: #5C5650;
+    --ink-subtle: #847B73;
+    --border: #E5DFD6;
+    --border-subtle: #EBE6DE;
+    --border-strong: #CCC3B8;
+    --sage: #4B6B57;
+    --sage-hover: #3A5544;
+    --sage-subtle: #ECEFE9;
+    --warning: #B8821C;
+    --serif: "Iowan Old Style", "Apple Garamond", Georgia, "Times New Roman", serif;
+    --sans: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    --max-content: 760px;
+    --sidebar-w: 280px;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; scroll-padding-top: 24px; }
+
+  body {
+    margin: 0;
+    background: var(--cream);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16.5px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Layout */
+  .layout {
+    display: grid;
+    grid-template-columns: var(--sidebar-w) minmax(0, 1fr);
+    max-width: 1280px;
+    margin: 0 auto;
+    min-height: 100vh;
+  }
+
+  aside.toc {
+    position: sticky;
+    top: 0;
+    align-self: start;
+    height: 100vh;
+    overflow-y: auto;
+    padding: 36px 28px 36px 36px;
+    border-right: 1px solid var(--border);
+    background: var(--cream-subtle);
+    font-size: 13.5px;
+  }
+
+  .brand {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 28px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--border);
+  }
+  .brand .mark {
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+  .brand .tagline {
+    color: var(--ink-subtle);
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  nav.toc-nav ol {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    counter-reset: toc;
+  }
+  nav.toc-nav > ol > li {
+    counter-increment: toc;
+    margin-bottom: 4px;
+  }
+  nav.toc-nav a {
+    display: block;
+    padding: 6px 8px 6px 28px;
+    color: var(--ink-muted);
+    text-decoration: none;
+    border-radius: 4px;
+    position: relative;
+    transition: background 120ms, color 120ms;
+  }
+  nav.toc-nav > ol > li > a::before {
+    content: counter(toc, decimal-leading-zero);
+    position: absolute;
+    left: 4px;
+    top: 6px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-subtle);
+  }
+  nav.toc-nav a:hover { background: var(--cream-muted); color: var(--ink); }
+  nav.toc-nav a.active {
+    background: var(--sage-subtle);
+    color: var(--sage);
+    font-weight: 600;
+  }
+
+  main {
+    padding: 56px clamp(24px, 5vw, 72px) 120px;
+    max-width: calc(var(--max-content) + 144px);
+  }
+
+  /* Hero */
+  .hero {
+    padding-bottom: 40px;
+    margin-bottom: 48px;
+    border-bottom: 1px solid var(--border);
+  }
+  .eyebrow {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--sage);
+    background: var(--sage-subtle);
+    padding: 4px 10px;
+    border-radius: 100px;
+    margin-bottom: 18px;
+  }
+  h1 {
+    font-family: var(--serif);
+    font-size: clamp(34px, 5vw, 52px);
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+    margin: 0 0 18px;
+    font-weight: 600;
+  }
+  .lede {
+    font-size: 19px;
+    color: var(--ink-muted);
+    max-width: 640px;
+    line-height: 1.55;
+    margin: 0;
+  }
+
+  .meta {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    margin-top: 28px;
+    color: var(--ink-subtle);
+    font-size: 13px;
+    font-family: var(--mono);
+  }
+  .meta span strong { color: var(--ink); font-weight: 600; }
+
+  /* Section headings */
+  section.section {
+    margin-bottom: 72px;
+    scroll-margin-top: 32px;
+  }
+  h2 {
+    font-family: var(--serif);
+    font-size: 30px;
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+    margin: 0 0 6px;
+    font-weight: 600;
+    color: var(--ink);
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+  }
+  h2 .num {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--sage);
+    background: var(--sage-subtle);
+    padding: 4px 10px;
+    border-radius: 100px;
+    letter-spacing: 0.06em;
+    font-weight: 500;
+  }
+  h2 + .sub {
+    color: var(--ink-subtle);
+    font-size: 14px;
+    margin: 0 0 28px;
+    font-style: italic;
+  }
+  h3 {
+    font-family: var(--serif);
+    font-size: 21px;
+    margin: 36px 0 10px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  h4 {
+    font-family: var(--sans);
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--sage);
+    margin: 28px 0 10px;
+    font-weight: 600;
+  }
+
+  p { margin: 0 0 14px; }
+  a { color: var(--sage); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+  a:hover { color: var(--sage-hover); }
+  strong { color: var(--ink); font-weight: 600; }
+  ul, ol { padding-left: 22px; margin: 0 0 18px; }
+  li { margin-bottom: 6px; }
+
+  /* Tables */
+  .table-wrap { overflow-x: auto; margin: 18px 0 22px; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+  th, td {
+    text-align: left;
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  th {
+    background: var(--cream-subtle);
+    font-weight: 600;
+    color: var(--ink);
+    font-size: 12.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  tbody tr:hover { background: var(--cream-subtle); }
+  tfoot td { font-weight: 600; background: var(--sage-subtle); color: var(--ink); }
+
+  /* Code / prompt blocks */
+  .prompt {
+    position: relative;
+    background: #14110F;
+    color: #E8E2D8;
+    border-radius: 8px;
+    padding: 18px 18px 18px 18px;
+    margin: 14px 0 22px;
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    overflow-x: auto;
+    border: 1px solid #2A2520;
+  }
+  .prompt::before {
+    content: attr(data-label);
+    display: block;
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #8B8478;
+    margin-bottom: 10px;
+    font-family: var(--sans);
+    font-weight: 600;
+  }
+  .copy-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: #2A2520;
+    color: #E8E2D8;
+    border: 1px solid #3A3530;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-family: var(--sans);
+    cursor: pointer;
+    transition: background 120ms;
+  }
+  .copy-btn:hover { background: var(--sage); border-color: var(--sage); }
+  .copy-btn.copied { background: var(--sage); border-color: var(--sage); }
+
+  code:not(.prompt code) {
+    background: var(--cream-muted);
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-family: var(--mono);
+    font-size: 0.88em;
+    color: var(--ink);
+  }
+
+  /* Callouts */
+  .callout {
+    border-left: 3px solid var(--sage);
+    background: var(--sage-subtle);
+    padding: 14px 18px;
+    border-radius: 0 6px 6px 0;
+    margin: 18px 0;
+    font-size: 14.5px;
+  }
+  .callout.warning { border-color: var(--warning); background: #FAF1DC; }
+  .callout strong:first-child { display: block; margin-bottom: 4px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--sage); }
+  .callout.warning strong:first-child { color: #8A6112; }
+
+  /* Cards grid */
+  .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin: 18px 0; }
+  .card {
+    background: var(--cream-subtle);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px 20px;
+  }
+  .card h4 { margin-top: 0; }
+
+  /* Shot list */
+  .shot-list { margin: 18px 0; }
+  .shot-list table { font-size: 13px; }
+
+  /* Checklist */
+  ul.check { list-style: none; padding-left: 0; }
+  ul.check li {
+    position: relative;
+    padding-left: 28px;
+    margin-bottom: 8px;
+  }
+  ul.check li::before {
+    content: "□";
+    position: absolute;
+    left: 4px;
+    top: -1px;
+    color: var(--sage);
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  /* Footer */
+  footer {
+    margin-top: 80px;
+    padding-top: 32px;
+    border-top: 1px solid var(--border);
+    color: var(--ink-subtle);
+    font-size: 13px;
+  }
+  footer .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 24px; }
+  footer h5 { font-family: var(--sans); font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink); margin: 0 0 10px; font-weight: 600; }
+  footer ul { list-style: none; padding: 0; margin: 0; }
+  footer li { margin-bottom: 4px; }
+  footer a { color: var(--ink-muted); text-decoration: none; }
+  footer a:hover { color: var(--sage); }
+
+  /* Mobile */
+  .mobile-toc-toggle { display: none; }
+  @media (max-width: 900px) {
+    .layout { grid-template-columns: 1fr; }
+    aside.toc { display: none; position: fixed; inset: 0; height: 100vh; z-index: 50; padding-top: 80px; }
+    aside.toc.open { display: block; }
+    .mobile-toc-toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--ink);
+      color: var(--cream);
+      border: none;
+      padding: 12px 18px;
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+      cursor: pointer;
+      z-index: 60;
+    }
+    main { padding: 32px 20px 80px; }
+    h1 { font-size: 32px; }
+    h2 { font-size: 24px; }
+  }
+
+  @media print {
+    aside.toc, .mobile-toc-toggle, .copy-btn { display: none !important; }
+    .layout { display: block; max-width: none; }
+    main { padding: 0; }
+    .prompt { background: #f5f5f5; color: #000; border-color: #ccc; }
+    section.section { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<button class="mobile-toc-toggle" id="tocToggle" aria-label="Toggle navigation">☰ Contents</button>
+
+<div class="layout">
+
+  <aside class="toc" id="tocSidebar">
+    <div class="brand">
+      <div class="mark">CRAEFTO</div>
+      <div class="tagline">Internal Playbook</div>
+    </div>
+    <nav class="toc-nav">
+      <ol>
+        <li><a href="#overview">Overview</a></li>
+        <li><a href="#stack">The recommended stack</a></li>
+        <li><a href="#workflows">Workflows by format</a></li>
+        <li><a href="#guardrails">Brand-fit guardrails</a></li>
+        <li><a href="#cost">Cost model</a></li>
+        <li><a href="#rollout">4-week rollout</a></li>
+        <li><a href="#agencies">World-class benchmarks</a></li>
+        <li><a href="#trending">Trending formats for CRAEFTO</a></li>
+        <li><a href="#prompts">Prompt grammars</a></li>
+        <li><a href="#brandfilm">First production: brand film</a></li>
+        <li><a href="#execution">Step-by-step execution</a></li>
+        <li><a href="#quality">Quality gates</a></li>
+        <li><a href="#kpis">KPI tracking</a></li>
+        <li><a href="#next">What ships next</a></li>
+        <li><a href="#library">Reusable prompt library</a></li>
+      </ol>
+    </nav>
+  </aside>
+
+  <main>
+
+    <header class="hero">
+      <span class="eyebrow">Playbook · v1 · May 2026</span>
+      <h1>The CRAEFTO AI Marketing Video Playbook</h1>
+      <p class="lede">A complete production system for the most advanced AI marketing video CRAEFTO can ship in 2026 — strategy, stack, prompt grammar, and a fully-prompted first brand film. Built for the studio, ready to productize for clients.</p>
+      <div class="meta">
+        <span><strong>Owner</strong> · Founder</span>
+        <span><strong>Stack</strong> · SaaS-only, ~$430–580/mo</span>
+        <span><strong>Cadence</strong> · Weekly Friday block</span>
+        <span><strong>Status</strong> · Ready to execute</span>
+      </div>
+    </header>
+
+    <!-- 1. Overview -->
+    <section class="section" id="overview">
+      <h2><span class="num">01</span>Overview</h2>
+      <p class="sub">Why this playbook exists, and what it gives you.</p>
+
+      <p>CRAEFTO's marketing engine today is a written-content flywheel: the 5-stage Gemini/OpenAI agent pipeline pushes ~2 journal articles per week, plus a Next.js 16 site running the Paper &amp; Ink design system, plus a project portal. There is <strong>no video production capability</strong> — and the Video Editor role on the careers page is still vacant.</p>
+
+      <p>This playbook layers professional AI-generated video on top of that flywheel. By May 2026, the AI video stack — Veo 3.1, Runway Gen-4, HeyGen, ElevenLabs, Descript, OpusClip, Suno — is finally good enough to ship agency-grade video without a film crew, for under $600/month. World-class brands (Coca-Cola, Mango, Toys "R" Us, Heinz, Nike, FIS) are already doing it. This is CRAEFTO's version.</p>
+
+      <div class="callout">
+        <strong>What you get</strong>
+        A SaaS-only stack, four production workflows (brand film, service explainer, social short, founder talking head), brand-fit guardrails, a 4-week rollout, a fully-prompted 75-second brand film as the first deliverable, and a productization path so the same machine sells to clients later.
+      </div>
+
+      <div class="callout warning">
+        <strong>What's out of scope</strong>
+        Code changes in <code>craefto-lab</code>, building a custom video studio UI under <code>/lab</code>, integrating with the existing 5-stage agent pipeline, Synthesia, Sora, Kling, self-hosting open-source video models. All deferred.
+      </div>
+    </section>
+
+    <!-- 2. Stack -->
+    <section class="section" id="stack">
+      <h2><span class="num">02</span>The recommended stack</h2>
+      <p class="sub">Pro tier. Sits comfortably inside the $200–800/mo budget band.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Layer</th><th>Tool</th><th>Plan</th><th>Monthly</th><th>Why this one</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Cinematic generation + native audio</td><td><strong>Google Veo 3.1</strong> (Gemini API / Flow)</td><td>Pay-per-use</td><td>$100–200</td><td>Only mainstream model that generates synced dialogue + ambient + SFX in one pass. True 4K@60fps. Best for hero shots.</td></tr>
+            <tr><td>Reference-driven generation, brand consistency</td><td><strong>Runway Gen-4 / Gen-4 Turbo</strong></td><td>Standard or Pro</td><td>$95</td><td>Best character/brand consistency via reference images. Built-in editor. Agency default for marketing creatives.</td></tr>
+            <tr><td>Avatar + multilingual talking head</td><td><strong>HeyGen</strong></td><td>Team</td><td>$120</td><td>Most lifelike avatar lip-sync in 2026. Avatar IV for founder cloning. 30+ language translation with lip-sync intact. UGC-style fits social better than Synthesia.</td></tr>
+            <tr><td>Voice clone + VO</td><td><strong>ElevenLabs</strong></td><td>Creator → Pro</td><td>$22 → $99</td><td>Founder voice clone. Multilingual. The de-facto AI voice standard in 2026.</td></tr>
+            <tr><td>Long-form edit, screen recording, voice cleanup</td><td><strong>Descript</strong></td><td>Pro</td><td>$30</td><td>Text-based editing — delete a word from the transcript, the cut applies. Killer for service explainers.</td></tr>
+            <tr><td>Long → short repurposing + auto-captions</td><td><strong>OpusClip</strong></td><td>Pro</td><td>$29</td><td>97% caption accuracy. Auto-finds viral moments. 9:16 reframing for TikTok/Reels/LinkedIn.</td></tr>
+            <tr><td>Custom music beds</td><td><strong>Suno</strong></td><td>Pro</td><td>$10</td><td>Brand-specific scoring for hero films. Avoids the generic stock-music tell.</td></tr>
+          </tbody>
+          <tfoot>
+            <tr><td colspan="3">Stack total</td><td>~$413–583</td><td>Inside Pro band ($200–800).</td></tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <div class="callout warning">
+        <strong>Tools we explicitly reject</strong>
+        <strong>Synthesia</strong> overlaps HeyGen and is enterprise-priced. <strong>Sora</strong> is being sunset by OpenAI (web April 26 2026, API September 24 2026). <strong>Kling</strong> only matters if you need 2-minute single takes, which CRAEFTO doesn't.
+      </div>
+    </section>
+
+    <!-- 3. Workflows -->
+    <section class="section" id="workflows">
+      <h2><span class="num">03</span>Workflows by format</h2>
+      <p class="sub">Four formats, each with its own production loop. Cadence stacks against the existing journal flywheel.</p>
+
+      <h3>Brand films · 60–90s hero · 1 per quarter</h3>
+      <ol>
+        <li><strong>Script</strong> — reuse the existing <code>Editorial Strategist</code> + <code>Editor Guardian</code> agents to draft and polish the voiceover (no code change; just feed them a brand-film prompt template).</li>
+        <li><strong>Storyboard / shot list</strong> — 8–12 shots, each with a reference still in Paper &amp; Ink palette. Generate stills in Midjourney or Flux.</li>
+        <li><strong>Shots</strong> — Runway Gen-4 with reference stills for consistent shots; Veo 3.1 for the 2–3 cinematic hero shots that need native ambient audio.</li>
+        <li><strong>VO</strong> — ElevenLabs founder voice clone reading the script.</li>
+        <li><strong>Music</strong> — Suno custom track ("warm acoustic, restrained, atelier feel, sage-green emotional palette").</li>
+        <li><strong>Assembly</strong> — Descript timeline; export 16:9 master + 1:1 LinkedIn cut + 9:16 social cut.</li>
+        <li><strong>Destination</strong> — hero slot on craefto.com, pitch decks, sales-call follow-up emails (Resend).</li>
+      </ol>
+
+      <h3>Service explainers &amp; case study walkthroughs · 60–180s · recurring</h3>
+      <ol>
+        <li>Founder records screen + voice in <strong>Descript</strong> — live, no script needed, speak from a 5-bullet outline.</li>
+        <li>Descript transcribes → founder deletes filler words and rambling sections from the transcript (cuts apply automatically).</li>
+        <li><strong>HeyGen Avatar IV</strong> intro card (5s): "I'm [Founder], here's how we shipped X for Y."</li>
+        <li>Insert 2–3 <strong>Runway</strong> b-roll cuts where the screen recording is visually flat.</li>
+        <li>Captions via Descript or OpusClip.</li>
+        <li><strong>Destination</strong> — <code>/services/&lt;slug&gt;</code>, <code>/journal/&lt;slug&gt;</code> case-study posts, project portal.</li>
+      </ol>
+
+      <h3>Social shorts · TikTok / Reels / LinkedIn · 15–45s · 2–4/week</h3>
+      <ol>
+        <li>Source: pipe each new long-form asset through <strong>OpusClip Pro</strong>. Auto-extracts 5–10 hook-driven clips with captions, 9:16 reframed.</li>
+        <li>Operator picks 2–3 winners per source, tweaks hook copy.</li>
+        <li>Post directly from OpusClip's scheduler (or Buffer) to LinkedIn, TikTok, X, Instagram, YouTube Shorts.</li>
+        <li><strong>Cadence aligns 1:1 with the existing 2-articles/week content engine</strong> — every article ships with at least one short.</li>
+      </ol>
+
+      <h3>Founder talking head · thought leadership · 1–2/week</h3>
+      <ol>
+        <li><strong>Source script</strong> = the TL;DR of each new journal article (already drafted by <code>Editor Guardian</code> — no extra writing).</li>
+        <li><strong>HeyGen Avatar IV</strong> with founder's cloned face + ElevenLabs voice clone reads it.</li>
+        <li>Auto-translate into 2–3 priority languages (EN-AU, EN-US, ID for SEA market) — HeyGen preserves lip-sync.</li>
+        <li>Repurpose through OpusClip into 2–3 micro-clips per source.</li>
+        <li><strong>Destination</strong> — embedded at top of each journal article; LinkedIn/X with article link; nurture sequences.</li>
+      </ol>
+    </section>
+
+    <!-- 4. Guardrails -->
+    <section class="section" id="guardrails">
+      <h2><span class="num">04</span>Brand-fit guardrails</h2>
+      <p class="sub">Paper &amp; Ink in motion. These prevent generic AI gloss — the #1 reason AI video reads as cheap.</p>
+
+      <div class="grid-2">
+        <div class="card">
+          <h4>Color</h4>
+          <p>Lock HeyGen brand kit + Runway style references using the exact tokens from the design system: cream <code>#FAF7F2</code>, deep ink <code>#1A1714</code>, sage <code>#4B6B57</code>. Reject anything drifting to neon, teal, purple.</p>
+        </div>
+        <div class="card">
+          <h4>Texture</h4>
+          <p>Prompt for paper grain, ink wash, hand-letterpress motifs, restrained motion. Avoid lens flares, particles, "epic" camera moves.</p>
+        </div>
+        <div class="card">
+          <h4>Pacing</h4>
+          <p>Slow cuts (1.5–3s) for brand films. Snappy cuts (0.4–0.8s) for social. Never the AI-default 1s metronome.</p>
+        </div>
+        <div class="card">
+          <h4>Voice direction</h4>
+          <p>ElevenLabs voice clone — stability ~0.45, similarity ~0.78. Conversational authority, not radio-DJ.</p>
+        </div>
+        <div class="card">
+          <h4>Music</h4>
+          <p>Suno prompts: "acoustic, atelier, restrained, no drop, no EDM". Lean folk and ambient.</p>
+        </div>
+        <div class="card">
+          <h4>Avatar</h4>
+          <p>HeyGen Avatar IV trained on ≥5 minutes of founder footage in good light, neutral background. Re-record if the result has the AI-plastic tell.</p>
+        </div>
+        <div class="card">
+          <h4>Captions</h4>
+          <p>Single line, sage-on-cream, sentence case. <strong>Reject</strong> the OpusClip default ALL CAPS YELLOW.</p>
+        </div>
+        <div class="card">
+          <h4>Faces</h4>
+          <p>If a face appears, it must read as on-brand. No stock-photo smiles, no AI-uncanny eyes, no thumbs-ups to camera.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. Cost -->
+    <section class="section" id="cost">
+      <h2><span class="num">05</span>Cost model</h2>
+      <p class="sub">Three scenarios. Start lean, scale up only after the proof artefact ships.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Scenario</th><th>Stack monthly</th><th>Output volume</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>Lean ramp (month 1)</strong></td><td>~$280<br><span style="color:var(--ink-subtle);font-size:12px;">HeyGen Creator, Runway Standard, ElevenLabs Creator, Descript, OpusClip</span></td><td>1 brand film + 4 explainers + 8 shorts + 4 talking heads</td></tr>
+            <tr><td><strong>Steady state (month 2+)</strong></td><td>~$430–580</td><td>1 brand film/quarter + 2 explainers/mo + 12–16 shorts/mo + 4–8 talking heads/mo</td></tr>
+            <tr><td><strong>Productized (10 clients)</strong></td><td>~$1,200–1,800<br><span style="color:var(--ink-subtle);font-size:12px;">HeyGen Enterprise, Runway Pro multi-seat, ElevenLabs Scale</span></td><td>Above + per-client brand kits + white-label exports</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 6. Rollout -->
+    <section class="section" id="rollout">
+      <h2><span class="num">06</span>4-week rollout</h2>
+      <p class="sub">Foundation → Hero → Volume → Operationalize.</p>
+
+      <h3>Week 1 — Foundation</h3>
+      <ul class="check">
+        <li>Subscribe to all tools (Pro tier).</li>
+        <li>Record 5 minutes of founder footage in good light against a neutral wall → train HeyGen Avatar IV.</li>
+        <li>Capture 30 minutes of clean founder voice → train ElevenLabs voice clone.</li>
+        <li>Build brand kits in HeyGen and Runway (Paper &amp; Ink palette, logo, fonts).</li>
+        <li>Write 1-page Brand-Fit Guardrails SOP (lift from §4).</li>
+      </ul>
+
+      <h3>Week 2 — Hero proof</h3>
+      <ul class="check">
+        <li>Produce the first <strong>brand film</strong> end-to-end (Veo + Runway + Suno + ElevenLabs + Descript). Ship to home page.</li>
+        <li>Produce <strong>2 service explainers</strong> (Descript-led, founder-recorded). Ship to <code>/services/*</code>.</li>
+      </ul>
+
+      <h3>Week 3 — Volume proof</h3>
+      <ul class="check">
+        <li>Run all week-2 outputs through OpusClip → publish 8–12 social shorts across LinkedIn / TikTok / X.</li>
+        <li>Produce 4 founder talking-head shorts off the most recent 4 journal articles.</li>
+        <li>Translate top performer into 2 languages via HeyGen.</li>
+      </ul>
+
+      <h3>Week 4 — Operationalize</h3>
+      <ul class="check">
+        <li>Set the Friday cadence calendar.</li>
+        <li>Define KPIs and stand up a tracking doc.</li>
+        <li>Decide if/when to graduate the workflow into the existing agent pipeline as a 6th agent (subject of a separate plan).</li>
+      </ul>
+    </section>
+
+    <!-- 7. Agencies -->
+    <section class="section" id="agencies">
+      <h2><span class="num">07</span>World-class benchmarks</h2>
+      <p class="sub">What world-class brands and agencies actually shipped with AI video in 2025–26 — and the lesson worth copying.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Brand / Agency</th><th>What they did</th><th>Lesson for CRAEFTO</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Coca-Cola</strong></td><td>Re-released the 1995 "Holidays Are Coming" ad fully AI-generated, run through three studios (LA, SF, KL) staffed by creative technologists trained on both gen-AI and storytelling. Beat their own and competitor Christmas benchmarks.</td><td>Pair gen-AI with directing discipline. Creative technologists &gt; prompt engineers.</td></tr>
+            <tr><td><strong>Mango (Sunset Dream)</strong></td><td>Photographed real garments first, then trained a generative model on those photos to produce editorial-quality campaign images across 95 markets.</td><td>Reference-driven generation beats text-only. Always anchor in real photography of the subject.</td></tr>
+            <tr><td><strong>Toys "R" Us</strong></td><td>66-second Geoffrey-the-Giraffe origin film entirely from text prompts (Sora). Cinematic on a lean budget.</td><td>A single hero film is the proof artefact for the whole pipeline.</td></tr>
+            <tr><td><strong>Heinz</strong></td><td>DALL·E 2 ketchup imagery → 850M impressions. Higher engagement than past campaigns.</td><td>AI video earns reach because the AI-ness is part of the talkable hook — but only if it's on-brand.</td></tr>
+            <tr><td><strong>Nike</strong> (Serena 1999 vs 2017)</td><td>Recreated a virtual match between two eras of the same athlete using AI motion analysis.</td><td>Specific, narratively-charged premise beats generic "look what AI can do".</td></tr>
+            <tr><td><strong>FIS × Marketbridge</strong> (2026)</td><td>Three-part cinematic ABM video series mixing live action, immersive sound, stylized animation, AI-assisted design.</td><td>Hybrid wins. AI for impossible shots, human craft for everything that touches feeling.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout">
+        <strong>The pattern</strong>
+        World-class AI video is <strong>director-led, reference-anchored, narratively specific, and hybrid</strong>. The brand film in §10 uses all four principles.
+      </div>
+    </section>
+
+    <!-- 8. Trending -->
+    <section class="section" id="trending">
+      <h2><span class="num">08</span>Trending formats for CRAEFTO</h2>
+      <p class="sub">Of the ten 2026 formats going viral, the five that fit a B2B creative-tech studio.</p>
+
+      <div class="grid-2">
+        <div class="card">
+          <h4>1 · Cinematic origin / brand anthem</h4>
+          <p>The hero film. One per quarter. Highest production value, lowest volume. Anchors the home page and pitch deck.</p>
+        </div>
+        <div class="card">
+          <h4>2 · UGC-style founder talking head</h4>
+          <p>HeyGen Avatar IV on weekly journal pairing. Replaces "thought leadership posts" as the unit of social currency.</p>
+        </div>
+        <div class="card">
+          <h4>3 · Faceless POV storytelling</h4>
+          <p>First-person hands at keyboard / wireframe / shipped product. Excellent for case studies. Zero on-camera talent needed.</p>
+        </div>
+        <div class="card">
+          <h4>4 · Process tier-rank</h4>
+          <p>"Ranking the 10 SaaS landing pages we audited this month, S to F." High CTR. Fits security-audit positioning.</p>
+        </div>
+        <div class="card">
+          <h4>5 · AI vubbing (visual dubbing)</h4>
+          <p>Translate top-performing journal videos into ID/ES/JP for SEA/global reach. HeyGen handles natively with lip-sync.</p>
+        </div>
+      </div>
+
+      <h3>Hook archetypes that own the first 3 seconds</h3>
+      <p>63% of high-CTR videos hook viewers immediately. The four archetypes that win:</p>
+      <ul>
+        <li><strong>Pattern interrupt + curiosity gap</strong> — visually unexpected opener + an unanswered question.</li>
+        <li><strong>Pain-point declaration</strong> — name the audience's problem in the first 1.5s.</li>
+        <li><strong>Receipts hook</strong> — open on a numeric proof point ("$2.3M of pipeline this changed…").</li>
+        <li><strong>Insider POV</strong> — "Inside the studio that ships software like a brand."</li>
+      </ul>
+      <p>The brand film below uses <strong>insider POV + pattern interrupt</strong> — opens on a letterpress, then immediately cuts to code on the same press's paper, breaking the design-vs-engineering frame in 4 seconds.</p>
+    </section>
+
+    <!-- 9. Prompt grammars -->
+    <section class="section" id="prompts">
+      <h2><span class="num">09</span>Prompt grammars</h2>
+      <p class="sub">Two engines, two grammars. Learn both and you can make anything.</p>
+
+      <h3>Veo 3.1 — Google's official 5-part formula</h3>
+      <div class="prompt" data-label="The formula">
+<button class="copy-btn">Copy</button>[Cinematography] + [Subject] + [Action] + [Context] + [Style &amp; Ambiance]</div>
+
+      <ul>
+        <li><strong>Cinematography</strong> — shot type, camera move, lens. <em>e.g. "Slow dolly-in, 35mm, shallow depth of field"</em></li>
+        <li><strong>Subject</strong> — the focal element, described concretely.</li>
+        <li><strong>Action</strong> — what happens, with physics ("hands gently lift the metal type").</li>
+        <li><strong>Context</strong> — environment, props, time of day.</li>
+        <li><strong>Style &amp; ambiance</strong> — mood, color, grain, era, lighting source.</li>
+      </ul>
+      <p>Length: <strong>3–6 sentences, 100–150 words</strong> per shot is the sweet spot.</p>
+
+      <h4>Audio syntax — Veo 3.1's killer feature</h4>
+      <div class="prompt" data-label="Dialogue · use quotation marks">
+<button class="copy-btn">Copy</button>A woman says, "We have to leave now."</div>
+      <div class="prompt" data-label="Sound effects · prefix SFX:">
+<button class="copy-btn">Copy</button>SFX: thunder cracks in the distance</div>
+      <div class="prompt" data-label="Ambient noise · prefix Ambient noise:">
+<button class="copy-btn">Copy</button>Ambient noise: the quiet hum of a starship bridge</div>
+
+      <h4>Negative prompts</h4>
+      <p>Describe what should be absent <em>positively</em>. Say "a desolate landscape with no buildings" not "no buildings".</p>
+
+      <h4>Multi-shot sequences with timestamps</h4>
+      <div class="prompt" data-label="Veo respects timestamp prompting">
+<button class="copy-btn">Copy</button>[00:00–00:02] Medium shot of …
+[00:02–00:04] Reverse shot of …
+[00:04–00:06] Tracking shot following …</div>
+
+      <h3>Runway Gen-4 — reference-driven, not text-driven</h3>
+      <p>Upload 1–6 reference images. Tag them in the prompt as <code>image_1</code>, <code>image_2</code>, … One reference image carries character/brand consistency across an entire campaign (40% better fidelity than Gen-3). <strong>Do not write conversational prose</strong> — Runway penalises it. Write declarative visual detail.</p>
+
+      <div class="prompt" data-label="Runway reference example">
+<button class="copy-btn">Copy</button>Using image_1 (the founder), image_2 (the studio environment), and
+image_3 (the Paper &amp; Ink color palette), create a slow tracking shot
+of the founder walking through the studio, hand brushing a paper
+sample on the wall, 4-second clip, soft window light from the left.</div>
+
+      <div class="callout">
+        <strong>When to use which</strong>
+        Use <strong>Veo 3.1</strong> when you need synced audio, cinematic motion, or shots nothing in your reference library covers. Use <strong>Runway Gen-4</strong> when you need the same character/space across many shots, or you need to ground a generation in a specific real photo.
+      </div>
+    </section>
+
+    <!-- 10. Brand film -->
+    <section class="section" id="brandfilm">
+      <h2><span class="num">10</span>First production · 75-second brand film</h2>
+      <p class="sub">Concept, script, and every prompt for every shot. Copy/paste ready.</p>
+
+      <h3>Concept</h3>
+      <p><strong>Title</strong>: <em>The Craft of Code</em>. <strong>Logline</strong>: a 75-second hero film positioning CRAEFTO as the studio where letterpress-grade craft meets shipped software — not a metaphor, a working method.</p>
+      <p><strong>Premise</strong>: open on letterpress (craft). Cut to code typed onto the same paper (engineering). Code resolves into UI, UI ships, ships becomes a real customer using the product. End on the studio mark.</p>
+
+      <h4>Brand variables — substitute these everywhere</h4>
+      <div class="prompt" data-label="Locked variables · keep consistent across all prompts">
+<button class="copy-btn">Copy</button>&lt;CREAM&gt;        = #FAF7F2  (warm paper)
+&lt;INK&gt;          = #1A1714  (deep ink)
+&lt;SAGE&gt;         = #4B6B57
+&lt;FOUNDER_REF&gt;  = your trained founder reference image (image_1 in Runway)
+&lt;STUDIO_REF&gt;   = wide photo of your studio space (image_2)
+&lt;PALETTE_REF&gt;  = a flat 3-swatch image of the three colors above (image_3)
+&lt;WORDMARK_REF&gt; = high-res transparent PNG of the CRAEFTO wordmark (image_4)</div>
+
+      <h3>Voiceover script · founder · 75s · ElevenLabs voice clone</h3>
+      <p>~135 words at conversational 110 wpm = ~73 seconds. 2s of musical landing at the end.</p>
+      <div class="prompt" data-label="Voiceover script · timed">
+<button class="copy-btn">Copy</button>[00:03] Most studios pick a side.
+[00:07] They're either a design studio… or a dev shop.
+[00:12] We never bought that.
+[00:16] Because the brief is always the same:
+[00:19] ship something the world wants to use.
+[00:24] So we set the type, and we wrote the code.
+[00:30] On the same paper.
+[00:34] Forty thousand lines under a wordmark you'd actually want on a t-shirt.
+[00:42] Security review on the same Friday as the launch trailer.
+[00:48] One studio, one craft, one ship date.
+[01:00] CRAEFTO.
+[01:05] Where craft means it works.</div>
+
+      <h3>Shot list · 12 shots · 75 seconds</h3>
+      <div class="shot-list table-wrap">
+        <table>
+          <thead><tr><th>#</th><th>Time</th><th>Tool</th><th>Aspect</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td>01</td><td>00:00–00:04</td><td>Veo 3.1</td><td>16:9</td><td>Hook: hands at letterpress</td></tr>
+            <tr><td>02</td><td>00:04–00:08</td><td>Veo 3.1</td><td>16:9</td><td>Pattern interrupt: code on same paper</td></tr>
+            <tr><td>03</td><td>00:08–00:13</td><td>Runway Gen-4</td><td>16:9</td><td>Code → UI dissolve</td></tr>
+            <tr><td>04</td><td>00:13–00:18</td><td>Runway Gen-4</td><td>16:9</td><td>Studio wide — sage walls, Paper &amp; Ink</td></tr>
+            <tr><td>05</td><td>00:18–00:24</td><td>Veo 3.1</td><td>16:9</td><td>Founder at desk, on phone with client</td></tr>
+            <tr><td>06</td><td>00:24–00:30</td><td>Runway Gen-4</td><td>16:9</td><td>Designer + engineer sharing a screen</td></tr>
+            <tr><td>07</td><td>00:30–00:36</td><td>Veo 3.1</td><td>16:9</td><td>Wordmark debossing onto cream paper</td></tr>
+            <tr><td>08</td><td>00:36–00:44</td><td>Runway Gen-4</td><td>16:9</td><td>Code editor screen, lines flying past</td></tr>
+            <tr><td>09</td><td>00:44–00:50</td><td>Veo 3.1</td><td>16:9</td><td>Security audit checklist + green ticks</td></tr>
+            <tr><td>10</td><td>00:50–01:00</td><td>Runway Gen-4</td><td>16:9</td><td>Real user using the shipped product</td></tr>
+            <tr><td>11</td><td>01:00–01:08</td><td>Veo 3.1</td><td>16:9</td><td>Studio wordmark reveal on cream paper</td></tr>
+            <tr><td>12</td><td>01:08–01:15</td><td>Static (Descript)</td><td>16:9</td><td>URL + CTA card</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Per-shot prompts</h3>
+
+      <h4>Shot 01 — Hands at letterpress · Veo 3.1</h4>
+      <div class="prompt" data-label="Veo 3.1 · 4s · 16:9 · 4K · 24fps">
+<button class="copy-btn">Copy</button>Slow dolly-in, 50mm lens, shallow depth of field. A craftsman's hands,
+warm light tan skin, gently lift a single piece of metal type from a
+wooden compositor's tray and place it into a forme. The studio is dim,
+lit by a single warm window from camera-left at 4 PM, dust motes
+visible in the beam. Cream paper (#FAF7F2), brass type, deep ink-black
+shadows, sage-green felt lining the tray. Photorealistic, 35mm film
+grain, restrained warmth, atelier mood.
+SFX: a soft metallic click as the type seats; faint distant traffic;
+ambient noise of an empty workshop at late afternoon.
+Negative: no neon, no shiny chrome, no lens flare, no people's faces.</div>
+
+      <h4>Shot 02 — Code on the same paper · Veo 3.1</h4>
+      <div class="prompt" data-label="Veo 3.1 · 4s · 16:9">
+<button class="copy-btn">Copy</button>Continuation of the previous scene, same lighting and lens. Macro
+close-up. The same letterpress press now slowly stamps a sheet of
+cream paper (#FAF7F2), but the impression that lands is not a logo —
+it is three lines of monospaced code in deep ink black: the JSX of a
+React component. The press lifts, paper rests, ink glistens for a
+half-second before settling matte. Camera holds, then a 2-degree push
+on the page.
+SFX: the heavy mechanical thunk of the press; the slow exhale of a
+spring; a single soft typewriter-like tick at the moment the press
+lands.
+Style: 35mm film grain, warm cream / deep ink, sage felt visible at
+the edge of frame.
+Negative: no glowing screens, no holograms, no digital effects.</div>
+
+      <h4>Shot 03 — Code dissolves into UI · Runway Gen-4</h4>
+      <div class="prompt" data-label="Runway Gen-4 · 5s · 16:9 · references: image_3, image_4">
+<button class="copy-btn">Copy</button>Using image_3 (Paper &amp; Ink palette: cream #FAF7F2, ink #1A1714,
+sage #4B6B57) and image_4 (CRAEFTO wordmark) as the only color and
+brand reference. Macro shot of the same printed page from the previous
+beat. The printed code lines slowly dissolve into a clean dashboard UI
+in the same color palette — a real-looking SaaS analytics interface,
+typeset in a serif/sans pairing, no fake-looking Latin placeholder
+text. The page texture remains visible underneath the UI, as if the
+interface were printed onto paper. 4 seconds, no camera move, slow
+crossfade transition.
+Negative: no glow, no neon, no animated cursors, no generic dashboard
+purple/blue.</div>
+
+      <h4>Shot 04 — Studio wide · Runway Gen-4</h4>
+      <div class="prompt" data-label="Runway Gen-4 · 5s · 16:9 · references: image_2, image_3">
+<button class="copy-btn">Copy</button>Using image_2 (the CRAEFTO studio reference) and image_3 (Paper &amp; Ink
+palette). Wide static shot of the studio interior at late afternoon:
+sage-green wall on the left, cream paper samples pinned in a 3×3 grid,
+two long oak desks, soft north-facing window light, no overhead
+fluorescents. Two figures faintly visible in deep background, out of
+focus, working. 5-second hold, no camera move. Photorealistic, 35mm
+film stock, warm grain, archival mood.
+Negative: no studio cliches (no neon signs, no exposed Edison bulbs,
+no plant walls), no people in sharp focus.</div>
+
+      <h4>Shot 05 — Founder on call · Veo 3.1</h4>
+      <div class="prompt" data-label="Veo 3.1 · 6s · 16:9 · with dialogue">
+<button class="copy-btn">Copy</button>Medium close-up, 35mm, eye-level, very shallow depth of field. The
+founder (mid-30s, see image_1) sits at a cream-paper-covered desk in
+the same sage-walled studio, headset on, looking down at a sketch.
+He's mid-conversation, calm, leaning slightly forward. Soft window
+light from the left. The founder says quietly, "Then we ship it
+Friday. Whole thing — brand, build, audit." Naturalistic delivery, no
+sales-y inflection.
+Ambient noise: faint mechanical keyboard tap from a colleague
+off-screen, a kettle just clicking off in the distance.
+Style: photorealistic, 35mm grain, warm cream, restrained.
+Negative: no exaggerated facial expressions, no fast cuts, no music
+swell yet.</div>
+
+      <div class="callout warning">
+        <strong>Voice mismatch workaround</strong>
+        Veo 3.1's generated voice may not match your founder. Better path: generate the visual <em>without</em> dialogue, then dub the voice using ElevenLabs (clone) over the Descript timeline. Modified prompt: <em>"…leans slightly forward, lips moving as he speaks, no audio dialogue, only ambient room tone and faint keyboard."</em>
+      </div>
+
+      <h4>Shot 06 — Designer + engineer collaborating · Runway Gen-4</h4>
+      <div class="prompt" data-label="Runway Gen-4 · 6s · 16:9 · references: image_2, image_3">
+<button class="copy-btn">Copy</button>Using image_2 (studio) and image_3 (palette). Over-the-shoulder shot,
+two people sharing a single laptop screen at the long oak desk. The
+laptop displays a Figma frame on the left half and a code editor on
+the right half — both visibly in the cream/ink/sage palette. One
+person points at the design, the other scrolls the code. Faces are
+not the focal point and are softly out of frame on top edge.
+6 seconds, very slow 1-degree dolly-in.
+Negative: no stock-photo smiles, no high-fives, no laughter cliches,
+no purple/blue UI.</div>
+
+      <h4>Shot 07 — Wordmark deboss · Veo 3.1</h4>
+      <div class="prompt" data-label="Veo 3.1 · 6s · 16:9">
+<button class="copy-btn">Copy</button>Extreme macro, 100mm lens, shallow depth of field. A heavy brass die
+descends slowly onto a sheet of thick cream cotton paper (#FAF7F2)
+and debosses the CRAEFTO wordmark into it (use image_4 as reference
+for the letterforms). Deep ink-black shadows in the indented letters,
+no foil, no color — just paper and pressure. The die lifts.
+SFX: a single, satisfying low-frequency thunk; the soft exhale of the
+press releasing.
+Style: 35mm film grain, near-silent, atelier reverence, warm
+restrained light.
+Negative: no metallic sparkle, no rainbow foil, no glow.</div>
+
+      <h4>Shot 08 — Code editor in motion · Runway Gen-4</h4>
+      <div class="prompt" data-label="Runway Gen-4 · 8s · 16:9 · references: image_3">
+<button class="copy-btn">Copy</button>Using image_3 (Paper &amp; Ink palette) as the only color reference.
+Tight over-the-shoulder of a code editor on a 14" laptop. Lines of
+TypeScript scroll slowly upward — readable for 1.5 seconds, then a
+soft motion blur as they accelerate, then resolve to a single line:
+`export const CRAEFTO = 'craft';`. The editor chrome is in the cream
++ ink + sage palette. 8 seconds. Camera does not move; only the code
+moves.
+Negative: no green-on-black hacker aesthetic, no terminal, no
+animated cursors flying, no purple syntax highlighting.</div>
+
+      <h4>Shot 09 — Security audit ticks · Veo 3.1</h4>
+      <div class="prompt" data-label="Veo 3.1 · 6s · 16:9">
+<button class="copy-btn">Copy</button>Top-down macro shot of a printed cream paper checklist titled
+"PRE-LAUNCH AUDIT", typeset in a serif. A real human hand holding a
+sage-green felt-tip pen ticks five items in sequence, each tick
+crisp and decisive. The items read: "OWASP top-10 verified",
+"Auth flow signed off", "PII pathway clean", "Bundle audit",
+"Brand QA". 6 seconds.
+SFX: five distinct soft pen-on-paper ticks, exactly timed; faint room
+tone underneath.
+Style: 35mm grain, warm cream, restrained.
+Negative: no glowing checkmarks, no animation, no UI mockup — this is
+real paper.</div>
+
+      <h4>Shot 10 — Real user with the product · Runway Gen-4</h4>
+      <div class="prompt" data-label="Runway Gen-4 · 10s · 16:9 · references: image_3">
+<button class="copy-btn">Copy</button>Using image_3 (Paper &amp; Ink palette, only as a soft accent — the user
+is in a real environment, not the studio). Medium shot of a young
+professional (early 30s, neutral wardrobe) in a daylit kitchen,
+laptop open on the counter, scrolling through the dashboard from
+shot 03. They smile — small, real, not stock-photo. They scroll, see
+something, lean in. 10 seconds, very slow 2-degree push-in.
+Negative: no fake laughter, no high-fives, no over-styling, no
+thumbs-up to camera.</div>
+
+      <h4>Shot 11 — CRAEFTO wordmark on cream · Veo 3.1</h4>
+      <div class="prompt" data-label="Veo 3.1 · 8s · 16:9">
+<button class="copy-btn">Copy</button>Static centered shot, 50mm. The CRAEFTO wordmark (use image_4 as
+reference) appears slowly debossed into a single sheet of cream cotton
+paper (#FAF7F2), held against a softly lit sage-green wall. No
+animation other than a 1-degree breathing motion as if the paper is
+gently held. Hold for 8 seconds.
+SFX: ambient room tone, the very faint distant sound of a press
+mechanism returning to rest.
+Style: 35mm grain, atelier silence, deep ink shadow inside each
+letter.</div>
+
+      <h4>Shot 12 — End card · Static, composed in Descript</h4>
+      <div class="prompt" data-label="Descript composition · 7s · 16:9">
+<button class="copy-btn">Copy</button>Hold the previous shot. Layer two text lines:
+  Top line  · deep ink (#1A1714) · sentence case  · "Craft means it works."
+  Bottom    · sage (#4B6B57)     · monospace      · "craefto.com"
+Hold 7 seconds. Fade to cream over the final 1.2s.</div>
+
+      <h3>Music · Suno prompt</h3>
+      <div class="prompt" data-label="Suno Pro · 1:18 · instrumental">
+<button class="copy-btn">Copy</button>Style: minimal acoustic atelier score. Single nylon-string guitar
+arpeggio in Em7 → Cmaj7 → G → Dsus4. Sparse upright piano joins at
+0:30. Soft brushed snare enters at 0:50. No drop, no EDM, no
+synthetic strings, no swells over +3dB. Texture: warm, restrained,
+folk-ambient, slightly tape-saturated. Length: 1:18. Final 4 seconds:
+all instruments soften, leaving only the nylon guitar resolving on a
+sustained Em7. Mood: quiet confidence, craftsperson at work.
+Lyrics: instrumental, no vocals.</div>
+      <p>Generate 4 variants in Suno Pro. Pick the one whose chord changes align with the cuts at 0:08, 0:24, 0:50, 1:00.</p>
+
+      <h3>Voiceover · ElevenLabs settings</h3>
+      <div class="grid-2">
+        <div class="card">
+          <h4>Voice &amp; model</h4>
+          <p><strong>Voice</strong>: founder voice clone (Instant Voice Clone, trained on 30+ minutes of clean speech).<br><strong>Model</strong>: Eleven Multilingual v3 (best for nuanced English-AU).</p>
+        </div>
+        <div class="card">
+          <h4>Parameters</h4>
+          <p><strong>Stability</strong>: 0.42 (allows natural inflection).<br><strong>Similarity</strong>: 0.78 (preserves founder timbre).<br><strong>Style exaggeration</strong>: 0.15 (low — conversational, not performance).<br><strong>Speaker boost</strong>: on.</p>
+        </div>
+      </div>
+      <p>Render each line as a separate clip for easy timing in Descript.</p>
+
+      <h3>Captions · Descript / OpusClip settings</h3>
+      <ul>
+        <li><strong>Style</strong>: single line, sentence case (NOT all caps).</li>
+        <li><strong>Color</strong>: deep ink <code>#1A1714</code> text on a 60%-opacity cream <code>#FAF7F2</code> rounded pill.</li>
+        <li><strong>Position</strong>: bottom 22% of the frame, centered.</li>
+        <li><strong>Font</strong>: same sans you use on craefto.com.</li>
+        <li><strong>Highlight color</strong> (active word): sage <code>#4B6B57</code>.</li>
+        <li><strong>Reject</strong> OpusClip's defaults: yellow caps, animated word-pop, emoji insertion.</li>
+      </ul>
+    </section>
+
+    <!-- 11. Execution -->
+    <section class="section" id="execution">
+      <h2><span class="num">11</span>Step-by-step execution · one working day</h2>
+      <p class="sub">Six hours, top to bottom. Assumes accounts and references are ready.</p>
+
+      <h3>Hour 0 · Pre-flight (30 min)</h3>
+      <ol>
+        <li>Confirm logins for HeyGen Team, Runway Pro, Google AI Studio (Veo 3.1), ElevenLabs Creator+, Descript Pro, OpusClip Pro, Suno Pro.</li>
+        <li>Prepare the four reference images:
+          <ul>
+            <li><code>image_1</code> · founder portrait, neutral background, soft daylight, 1024×1024.</li>
+            <li><code>image_2</code> · wide photo of your actual studio (or a curated dribbble pin in your aesthetic), 1920×1080.</li>
+            <li><code>image_3</code> · flat 3-swatch image with the exact hex values labelled.</li>
+            <li><code>image_4</code> · CRAEFTO wordmark, transparent PNG, 2048px wide.</li>
+          </ul>
+        </li>
+        <li>Confirm founder voice clone is trained in ElevenLabs and tested with the script lines.</li>
+      </ol>
+
+      <h3>Hour 1 · Generate Veo 3.1 shots (60 min)</h3>
+      <p>For each Veo shot (01, 02, 05, 07, 09, 11):</p>
+      <ol>
+        <li>Open Google AI Studio → Veo 3.1.</li>
+        <li>Paste the prompt verbatim from §10.</li>
+        <li>Set: 4K, 16:9, 24fps, duration matches the shot list.</li>
+        <li>Generate <strong>3 variants</strong> per shot — Veo 3.1 has high variance; selecting from 3 is the established practice.</li>
+        <li>Download the best of three. Name files <code>shot-01_v1.mp4</code>, etc.</li>
+        <li>If a shot fails twice (wrong style, AI gloss, dialogue mismatch): tighten the negative prompt and re-run. <strong>Do not</strong> "prompt engineer harder" — restructure the 5-part formula.</li>
+      </ol>
+
+      <h3>Hour 2 · Generate Runway Gen-4 shots (60 min)</h3>
+      <p>For each Runway shot (03, 04, 06, 08, 10):</p>
+      <ol>
+        <li>Open Runway → Gen-4 References.</li>
+        <li>Upload all four reference images, label them <code>image_1</code> through <code>image_4</code>.</li>
+        <li>Paste the prompt verbatim from §10.</li>
+        <li>Set: 4K, 16:9, duration per shot list.</li>
+        <li>Generate <strong>2 variants</strong> per shot. Download best of two.</li>
+      </ol>
+
+      <h3>Hour 3 · Voice + music (45 min)</h3>
+      <ol>
+        <li><strong>ElevenLabs</strong>: paste each voiceover line from §10 into the cloned voice with §10 settings. Render each line as its own MP3.</li>
+        <li><strong>Suno</strong>: paste the music prompt. Generate 4 variants. Pick the one whose chord transitions feel native to your cut points. Download as WAV.</li>
+      </ol>
+
+      <h3>Hour 4 · Assemble in Descript (90 min)</h3>
+      <ol>
+        <li>New Descript project, 1920×1080, 24fps.</li>
+        <li>Drag all 11 video shots in order, snap to the timestamps in the shot list.</li>
+        <li>Import voiceover clips, place each on the timestamp from the script.</li>
+        <li>Import the Suno track, lay under the entire timeline at -18 LUFS bed, ducking under voiceover by -6dB automatically.</li>
+        <li>Use Descript's transcript editor to nudge any phrase that runs long.</li>
+        <li>Add captions per §10 spec.</li>
+        <li>Add Shot 12 end card as a frame composition.</li>
+        <li>Render: 4K H.264 master, 16:9. Save as <code>craefto-brand-film-v1.mp4</code>.</li>
+      </ol>
+
+      <h3>Hour 5 · Repurpose with OpusClip (30 min)</h3>
+      <ol>
+        <li>Upload the 4K master to OpusClip Pro.</li>
+        <li>Run "AI Highlights" — auto-extracts 6–10 short clips with hooks.</li>
+        <li>Generate <strong>two manual cuts</strong> of your own:
+          <ul>
+            <li><strong>9:16 LinkedIn cut</strong>: 28 seconds, opens on shot 02 (the pattern interrupt), ends on shot 11 + end card.</li>
+            <li><strong>1:1 X / IG cut</strong>: 45 seconds, full arc compressed.</li>
+          </ul>
+        </li>
+        <li>Apply the §10 caption style across all cuts. Re-style if OpusClip ignores the brand kit (it sometimes does on first try — re-apply).</li>
+        <li>Export all cuts at 4K H.264.</li>
+      </ol>
+
+      <h3>Hour 6 · Ship (30 min)</h3>
+      <ol>
+        <li><strong>Home page</strong>: replace current hero with the 16:9 master. Use a poster frame from shot 11 (wordmark on cream).</li>
+        <li><strong>LinkedIn</strong>: post the 28-second 9:16 cut. Caption opens with: <em>"Most studios pick a side. We never bought that."</em></li>
+        <li><strong>X</strong>: post the 45-second 1:1 cut. Same opening line.</li>
+        <li><strong>Sales follow-up email</strong> (Resend): embed a thumbnail-with-play-button link to the 4K master, hosted on Vercel.</li>
+        <li><strong>Pitch deck</strong>: drop the 16:9 master into slide 1.</li>
+        <li><strong>Project portal</strong>: place under "About CRAEFTO".</li>
+      </ol>
+    </section>
+
+    <!-- 12. Quality -->
+    <section class="section" id="quality">
+      <h2><span class="num">12</span>Quality gates · 15-minute audit before publishing</h2>
+      <p class="sub">Reject and re-shoot any shot that fails ANY of these.</p>
+      <ul class="check">
+        <li><strong>AI-gloss test</strong> — does any shot have the plastic AI look (over-smooth skin, perfectly symmetrical face, glassy reflections)? If yes, re-generate with more film-grain language.</li>
+        <li><strong>Palette drift</strong> — does any shot drift to teal/purple/orange? If yes, tighten negative prompts.</li>
+        <li><strong>Cut rhythm</strong> — are brand-film cuts ≥1.5s? Snappier cuts read as social, not brand.</li>
+        <li><strong>Audio sync</strong> — is every voiceover line locked to its visual beat? Drift &gt;120ms is noticeable.</li>
+        <li><strong>Caption legibility</strong> — captions readable at 320px wide (mobile feed)?</li>
+        <li><strong>Brand-mark accuracy</strong> — does the wordmark in shots 07 and 11 actually spell <strong>CRAEFTO</strong> correctly? AI commonly misspells brand marks; this is mandatory to verify.</li>
+        <li><strong>Faces</strong> — if any face appears, is it on-brand? No stock-photo smiles, no AI-uncanny eyes.</li>
+        <li><strong>CTA on end card</strong> — does <code>craefto.com</code> resolve in a browser test?</li>
+        <li><strong>No watermarks</strong> — Runway and Veo can stamp watermarks on free tier; verify Pro export.</li>
+        <li><strong>Sound check</strong> — listen on phone speakers AND headphones. Voiceover at -16 LUFS, music bed at -22 LUFS.</li>
+      </ul>
+      <p>If 8 / 10 pass, ship. If &lt;8, identify the failed gate and re-run only the affected shot.</p>
+    </section>
+
+    <!-- 13. KPIs -->
+    <section class="section" id="kpis">
+      <h2><span class="num">13</span>KPI tracking · set up day-of</h2>
+      <p class="sub">Log these in your existing admin panel / Supabase.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Metric</th><th>Target by D+30</th><th>Where measured</th></tr></thead>
+          <tbody>
+            <tr><td>Home-page bounce rate</td><td>-10% vs. control</td><td>GA4 / your analytics</td></tr>
+            <tr><td>Hero video completion</td><td>≥40%</td><td>Vercel video analytics</td></tr>
+            <tr><td>LinkedIn 9:16 view-through</td><td>≥35% (above LinkedIn benchmark)</td><td>LinkedIn native</td></tr>
+            <tr><td>Sales-call requests citing "saw the film"</td><td>≥3 in first 30 days</td><td>Manual tag in HubSpot / Linear</td></tr>
+            <tr><td>Cost-per-second of finished video</td><td>≤$8</td><td>Total tool cost ÷ 75s</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <ul>
+        <li>If hero completion <strong>&lt;30% by D+14</strong>: the opener is wrong, re-shoot shots 01–02.</li>
+        <li>If LinkedIn view-through <strong>&lt;20%</strong>: the 9:16 cut isn't hooking — re-edit the first 1.5s.</li>
+      </ul>
+    </section>
+
+    <!-- 14. Next -->
+    <section class="section" id="next">
+      <h2><span class="num">14</span>What ships next</h2>
+      <p class="sub">After the brand film is live, three productions in priority order.</p>
+
+      <ol>
+        <li><strong>Service explainer #1</strong> — your highest-margin service, recorded by founder in Descript, ~3 hours. Ship to <code>/services/&lt;top-service&gt;</code>. Use this doc's caption + brand-fit specs.</li>
+        <li><strong>First founder talking-head</strong> — pick the best journal article from the last month, generate via HeyGen Avatar IV + ElevenLabs voice. Embed at top of that article. Measure scroll-depth lift in your A/B testing system.</li>
+        <li><strong>First batch of 6 social shorts</strong> — run the brand film, the explainer, and the talking head through OpusClip Pro. Schedule M/W/F for two weeks.</li>
+      </ol>
+      <p>By the end of week 2 you'll have shipped one of every format and earned the data to decide what to scale.</p>
+
+      <h3>Productization path · for clients (when ready)</h3>
+      <p>Once the internal pipeline is humming, the same stack productizes for clients with three additions:</p>
+      <ul>
+        <li><strong>Client intake form</strong> (Tally/Typeform → Supabase) → brief → assigned brand-kit slot in HeyGen/Runway.</li>
+        <li><strong>White-label exports</strong> (HeyGen + Descript both support custom branding).</li>
+        <li><strong>A 6th agent in the existing pipeline</strong> ("Video Producer" agent next to Editorial Writer / Topic Scout) that turns a journal article or brief into a Runway/HeyGen API call. This is the moment to wire the SaaS stack into <code>craefto-lab</code> properly — subject of a separate plan.</li>
+      </ul>
+    </section>
+
+    <!-- 15. Library -->
+    <section class="section" id="library">
+      <h2><span class="num">15</span>Reusable prompt library</h2>
+      <p class="sub">Modular fragments. Paste into every future CRAEFTO video. Lock these into the repo as <code>video-prompt-library.md</code> once they survive 3 productions unchanged.</p>
+
+      <h3>The CRAEFTO style stem · paste into every Veo / Runway prompt</h3>
+      <div class="prompt" data-label="Style stem">
+<button class="copy-btn">Copy</button>Photorealistic, 35mm film grain, restrained warmth. Color palette
+limited to cream #FAF7F2, deep ink #1A1714, sage green #4B6B57.
+Lighting: motivated by single warm window source, no overhead
+fluorescents. Atelier mood, quiet confidence, no AI gloss.
+Negative: no neon, no chrome, no lens flare, no purple/teal/orange,
+no glowing UI, no stock-photo smiles, no fake laughter.</div>
+
+      <h3>The CRAEFTO sound stem · paste into every Veo prompt with audio</h3>
+      <div class="prompt" data-label="Sound stem">
+<button class="copy-btn">Copy</button>Ambient noise: empty workshop room tone, faint distant traffic,
+occasional soft mechanical keyboard tap. No music in-frame; music
+will be added in post.</div>
+
+      <h3>The CRAEFTO motion stem · for brand films</h3>
+      <div class="prompt" data-label="Motion stem">
+<button class="copy-btn">Copy</button>Camera moves are restrained: ≤2-degree dollies, no whip-pans, no
+crane reveals. Cuts are slow (1.5–3 seconds). Subjects move at
+real-world speed; no slow-motion unless explicitly noted.</div>
+    </section>
+
+    <footer>
+      <div class="footer-grid">
+        <div>
+          <h5>Source documents</h5>
+          <ul>
+            <li><code>docs/video-production-runbook.md</code></li>
+            <li><code>docs/video-production-example-01-brand-film.md</code></li>
+            <li>This page · <code>public/video-playbook.html</code></li>
+          </ul>
+        </div>
+        <div>
+          <h5>External references</h5>
+          <ul>
+            <li><a href="https://cloud.google.com/blog/products/ai-machine-learning/ultimate-prompting-guide-for-veo-3-1">Veo 3.1 Prompting Guide · Google Cloud</a></li>
+            <li><a href="https://help.runwayml.com/hc/en-us/articles/40042718905875-Creating-with-Gen-4-Image-References">Runway Gen-4 References docs</a></li>
+            <li><a href="https://www.superside.com/blog/ai-marketing-campaigns">2026 AI marketing campaigns · Superside</a></li>
+            <li><a href="https://virvid.ai/blog/ai-video-formats-driving-crazy-engagement-in-2026">2026 viral video formats · Virvid</a></li>
+          </ul>
+        </div>
+        <div>
+          <h5>Status</h5>
+          <p>Internal · v1 · May 2026<br>Branch · <code>claude/ai-video-marketing-research-Oj1wI</code></p>
+        </div>
+      </div>
+      <p style="margin-top:32px; padding-top:24px; border-top:1px solid var(--border); color:var(--ink-subtle); font-size:12px;">CRAEFTO · craft means it works.</p>
+    </footer>
+
+  </main>
+</div>
+
+<script>
+  // Copy buttons
+  document.querySelectorAll('.copy-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const block = btn.parentElement;
+      const text = block.textContent.replace(/^Copy/, '').trim();
+      try {
+        await navigator.clipboard.writeText(text);
+        btn.textContent = 'Copied';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = 'Copy';
+          btn.classList.remove('copied');
+        }, 1400);
+      } catch (e) {
+        btn.textContent = 'Press ⌘C';
+      }
+    });
+  });
+
+  // Sidebar active section
+  const links = document.querySelectorAll('nav.toc-nav a');
+  const sections = Array.from(links).map(l => document.querySelector(l.getAttribute('href'))).filter(Boolean);
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.id;
+        links.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + id));
+      }
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+  sections.forEach(s => observer.observe(s));
+
+  // Mobile TOC toggle
+  const toggle = document.getElementById('tocToggle');
+  const sidebar = document.getElementById('tocSidebar');
+  toggle?.addEventListener('click', () => sidebar.classList.toggle('open'));
+  sidebar?.addEventListener('click', e => {
+    if (e.target.tagName === 'A') sidebar.classList.remove('open');
+  });
+</script>
+
+</body>
+</html>
