@@ -400,6 +400,292 @@
     .prompt { background: #f5f5f5; color: #000; border-color: #ccc; }
     section.section { break-inside: avoid; }
   }
+
+  /* Idea explorer */
+  .explorer-controls { display: flex; flex-direction: column; gap: 14px; margin: 24px 0; }
+  .explorer-search { position: relative; }
+  .explorer-search input {
+    width: 100%;
+    padding: 14px 40px 14px 44px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--cream-subtle);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 15px;
+    transition: border-color 120ms, background 120ms, box-shadow 120ms;
+  }
+  .explorer-search input:focus {
+    outline: none;
+    border-color: var(--sage);
+    background: var(--cream);
+    box-shadow: 0 0 0 3px var(--sage-subtle);
+  }
+  .explorer-search::before {
+    content: "⌕";
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--ink-subtle);
+    font-size: 20px;
+    pointer-events: none;
+  }
+  .clear-search {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--cream-muted);
+    border: 1px solid var(--border);
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--ink-muted);
+    display: none;
+    line-height: 1;
+    padding: 0;
+  }
+  .explorer-search.has-value .clear-search { display: flex; align-items: center; justify-content: center; }
+  .clear-search:hover { background: var(--ink); color: var(--cream); border-color: var(--ink); }
+
+  .filter-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+  .chip {
+    background: var(--cream-subtle);
+    border: 1px solid var(--border);
+    color: var(--ink-muted);
+    padding: 6px 14px;
+    border-radius: 100px;
+    font-size: 13px;
+    cursor: pointer;
+    font-family: var(--sans);
+    transition: all 120ms;
+  }
+  .chip:hover { background: var(--cream-muted); color: var(--ink); }
+  .chip.active {
+    background: var(--sage);
+    border-color: var(--sage);
+    color: #fff;
+  }
+
+  .ideas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 14px;
+    margin-top: 8px;
+  }
+  .idea-card {
+    background: var(--cream-subtle);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 20px 16px;
+    cursor: pointer;
+    transition: all 160ms;
+    text-align: left;
+    font-family: inherit;
+    color: inherit;
+    width: 100%;
+  }
+  .idea-card:hover {
+    background: var(--cream);
+    border-color: var(--sage);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(26, 23, 20, 0.07);
+  }
+  .idea-card .meta {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .idea-card .badge {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    background: var(--sage-subtle);
+    color: var(--sage);
+    padding: 3px 8px;
+    border-radius: 100px;
+    font-weight: 600;
+  }
+  .idea-card .badge.trending {
+    background: var(--ink);
+    color: var(--cream);
+  }
+  .idea-card .length {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-subtle);
+    margin-left: auto;
+  }
+  .idea-card h3 {
+    font-family: var(--serif);
+    font-size: 19px;
+    margin: 0 0 6px;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .idea-card .tagline {
+    color: var(--ink-muted);
+    font-size: 13px;
+    margin: 0 0 12px;
+    line-height: 1.5;
+  }
+  .idea-card .hook {
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--ink);
+    font-size: 13.5px;
+    border-left: 2px solid var(--sage);
+    padding-left: 10px;
+    margin: 0;
+    line-height: 1.45;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 56px 20px;
+    color: var(--ink-subtle);
+    background: var(--cream-subtle);
+    border-radius: 10px;
+    border: 1px dashed var(--border-strong);
+    font-size: 14px;
+    grid-column: 1 / -1;
+  }
+
+  /* Drawer */
+  .drawer-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(26, 23, 20, 0.42);
+    z-index: 100;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 220ms;
+    backdrop-filter: blur(2px);
+  }
+  .drawer-backdrop.open { opacity: 1; pointer-events: auto; }
+  .drawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100vh;
+    width: min(880px, 100vw);
+    background: var(--cream);
+    z-index: 101;
+    transform: translateX(100%);
+    transition: transform 280ms cubic-bezier(0.16, 1, 0.3, 1);
+    overflow-y: auto;
+    box-shadow: -12px 0 48px rgba(26, 23, 20, 0.10);
+    border-left: 1px solid var(--border);
+  }
+  .drawer.open { transform: translateX(0); }
+  .drawer-header {
+    position: sticky;
+    top: 0;
+    background: var(--cream);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 18px;
+    z-index: 5;
+  }
+  .meta-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .meta-row .badge {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    background: var(--sage-subtle);
+    color: var(--sage);
+    padding: 3px 8px;
+    border-radius: 100px;
+    font-weight: 600;
+  }
+  .meta-row .badge.trending { background: var(--ink); color: var(--cream); }
+  .meta-row .length {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-subtle);
+  }
+  .drawer-close {
+    background: var(--cream-muted);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-family: var(--sans);
+    font-size: 13px;
+    color: var(--ink-muted);
+    white-space: nowrap;
+  }
+  .drawer-close:hover { background: var(--ink); color: var(--cream); border-color: var(--ink); }
+
+  .drawer-body {
+    padding: 32px 28px 96px;
+    max-width: 740px;
+    margin: 0 auto;
+  }
+  .drawer-body h2 {
+    font-family: var(--serif);
+    font-size: 30px;
+    margin: 0 0 10px;
+    line-height: 1.18;
+    letter-spacing: -0.015em;
+    font-weight: 600;
+    display: block;
+  }
+  .drawer-body h2 .num { display: none; }
+  .drawer-body .lede {
+    font-size: 15.5px;
+    color: var(--ink-muted);
+    margin: 0 0 24px;
+    line-height: 1.55;
+  }
+  .drawer-body h4 {
+    font-family: var(--sans);
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--sage);
+    margin: 28px 0 10px;
+    font-weight: 600;
+  }
+  .drawer-body h5 {
+    font-family: var(--serif);
+    font-size: 16px;
+    font-weight: 600;
+    margin: 24px 0 4px;
+    color: var(--ink);
+  }
+  .drawer-body p { font-size: 15px; line-height: 1.6; }
+  .drawer-body ol li, .drawer-body ul li { font-size: 14.5px; line-height: 1.55; }
+
+  .section-divider {
+    border-top: 1px solid var(--border);
+    margin: 32px 0;
+  }
+
+  body.drawer-open { overflow: hidden; }
+
+  @media (max-width: 700px) {
+    .drawer { width: 100vw; }
+    .drawer-body { padding: 24px 18px 80px; }
+    .drawer-body h2 { font-size: 24px; }
+  }
 </style>
 </head>
 <body>
@@ -430,6 +716,7 @@
         <li><a href="#kpis">KPI tracking</a></li>
         <li><a href="#next">What ships next</a></li>
         <li><a href="#library">Reusable prompt library</a></li>
+        <li><a href="#explorer">Idea explorer</a></li>
       </ol>
     </nav>
   </aside>
@@ -1176,6 +1463,41 @@ crane reveals. Cuts are slow (1.5–3 seconds). Subjects move at
 real-world speed; no slow-motion unless explicitly noted.</div>
     </section>
 
+    <!-- 16. Idea Explorer -->
+    <section class="section" id="explorer">
+      <h2><span class="num">16</span>Idea explorer</h2>
+      <p class="sub">Type an idea or browse the library. Click any card for the full concept, every prompt, and a step-by-step production guide.</p>
+
+      <p>Ten production-ready ideas tuned to CRAEFTO's positioning — design engineering meets brand systems meets security audits. Each one comes with a hook, voiceover script, full Veo 3.1 / Runway Gen-4 / HeyGen prompts for every shot, music brief, ElevenLabs voice settings, captions spec, execution checklist, and KPIs.</p>
+
+      <div class="explorer-controls">
+        <div class="explorer-search">
+          <input type="text" id="ideaSearch" placeholder="Search ideas — try 'teardown', 'security', 'tier list', 'POV'…" aria-label="Search ideas">
+          <button class="clear-search" id="clearSearch" aria-label="Clear search" type="button">×</button>
+        </div>
+        <div class="filter-chips" id="filterChips" role="tablist" aria-label="Filter by format">
+          <button class="chip active" data-filter="all" type="button">All</button>
+          <button class="chip" data-filter="brand-film" type="button">Brand film</button>
+          <button class="chip" data-filter="social-short" type="button">Social short</button>
+          <button class="chip" data-filter="talking-head" type="button">Talking head</button>
+          <button class="chip" data-filter="case-study" type="button">Case study</button>
+          <button class="chip" data-filter="explainer" type="button">Explainer</button>
+          <button class="chip" data-filter="trending" type="button">★ Trending</button>
+        </div>
+      </div>
+
+      <div class="ideas-grid" id="ideasGrid"></div>
+    </section>
+
+    <div class="drawer-backdrop" id="drawerBackdrop"></div>
+    <aside class="drawer" id="ideaDrawer" aria-hidden="true" aria-label="Idea details">
+      <div class="drawer-header">
+        <div class="meta-row" id="drawerMeta"></div>
+        <button class="drawer-close" id="drawerClose" aria-label="Close" type="button">Close ✕</button>
+      </div>
+      <div class="drawer-body" id="drawerBody"></div>
+    </aside>
+
     <footer>
       <div class="footer-grid">
         <div>
@@ -1246,6 +1568,954 @@ real-world speed; no slow-motion unless explicitly noted.</div>
   sidebar?.addEventListener('click', e => {
     if (e.target.tagName === 'A') sidebar.classList.remove('open');
   });
+
+  // ===== IDEA EXPLORER =====
+  const IDEAS = [
+    {
+      id: 'teardown-tuesday',
+      title: 'Teardown Tuesday',
+      format: 'case-study',
+      formatLabel: 'Case study',
+      length: '90s',
+      cadence: 'Weekly · Tuesday',
+      trending: true,
+      tags: ['linkedin', 'recurring', 'redesign', 'critique'],
+      tagline: 'Recurring B2B landing-page teardown — every Tuesday, one public redesign.',
+      hookShort: "We rebuilt the landing page of a $2B SaaS in 4 hours.",
+      hook: "We rebuilt the landing page of a $2B SaaS in 4 hours. Here's what we cut, what we added, and what we'd never ship.",
+      why: "Public teardowns are the highest-engagement format for B2B design content on LinkedIn 2026. Every founder/marketer wants their competitors critiqued. CRAEFTO already does this for paying clients — making one public per week converts the work into marketing without extra effort. Moves prospects from 'do they ship?' to 'look what they shipped.'",
+      concept: "Each Tuesday, pick a recently-funded B2B SaaS landing page. 90-second case-study walkthrough: founder narrates over screen capture of original → annotated critique → Figma rebuild reveal → live-rendered version of the rebuild. End with a 'submit yours' CTA.",
+      script: `[00:00] We rebuilt the landing page of [BRAND] in 4 hours.
+[00:05] Here's the original. Three problems above the fold.
+[00:12] One — the headline doesn't say what they sell.
+[00:18] Two — the CTA is a maybe, not a yes.
+[00:24] Three — social proof is logos, not outcomes.
+[00:32] Here's our cut.
+[00:35] Headline names the buyer.
+[00:40] CTA is one verb.
+[00:45] Social proof is one number.
+[00:55] Same product. Different page. We'd ship this Friday.
+[01:15] We do this every Tuesday. Submit yours below.`,
+      shots: [
+        {
+          num: '01', time: '00:00–00:05', tool: 'Veo 3.1', aspect: '16:9',
+          purpose: 'Series-mark hook',
+          prompt: `Macro shot, 100mm lens, shallow depth of field. A single sheet of cream cotton paper (#FAF7F2) lies on a sage-felt-covered desk. The wordmark "TEARDOWN №[N]" is letterpressed deep into the paper in ink-black sans-serif, throwing soft shadows in the indented letters. A craftsman's index finger enters frame from the right and lightly taps the wordmark twice.
+SFX: two soft, dry paper-taps; faint ambient workshop room tone, distant traffic.
+Style: 35mm film grain, restrained warmth, atelier mood.
+Negative: no glow, no neon, no animated UI, no metallic shimmer.`
+        },
+        {
+          num: '02', time: '00:05–00:32', tool: 'Descript', aspect: '16:9',
+          purpose: 'Original page critique with annotations',
+          prompt: `Screen capture: scroll the original landing page at 1.2x speed. As founder voiceover names each problem, a sage-circle annotation animates onto the offending element. Three annotations total at 00:12, 00:18, 00:24. Use the Descript shape tool with a custom sage stroke (#4B6B57) at 2px and 60% opacity. Add a 1.5s ease-in for each circle.
+Captions: bottom 22%, ink-on-cream pill, sentence case, sage active word.`
+        },
+        {
+          num: '03', time: '00:32–00:55', tool: 'Descript', aspect: '16:9',
+          purpose: 'Figma rebuild walkthrough',
+          prompt: `Split-screen composition built in Descript. Left half: the original page, frozen. Right half: the Figma rebuild slides in with a 0.4s ease-out reveal. As founder names each fix, the corresponding element in the right panel briefly highlights with a 1px sage outline. No camera move on either side.
+Export the Figma rebuild at 1920×1080 with a transparent margin so the slide-in feels native.`
+        },
+        {
+          num: '04', time: '00:55–01:08', tool: 'Runway Gen-4', aspect: '16:9',
+          purpose: 'Beauty shot of the rebuild rendered live',
+          prompt: `Using image_3 (Paper & Ink palette: cream #FAF7F2, ink #1A1714, sage #4B6B57) and image_5 (Figma export of the rebuilt landing page) as references. Beauty shot of the rebuilt landing page rendered inside a Safari browser frame on a 14-inch laptop, on a cream-paper-covered desk. Soft north-window light from camera-left. A cursor enters from the right and hovers over the primary CTA. 8 seconds, very slow 2-degree push-in.
+Negative: no purple/blue UI, no animated cursors flying, no glow, no fake page elements not in image_5.`
+        },
+        {
+          num: '05', time: '01:08–01:30', tool: 'HeyGen Avatar IV', aspect: '16:9',
+          purpose: 'Founder closing CTA',
+          prompt: `Avatar IV (founder face). Seated in the sage-walled studio (per HeyGen brand kit). Frame: medium close-up. Background: out-of-focus paper sample grid. Voice: ElevenLabs cloned founder. Reads: "Same product. Different page. We'd ship this Friday. We do this every Tuesday. Submit yours below."
+Translation: master is EN-AU. Generate Spanish + Japanese variants for week 2 distribution.`
+        }
+      ],
+      music: { length: '1:30', prompt: `Style: minimal mid-tempo lo-fi instrumental, single felted upright piano, soft tape hiss, no drums. 1:30 length. Mood: confident, observational, slightly warm. Energy is steady — no swell, no drop. Final 4 seconds: held C major chord. Vocals: none. Bed at -22 LUFS, ducking under voiceover by -6dB.` },
+      voice: 'ElevenLabs founder clone · Eleven Multilingual v3 · stability 0.42 · similarity 0.78 · style 0.15 · speaker boost on. Render each script line as a separate clip for tight Descript timing.',
+      captions: 'Ink-on-cream pill bottom 22%, sentence case, single line. Sage active-word highlight. Reject OpusClip ALL CAPS YELLOW.',
+      steps: [
+        'Mon evening: founder picks 1 landing page from the most-recent funding announcements (YC, Sequoia, a16z portfolio). Drafts the 200-word critique brief.',
+        'Tues 9am: founder records screen capture of the original (Descript), 60s max raw.',
+        'Tues 10am: founder rebuilds the page in Figma, exports as image_5 at 1920×1080.',
+        'Tues 11am: generate Shot 01 in Veo 3.1 (3 variants, pick best); generate Shot 04 in Runway Gen-4 (2 variants).',
+        'Tues 12pm: record Shot 05 closing card in HeyGen Avatar IV with the cloned voice.',
+        'Tues 1–3pm: assemble in Descript — voiceover, annotations, music bed, captions. Render 16:9 master + 9:16 cut.',
+        'Tues 4pm: ship to LinkedIn (16:9), TikTok / Reels (9:16), X (1:1). Tag the brand. Open submissions in the comments.'
+      ],
+      distribution: 'LinkedIn primary (16:9 native, target ≥35% view-through). TikTok/Reels (9:16, target ≥45% completion). X (1:1, secondary). Always tag the audited brand — controversial-curious is the goal, not hostile.',
+      publishWhere: 'LinkedIn, TikTok, Reels, X, /journal recap post on craefto.com every 4 episodes.',
+      kpis: '≥1 inbound sales call citing "saw the teardown" by episode 4. Newsletter subscribers from comments-CTA. Track in Linear.'
+    },
+
+    {
+      id: 'sixty-second-audit',
+      title: 'The 60-Second Audit',
+      format: 'talking-head',
+      formatLabel: 'Talking head',
+      length: '60s',
+      cadence: 'Bi-weekly',
+      trending: true,
+      tags: ['security', 'cto', 'linkedin', 'owasp', 'niche'],
+      tagline: 'Public security teardown — owns the design + security wedge.',
+      hookShort: "If your auth flow looks like this, stop reading.",
+      hook: "If your auth flow looks like this — stop reading. I'm going to break it in 30 seconds.",
+      why: "Security is fear-based attention. CRAEFTO is one of few studios that does both design and security audits — this format owns that wedge. High share rate among CTOs and Heads of Engineering on LinkedIn. Drives the highest-margin service line. The competition can't copy this without hiring security people.",
+      concept: "Bi-weekly. Pick a public OWASP-relevant pattern from a popular library, framework, or recent CVE. Show the bug → demonstrate the exploit → show the fix → CRAEFTO audit method as the takeaway. Mostly screen capture + short cinematic inserts.",
+      script: `[00:00] If your auth flow looks like this — stop reading.
+[00:05] This is from a Series-B SaaS we audited last week.
+[00:11] Three lines. One CVE waiting to happen.
+[00:18] (demonstrate the exploit on screen)
+[00:30] Here's the fix. Three lines.
+[00:42] Five-minute change. Million-dollar diff.
+[00:50] Every Friday we audit one of our launches like this.
+[00:58] You should too.`,
+      shots: [
+        {
+          num: '01', time: '00:00–00:05', tool: 'Veo 3.1', aspect: '16:9',
+          purpose: 'Hook · code with one line marked',
+          prompt: `Extreme macro, 100mm lens. A sheet of cream cotton paper (#FAF7F2) on a sage felt surface. Three lines of TypeScript are letterpressed in deep ink black. The middle line is washed over with a desaturated rust-red ink (#9C5A4A) — barely red, more like aged blood on parchment, very low saturation. A craftsman's finger enters frame and underlines the marked line with a single deliberate stroke.
+SFX: a single soft pen-on-paper stroke; faint workshop ambience.
+Style: 35mm film grain, atelier silence, restrained.
+Negative: no neon red, no glow, no animated text, no digital effects.`
+        },
+        {
+          num: '02', time: '00:05–00:18', tool: 'Descript', aspect: '16:9',
+          purpose: 'Code editor with founder VO',
+          prompt: `Screen capture of a code editor (cream/ink/sage themed) showing the vulnerable pattern. Founder VO names the pattern. Use Descript's zoom feature to push in 8% on the offending line at 00:11. No animation other than the zoom.`
+        },
+        {
+          num: '03', time: '00:18–00:30', tool: 'Runway Gen-4', aspect: '16:9',
+          purpose: 'Visual metaphor of exploit',
+          prompt: `Using image_3 (Paper & Ink palette) and image_6 (a still of an old brass padlock, slightly opened, on cream paper). Slow 2-second handheld zoom into the keyhole, then a soft snap as the shackle releases. The padlock falls open onto the cream surface. Cream/ink palette only, no metallic shimmer or rainbow reflections. 4 seconds.
+Negative: no fire, no spark effects, no glow, no tech-thriller cliches.`
+        },
+        {
+          num: '04', time: '00:30–00:42', tool: 'Descript', aspect: '16:9',
+          purpose: 'The fix typed in real time',
+          prompt: `Screen capture: the founder types the 3-line fix into the code editor. Use the Descript "speed up to 2x" feature for the typing portion, then real-time for the final keystroke. SFX: real mechanical keyboard captured at -18 dB. End on the "git commit" command being submitted with a single decisive Enter.`
+        },
+        {
+          num: '05', time: '00:42–00:55', tool: 'HeyGen Avatar IV', aspect: '16:9',
+          purpose: 'Founder lesson',
+          prompt: `Avatar IV (founder), seated, sage wall, soft window light camera-left. Single take. Voice (ElevenLabs cloned): "Five-minute change. Million-dollar diff. Every Friday we audit one of our launches like this. You should too."
+No fast cuts. Slight forward lean on "should too".`
+        },
+        {
+          num: '06', time: '00:55–01:00', tool: 'Descript', aspect: '16:9',
+          purpose: 'End card',
+          prompt: `Static cream card. Top-center: wordmark "CRAEFTO" in deep ink. Below in sage mono: "AUDIT №[N] · craefto.com/audit". Hold 4 seconds, fade to cream over 1s.`
+        }
+      ],
+      music: { length: '1:00', prompt: `Mood: tense observational. 0:00–0:50 — single felted piano, sparse, 70 bpm, no resolution. 0:50 onward — warm acoustic guitar joins, gentle resolution. 1:00 length. Final 4 seconds: sustained held chord, no drums.` },
+      voice: 'Same as Teardown Tuesday: ElevenLabs founder clone. For the on-screen exploit demo, use real keyboard ASMR, not a synthesized SFX layer.',
+      captions: 'Ink-on-cream pill, sage active word. For the demo (00:18–00:30), captions are off — let the screen do the work.',
+      steps: [
+        'Pick the CVE / pattern: rotate through OWASP top-10 themes; lean toward auth, session handling, JWT, secrets management.',
+        'Confirm the example is anonymized — never name a specific client. Use a public CVE or a generalized pattern.',
+        'Record the screen capture in Descript with the keyboard mic at -18 dB.',
+        'Generate Shot 01 + Shot 03 in Veo 3.1 / Runway Gen-4 (3 + 2 variants).',
+        'Record HeyGen Avatar IV closing.',
+        'Assemble in Descript. Export 16:9 master + 9:16 cut.',
+        'Publish Wednesday 9am Sydney time (peak LinkedIn for CTO audience).',
+        'In the post body, link to a /audit landing page on craefto.com with the audit-service offer.'
+      ],
+      distribution: 'LinkedIn primary (CTO + Head of Eng audience). X secondary. /audit landing page CTA in every post.',
+      publishWhere: 'LinkedIn, X, /audit page. Embed at the top of any journal post about security.',
+      kpis: '≥1 audit-service inquiry per episode. Track inbound at the /audit form.'
+    },
+
+    {
+      id: 'tier-list',
+      title: 'Tier List · SaaS Landing Pages',
+      format: 'social-short',
+      formatLabel: 'Social short',
+      length: '45s',
+      cadence: 'Monthly',
+      trending: true,
+      tags: ['ranking', 'tiktok', 'reels', 'opinionated', 'design'],
+      tagline: 'S-to-F ranking of 10 funded landing pages — viral 9:16 format.',
+      hookShort: "I ranked the 10 most-funded YC W26 batch landing pages, S to F.",
+      hook: "I ranked the 10 most-funded YC W26 batch landing pages, S to F. Half are F.",
+      why: "Tier-list is one of the dominant viral formats of 2026 — short, opinionated, high CTR. 4.5 seconds per landing page = 10 in 45s. Builds CRAEFTO's reputation as the studio with strong opinions, not the studio that hides them. Repurposes once a month from work the team is already doing internally.",
+      concept: "9:16 vertical. Cream paper background with hand-letterpressed S/A/B/C/D/F tier labels in deep ink. Each landing-page screenshot 'falls' onto its tier with a soft shadow and a 0.5s settle. Founder voiceover delivers a one-sentence verdict per page.",
+      script: `[00:00] Ten YC W26 landing pages. Ranked.
+[00:03] [Page 1 → S] Headline says what they sell. Done.
+[00:08] [Page 2 → A] Strong, but the CTA is hiding.
+[00:13] [Page 3 → C] Three CTAs. So no CTA.
+[00:17] [Page 4 → F] I cannot tell you what they do.
+[00:22] [Page 5 → B] Good copy. Ugly above-the-fold.
+[00:26] [Page 6 → F] Carousel of features. Stop.
+[00:30] [Page 7 → A] One number. One verb. Clean.
+[00:34] [Page 8 → C] Generic stock illustration.
+[00:38] [Page 9 → S] Founder face on the page. Trust.
+[00:42] [Page 10 → F] AI-generated hero image. We can tell.
+[00:47] Five made S or A. Five didn't make C.
+[00:50] We rebuild any of them this Friday.`,
+      shots: [
+        {
+          num: '01', time: '00:00–00:03', tool: 'Veo 3.1', aspect: '9:16',
+          purpose: 'Empty tier-list canvas',
+          prompt: `Static medium shot, vertical 9:16. A sheet of cream cotton paper (#FAF7F2) on a sage-felt desk, viewed top-down. Hand-letterpressed deep ink labels in a vertical column on the left edge: S, A, B, C, D, F. The rows are empty — clean, anticipatory. Camera does not move; the paper softly breathes (1-degree handheld).
+SFX: faint room tone, the soft tick of a wall clock.
+Style: 35mm grain, atelier.
+Negative: no animation, no text effects, no glow — this is real paper waiting to be filled.`
+        },
+        {
+          num: '02', time: '00:03–00:47', tool: 'Descript', aspect: '9:16',
+          purpose: '10 landing-page drops with VO verdicts',
+          prompt: `Composition layered in Descript over Shot 01 still. Each landing-page screenshot enters from above-frame, falls to its tier row with a soft easeOut over 0.4s, lands with a subtle shadow drop. 4.5 seconds per page. Founder voiceover delivers one sentence per landing page in time. Captions: tier letter big and bold in tier color (sage for S/A, ink for B/C, dark ink for D/F) appears on the right of each screenshot at the moment of landing.
+Sequence the entries so two F's never appear back-to-back — pace the pain.`
+        },
+        {
+          num: '03', time: '00:47–00:55', tool: 'HeyGen Avatar IV', aspect: '9:16',
+          purpose: 'Closing CTA',
+          prompt: `Avatar IV (founder). Vertical 9:16. Frame: chest-up close. Sage wall, soft window light. Voice (ElevenLabs): "Five made S or A. Five didn't make C. We rebuild any of them this Friday. Comment the URL." Slight smile on "comment the URL".`
+        }
+      ],
+      music: { length: '0:50', prompt: `Style: dry, sharp, mid-tempo instrumental, snare-heavy with a marching-band feel reduced to a duet (snare + felted piano). 0:50 length. 70 bpm. Energy ramp every 8 seconds matching the tier-list cadence — a small lift on each new entry. Vocals: none. Final beat: clean stop, no decay.` },
+      voice: 'ElevenLabs cloned. Style exaggeration 0.30 (slightly higher than usual — this is opinionated content, voice should carry weight).',
+      captions: 'Tier letters: massive, bold, tier-coded. S/A in sage #4B6B57, B/C in deep ink, D/F in deep ink with a soft ink-wash background.',
+      steps: [
+        'First Monday of the month: founder shortlists 10 landing pages from recent funding announcements.',
+        'Tuesday: founder writes the verdict line for each (one sentence, max 12 words).',
+        'Wednesday morning: capture clean PNGs of each landing page at 1080×1920 fold.',
+        'Wednesday afternoon: generate Shot 01 in Veo (3 variants).',
+        'Wednesday evening: assemble all 10 drops in Descript over the Shot 01 still. Time the falls precisely to the music bed.',
+        'Thursday: HeyGen Avatar IV closing card.',
+        'Thursday evening: caption pass, render 9:16 master.',
+        'Friday morning: post to TikTok, Reels, LinkedIn (9:16), X. Pin in comments: "rebuild any of these — DM us".'
+      ],
+      distribution: 'TikTok primary, Reels secondary, LinkedIn 9:16 tertiary. Aggressive in comments — engage with each ranked brand.',
+      publishWhere: 'TikTok, Instagram Reels, LinkedIn, X, YouTube Shorts.',
+      kpis: '≥10k views per episode within 7 days. Comment-CTA conversions to /audit form. Track in OpusClip analytics + Linear.'
+    },
+
+    {
+      id: 'shipped-friday',
+      title: 'What We Shipped Friday',
+      format: 'social-short',
+      formatLabel: 'Social short',
+      length: '30s',
+      cadence: 'Weekly · Friday',
+      trending: false,
+      tags: ['pov', 'faceless', 'recurring', 'behind-scenes'],
+      tagline: 'Faceless POV recap of the week — recurring Friday slot.',
+      hookShort: "Five things shipped this Friday. None are the website.",
+      hook: "Five things shipped this Friday. None are the website.",
+      why: "Recurring Friday slot creates anticipation. Faceless POV is rising fast in 2026 — no on-camera talent needed, low production cost, high frequency. Demonstrates output without bragging. Builds the 'CRAEFTO ships every Friday' brand promise into a regular content beat.",
+      concept: "First-person POV from a craftsman's eye level at the founder's desk. 5 quick reveals: brand mark debossing → code commit → audit checklist tick → customer welcome email rendered → live URL in a browser. Each held 5s. Music carries the rhythm. Text overlays only — no voiceover.",
+      script: `[00:00] What we shipped this Friday →
+[00:03] One — A brand mark
+[00:08] Two — A clean build
+[00:13] Three — An audit
+[00:18] Four — A welcome
+[00:23] Five — A live URL
+[00:28] Friday at CRAEFTO.`,
+      shots: [
+        {
+          num: '01', time: '00:00–00:03', tool: 'Descript', aspect: '9:16',
+          purpose: 'Title card',
+          prompt: `Static cream card. Hand-letterpressed deep ink: "What we shipped this Friday" with a sage arrow → drawn slowly in 1.5s. Hold 1.5s. Cut.`
+        },
+        {
+          num: '02', time: '00:03–00:08', tool: 'Veo 3.1', aspect: '9:16',
+          purpose: 'POV brand mark',
+          prompt: `First-person POV from the craftsman's eye level, 35mm lens. Hands wearing thin cream cotton gloves enter frame, lifting a freshly debossed business card off a sage-felt pad. The wordmark on the card is a deep ink deboss on cream cotton (#FAF7F2). The card is held briefly, the deboss catches the side light, then the card is set down. 5 seconds.
+SFX: soft paper rustle, the faint click of the card being placed.
+Style: 35mm grain, atelier, restrained warmth.
+Negative: no metallic foil, no shimmer, no glow.`
+        },
+        {
+          num: '03', time: '00:08–00:13', tool: 'Veo 3.1', aspect: '9:16',
+          purpose: 'POV code commit',
+          prompt: `First-person POV at a 14-inch laptop on a cream-paper-covered desk. The cursor moves to a "Commit" button in a code editor styled in cream + ink + sage palette. A finger taps Enter. The button transitions to "Pushed" with a soft sage check mark. 5 seconds.
+SFX: a single decisive mechanical key-press; faint workshop ambience.
+Style: 35mm grain.
+Negative: no glowing UI, no purple/blue, no animated cursors flying.`
+        },
+        {
+          num: '04', time: '00:13–00:18', tool: 'Veo 3.1', aspect: '9:16',
+          purpose: 'POV audit checklist',
+          prompt: `First-person POV looking down at a printed cream paper checklist on a sage felt desk. Four items already ticked in sage felt-tip. A hand enters and ticks the fifth: "Brand QA". The pen lifts cleanly. 5 seconds.
+SFX: a single soft pen-on-paper tick.
+Style: 35mm grain, restrained.
+Negative: no glow, no animation, no UI mockup — this is real paper.`
+        },
+        {
+          num: '05', time: '00:18–00:23', tool: 'Runway Gen-4', aspect: '9:16',
+          purpose: 'Welcome email',
+          prompt: `Using image_3 (Paper & Ink palette). POV looking at a phone on the cream-paper desk. The phone screen shows an inbox notification: subject "Welcome to [client product]" — typeset in the cream/ink/sage palette. The thumb taps to open. 5 seconds, no zoom.
+Negative: no purple/blue chrome, no Apple Mail default styling, no glow.`
+        },
+        {
+          num: '06', time: '00:23–00:28', tool: 'Runway Gen-4', aspect: '9:16',
+          purpose: 'Live URL in browser',
+          prompt: `Using image_3 (palette). POV looking at the laptop screen. A browser frame is open to a live website (in cream/ink/sage palette). The URL bar shows the green padlock and a clean domain. The cursor moves once across the page. Hold. 5 seconds.
+Negative: no chrome other than minimal Safari default; no notification overlays; no glow.`
+        },
+        {
+          num: '07', time: '00:28–00:30', tool: 'Descript', aspect: '9:16',
+          purpose: 'End card',
+          prompt: `Static cream card. Hand-letterpressed deep ink: "Friday at CRAEFTO." Sage subtitle: "craefto.com". Hold 2s, fade.`
+        }
+      ],
+      music: { length: '0:30', prompt: `Mood: warm rhythmic, behind-the-scenes feel. Steady felted piano, light acoustic guitar palm-mutes on each beat. 0:30 length. Energy plateau, no swell. 80 bpm. Vocals: none. End on a clean stop, not a fade.` },
+      voice: 'No voiceover — text overlays only. Optional: ambient room tone bed at -28 LUFS underneath the music.',
+      captions: 'Cream sage-bordered title cards between shots. Text overlay style: serif, sentence case, deep ink on cream pill, bottom-third aligned.',
+      steps: [
+        'Friday morning: founder picks 5 artifacts shipped that week (real ones — never staged).',
+        'Capture each artifact for the Veo / Runway shot — physical objects (business cards, paper, audit checklist) photographed in the studio at 1080×1920.',
+        'Generate Shot 02–04 in Veo 3.1 (3 variants each, pick best).',
+        'Generate Shot 05–06 in Runway Gen-4 with image_3 + the artifact photo as references.',
+        'Assemble in Descript. Music bed under the entire 30s. Render 9:16 master.',
+        'Friday 5pm: post to LinkedIn, TikTok, Reels, X with the caption "Week 31. Five shipped."'
+      ],
+      distribution: 'LinkedIn primary, all socials secondary. Recurring weekly post — same time, same caption format. Builds anticipation.',
+      publishWhere: 'LinkedIn, TikTok, Reels, X — every Friday 5pm Sydney.',
+      kpis: 'Engagement-per-post baseline established by week 4. Week-over-week follower growth. Replies in the comments for "audit yours" inbound.'
+    },
+
+    {
+      id: 'pixel-postmortem',
+      title: 'Pixel Postmortem',
+      format: 'social-short',
+      formatLabel: 'Social short',
+      length: '20s',
+      cadence: 'Bi-weekly',
+      trending: true,
+      tags: ['design', 'ui', 'viral', 'twitter', 'micro'],
+      tagline: 'Extreme close-up UI critique — design Twitter loves it.',
+      hookShort: "This 1-pixel mistake cost a Series-B startup their dropoff.",
+      hook: "This 1-pixel mistake cost a Series-B startup their dropoff.",
+      why: "Hyper-close UI critique is a top-performing format on Twitter/X and LinkedIn for design audiences in 2026. CRAEFTO's design-engineering positioning makes this credible — not just opinions, but measured outcomes. 20s keeps it punchy enough to share without context.",
+      concept: "3-shot story over 20 seconds. Extreme zoom on a UI element → reveal the bug with a grid overlay → cut to the fix → 1-line takeaway. Education + provocation. Always tied to a real outcome (dropoff, conversion, engagement).",
+      script: `[00:00] This 1-pixel mistake cost a Series-B startup their dropoff.
+[00:05] The label. The input. The gap. 1 pixel of misalignment.
+[00:11] 8% drop in form completion.
+[00:14] Snap to baseline. Done.
+[00:18] Pixels are revenue.`,
+      shots: [
+        {
+          num: '01', time: '00:00–00:05', tool: 'Runway Gen-4', aspect: '9:16',
+          purpose: 'Hook · extreme close-up UI element',
+          prompt: `Using image_3 (Paper & Ink palette) and image_7 (a real screenshot of the form field with the misalignment). Extreme close-up of a form input field, label above. The label sits 1 pixel above the input baseline — almost imperceptible. The frame is dominated by negative space; the form sits centered. 4 seconds, very slow 1-degree push-in.
+Negative: no animation, no glow, no purple, no UI clichés, no rainbow gradient.`
+        },
+        {
+          num: '02', time: '00:05–00:14', tool: 'Descript', aspect: '9:16',
+          purpose: 'Reveal bug + outcome',
+          prompt: `Composition over Shot 01 still. At 00:05, a sage-stroke 1px grid overlay fades in over 0.5s, exposing the baseline mismatch. At 00:08, a sage callout pin labels the gap. At 00:11, big deep-ink text drops in: "8% drop in form completion." Hold for 2s.`
+        },
+        {
+          num: '03', time: '00:14–00:18', tool: 'Descript', aspect: '9:16',
+          purpose: 'Snap to fix',
+          prompt: `Cross-fade at 00:14 from broken to fixed. The label snaps down to baseline in a single decisive frame — no animation, just a hard cut. Caption: "Snap to baseline. Done." Hold 3s.`
+        },
+        {
+          num: '04', time: '00:18–00:20', tool: 'Descript', aspect: '9:16',
+          purpose: 'Takeaway',
+          prompt: `Cream end card. Hand-letterpressed deep ink: "Pixels are revenue." Below in sage mono: "craefto.com/pixel". Hold 2s.`
+        }
+      ],
+      music: { length: '0:22', prompt: `Mood: short, sharp. Single felted piano playing one C-G-C motif. Tense at 00:00–00:11, then drop into resolution at 00:14 when the fix lands. 0:22 length. Vocals: none.` },
+      voice: 'ElevenLabs cloned founder. Render the 5 lines as separate clips. Style exaggeration 0.20 — slight bite on "pixels are revenue".',
+      captions: 'Deep ink on cream pill, mono small text bottom-third. Sage active word. The 8% number gets a 1.4x scale animation on entry.',
+      steps: [
+        'Once a fortnight: founder finds a real pixel-level bug in a public B2B SaaS UI. Captures the screenshot at 4x zoom.',
+        'Estimate the impact (use industry benchmarks if no actual data — be conservative, never invent a specific number for a real brand).',
+        'Generate Shot 01 in Runway with image_3 + the screenshot.',
+        'Build Shots 02–04 in Descript over the still.',
+        'ElevenLabs voiceover for the 5 script lines.',
+        'Render 9:16 + 1:1 cuts.',
+        'Post Tuesday morning to X and LinkedIn — peak design-Twitter time.'
+      ],
+      distribution: 'X primary (design-Twitter is where this format wins). LinkedIn secondary. Reels tertiary.',
+      publishWhere: 'X, LinkedIn, Reels.',
+      kpis: '≥1 retweet from a known design-system or component-library account per episode. ≥500 saves on Reels.'
+    },
+
+    {
+      id: 'stop-using-x',
+      title: 'Stop Using X',
+      format: 'talking-head',
+      formatLabel: 'Talking head',
+      length: '25s',
+      cadence: 'Weekly',
+      trending: true,
+      tags: ['provocative', 'opinion', 'linkedin', 'tech'],
+      tagline: 'Provocative one-take opinion — pattern interrupt for LinkedIn.',
+      hookShort: "Stop using Tailwind utility classes for your buttons.",
+      hook: "Stop using Tailwind utility classes for your buttons. Three reasons.",
+      why: "Provocative pattern-interrupt format went viral in early 2026 for B2B tech. Highest opener-CTR rate on LinkedIn in 2025–26 surveys. Demonstrates technical opinion without arrogance. Easy weekly slot — one HeyGen Avatar IV take, no production days.",
+      concept: "HeyGen Avatar IV founder. 5-act structure inside 25 seconds: claim → reason 1 → reason 2 → reason 3 → resolution. Cuts every 5 seconds via subtle 4% zoom-ins. Single setup, single voice, single take.",
+      script: `[00:00] Stop using Tailwind utility classes for your buttons.
+[00:04] Three reasons.
+[00:06] One: every button looks slightly different across the app.
+[00:11] Two: utility classes are write-only — nobody reads them, nobody refactors them.
+[00:18] Three: a Button component is the cheapest abstraction in your codebase.
+[00:23] For everything else, Tailwind. For buttons, a component. That's it.`,
+      shots: [
+        {
+          num: '01', time: '00:00–00:25', tool: 'HeyGen Avatar IV', aspect: '9:16',
+          purpose: 'Single take with 4% zoom cuts every 5s',
+          prompt: `Avatar IV (founder face). Frame: medium close-up, vertical 9:16. Background: out-of-focus sage wall, paper sample grid. Soft window light from camera-left at 4 PM. Voice: ElevenLabs cloned founder, multilingual v3.
+Single continuous 25-second take. No cuts in the avatar — instead, in post (Descript), zoom in 4% at each beat: 00:04, 00:06, 00:11, 00:18, 00:23. Each zoom holds, then resets at the next beat.
+Founder slightly leans forward on "Three reasons" and "That's it."
+No music in this shot — voice carries it.`
+        },
+        {
+          num: '02', time: '00:00–00:25', tool: 'Descript', aspect: '9:16',
+          purpose: 'Captions + numbered list overlay',
+          prompt: `Composition layer over Shot 01. Caption style: deep ink on cream pill, bottom-third. As founder hits each "One:", "Two:", "Three:" — a small numbered serif label drops in top-right corner (1 / 2 / 3) and stays. By 00:18 all three are visible.`
+        }
+      ],
+      music: { length: 'optional', prompt: `Optional only. If used: a single sustained ambient pad in C major, 0:25, very quiet (-32 LUFS bed). No melody. Otherwise: no music — voice carries the 25 seconds.` },
+      voice: 'ElevenLabs cloned. Stability 0.40 (slightly less than default — needs a bit more bite for the format). Style 0.25.',
+      captions: 'Mandatory. Sentence case, deep ink on cream pill, sage active word. Plus numbered overlay 1/2/3 top-right corner per script.',
+      steps: [
+        'Each Sunday: founder picks one industry orthodoxy worth challenging. Theme rotates: design, engineering, security, product, brand.',
+        'Write the script. Hard limit: 5 acts, 25 seconds, 110 wpm.',
+        'Generate the HeyGen Avatar IV take. Re-record if any 5-second segment lands on the wrong beat.',
+        'Add 4% zoom cuts in Descript at each beat.',
+        'Caption pass. Numbered overlay.',
+        'Render 9:16 master + 1:1 secondary.',
+        'Post Tuesday 9am Sydney to LinkedIn (primary).'
+      ],
+      distribution: 'LinkedIn primary. X secondary.',
+      publishWhere: 'LinkedIn, X. Pin top comment with the steel-manned counter-argument — invites engagement.',
+      kpis: '≥1 reshare from a known engineering or design account per episode. ≥3 substantive comments.'
+    },
+
+    {
+      id: 'sketch-to-ship',
+      title: 'From Sketch to Ship',
+      format: 'brand-film',
+      formatLabel: 'Brand film',
+      length: '60s',
+      cadence: 'Per major launch',
+      trending: false,
+      tags: ['anthem', 'premium', 'positioning', 'casestudy'],
+      tagline: '4-act anthem · sketch → wireframe → code → live product.',
+      hookShort: "From this sketch, in nine days, this shipped.",
+      hook: "From this sketch — in nine days — this shipped.",
+      why: "This is the brand-promise narrative in pure form. Visual: paper → digital → live. Reinforces 'we ship the whole stack' positioning. Slot one of these per major client launch and it doubles as a mini brand film for the client. Uses materials already produced during the engagement.",
+      concept: "4 acts × 15 seconds each. Act 1: macro sketch on paper. Act 2: sketch becomes Figma wireframe (sage outlines). Act 3: wireframe becomes code in editor. Act 4: code becomes live product clicked by a real user. Continuous music, layering instruments per act.",
+      script: `[00:00] (silent · sketch on paper)
+[00:05] From this sketch —
+[00:10] In nine days —
+[00:15] (act 2 · wireframe assembles silently)
+[00:30] (act 3 · code appears with keystroke ASMR)
+[00:45] (act 4 · real user clicks the live product)
+[00:55] CRAEFTO. From sketch to ship.`,
+      shots: [
+        {
+          num: '01', time: '00:00–00:15', tool: 'Veo 3.1', aspect: '16:9',
+          purpose: 'Act 1 · macro paper sketch',
+          prompt: `Slow dolly-in, 50mm lens, shallow depth of field. A craftsman's hand draws a wireframe sketch in deep ink on cream cotton paper (#FAF7F2). The pen moves across the page in real-time strokes — header, hero, three columns, CTA. Lit by single warm window from camera-left at 4 PM. Sage-felt desk surface visible at frame edges. 15 seconds.
+SFX: pen-on-paper scratching, faint workshop room tone.
+Founder VO at 00:05–00:13: "From this sketch — in nine days —"
+Style: 35mm film grain, atelier, restrained.
+Negative: no glowing pen, no animated lines, no digital effects.`
+        },
+        {
+          num: '02', time: '00:15–00:30', tool: 'Runway Gen-4', aspect: '16:9',
+          purpose: 'Act 2 · sketch → Figma wireframe',
+          prompt: `Using image_3 (palette) and the still frame from end of Shot 01 as reference. The hand-drawn sketch transforms into a Figma wireframe: each ink line redraws itself in clean sage outlines (#4B6B57) on the cream background. Components materialize one by one — header, hero, columns, CTA — in 1-second beats. The Figma chrome is restrained and matches the palette. 15 seconds, no camera move.
+Negative: no purple/blue Figma default, no flying cursors, no toolbar overlay.`
+        },
+        {
+          num: '03', time: '00:30–00:45', tool: 'Veo 3.1', aspect: '16:9',
+          purpose: 'Act 3 · code appears',
+          prompt: `Tight over-the-shoulder of a code editor on a 14-inch laptop, on a cream-paper-covered desk. Lines of TypeScript materialize as if being typed by an unseen hand at real-world speed. The component matches the wireframe from Act 2: a header component, a hero component, columns, a CTA. The editor chrome is in cream + ink + sage palette. 15 seconds.
+SFX: real mechanical keyboard ASMR — 70 keystrokes captured at -16 dB. The sound of focus.
+Style: 35mm grain.
+Negative: no green-on-black hacker aesthetic, no terminal, no neon syntax.`
+        },
+        {
+          num: '04', time: '00:45–00:58', tool: 'Runway Gen-4', aspect: '16:9',
+          purpose: 'Act 4 · live product clicked',
+          prompt: `Using image_3 (palette) and image_8 (still of the actual shipped product). Medium shot of a young professional in a daylit kitchen, laptop open on the counter. They scroll through the live shipped product (cream/ink/sage palette), pause on the CTA, click. The product responds. They smile — small, real, not stock-photo. 13 seconds, very slow 2-degree push-in.
+Negative: no fake laughter, no high-fives, no over-styling, no thumbs-up.`
+        },
+        {
+          num: '05', time: '00:58–01:00', tool: 'Descript', aspect: '16:9',
+          purpose: 'End card',
+          prompt: `Static cream card. Wordmark "CRAEFTO" centered in deep ink. Below in sage: "From sketch to ship." Hold 2s, fade.`
+        }
+      ],
+      music: { length: '1:00', prompt: `Mood: quiet confidence, slow build matching the 4 acts. Act 1 (0–15s): single nylon-string guitar arpeggio in C → Am → F → G. Act 2 (15–30s): add felted upright piano. Act 3 (30–45s): add brushed snare on the off-beat. Act 4 (45–58s): add warm pad. 1:00 length. Final 2 seconds: all instruments soften, leaving sustained pad. Vocals: none. Tape-saturated.` },
+      voice: 'Voiceover only on Act 1 (00:05–00:13). ElevenLabs cloned, stability 0.45, similarity 0.78. Lower than usual — almost whispered.',
+      captions: 'Subtle — only on Act 1 voiceover. Sentence case, deep ink on 60% cream pill, bottom 22%.',
+      steps: [
+        'During the client engagement: capture the original sketch (real photograph at 1920×1080).',
+        'Export the matching Figma frame at the end of the wireframe phase.',
+        'Capture a still of the deployed product post-launch.',
+        'Generate Shot 01 in Veo 3.1 (3 variants — pick the one with the cleanest pen-stroke physics).',
+        'Generate Shot 02 in Runway Gen-4 (use the sketch still + Figma export).',
+        'Generate Shot 03 in Veo (3 variants for the typing physics).',
+        'Generate Shot 04 in Runway (use the live product still).',
+        'Assemble in Descript. Layer music per act. Add the founder voiceover only over Act 1.',
+        'Render 16:9 master + 9:16 cut + 1:1 cut.',
+        'Ship to client (white-label option) + use as CRAEFTO case-study hero on /work/<slug>.'
+      ],
+      distribution: 'Hero on /work/<client-slug>. Embed in pitch decks. Send to the client for their own use (white-labeled).',
+      publishWhere: 'Client portfolio page, sales decks, LinkedIn (16:9), client\'s own channels (white-label).',
+      kpis: 'Embedded view-completion ≥45%. Client uses it on their own channels (signal of quality). New-business inquiries citing "the case study video" within 30 days.'
+    },
+
+    {
+      id: 'code-for-designers',
+      title: 'Code for Designers',
+      format: 'explainer',
+      formatLabel: 'Explainer',
+      length: '40s',
+      cadence: 'Weekly',
+      trending: true,
+      tags: ['educational', 'metaphor', 'design', 'engineering'],
+      tagline: 'One technical concept, visual metaphor, no code on screen.',
+      hookShort: "Designers — this is what 'hydration' actually means.",
+      hook: "Designers — this is what 'hydration' actually means.",
+      why: "Bridges the design ↔ engineering audience — CRAEFTO's exact wedge. Most design content avoids code; most engineering content uses code. This format does neither — it teaches a code concept with physical metaphor. Owns CRAEFTO's design-engineering positioning. Builds authority with both audiences.",
+      concept: "3-act explainer with a physical metaphor. Each metaphor uses real materials (paper, ink, water, glass) to embody a code concept. Founder voiceover narrates. 40 seconds covers one concept fully. Topics rotate: hydration, lazy loading, server components, race conditions, memoization, etc.",
+      script: `[00:00] Designers — what "hydration" actually means.
+[00:04] HTML is dry paper. The page exists. It's printed. But nothing reacts.
+[00:14] Hydration is when JavaScript enters the paper. Like water.
+[00:22] Now buttons click. Inputs accept. The page is alive.
+[00:32] Server-rendered HTML, hydrated by JavaScript. That's it. No magic.`,
+      shots: [
+        {
+          num: '01', time: '00:00–00:04', tool: 'Veo 3.1', aspect: '9:16',
+          purpose: 'Hook · designer addressed',
+          prompt: `Macro shot, 100mm lens. A sheet of cream cotton paper (#FAF7F2) lies on a sage-felt surface. Hand-letterpressed deep ink: "HYDRATION." A craftsman's finger enters frame and underlines the word. 4 seconds.
+SFX: a soft pen-on-paper stroke; faint workshop ambience.
+Style: 35mm grain, atelier.`
+        },
+        {
+          num: '02', time: '00:04–00:14', tool: 'Veo 3.1', aspect: '9:16',
+          purpose: 'Act 1 · dry paper metaphor',
+          prompt: `Macro shot, 100mm. The same cream paper, with a fully-rendered website printed on it in deep ink — header, hero, three columns, button. Camera holds. The button is letterpressed but cannot be pressed — it's just ink on paper. A finger pokes the button; nothing happens. 10 seconds.
+SFX: faint paper-press sound when the finger pokes; otherwise silence except room tone.
+Style: 35mm grain, atelier.
+Negative: no glow, no animated UI, no glow on press.`
+        },
+        {
+          num: '03', time: '00:14–00:22', tool: 'Veo 3.1', aspect: '9:16',
+          purpose: 'Act 2 · water as JavaScript',
+          prompt: `Macro shot, 100mm. From above, three water droplets fall in slow motion onto the paper from Shot 02. Where each drop lands, a soft sage-tinted ring spreads, the paper darkens slightly, becoming translucent. The "button" area is the third drop's target. 8 seconds.
+SFX: three soft drop-and-spread sounds, faint workshop ambience underneath.
+Style: 35mm grain, restrained.
+Negative: no glow, no color shift to teal, no stylized splash.`
+        },
+        {
+          num: '04', time: '00:22–00:32', tool: 'Veo 3.1', aspect: '9:16',
+          purpose: 'Act 3 · alive paper',
+          prompt: `Macro shot, 100mm. The wet paper from Shot 03. The finger now taps the "button" area — the paper subtly depresses where the finger lands and a soft sage check mark flushes in beneath the ink button outline. The page is alive. 10 seconds.
+SFX: a soft, satisfying paper-press tap with a subtle resonance — like pressing a real button on a wet surface.
+Style: 35mm grain, atelier.
+Negative: no glow, no animation overlays, no UI-style feedback indicators.`
+        },
+        {
+          num: '05', time: '00:32–00:40', tool: 'Descript', aspect: '9:16',
+          purpose: 'Takeaway end card',
+          prompt: `Static cream card. Hand-letterpressed deep ink: "Server-rendered. Hydrated. That's it." Below in sage mono: "More at craefto.com/cfd". Hold 6s, fade.`
+        }
+      ],
+      music: { length: '0:42', prompt: `Mood: educational, calm, observational. Single felted piano arpeggio in F major. Two-instrument layer comes in at 00:14 (when water drops) — soft cello holding a long note. 0:42 length. Final 2 seconds: cello sustains, piano resolves. Vocals: none.` },
+      voice: 'ElevenLabs cloned founder. Stability 0.50 (higher — this is teaching, calm). Similarity 0.78. Style 0.10.',
+      captions: 'Mandatory — non-engineering audience. Deep ink on cream pill, sage active word. Larger than default (16px equivalent at 1080p).',
+      steps: [
+        'Pick the concept: rotate weekly. List of candidates: hydration, lazy loading, server components, race conditions, memoization, prop drilling, suspense, debouncing.',
+        'Find the right physical metaphor. Test it: would a designer who has never written code understand it from the metaphor alone?',
+        'Write the 4-act script. 110 wpm hard limit, 40s total.',
+        'Generate Shot 01–04 in Veo 3.1 (3 variants per shot).',
+        'Compose the end card in Descript.',
+        'ElevenLabs voiceover.',
+        'Music bed in Suno.',
+        'Render 9:16 + 16:9.',
+        'Ship to LinkedIn, X, journal post on craefto.com/journal/code-for-designers-<concept>.'
+      ],
+      distribution: 'LinkedIn primary (designer audience). X secondary. Long-tail SEO via journal post.',
+      publishWhere: 'LinkedIn, X, /journal · pinned on craefto.com/services/design-engineering page.',
+      kpis: '≥1k saves on LinkedIn per episode. /journal post traffic from social. Designer-to-engineer engagement ratio in comments tracked manually.'
+    },
+
+    {
+      id: 'same-friday',
+      title: 'The Same Friday',
+      format: 'brand-film',
+      formatLabel: 'Brand film',
+      length: '30s',
+      cadence: 'Quarterly',
+      trending: false,
+      tags: ['positioning', 'anthem', 'split-screen', 'pitch-deck'],
+      tagline: 'Split-screen anthem · brand, build, audit, launch — all on one Friday.',
+      hookShort: "One studio. One Friday. Four shipped.",
+      hook: "One studio. One Friday. Four shipped.",
+      why: "Drives home the 'we ship the whole stack on the same day' positioning that no competitor has. High-density positioning film. Use as slide 2 in every pitch deck. Use as the home-page secondary hero film. Quarterly cadence keeps it scarce.",
+      concept: "30 seconds. All 4 quadrants visible from 0:00 — top-left (brand reveal), top-right (security audit), bottom-left (code deploy), bottom-right (press release). At 0:08, a finger taps a single Enter key. All 4 quadrants execute simultaneously. End at 0:25 with white-space center and the wordmark.",
+      script: `[00:00] (silent · 4 quadrants visible, anticipatory)
+[00:04] One studio. One Friday.
+[00:08] (Enter key tapped · 4 things ship simultaneously)
+[00:25] CRAEFTO. The same Friday.`,
+      shots: [
+        {
+          num: '01', time: '00:00–00:30', tool: 'Veo 3.1', aspect: '16:9',
+          purpose: 'Center bridge · Enter key',
+          prompt: `Center frame: extreme macro of an Enter key on a mechanical keyboard, lit warmly. The key sits in the geometric center of the frame, surrounded by negative cream space. From 00:00 to 00:08, nothing happens — the key waits. At exactly 00:08, a craftsman's index finger enters from the right and decisively presses Enter. The key depresses, holds for 0.3s, releases. The release moment is the synchronization point for all 4 quadrants.
+SFX: complete silence 00:00–00:08; at 00:08 a single deep mechanical key-thunk; from 00:09 onward, ambient room tone returns.
+Style: 35mm grain, atelier.
+Negative: no other keys visible, no glow, no animated cursors.`
+        },
+        {
+          num: '02', time: '00:08–00:25', tool: 'Runway Gen-4', aspect: 'Top-left quadrant',
+          purpose: 'Brand reveal quadrant',
+          prompt: `Using image_3 (palette) and image_4 (CRAEFTO wordmark). Top-left quadrant of a 16:9 composition, 960×540. A debossed wordmark on cream cotton paper held against a sage wall. From 00:08, the wordmark slowly catches a softer side-light, as if the paper just landed. 17 seconds.`
+        },
+        {
+          num: '03', time: '00:08–00:25', tool: 'Runway Gen-4', aspect: 'Top-right quadrant',
+          purpose: 'Audit checklist quadrant',
+          prompt: `Using image_3. Top-right quadrant 960×540. A printed cream paper checklist labeled "AUDIT" sits on sage felt. At 00:08, a sage felt-tip pen ticks the final item with a single decisive stroke. From 00:09 onward, the checklist holds, complete. 17 seconds.`
+        },
+        {
+          num: '04', time: '00:08–00:25', tool: 'Runway Gen-4', aspect: 'Bottom-left quadrant',
+          purpose: 'Deploy URL quadrant',
+          prompt: `Using image_3. Bottom-left quadrant 960×540. A laptop screen showing a deploy command line. At 00:08, the command resolves to "Deployed · craefto.com" with a small sage check mark. The URL pulses subtly once at 00:10. 17 seconds.`
+        },
+        {
+          num: '05', time: '00:08–00:25', tool: 'Runway Gen-4', aspect: 'Bottom-right quadrant',
+          purpose: 'Press / launch quadrant',
+          prompt: `Using image_3. Bottom-right quadrant 960×540. A phone screen showing a published post / press release with the launch headline. At 00:08, the post timestamp updates to "just now". From 00:09, the post sits, published. 17 seconds.`
+        },
+        {
+          num: '06', time: '00:25–00:30', tool: 'Descript', aspect: '16:9',
+          purpose: 'End card',
+          prompt: `Cream card. Wordmark "CRAEFTO" centered in deep ink. Below in sage: "The same Friday." Hold 5s, fade.`
+        }
+      ],
+      music: { length: '0:30', prompt: `Mood: tense build, then snap. 0:00–0:08: a single sustained pad in C minor, very quiet, holding tension. At 0:08: snap into a confident mid-tempo instrumental. All instruments arrive on the beat — felted piano, brushed snare, warm bass, pad. 0:30 length. Final 4 seconds: instruments soften and resolve to C major. Vocals: none.` },
+      voice: 'Voiceover only on the line at 00:04. ElevenLabs cloned, stability 0.45, very controlled. The rest of the film is musical and visual.',
+      captions: 'Minimal — only on the 00:04 voice line and the end card. Sentence case.',
+      steps: [
+        'Generate Shot 01 in Veo 3.1 (Enter key) — try 4 variants for the cleanest physical key-press.',
+        'Generate Shots 02–05 in Runway Gen-4 — each as its own 17s clip.',
+        'In Descript, build a 16:9 4-quadrant composition. Each quadrant is one of Shots 02–05. Center bridge: Shot 01 plays full frame from 00:06 to 00:09 (0.3s overlap on each side as a dissolve).',
+        'Lock the synchronization: every quadrant must execute its action at exactly 00:08:00 (frame-accurate).',
+        'Layer the music. Final 5s: end card.',
+        'Render 16:9 master + 1:1 cut for X.',
+        'Ship to home page (secondary hero), pitch deck slide 2, sales-call follow-up emails.'
+      ],
+      distribution: 'Home page secondary slot. Pitch decks. Sales-call follow-ups.',
+      publishWhere: 'craefto.com home, /work, pitch decks, Resend follow-up emails.',
+      kpis: 'Pitch-deck-to-call conversion rate up vs. pre-film baseline. Home-page scroll depth past slide 2 ≥60%.'
+    },
+
+    {
+      id: 'day-in-studio',
+      title: 'A Day in the Studio',
+      format: 'brand-film',
+      formatLabel: 'Brand film',
+      length: '75s',
+      cadence: 'Quarterly',
+      trending: true,
+      tags: ['pov', 'cinematic', 'atmospheric', 'careers', 'press'],
+      tagline: 'First-person POV walk-through — atmospheric, premium, repurposable.',
+      hookShort: "Coffee on the desk at 8:42. Friday.",
+      hook: "Coffee on the desk at 8:42. Friday.",
+      why: "POV format is one of the dominant 2026 viral formats. Atmospheric, intimate, repurposes well across press, careers page, brand. Highest-effort production but yields months of footage. The kind of film potential hires watch and decide to apply, that journalists embed in profiles, that prospects link to their teams.",
+      concept: "9 vignettes from arrival to ship, each ~8s. POV is consistent throughout (same hands, same wrist watch, same pen — the same person walking us through their day). Music continuous and slowly builds. No voiceover. Text overlays only at the end.",
+      script: `[00:00] (silent · POV · coffee placed)
+[00:08] (sketch on paper · pen)
+[00:16] (letterpress impression)
+[00:24] (Figma in browser · scroll)
+[00:32] (code editor · keystroke ASMR)
+[00:40] (audit checklist · tick)
+[00:48] (founder on phone · ambient)
+[00:56] (deployment URL · live)
+[01:04] (sun setting on the studio · wide)
+[01:12] CRAEFTO. The Same Friday.
+[01:15] (end)`,
+      shots: [
+        {
+          num: '01', time: '00:00–00:08', tool: 'Veo 3.1', aspect: '16:9',
+          purpose: 'POV · coffee placed at 8:42',
+          prompt: `First-person POV from a craftsman's eye level, 35mm lens, shallow depth of field. Hands enter frame holding a cream ceramic coffee cup. Hands place the cup on a cream-paper-covered desk next to a closed laptop. A wrist watch shows 8:42. The cup steams gently. Lighting: warm morning light from camera-left.
+SFX: a single ceramic-on-paper soft click; faint distant city; ambient workshop room tone.
+Style: 35mm grain, restrained warmth, atelier.
+Negative: no glow, no flare, no smoke effects beyond natural steam.`
+        },
+        {
+          num: '02', time: '00:08–00:16', tool: 'Veo 3.1', aspect: '16:9',
+          purpose: 'POV · sketch begins',
+          prompt: `First-person POV, same hands. A pen lifts from a desk caddy and begins sketching wireframe rectangles on cream paper. Real strokes — header, hero. The hand that holds the pen has a faint scar on the index knuckle. 8 seconds.
+SFX: pen-on-paper scratching, real-time.
+Style: 35mm grain, atelier.`
+        },
+        {
+          num: '03', time: '00:16–00:24', tool: 'Veo 3.1', aspect: '16:9',
+          purpose: 'POV · letterpress impression',
+          prompt: `First-person POV. The same hands operate a small letterpress press. A lever is pulled with deliberate force. The press lands on cream cotton paper and a wordmark debosses. The press releases. The hand lifts the page. 8 seconds.
+SFX: the heavy mechanical thunk of the press; the slow exhale of a spring; the soft rustle of paper lifting.
+Style: 35mm grain, atelier.
+Negative: no metallic shimmer, no foil.`
+        },
+        {
+          num: '04', time: '00:24–00:32', tool: 'Runway Gen-4', aspect: '16:9',
+          purpose: 'POV · Figma scroll',
+          prompt: `Using image_3 (palette). First-person POV looking down at a laptop screen. The screen shows a Figma file in cream + ink + sage palette. The trackpad scrolls slowly through the design. 8 seconds, no zoom.
+Negative: no purple Figma chrome default, no toolbars overlay.`
+        },
+        {
+          num: '05', time: '00:32–00:40', tool: 'Veo 3.1', aspect: '16:9',
+          purpose: 'POV · code keystroke ASMR',
+          prompt: `First-person POV. Same hands, now typing on a mechanical keyboard. The screen above shows code in cream + ink + sage palette. The hands type for 6 seconds, then hit Cmd+S. 8 seconds total.
+SFX: real mechanical keyboard ASMR captured at -16 dB; a single Cmd+S "ding" at the end.
+Style: 35mm grain.
+Negative: no glow, no terminal aesthetic.`
+        },
+        {
+          num: '06', time: '00:40–00:48', tool: 'Veo 3.1', aspect: '16:9',
+          purpose: 'POV · audit checklist',
+          prompt: `First-person POV looking down at a printed cream paper "AUDIT" checklist. The hands reach for a sage felt-tip pen. Tick the fifth item. The pen lifts. 8 seconds.
+SFX: the soft pen-on-paper tick; faint room tone.
+Style: 35mm grain.`
+        },
+        {
+          num: '07', time: '00:48–00:56', tool: 'Veo 3.1', aspect: '16:9',
+          purpose: 'POV · founder on phone (overheard)',
+          prompt: `First-person POV from across a sage-walled studio looking at the founder mid-conversation at a desk, headset on. Voice (faint, ambient): "Then we ship it Friday. Whole thing." The POV holds steady — we're the listener. 8 seconds.
+Ambient: faint mechanical keyboard tap from another desk; the founder's voice slightly muffled by the room.
+Style: 35mm grain, atelier.`
+        },
+        {
+          num: '08', time: '00:56–01:04', tool: 'Runway Gen-4', aspect: '16:9',
+          purpose: 'POV · deployment live',
+          prompt: `Using image_3 (palette). First-person POV at the laptop. The deploy command finishes. The terminal shows "Deployed · production · craefto.com". A new tab opens to a live URL. The page is in cream + ink + sage palette. The cursor moves across it. 8 seconds.
+Negative: no glow, no purple terminal, no animated cursor.`
+        },
+        {
+          num: '09', time: '01:04–01:12', tool: 'Veo 3.1', aspect: '16:9',
+          purpose: 'Wide · sun setting on the studio',
+          prompt: `Wide static shot of the studio at golden hour. Sage-green wall on the left, cream paper samples in a 3×3 grid pinned to it, two oak desks. The light is warm, low, from the north window. The studio is empty — everyone has gone home. The deboss-wordmark cream sheet from earlier sits on a desk, slowly catching the light. 8 seconds.
+Style: 35mm grain, atelier, warm.
+Negative: no people, no overhead fluorescents, no Edison bulbs.`
+        },
+        {
+          num: '10', time: '01:12–01:15', tool: 'Descript', aspect: '16:9',
+          purpose: 'End card',
+          prompt: `Cream card. Wordmark "CRAEFTO" centered. Below in sage: "The same Friday." Hold 3s, fade.`
+        }
+      ],
+      music: { length: '1:18', prompt: `Mood: cinematic warm folk-ambient, slow build matching the day. Single nylon-string guitar throughout (Em7 → Cmaj7 → G → Dsus4). Light upright bass joins at 0:30. Brushed snare at 0:50. Soft felted piano at 1:00. Length 1:18. Final 4 seconds: settle on sustained Em7. No vocals. Tape-saturated.` },
+      voice: 'No voiceover. Only the founder\'s overheard phone line in Shot 07 — kept low, muffled, ambient.',
+      captions: 'No captions on the body of the film. Only the end card text.',
+      steps: [
+        'Plan a real Friday in the studio. Schedule the actual ship of a real piece of work for that day — the film must reflect a true day, not a staging.',
+        'Take real photos throughout the day to use as image_X references for Runway shots (Figma, deploy terminal, end-of-day studio wide).',
+        'Generate Shots 01–03 + 05–07 + 09 in Veo 3.1 (3 variants each).',
+        'Generate Shots 04 + 08 in Runway Gen-4 with image references.',
+        'Compose end card in Descript.',
+        'Suno music bed (1:18).',
+        'Assemble in Descript. Tight pacing — every shot exactly 8s. End card 3s.',
+        'Render 16:9 master + 1:1 + 9:16 (the 9:16 cut omits Shots 09).',
+        'Ship to /careers page (top), /about (top), press kit, LinkedIn pinned post, embedded in the team\'s email signatures.'
+      ],
+      distribution: 'Careers page, About page, press kit. LinkedIn pinned post. Email signatures.',
+      publishWhere: 'craefto.com/careers, craefto.com/about, press kit, LinkedIn, email signatures.',
+      kpis: 'Careers-page time-on-page ≥+50%. Inbound applications ≥+30% in 60 days post-launch. Press mentions citing the film.'
+    }
+  ];
+
+  // ===== Render =====
+  const grid = document.getElementById('ideasGrid');
+  const searchInput = document.getElementById('ideaSearch');
+  const clearBtn = document.getElementById('clearSearch');
+  const chips = document.querySelectorAll('#filterChips .chip');
+  const drawer = document.getElementById('ideaDrawer');
+  const drawerBackdrop = document.getElementById('drawerBackdrop');
+  const drawerBody = document.getElementById('drawerBody');
+  const drawerMeta = document.getElementById('drawerMeta');
+  let activeFilter = 'all';
+  let activeSearch = '';
+
+  function escapeHtml(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  function matchSearch(idea, q) {
+    const haystack = [idea.title, idea.tagline, idea.hookShort, idea.formatLabel, idea.cadence, idea.concept, idea.why, ...(idea.tags || [])].join(' ').toLowerCase();
+    return haystack.includes(q);
+  }
+
+  function renderIdeas() {
+    const q = activeSearch.toLowerCase().trim();
+    const filtered = IDEAS.filter(i => {
+      if (activeFilter === 'trending') {
+        if (!i.trending) return false;
+      } else if (activeFilter !== 'all') {
+        if (i.format !== activeFilter) return false;
+      }
+      if (q && !matchSearch(i, q)) return false;
+      return true;
+    });
+
+    if (!filtered.length) {
+      grid.innerHTML = '<div class="empty-state">No ideas match — try a different search or filter.<br><br>Try: <em>teardown</em>, <em>security</em>, <em>tier list</em>, <em>POV</em>, <em>linkedin</em>.</div>';
+      return;
+    }
+
+    grid.innerHTML = filtered.map(i => `
+      <button class="idea-card" data-id="${escapeHtml(i.id)}" type="button">
+        <div class="meta">
+          <span class="badge">${escapeHtml(i.formatLabel)}</span>
+          ${i.trending ? '<span class="badge trending">★ Trending</span>' : ''}
+          <span class="length">${escapeHtml(i.length)}</span>
+        </div>
+        <h3>${escapeHtml(i.title)}</h3>
+        <p class="tagline">${escapeHtml(i.tagline)}</p>
+        <p class="hook">"${escapeHtml(i.hookShort)}"</p>
+      </button>
+    `).join('');
+
+    grid.querySelectorAll('.idea-card').forEach(c => {
+      c.addEventListener('click', () => openIdea(c.dataset.id));
+    });
+  }
+
+  function copyHandler(e) {
+    const btn = e.currentTarget;
+    const block = btn.parentElement;
+    const text = block.textContent.replace(/^Copy/, '').trim();
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = 'Copied';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1400);
+    }).catch(() => { btn.textContent = 'Press ⌘C'; });
+  }
+
+  function renderIdeaDetail(idea) {
+    const shotsTable = `
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>#</th><th>Time</th><th>Tool</th><th>Purpose</th></tr></thead>
+          <tbody>${idea.shots.map(s => `<tr><td>${escapeHtml(s.num)}</td><td>${escapeHtml(s.time)}</td><td>${escapeHtml(s.tool)}</td><td>${escapeHtml(s.purpose)}</td></tr>`).join('')}</tbody>
+        </table>
+      </div>`;
+
+    const perShot = idea.shots.map(s => `
+      <h5>Shot ${escapeHtml(s.num)} — ${escapeHtml(s.purpose)} · ${escapeHtml(s.tool)}</h5>
+      <div class="prompt" data-label="${escapeHtml(s.tool)} · ${escapeHtml(s.time)} · ${escapeHtml(s.aspect || '16:9')}"><button class="copy-btn" type="button">Copy</button>${escapeHtml(s.prompt)}</div>
+    `).join('');
+
+    return `
+      <h2>${escapeHtml(idea.title)}</h2>
+      <p class="lede">${escapeHtml(idea.tagline)}</p>
+
+      <h4>Hook · first 1.5 seconds</h4>
+      <div class="prompt" data-label="Opening line"><button class="copy-btn" type="button">Copy</button>${escapeHtml(idea.hook)}</div>
+
+      <h4>Why it works for CRAEFTO</h4>
+      <p>${escapeHtml(idea.why)}</p>
+
+      <h4>Concept</h4>
+      <p>${escapeHtml(idea.concept)}</p>
+
+      ${idea.script ? `
+      <h4>Script · timed</h4>
+      <div class="prompt" data-label="Voiceover script"><button class="copy-btn" type="button">Copy</button>${escapeHtml(idea.script)}</div>
+      ` : ''}
+
+      <h4>Shot list</h4>
+      ${shotsTable}
+
+      <h4>Per-shot prompts · copy-paste ready</h4>
+      ${perShot}
+
+      <div class="section-divider"></div>
+
+      ${idea.music ? `
+      <h4>Music · Suno</h4>
+      <div class="prompt" data-label="Suno Pro · ${escapeHtml(idea.music.length || '')}"><button class="copy-btn" type="button">Copy</button>${escapeHtml(idea.music.prompt)}</div>
+      ` : ''}
+
+      ${idea.voice ? `
+      <h4>Voiceover · ElevenLabs</h4>
+      <p>${escapeHtml(idea.voice)}</p>
+      ` : ''}
+
+      ${idea.captions ? `
+      <h4>Captions</h4>
+      <p>${escapeHtml(idea.captions)}</p>
+      ` : ''}
+
+      <div class="section-divider"></div>
+
+      <h4>Step-by-step execution</h4>
+      <ol>${idea.steps.map(s => `<li>${escapeHtml(s)}</li>`).join('')}</ol>
+
+      <h4>Distribution &amp; KPIs</h4>
+      <p>${escapeHtml(idea.distribution)}</p>
+      ${idea.kpis ? `<p><strong>Targets:</strong> ${escapeHtml(idea.kpis)}</p>` : ''}
+
+      ${idea.publishWhere ? `
+      <div class="callout">
+        <strong>Where to publish</strong>
+        ${escapeHtml(idea.publishWhere)}
+      </div>` : ''}
+    `;
+  }
+
+  function openIdea(id) {
+    const idea = IDEAS.find(i => i.id === id);
+    if (!idea) return;
+    drawerMeta.innerHTML = `
+      <span class="badge">${escapeHtml(idea.formatLabel)}</span>
+      <span class="length">${escapeHtml(idea.length)}</span>
+      <span class="length">${escapeHtml(idea.cadence)}</span>
+      ${idea.trending ? '<span class="badge trending">★ Trending</span>' : ''}
+    `;
+    drawerBody.innerHTML = renderIdeaDetail(idea);
+    drawerBackdrop.classList.add('open');
+    drawer.classList.add('open');
+    drawer.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('drawer-open');
+    drawerBody.querySelectorAll('.copy-btn').forEach(btn => btn.addEventListener('click', copyHandler));
+    drawer.scrollTop = 0;
+  }
+
+  function closeDrawer() {
+    drawerBackdrop.classList.remove('open');
+    drawer.classList.remove('open');
+    drawer.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('drawer-open');
+  }
+
+  searchInput.addEventListener('input', e => {
+    activeSearch = e.target.value;
+    searchInput.parentElement.classList.toggle('has-value', !!activeSearch);
+    renderIdeas();
+  });
+  clearBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    activeSearch = '';
+    searchInput.parentElement.classList.remove('has-value');
+    renderIdeas();
+    searchInput.focus();
+  });
+  chips.forEach(chip => {
+    chip.addEventListener('click', () => {
+      chips.forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      activeFilter = chip.dataset.filter;
+      renderIdeas();
+    });
+  });
+  document.getElementById('drawerClose').addEventListener('click', closeDrawer);
+  drawerBackdrop.addEventListener('click', closeDrawer);
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && drawer.classList.contains('open')) closeDrawer();
+  });
+
+  renderIdeas();
 </script>
 
 </body>
