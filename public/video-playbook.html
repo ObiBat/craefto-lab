@@ -51,6 +51,10 @@
   section.section, .topbar-inner { max-width: 100%; }
   .prompt { overflow-wrap: anywhere; word-break: normal; }
   img, table { max-width: 100%; }
+  /* Long words (URLs, hex codes, hyphenated compounds) must wrap rather than overflow */
+  h1, h2, h3, h4, h5, h6, p, li, td, th, a { overflow-wrap: break-word; }
+  /* main is a grid child — needs min-width: 0 so it can shrink below content's intrinsic min */
+  main { min-width: 0; }
   /* SVG icons inside buttons can intercept taps on iOS; let the click reach the button */
   button svg { pointer-events: none; }
 
@@ -494,7 +498,7 @@
   /* Mobile / tablet nav overlay */
   @media (max-width: 900px) {
     .topbar { display: block; }
-    .layout { grid-template-columns: 1fr; }
+    .layout { grid-template-columns: minmax(0, 1fr); }
 
     /* TOC becomes a full-screen frosted overlay when opened */
     aside.toc {
