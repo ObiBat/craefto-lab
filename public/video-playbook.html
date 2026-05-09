@@ -944,6 +944,7 @@
         <li><a href="#kpis">KPI tracking</a></li>
         <li><a href="#next">What ships next</a></li>
         <li><a href="#library">Reusable prompt library</a></li>
+        <li><a href="#pipeline">Production pipeline</a></li>
         <li><a href="#explorer">Idea explorer</a></li>
       </ol>
     </nav>
@@ -1691,9 +1692,101 @@ crane reveals. Cuts are slow (1.5–3 seconds). Subjects move at
 real-world speed; no slow-motion unless explicitly noted.</div>
     </section>
 
-    <!-- 16. Idea Explorer -->
+    <!-- 16. Production pipeline -->
+    <section class="section" id="pipeline">
+      <h2><span class="num">16</span>Production pipeline</h2>
+      <p class="sub">How a single shot is actually made — and how to choose between still-first, direct text-to-video, and live capture.</p>
+
+      <p>Pros don't write one prompt and hit render. Every shot belongs to one of <strong>three production paths</strong>. Knowing which to use is what separates "I generated a video" from "I directed a film". The whole 75-second brand film in §10 mixes all three.</p>
+
+      <h3>The 11-step flow for any single piece</h3>
+      <ol>
+        <li><strong>Concept</strong> — logline + 1-paragraph treatment.</li>
+        <li><strong>Script</strong> — voiceover timed to seconds, locked at 110 wpm.</li>
+        <li><strong>Shot list</strong> — 8–12 shots, each with tool + intent + length.</li>
+        <li><strong>Reference</strong> — pull mood references (Aesop films, Apple Newsroom, Loewe campaigns, Vimeo Staff Picks). Save to a Pinterest board per project.</li>
+        <li><strong>Stills</strong> — generate reference stills in Midjourney v7 or Flux Pro for shots that need locked composition. Iterate 10–30 stills, pick 1–3 winners.</li>
+        <li><strong>Animation</strong> — bring those stills to life via Runway Gen-4 image-to-video, OR generate the shot direct in Veo 3.1 if you need synced audio.</li>
+        <li><strong>Live capture</strong> — Descript screen recording for any real UI, real Figma, real terminal.</li>
+        <li><strong>Voice</strong> — ElevenLabs cloned founder, line-by-line.</li>
+        <li><strong>Music</strong> — Suno custom score, generated to length.</li>
+        <li><strong>Assembly</strong> — Descript timeline; caption pass; light color grade in Descript.</li>
+        <li><strong>Export &amp; ship</strong> — 16:9 master + 9:16 + 1:1 cuts. Schedule, post, monitor.</li>
+      </ol>
+
+      <h3>The three production paths</h3>
+
+      <div class="grid-2">
+        <div class="card">
+          <h4>Path A · Still-first → animate</h4>
+          <p>Generate a reference still in <strong>Midjourney</strong> or <strong>Flux Pro</strong> until composition, color, and texture are exactly right. Then bring it to life in <strong>Runway Gen-4</strong> (image-to-video) with a short motion direction.</p>
+          <p><strong>Why:</strong> stills cost ~$0.04 each vs $3–15 for a video gen. You can iterate 30 stills before committing to 3 animations. Stills also let you <em>lock frame composition</em> before motion is applied — which is the difference between "AI video" and "directed film".</p>
+          <p><strong>When:</strong> any shot where frame composition matters more than physics. Brand films, hero shots, beauty shots, atmospheric POV, the 80% case for editorial work.</p>
+        </div>
+
+        <div class="card">
+          <h4>Path B · Direct text-to-video (Veo 3.1)</h4>
+          <p>Skip the still. Write the full Veo 3.1 prompt — including SFX, ambient, and dialogue — and render the video + audio in one pass.</p>
+          <p><strong>Why:</strong> Veo 3.1 is the only mainstream model that generates video + synced audio together. The audio quality is professional-grade and saves a separate Foley/voiceover step.</p>
+          <p><strong>When:</strong> talking-head with dialogue. Action shots (a press lever pulling, water drops landing on paper). Anything ≤4s with strong physical motion that's hard to fake from a still.</p>
+        </div>
+
+        <div class="card">
+          <h4>Path C · Live capture</h4>
+          <p><strong>Descript</strong> screen recording of the actual UI, Figma, terminal, or real handwriting. No AI involved.</p>
+          <p><strong>Why:</strong> AI models can't render specific brand UIs accurately enough for B2B trust. Real screen capture is faster, more honest, and reads as evidence.</p>
+          <p><strong>When:</strong> service explainers, case studies, code editors, anything showing real software. Always pair with a Path A or Path B opener for cinematic value.</p>
+        </div>
+
+        <div class="card">
+          <h4>Path D · Composition (Descript)</h4>
+          <p>Static cards, text overlays, end frames, annotations on top of other footage. Built directly in Descript with shape tools and text layers.</p>
+          <p><strong>Why:</strong> precise type, precise timing, full control. AI can't do this reliably.</p>
+          <p><strong>When:</strong> end cards, title cards, captions, annotation overlays, tier-list grids, split-screen compositions.</p>
+        </div>
+      </div>
+
+      <h3>Editorial style markers · CRAEFTO</h3>
+      <p>What separates editorial AI video (Aesop, Loewe, Apple, Bottega) from generic AI marketing slop. Every shot in every idea below should pass this checklist:</p>
+      <ol>
+        <li><strong>Negative space is a character.</strong> Let cream paper breathe. Subjects should occupy 30–55% of frame, not 80%.</li>
+        <li><strong>Single light source.</strong> One warm window from camera-left at a known time of day. Never flat overhead.</li>
+        <li><strong>Restrained motion.</strong> ≤2-degree dollies, 1.5–3s holds. No whip-pans, crane reveals, or rotating cameras.</li>
+        <li><strong>Texture obsession.</strong> Paper grain, ink wash, brass type, sage felt. If you can't see grain, the shot is too clean.</li>
+        <li><strong>Eye-line composition.</strong> Frame for emotional center, not a "cool angle".</li>
+        <li><strong>Color discipline.</strong> Cream / ink / sage only. Anything else gets re-prompted with a tighter negative.</li>
+        <li><strong>One verb per shot.</strong> Tap. Lift. Press. Breathe. Multiple verbs = multiple shots.</li>
+        <li><strong>Sound restraint.</strong> Silence between sounds matters. Veo prompts should specify quiet first, sound second.</li>
+        <li><strong>Type as photography.</strong> Wordmarks letterpressed and shot like still life — not animated logos.</li>
+        <li><strong>No visible interface.</strong> UI shown only when narratively required. No fake cursors flying.</li>
+      </ol>
+
+      <h3>Worked example · Shot 01 of the brand film, three ways</h3>
+      <p>Same shot ("hands at letterpress lifting metal type"), three approaches:</p>
+
+      <h4>Path A — Still-first</h4>
+      <div class="prompt" data-label="Step 1 · Midjourney v7 reference still"><button class="copy-btn">Copy</button>extreme macro photograph, craftsman's hands lifting a single piece of brass type from a wooden compositor's tray, cream cotton paper #FAF7F2 underneath, sage felt lining the tray, single warm window light from left at 4pm, dust motes in the beam, 50mm lens, shallow depth of field, 35mm film grain, atelier mood, no faces, restrained, --ar 16:9 --style raw --v 7</div>
+      <div class="prompt" data-label="Step 2 · Runway Gen-4 image-to-video"><button class="copy-btn">Copy</button>Using the still as the first frame: hands gently lift the brass type and place it into a forme to the right of frame. Slow 1-degree dolly-in over 4 seconds. Real-world hand speed; no slow-motion. End frame: type seated in forme. Aspect 16:9.</div>
+      <p><em>Cost</em>: ~$0.04 still + ~$3 video = ~$3.04. <em>Time</em>: 8 minutes including iteration. <em>Audio</em>: must be added separately in Descript.</p>
+
+      <h4>Path B — Direct Veo 3.1</h4>
+      <div class="prompt" data-label="Veo 3.1 · text-to-video with synced audio"><button class="copy-btn">Copy</button>Slow dolly-in, 50mm lens, shallow depth of field. A craftsman's hands gently lift a single piece of metal type from a wooden compositor's tray and place it into a forme. Studio is dim, lit by a single warm window from camera-left at 4 PM, dust motes visible. Cream paper #FAF7F2, brass type, deep ink-black shadows, sage-green felt lining the tray. Photorealistic, 35mm film grain, restrained warmth, atelier mood.
+SFX: a soft metallic click as the type seats; faint distant traffic; ambient noise of an empty workshop at late afternoon.
+Negative: no neon, no shiny chrome, no lens flare, no people's faces.</div>
+      <p><em>Cost</em>: ~$8–15. <em>Time</em>: 4 minutes (3 variants). <em>Audio</em>: included, professional grade.</p>
+
+      <h4>The choice</h4>
+      <p>For this shot, <strong>Path B (Veo 3.1)</strong> wins — the metallic click of the type seating is narratively important and a still-first path would require Foley work to match it. For Shot 03 of the same film (dashboard UI dissolve), <strong>Path A (still-first)</strong> wins — composition matters more than audio, and Runway Gen-4's reference handling is better than Veo 3.1's.</p>
+
+      <div class="callout">
+        <strong>The default mix for a CRAEFTO 60–90s film</strong>
+        ~50% Path A (still-first via Midjourney → Runway Gen-4) for editorial atmosphere · ~30% Path B (Veo 3.1 direct) for synced-audio hero shots · ~15% Path C (Descript live capture) for real UI · ~5% Path D (composition) for end cards. Adjust per idea — the per-shot tool column in each Idea Explorer card tells you which path is recommended.
+      </div>
+    </section>
+
+    <!-- 17. Idea Explorer -->
     <section class="section" id="explorer">
-      <h2><span class="num">16</span>Idea explorer</h2>
+      <h2><span class="num">17</span>Idea explorer</h2>
       <p class="sub">Type an idea or browse the library. Click any card for the full concept, every prompt, and a step-by-step production guide.</p>
 
       <p>Ten production-ready ideas tuned to CRAEFTO's positioning — design engineering meets brand systems meets security audits. Each one comes with a hook, voiceover script, full Veo 3.1 / Runway Gen-4 / HeyGen prompts for every shot, music brief, ElevenLabs voice settings, captions spec, execution checklist, and KPIs.</p>
@@ -1837,6 +1930,7 @@ real-world speed; no slow-motion unless explicitly noted.</div>
     kpis: 'KPI tracking',
     next: 'What ships next',
     library: 'Reusable prompt library',
+    pipeline: 'Production pipeline',
     explorer: 'Idea explorer'
   };
   function updateOnScroll() {
@@ -1877,6 +1971,7 @@ real-world speed; no slow-motion unless explicitly noted.</div>
       trending: true,
       tags: ['linkedin', 'recurring', 'redesign', 'critique'],
       tagline: 'Recurring B2B landing-page teardown — every Tuesday, one public redesign.',
+      editorial: 'Editorial direction: Vimeo Staff Pick architectural slow-cut, never the lo-fi LinkedIn meme. Negative space carries the critique; the rebuild reveal earns its arrival. Production: Path B (Veo 3.1 direct) for shot 01 — the paper-tap SFX is narratively essential. Path C (Descript screen + composition) for shots 02–03 — these must be the real Figma file and real screenshots. Path A (Midjourney still → Runway Gen-4 image-to-video) for shot 04 — composition matters more than audio for the beauty shot. HeyGen Avatar IV for shot 05. Pace: 1.8s minimum cut length until the closing CTA.',
       hookShort: "We rebuilt the landing page of a $2B SaaS in 4 hours.",
       hook: "We rebuilt the landing page of a $2B SaaS in 4 hours. Here's what we cut, what we added, and what we'd never ship.",
       why: "Public teardowns are the highest-engagement format for B2B design content on LinkedIn 2026. Every founder/marketer wants their competitors critiqued. CRAEFTO already does this for paying clients — making one public per week converts the work into marketing without extra effort. Moves prospects from 'do they ship?' to 'look what they shipped.'",
@@ -1953,6 +2048,7 @@ Translation: master is EN-AU. Generate Spanish + Japanese variants for week 2 di
       trending: true,
       tags: ['security', 'cto', 'linkedin', 'owasp', 'niche'],
       tagline: 'Public security teardown — owns the design + security wedge.',
+      editorial: 'Editorial direction: Apple security keynote restraint, not a hacker thriller. Single warm light, deep ink shadows; never green-on-black anywhere. The exploit shot is a metaphor on cream paper, not a Matrix reference. Production: Path A (Midjourney still → Runway Gen-4) for shot 01 — frame composition is the whole hook. Path C (Descript screen capture) for shots 02 + 04 — must be real code, never simulated. Path B (Veo 3.1 direct) for shot 03 — the brass padlock click is the moment. HeyGen Avatar IV for shot 05. Path D (Descript composition) for end card.',
       hookShort: "If your auth flow looks like this, stop reading.",
       hook: "If your auth flow looks like this — stop reading. I'm going to break it in 30 seconds.",
       why: "Security is fear-based attention. CRAEFTO is one of few studios that does both design and security audits — this format owns that wedge. High share rate among CTOs and Heads of Engineering on LinkedIn. Drives the highest-margin service line. The competition can't copy this without hiring security people.",
@@ -2030,6 +2126,7 @@ No fast cuts. Slight forward lean on "should too".`
       trending: true,
       tags: ['ranking', 'tiktok', 'reels', 'opinionated', 'design'],
       tagline: 'S-to-F ranking of 10 funded landing pages — viral 9:16 format.',
+      editorial: 'Editorial direction: editorial-poster aesthetic — the tier grid is a layout from a design magazine, not a TikTok meme. Letterpressed labels in deep ink on cream; no neon, no animated gradients. Production: Path B (Veo 3.1 direct) for shot 01 — needs the empty-grid ambient room tone for anticipation. Path A (Midjourney) for each of the 10 landing-page reference frames if the screenshots need stylistic unification — otherwise Path C (live capture). Path D (Descript composition) for the 10 drop animations. HeyGen for shot 03. Each "fall" is a 0.4s ease-out with a sage shadow drop.',
       hookShort: "I ranked the 10 most-funded YC W26 batch landing pages, S to F.",
       hook: "I ranked the 10 most-funded YC W26 batch landing pages, S to F. Half are F.",
       why: "Tier-list is one of the dominant viral formats of 2026 — short, opinionated, high CTR. 4.5 seconds per landing page = 10 in 45s. Builds CRAEFTO's reputation as the studio with strong opinions, not the studio that hides them. Repurposes once a month from work the team is already doing internally.",
@@ -2096,6 +2193,7 @@ Sequence the entries so two F's never appear back-to-back — pace the pain.`
       trending: false,
       tags: ['pov', 'faceless', 'recurring', 'behind-scenes'],
       tagline: 'Faceless POV recap of the week — recurring Friday slot.',
+      editorial: 'Editorial direction: Aesop atelier × Wes Anderson POV. Hands wear cream cotton gloves; motion is deliberate and craftsperson-paced. Single warm light source moves consistently across all 5 vignettes. No voiceover — text overlays only, music carries the rhythm. Production: Path B (Veo 3.1 direct) for shots 02–04 + 06 — POV physical action with native SFX is what sells these. Path A (Midjourney still → Runway Gen-4) for shot 05 — the welcome-email mockup needs locked composition. Path D (Descript composition) for title and end cards.',
       hookShort: "Five things shipped this Friday. None are the website.",
       hook: "Five things shipped this Friday. None are the website.",
       why: "Recurring Friday slot creates anticipation. Faceless POV is rising fast in 2026 — no on-camera talent needed, low production cost, high frequency. Demonstrates output without bragging. Builds the 'CRAEFTO ships every Friday' brand promise into a regular content beat.",
@@ -2181,6 +2279,7 @@ Negative: no chrome other than minimal Safari default; no notification overlays;
       trending: true,
       tags: ['design', 'ui', 'viral', 'twitter', 'micro'],
       tagline: 'Extreme close-up UI critique — design Twitter loves it.',
+      editorial: 'Editorial direction: design-Twitter forensic — extreme macro meets CSI clean overlay. Color discipline is everything; the only red allowed is the desaturated #9C5A4A "aged ink", never bright. Production: Path A (Midjourney still → Runway Gen-4 image-to-video) for shot 01 — generate the still until the misalignment reads at the right magnification, then animate the slow push-in. Path D (Descript composition) for shots 02–04 — the 1px grid overlay, the callout pin, the snap-to-fix and end card are all built directly in Descript with shape and text layers. No live capture in this format; everything is composed.',
       hookShort: "This 1-pixel mistake cost a Series-B startup their dropoff.",
       hook: "This 1-pixel mistake cost a Series-B startup their dropoff.",
       why: "Hyper-close UI critique is a top-performing format on Twitter/X and LinkedIn for design audiences in 2026. CRAEFTO's design-engineering positioning makes this credible — not just opinions, but measured outcomes. 20s keeps it punchy enough to share without context.",
@@ -2240,6 +2339,7 @@ Negative: no animation, no glow, no purple, no UI clichés, no rainbow gradient.
       trending: true,
       tags: ['provocative', 'opinion', 'linkedin', 'tech'],
       tagline: 'Provocative one-take opinion — pattern interrupt for LinkedIn.',
+      editorial: 'Editorial direction: shot like a Loewe campaign portrait, not a hot-take meme. Background is intentional — paper sample grid out of focus, never a generic office or whiteboard. Wardrobe neutral, single warm window light, no overhead. Production: HeyGen Avatar IV single take for the entire 25s — no other tool needed. Path D (Descript composition) for the 4% zoom-cuts at script beats and the 1/2/3 numbered overlays in the top-right corner. The whole format is one HeyGen take + smart Descript editing.',
       hookShort: "Stop using Tailwind utility classes for your buttons.",
       hook: "Stop using Tailwind utility classes for your buttons. Three reasons.",
       why: "Provocative pattern-interrupt format went viral in early 2026 for B2B tech. Highest opener-CTR rate on LinkedIn in 2025–26 surveys. Demonstrates technical opinion without arrogance. Easy weekly slot — one HeyGen Avatar IV take, no production days.",
@@ -2292,6 +2392,7 @@ No music in this shot — voice carries it.`
       trending: false,
       tags: ['anthem', 'premium', 'positioning', 'casestudy'],
       tagline: '4-act anthem · sketch → wireframe → code → live product.',
+      editorial: 'Editorial direction: Apple "Crafted in California" reverence — silent pacing punctuated by one quiet line of voiceover. Music is the narrator. Each act has its own instrument layered in. Production: Path B (Veo 3.1 direct) for shot 01 — real pen-on-paper physics is uncannily hard to fake from a still. Path A (Midjourney still → Runway Gen-4 image-to-video) for shot 02 — the sketch-to-Figma transformation needs a locked first frame. Path B (Veo 3.1 direct) for shot 03 — keystroke ASMR is the soul of the act. Path A for shot 04 — composition matters, plus you have a real product still to anchor it. Path D for the end card.',
       hookShort: "From this sketch, in nine days, this shipped.",
       hook: "From this sketch — in nine days — this shipped.",
       why: "This is the brand-promise narrative in pure form. Visual: paper → digital → live. Reinforces 'we ship the whole stack' positioning. Slot one of these per major client launch and it doubles as a mini brand film for the client. Uses materials already produced during the engagement.",
@@ -2369,6 +2470,7 @@ Negative: no fake laughter, no high-fives, no over-styling, no thumbs-up.`
       trending: true,
       tags: ['educational', 'metaphor', 'design', 'engineering'],
       tagline: 'One technical concept, visual metaphor, no code on screen.',
+      editorial: 'Editorial direction: Charles &amp; Ray Eames teaching films — physical metaphor, no irony, generous time per shot. Each vignette earns its 8–10 seconds by being a still life that breathes. Production: Path A (Midjourney still → Runway Gen-4) for shot 02 (the dry "before" paper) — composition needs to be precisely controlled because the same paper appears in shot 03 with water. Path B (Veo 3.1 direct) for shots 01, 03, 04 — they need real audio (paper-press SFX, water-drop physics, the tap responding). Path D for the takeaway end card. The pivotal beat at 00:14 (water hits paper) must be Path B; the SFX is the climax.',
       hookShort: "Designers — this is what 'hydration' actually means.",
       hook: "Designers — this is what 'hydration' actually means.",
       why: "Bridges the design ↔ engineering audience — CRAEFTO's exact wedge. Most design content avoids code; most engineering content uses code. This format does neither — it teaches a code concept with physical metaphor. Owns CRAEFTO's design-engineering positioning. Builds authority with both audiences.",
@@ -2445,6 +2547,7 @@ Negative: no glow, no animation overlays, no UI-style feedback indicators.`
       trending: false,
       tags: ['positioning', 'anthem', 'split-screen', 'pitch-deck'],
       tagline: 'Split-screen anthem · brand, build, audit, launch — all on one Friday.',
+      editorial: 'Editorial direction: NYT split-cover meets Bauhaus poster. Geometric, crisp, four equal panels held in tense balance until 0:08. The Enter-key bridge is the entire film\'s pivot — treat it like a hero close-up. Production: Path B (Veo 3.1 direct) for the center bridge shot 01 — the synced thunk is what makes the cut work. Path A (Midjourney still → Runway Gen-4 image-to-video) for each of the four quadrant shots 02–05 — composition control is everything when you\'re displaying four panels simultaneously, and image-to-video gives you frame-accurate timing of the synchronised execute moment. Path D for end card. All four quadrants must execute their action at exactly 00:08:00 — frame-accurate sync is non-negotiable.',
       hookShort: "One studio. One Friday. Four shipped.",
       hook: "One studio. One Friday. Four shipped.",
       why: "Drives home the 'we ship the whole stack on the same day' positioning that no competitor has. High-density positioning film. Use as slide 2 in every pitch deck. Use as the home-page secondary hero film. Quarterly cadence keeps it scarce.",
@@ -2515,6 +2618,7 @@ Negative: no other keys visible, no glow, no animated cursors.`
       trending: true,
       tags: ['pov', 'cinematic', 'atmospheric', 'careers', 'press'],
       tagline: 'First-person POV walk-through — atmospheric, premium, repurposable.',
+      editorial: 'Editorial direction: Everlane "Behind the Brand" × Aesop fragrance films × Apple "A Day in the Life of an iPhone". POV must be consistent across all 9 vignettes — same hands, same wrist watch, same pen, same coffee cup. Continuity is the entire trick. Production: Path B (Veo 3.1 direct) for the 7 shots needing physical action + native ambient SFX (shots 01–03, 05–07, 09) — the room tone, keyboard ASMR, pen-tick, and golden-hour wide are all carried by the audio. Path A (Midjourney still → Runway Gen-4 image-to-video) for shots 04 + 08 — these are UI-bearing (Figma scroll, deploy terminal) and need locked composition. Path D for end card. The 1:18 music bed is the spine — every cut snaps to it.',
       hookShort: "Coffee on the desk at 8:42. Friday.",
       hook: "Coffee on the desk at 8:42. Friday.",
       why: "POV format is one of the dominant 2026 viral formats. Atmospheric, intimate, repurposes well across press, careers page, brand. Highest-effort production but yields months of footage. The kind of film potential hires watch and decide to apply, that journalists embed in profiles, that prospects link to their teams.",
@@ -2618,6 +2722,124 @@ Negative: no people, no overhead fluorescents, no Edison bulbs.`
       distribution: 'Careers page, About page, press kit. LinkedIn pinned post. Email signatures.',
       publishWhere: 'craefto.com/careers, craefto.com/about, press kit, LinkedIn, email signatures.',
       kpis: 'Careers-page time-on-page ≥+50%. Inbound applications ≥+30% in 60 days post-launch. Press mentions citing the film.'
+    },
+
+    {
+      id: 'type-specimen',
+      title: 'The Type Specimen',
+      format: 'brand-film',
+      formatLabel: 'Brand film',
+      length: '30s',
+      cadence: 'Once per brand evolution',
+      trending: false,
+      tags: ['editorial', 'typography', 'museum', 'about', 'press'],
+      tagline: 'A still-life film of the wordmark — like a museum specimen video.',
+      editorial: 'Editorial direction: pure typography still-life film, in the spirit of MoMA archive videos and Hermès Carré documentaries. No people. No interface. No motion except light shifting and a hand turning a single page. The wordmark is the subject; everything else is silence. Production: 100% Path A (Midjourney still → Runway Gen-4 image-to-video). Each of the 5 vignettes is a Midjourney still iterated 20+ times until the lettering is photographically credible, then animated with a single restrained motion in Runway. Path D for the closing credit card. No Veo 3.1, no live capture, no HeyGen.',
+      hookShort: 'Silent. The wordmark on cream paper at golden hour.',
+      hook: '(silent · 4 seconds · the CRAEFTO wordmark catches afternoon light on a single sheet of cream cotton paper)',
+      why: 'Establishes brand-as-object. The wordmark is not a logo on a screen — it\'s a thing, made, photographed. This format earns place at brand evolutions, anniversaries, the About page, and any press kit. Highest signal-to-noise content CRAEFTO can produce. Designers and creative directors share this kind of work; founders quote it.',
+      concept: 'A 30-second still-life film celebrating the CRAEFTO wordmark across five 6-second vignettes — each a different study of the letterforms. Letterpress brass block. Debossed paper at side-light. Ink wash on damp cotton. Folded specimen at golden hour. Glass loupe over a single letter. No voiceover. Music carries everything. Closes with a single line of text: "CRAEFTO. Set in [typeface]. Made in Sydney."',
+      script: '(no voiceover — instrumental, atmospheric)\n[00:00–00:06] Vignette 1 · brass type letterpress block\n[00:06–00:12] Vignette 2 · debossed paper, side-light\n[00:12–00:18] Vignette 3 · ink wash on damp cotton paper\n[00:18–00:24] Vignette 4 · folded specimen sheet, golden hour\n[00:24–00:30] Vignette 5 · glass loupe over a single letter\n[00:30–00:35] End card · "CRAEFTO. Set in [typeface]. Made in Sydney."',
+      shots: [
+        {
+          num: '01', time: '00:00–00:06', tool: 'Midjourney → Runway Gen-4', aspect: '16:9',
+          purpose: 'Brass type letterpress block',
+          prompt: `Step 1 (Midjourney v7): "extreme macro photograph, brass letterpress type spelling CRAEFTO, deeply patinated brass on cream cotton paper #FAF7F2, sage felt visible at frame edge, single warm window light from camera-left at 4 PM, dust motes, dramatic side-light raking across the type, 100mm macro lens, shallow depth of field, 35mm film grain, museum-archive aesthetic, --ar 16:9 --style raw --v 7"
+Step 2 (Runway Gen-4 image-to-video, using the still as first frame): "Light shifts subtly from left to right over 6 seconds as if the sun is moving. The type itself remains still. No camera move. End frame: same composition, light slightly warmer."`
+        },
+        {
+          num: '02', time: '00:06–00:12', tool: 'Midjourney → Runway Gen-4', aspect: '16:9',
+          purpose: 'Debossed paper at side-light',
+          prompt: `Step 1 (Midjourney): "extreme macro photograph, the wordmark CRAEFTO debossed deeply into thick cream cotton cardstock #FAF7F2, paper held vertically against a sage felt background, raking side-light from camera-right creating deep ink-black shadows inside each letter, no foil no color just paper and pressure, 100mm macro, shallow depth of field, 35mm film grain, museum specimen mood, --ar 16:9 --style raw --v 7"
+Step 2 (Runway Gen-4): "A craftsman's gloved fingertip enters from the right and lightly traces the inside of one letter. Real-world hand speed. 6 seconds. End frame: finger withdrawn, paper still."`
+        },
+        {
+          num: '03', time: '00:12–00:18', tool: 'Midjourney → Runway Gen-4', aspect: '16:9',
+          purpose: 'Ink wash on damp cotton',
+          prompt: `Step 1 (Midjourney): "extreme macro photograph, deep ink-black calligraphic wordmark CRAEFTO drawn in fresh wet ink on damp cream cotton paper #FAF7F2, ink fibres slightly bleeding into the paper grain, sage felt underneath, single warm overhead window light, 100mm macro, shallow depth of field, 35mm film grain, atelier mood, --ar 16:9 --style raw --v 7"
+Step 2 (Runway Gen-4): "Over 6 seconds, the ink slowly settles and begins to dry — the deep wet sheen flattens into matte. Paper texture becomes more visible as moisture leaves. No camera move."`
+        },
+        {
+          num: '04', time: '00:18–00:24', tool: 'Midjourney → Runway Gen-4', aspect: '16:9',
+          purpose: 'Folded specimen sheet at golden hour',
+          prompt: `Step 1 (Midjourney): "wide editorial macro photograph, a single sheet of cream cotton paper #FAF7F2 folded once down the centre, the CRAEFTO wordmark debossed across the fold, paper held in mid-air against a softly lit sage wall during golden hour, dust visible in the warm beam, 50mm lens, shallow depth of field, 35mm film grain, museum archive aesthetic, --ar 16:9 --style raw --v 7"
+Step 2 (Runway Gen-4): "Paper breathes gently as if held by an unseen hand — 1-degree micro-rotation back and forth over 6 seconds. Light deepens from gold to amber. No other motion."`
+        },
+        {
+          num: '05', time: '00:24–00:30', tool: 'Midjourney → Runway Gen-4', aspect: '16:9',
+          purpose: 'Glass loupe over a single letter',
+          prompt: `Step 1 (Midjourney): "extreme macro photograph, a brass-rimmed glass typographer\'s loupe placed over the printed letter "C" of the CRAEFTO wordmark on cream cotton paper #FAF7F2, the letter visibly magnified inside the loupe glass, sage felt surrounding, single warm window light from camera-left, dust motes, 100mm macro, shallow depth of field, 35mm film grain, museum-archive aesthetic, --ar 16:9 --style raw --v 7"
+Step 2 (Runway Gen-4): "Loupe slides 2cm to the right over 6 seconds, revealing the next letter "R" magnified inside the glass. Slow, deliberate. Real-world hand speed via subtle motion blur."`
+        },
+        {
+          num: '06', time: '00:30–00:35', tool: 'Descript', aspect: '16:9',
+          purpose: 'End card',
+          prompt: `Static cream card. Centre-aligned, hand-letterpressed deep ink: "CRAEFTO." Beneath, in sage mono micro-text: "Set in [typeface name]. Made in Sydney." Hold 5 seconds. Fade to cream over 1.2s.`
+        }
+      ],
+      music: { length: '0:36', prompt: `Mood: museum archive film. Single felted upright piano playing one slow C major arpeggio every 6 seconds — exactly synced to vignette transitions. No drums. No bass. Soft tape saturation. 0:36 length. Final 4 seconds: piano sustains, silence creeps in. Vocals: none. Bed at -22 LUFS.` },
+      voice: 'No voiceover. The film is silent except music.',
+      captions: 'No captions. The end card is the only text.',
+      steps: [
+        'Lock the typeface choice with the brand designer first — this film commits CRAEFTO to that face.',
+        'Iterate each Midjourney still 20+ times — quality bar is "could pass for real photography in a magazine spread". Don\'t accept anything that reads as AI.',
+        'Animate each still in Runway Gen-4 with a single restrained motion direction. 5 stills × 6 seconds each.',
+        'Compose the end card in Descript.',
+        'Generate the Suno music bed (0:36, 5 piano arpeggios spaced 6s apart).',
+        'Assemble in Descript. Render 16:9 master + 9:16 + 1:1 cuts.',
+        'Ship to the About page top-of-fold, the press kit, LinkedIn pinned, and any brand-evolution announcement.'
+      ],
+      distribution: 'About page hero. Press kit primary asset. LinkedIn pinned post on brand-evolution announcements. Email signature for the founder + design lead.',
+      publishWhere: 'craefto.com/about, press kit, LinkedIn pinned, email signatures.',
+      kpis: 'About-page time-on-page ≥+60%. Press use of the film in profile articles. Designer-press citations within 90 days.'
+    },
+
+    {
+      id: 'material-studies',
+      title: 'Material Studies',
+      format: 'social-short',
+      formatLabel: 'Social short',
+      length: '20s',
+      cadence: 'Bi-weekly',
+      trending: true,
+      tags: ['editorial', 'macro', 'materials', 'instagram', 'recurring'],
+      tagline: 'Macro material studies — one transformation per episode, no story, just craft.',
+      editorial: 'Editorial direction: Domestika documentary × Aesop product film × Bompas &amp; Parr food cinema. One material per episode, one transformation, twenty seconds, no narration. Single warm light, single subject, single verb. The whole format lives or dies by texture and timing — frames must look photographed, not generated. Production: 100% Path B (Veo 3.1 direct) — each episode is a single uncut Veo render because the synced material SFX (ink touching paper, blade through cotton, brass against ink, wax sealing) is the entire point. No Path A here; image-to-video can\'t deliver the audio fidelity these need.',
+      hookShort: 'A single drop of ink hits cream paper. (silent · just the sound)',
+      hook: '(silent open · single drop of ink falls in slow motion · lands on cream cotton paper at 0:01.5 · the room is otherwise quiet)',
+      why: 'Pure brand-equity content. Builds CRAEFTO as a craft brand on Instagram and LinkedIn — the kind of content art directors and brand strategists save and re-share. Bi-weekly cadence creates a recognisable visual signature. Highly portable: each 20s episode also re-cuts as 5s loop content for IG carousels. Never feels like a sales pitch.',
+      concept: 'A recurring 20-second series. One material, one transformation, single shot. Episode 1: ink drying on paper. Ep 2: paper being cut precisely with brass scissors. Ep 3: brass type being inked with a hand-roller. Ep 4: wax sealing a folded letter. Ep 5: thread binding a small specimen booklet. Each episode ends with a 4-second end card: material name + specimen number ("Specimen №5 · Linen thread · CRAEFTO Material Studies").',
+      script: '(no voiceover · instrumental · ambient SFX from the material itself)\n[00:00–00:02] Empty cream paper. Silence. Anticipation.\n[00:02–00:14] The single transformation, 12 seconds, real-time physics.\n[00:14–00:16] Hold on the finished state.\n[00:16–00:20] End card · material name + specimen number.',
+      shots: [
+        {
+          num: '01', time: '00:00–00:16', tool: 'Veo 3.1', aspect: '9:16',
+          purpose: 'Single uncut material study (example: ink on paper)',
+          prompt: `Static top-down macro shot, 100mm lens, vertical 9:16. A single sheet of cream cotton paper (#FAF7F2) lies flat on a sage-felt surface. Single warm overhead window light. The first 2 seconds are silent and still — anticipatory. At 00:02, a single drop of deep ink-black ink falls in slow-motion from above frame. It lands at the centre of the paper at 00:03. Over the next 11 seconds, the ink spreads slowly into the paper fibres in real-world physics — no stylization — settling into a perfect 4cm circle by 00:14. From 00:14 to 00:16, hold on the finished mark, the paper grain visible.
+SFX: complete silence 00:00–00:03; at 00:03 the soft pat of a drop landing; from 00:03 to 00:14 a faint, almost imperceptible whisper of liquid soaking fibres; ambient workshop room tone underneath throughout.
+Style: 35mm film grain, restrained warmth, atelier mood, museum-specimen aesthetic.
+Negative: no glow, no stylized splash, no rainbow refraction, no fast motion, no camera move whatsoever.`
+        },
+        {
+          num: '02', time: '00:16–00:20', tool: 'Descript', aspect: '9:16',
+          purpose: 'End card · specimen label',
+          prompt: `Static cream card. Top-centre in deep ink hand-letterpress: "Specimen №[N]". Below in sage mono micro-text: "[material name] · CRAEFTO Material Studies". Hold 4 seconds. Fade to cream over 0.8s.`
+        }
+      ],
+      music: { length: '0:22', prompt: `Mood: ambient observational, sub-melodic. Single sustained nylon-string guitar drone in D, joined at 00:03 (the moment of impact) by a soft felted-piano single note. No melody, no rhythm. 0:22 length. Final 4 seconds: drone fades to silence under the end card. Vocals: none. Bed at -28 LUFS — quieter than usual; the material SFX is the foreground.` },
+      voice: 'No voiceover. The material itself is the voice.',
+      captions: 'None during the body. End card text only.',
+      steps: [
+        'Plan the season: 8 episodes, one material per episode. Suggested order: ink → paper cut → brass inking → wax seal → linen thread → letterpress impression → wax embossing → cotton fold.',
+        'For each episode, write the Veo 3.1 prompt with extreme attention to the SFX line — the audio is the brand. Prefer real-world physics over stylized effects.',
+        'Generate each episode as 4 Veo variants. Pick the one with the most credible physics, not the prettiest.',
+        'Compose the end card in Descript with the specimen number incremented.',
+        'Generate the Suno bed (or reuse the same drone across the season for series cohesion).',
+        'Render 9:16 master + 1:1 cut + a 5-second silent loop (just the impact moment) for IG carousel use.',
+        'Post Wednesday morning Sydney time to Instagram (primary), LinkedIn, X. Use the same caption format every episode: "Specimen №[N] · [material]."'
+      ],
+      distribution: 'Instagram primary (this format wins on IG more than anywhere else). LinkedIn secondary — designers and creative directors save it. X tertiary. Episode loops also published as IG carousel images.',
+      publishWhere: 'Instagram, LinkedIn, X. Always 9:16. Bi-weekly Wednesday morning Sydney.',
+      kpis: 'IG saves ≥1k per episode by episode 4. Follower growth on IG ≥+8% MoM during a season. Designer-press citations / re-shares from creative-director accounts.'
     }
   ];
 
@@ -2711,6 +2933,11 @@ Negative: no people, no overhead fluorescents, no Edison bulbs.`
 
       <h4>Why it works for CRAEFTO</h4>
       <p>${escapeHtml(idea.why)}</p>
+
+      ${idea.editorial ? `
+      <h4>Editorial direction &amp; production path</h4>
+      <p>${escapeHtml(idea.editorial)}</p>
+      ` : ''}
 
       <h4>Concept</h4>
       <p>${escapeHtml(idea.concept)}</p>
