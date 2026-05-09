@@ -34,8 +34,6 @@
   html {
     scroll-behavior: smooth;
     scroll-padding-top: 24px;
-    overflow-x: hidden;
-    max-width: 100%;
   }
 
   body {
@@ -47,14 +45,14 @@
     line-height: 1.65;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    overflow-x: hidden;
-    max-width: 100%;
   }
 
   /* Defensive: nothing ever pushes wider than its container */
   section.section, .topbar-inner { max-width: 100%; }
   .prompt { overflow-wrap: anywhere; word-break: normal; }
   img, table { max-width: 100%; }
+  /* SVG icons inside buttons can intercept taps on iOS; let the click reach the button */
+  button svg { pointer-events: none; }
 
   /* Layout */
   .layout {
@@ -331,7 +329,7 @@
   .callout.warning strong:first-child { color: #8A6112; }
 
   /* Cards grid */
-  .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin: 18px 0; }
+  .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr)); gap: 16px; margin: 18px 0; }
   .card {
     background: var(--cream-subtle);
     border: 1px solid var(--border);
@@ -436,8 +434,8 @@
     background: var(--ink);
     color: var(--cream);
     border: none;
-    width: 38px;
-    height: 38px;
+    width: 40px;
+    height: 40px;
     border-radius: 8px;
     cursor: pointer;
     display: flex;
@@ -446,6 +444,8 @@
     flex-shrink: 0;
     padding: 0;
     transition: background 120ms;
+    touch-action: manipulation; /* removes iOS 300ms tap delay */
+    -webkit-tap-highlight-color: rgba(75, 107, 87, 0.2);
   }
   .topbar-menu:hover, .topbar-menu:active { background: var(--sage); }
   .topbar-menu svg { width: 18px; height: 18px; }
@@ -642,7 +642,7 @@
 
   .ideas-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr));
     gap: 14px;
     margin-top: 8px;
   }
@@ -855,10 +855,10 @@
     margin: 32px 0;
   }
 
-  body.drawer-open { overflow: hidden; }
-  html.drawer-open { overflow: hidden; }
+  /* When any overlay (menu or idea drawer) is open, hide the topbar.
+     We rely on JS to mutually exclude the menu and the idea drawer,
+     so we don't need to hide the menu when body.drawer-open is set. */
   body.drawer-open .topbar { display: none !important; }
-  body.drawer-open aside.toc { display: none !important; }
 
   /* Tablet — full-width slide from right */
   @media (max-width: 900px) and (min-width: 701px) {
@@ -1907,18 +1907,49 @@ Negative: no neon, no shiny chrome, no lens flare, no people's faces.</div>
   const backToTop = document.getElementById('backToTop');
   const topbarSection = document.getElementById('topbarSection');
 
+  // iOS-safe scroll lock — position-fixed pattern with scroll restoration.
+  // Standard overflow:hidden is unreliable on iOS Safari and can freeze taps.
+  let savedScrollY = 0;
+  let scrollLocked = false;
+  function lockScroll() {
+    if (scrollLocked) return;
+    savedScrollY = window.scrollY || window.pageYOffset || 0;
+    document.body.style.position = 'fixed';
+    document.body.style.top = '-' + savedScrollY + 'px';
+    document.body.style.left = '0';
+    document.body.style.right = '0';
+    document.body.style.width = '100%';
+    scrollLocked = true;
+  }
+  function unlockScroll() {
+    if (!scrollLocked) return;
+    document.body.style.position = '';
+    document.body.style.top = '';
+    document.body.style.left = '';
+    document.body.style.right = '';
+    document.body.style.width = '';
+    window.scrollTo(0, savedScrollY);
+    scrollLocked = false;
+  }
+
   function openMenu() {
+    // Force-close idea drawer if it happens to be open
+    const ideaDrawerEl = document.getElementById('ideaDrawer');
+    if (ideaDrawerEl?.classList.contains('open')) {
+      ideaDrawerEl.classList.remove('open');
+      document.getElementById('drawerBackdrop')?.classList.remove('open');
+    }
     sidebar.classList.add('open');
     toggle?.setAttribute('aria-expanded', 'true');
     document.body.classList.add('drawer-open');
-    document.documentElement.classList.add('drawer-open');
+    lockScroll();
   }
   function closeMenu() {
     sidebar.classList.remove('open');
     toggle?.setAttribute('aria-expanded', 'false');
     if (!document.getElementById('ideaDrawer').classList.contains('open')) {
       document.body.classList.remove('drawer-open');
-      document.documentElement.classList.remove('drawer-open');
+      unlockScroll();
     }
   }
   toggle?.addEventListener('click', () => {
@@ -3013,13 +3044,17 @@ Negative: no glow, no stylized splash, no rainbow refraction, no fast motion, no
       ${idea.trending ? '<span class="badge trending">★ Trending</span>' : ''}
     `;
     drawerBody.innerHTML = renderIdeaDetail(idea);
+    // Force-close menu if it happened to be open
+    const menuEl = document.getElementById('tocSidebar');
+    if (menuEl?.classList.contains('open')) {
+      menuEl.classList.remove('open');
+      toggle?.setAttribute('aria-expanded', 'false');
+    }
     drawerBackdrop.classList.add('open');
     drawer.classList.add('open');
     drawer.setAttribute('aria-hidden', 'false');
     document.body.classList.add('drawer-open');
-    document.documentElement.classList.add('drawer-open');
-    // Also collapse mobile sidebar in case it was open behind the drawer
-    document.getElementById('tocSidebar')?.classList.remove('open');
+    lockScroll();
     drawerBody.querySelectorAll('.copy-btn').forEach(btn => btn.addEventListener('click', copyHandler));
     drawer.scrollTop = 0;
   }
@@ -3028,8 +3063,10 @@ Negative: no glow, no stylized splash, no rainbow refraction, no fast motion, no
     drawerBackdrop.classList.remove('open');
     drawer.classList.remove('open');
     drawer.setAttribute('aria-hidden', 'true');
-    document.body.classList.remove('drawer-open');
-    document.documentElement.classList.remove('drawer-open');
+    if (!sidebar.classList.contains('open')) {
+      document.body.classList.remove('drawer-open');
+      unlockScroll();
+    }
   }
 
   searchInput.addEventListener('input', e => {
