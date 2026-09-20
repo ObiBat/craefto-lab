@@ -30,7 +30,6 @@ const STATUS_OPTIONS = [
 
 const ROLE_OPTIONS = [
   { value: "all", label: "All Roles" },
-  { value: "creative-designer", label: "Creative Designer" },
   { value: "marketing-manager", label: "Marketing Manager" },
 ];
 
