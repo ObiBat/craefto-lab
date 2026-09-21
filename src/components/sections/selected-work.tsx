@@ -239,16 +239,9 @@ export function SelectedWork() {
 
   // Swipe / drag: move the strip directly with the pointer, then hand the
   // release velocity to the boost so it glides and eases back to the drift.
-  const onPointerDown = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
-    if (e.pointerType === "mouse" && e.button !== 0) return;
-    const d = dragRef.current;
-    d.active = true; d.lastX = e.clientX; d.lastT = performance.now(); d.velocity = 0; d.moved = 0; d.pointerId = e.pointerId;
-    boostRef.current = 0;
-    pausedRef.current = true;
-    (e.currentTarget as HTMLElement).setPointerCapture?.(e.pointerId);
-  }, []);
-
-  const onPointerMove = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
+  // Moves are tracked on the document rather than with pointer capture, so
+  // the click at the end of a plain tap still reaches the card link.
+  const onDocMove = useCallback((e: PointerEvent) => {
     const d = dragRef.current;
     if (!d.active || d.pointerId !== e.pointerId) return;
     const now = performance.now();
@@ -266,15 +259,37 @@ export function SelectedWork() {
     }
   }, []);
 
-  const endDrag = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
+  const detachRef = useRef<() => void>(() => {});
+
+  const onDocUp = useCallback((e: PointerEvent) => {
     const d = dragRef.current;
     if (!d.active || d.pointerId !== e.pointerId) return;
     d.active = false; d.pointerId = null;
+    detachRef.current();
     // Momentum: carry the release velocity into the boost, capped
-    boostRef.current = Math.max(-MAX_BOOST, Math.min(MAX_BOOST, d.velocity));
+    boostRef.current = d.moved > 8 ? Math.max(-MAX_BOOST, Math.min(MAX_BOOST, d.velocity)) : 0;
     // Let the drift resume once the finger lifts (hover keeps it paused on desktop)
     if (e.pointerType !== "mouse") pausedRef.current = false;
   }, []);
+
+  const onPointerDown = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
+    if (e.pointerType === "mouse" && e.button !== 0) return;
+    const d = dragRef.current;
+    d.active = true; d.lastX = e.clientX; d.lastT = performance.now(); d.velocity = 0; d.moved = 0; d.pointerId = e.pointerId;
+    boostRef.current = 0;
+    pausedRef.current = true;
+    document.addEventListener("pointermove", onDocMove);
+    document.addEventListener("pointerup", onDocUp);
+    document.addEventListener("pointercancel", onDocUp);
+    detachRef.current = () => {
+      document.removeEventListener("pointermove", onDocMove);
+      document.removeEventListener("pointerup", onDocUp);
+      document.removeEventListener("pointercancel", onDocUp);
+      detachRef.current = () => {};
+    };
+  }, [onDocMove, onDocUp]);
+
+  useEffect(() => () => detachRef.current(), []);
 
   // A drag should not open the card under the finger
   const onClickCapture = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
@@ -340,9 +355,6 @@ export function SelectedWork() {
         onFocusCapture={pause}
         onBlurCapture={resume}
         onPointerDown={onPointerDown}
-        onPointerMove={onPointerMove}
-        onPointerUp={endDrag}
-        onPointerCancel={endDrag}
         onClickCapture={onClickCapture}
       >
         <div
