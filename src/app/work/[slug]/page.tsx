@@ -159,7 +159,7 @@ const projects: CaseStudy[] = [
     heroImage: "/images/projects/japanoma/japanoma-hero.jpg",
     thumbnail: "/images/projects/japanoma/japanoma-thumb.jpg",
     gallery: [
-      { src: "/images/projects/japanoma/japanoma-gallery-01.jpg", alt: "Areas directory with the three.js map of Japan, snow-country prefectures tinted, and the featured Sapporo card", caption: "The area directory and 3D map are one flow: pick a prefecture and the matching region rises on the canvas." },
+      { src: "/images/projects/japanoma/japanoma-gallery-01.jpg", alt: "The Five Promises section: clarity, financial realism, risk awareness, trusted local network, lifestyle first", caption: "Five promises answer the buyer's real anxieties: honest costs, risk before excitement, and a trusted local network." },
       { src: "/images/projects/japanoma/japanoma-gallery-02.jpg", alt: "The seven-step buying journey with the Compare areas step open", caption: "Seven steps, one primary action per screen, from deciding first to closing the deal." },
       { src: "/images/projects/japanoma/japanoma-gallery-03.jpg", alt: "Learn before buying: six practical guides on location, snow-country reality, costs and budget", caption: "Education first. The guides sit ahead of any listing in the journey." },
       { src: "/images/projects/japanoma/japanoma-gallery-04.jpg", alt: "Guide library with search by objective chips such as I want a ski home and I want train access", caption: "Twelve guides indexed by objective, edited by the client in Sanity." },
