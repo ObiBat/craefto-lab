@@ -160,7 +160,7 @@ const projects: CaseStudy[] = [
     thumbnail: "/images/projects/japanoma/japanoma-thumb.jpg",
     gallery: [
       { src: "/images/projects/japanoma/japanoma-gallery-01.jpg", alt: "The Five Promises section: clarity, financial realism, risk awareness, trusted local network, lifestyle first", caption: "Five promises answer the buyer's real anxieties: honest costs, risk before excitement, and a trusted local network." },
-      { src: "/images/projects/japanoma/japanoma-gallery-02.jpg", alt: "JapanoMa mobile homepage on a phone held in a snow-covered village street at golden hour", caption: "Decide with confidence. The promise is made on the phone, where an Australian skier first meets it." },
+      { src: "/images/projects/japanoma/japanoma-gallery-02.jpg", alt: "JapanoMa mobile homepage on a phone held on a slushy snow-country street on an overcast afternoon", caption: "Decide with confidence. The promise is made on the phone, where an Australian skier first meets it." },
       { src: "/images/projects/japanoma/japanoma-gallery-03.jpg", alt: "The five-step journey from Discover to Own Well on a laptop in an alpine lodge", caption: "From curiosity to confident ownership: five steps, each opening where the last one leads." },
       { src: "/images/projects/japanoma/japanoma-gallery-04.jpg", alt: "Guide library with search by objective chips such as I want a ski home and I want train access", caption: "Twelve guides indexed by objective, edited by the client in Sanity." },
     ],
