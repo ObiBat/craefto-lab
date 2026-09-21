@@ -79,7 +79,7 @@ const featuredProjects = [
 ];
 
 // Motion tuning (pixels per second)
-const BASE_SPEED = 14; // slow, continuous drift
+const BASE_SPEED = 30; // continuous drift, pixels per second
 const TAP_BOOST = 1100; // added on each arrow tap
 const MAX_BOOST = 2600; // cap for repeated taps
 const BOOST_DECAY = 3.2; // higher decays faster (per second, exponential)
@@ -132,18 +132,20 @@ function ProjectCard({ project, clone = false }: { project: Project; clone?: boo
 function ArrowButton({
   direction,
   onTap,
+  size = "md",
 }: {
   direction: "left" | "right";
   onTap: () => void;
+  size?: "md" | "lg";
 }) {
   return (
     <button
       type="button"
       onClick={onTap}
       aria-label={direction === "left" ? "Move case studies backwards" : "Move case studies forwards"}
-      className="h-11 w-11 rounded-full border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] text-[hsl(var(--color-foreground))] flex items-center justify-center transition-colors hover:bg-[hsl(var(--color-background-subtle))] active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--color-foreground))] focus-visible:ring-offset-2 focus-visible:ring-offset-[hsl(var(--color-background))]"
+      className={`${size === "lg" ? "h-14 w-14" : "h-11 w-11"} rounded-full border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] text-[hsl(var(--color-foreground))] flex items-center justify-center transition-colors hover:bg-[hsl(var(--color-background-subtle))] active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--color-foreground))] focus-visible:ring-offset-2 focus-visible:ring-offset-[hsl(var(--color-background))]`}
     >
-      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+      <svg className={size === "lg" ? "w-5 h-5" : "w-4 h-4"} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
         {direction === "left" ? (
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 16l-4-4m0 0l4-4m-4 4h18" />
         ) : (
@@ -160,6 +162,9 @@ export function SelectedWork() {
   const boostRef = useRef(0);
   const loopWidthRef = useRef(0);
   const pausedRef = useRef(false);
+  const dragRef = useRef<{ active: boolean; lastX: number; lastT: number; velocity: number; moved: number; pointerId: number | null }>({
+    active: false, lastX: 0, lastT: 0, velocity: 0, moved: 0, pointerId: null,
+  });
   const [reducedMotion, setReducedMotion] = useState(false);
 
   // Respect the OS reduced-motion preference: no drift, arrows still work.
@@ -207,7 +212,7 @@ export function SelectedWork() {
       if (Math.abs(boostRef.current) < 0.5) boostRef.current = 0;
 
       const loop = loopWidthRef.current;
-      if (loop > 0 && speed !== 0) {
+      if (loop > 0 && speed !== 0 && !dragRef.current.active) {
         let next = offsetRef.current + speed * dt;
         next = ((next % loop) + loop) % loop;
         offsetRef.current = next;
@@ -230,6 +235,50 @@ export function SelectedWork() {
   }, []);
   const resume = useCallback(() => {
     pausedRef.current = false;
+  }, []);
+
+  // Swipe / drag: move the strip directly with the pointer, then hand the
+  // release velocity to the boost so it glides and eases back to the drift.
+  const onPointerDown = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
+    if (e.pointerType === "mouse" && e.button !== 0) return;
+    const d = dragRef.current;
+    d.active = true; d.lastX = e.clientX; d.lastT = performance.now(); d.velocity = 0; d.moved = 0; d.pointerId = e.pointerId;
+    boostRef.current = 0;
+    pausedRef.current = true;
+    (e.currentTarget as HTMLElement).setPointerCapture?.(e.pointerId);
+  }, []);
+
+  const onPointerMove = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
+    const d = dragRef.current;
+    if (!d.active || d.pointerId !== e.pointerId) return;
+    const now = performance.now();
+    const dx = e.clientX - d.lastX;
+    const dt = Math.max((now - d.lastT) / 1000, 1 / 240);
+    d.velocity = 0.7 * d.velocity + 0.3 * (-dx / dt);
+    d.moved += Math.abs(dx);
+    d.lastX = e.clientX; d.lastT = now;
+    const loop = loopWidthRef.current;
+    if (loop > 0) {
+      let next = offsetRef.current - dx;
+      next = ((next % loop) + loop) % loop;
+      offsetRef.current = next;
+      if (trackRef.current) trackRef.current.style.transform = `translate3d(${-next}px, 0, 0)`;
+    }
+  }, []);
+
+  const endDrag = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
+    const d = dragRef.current;
+    if (!d.active || d.pointerId !== e.pointerId) return;
+    d.active = false; d.pointerId = null;
+    // Momentum: carry the release velocity into the boost, capped
+    boostRef.current = Math.max(-MAX_BOOST, Math.min(MAX_BOOST, d.velocity));
+    // Let the drift resume once the finger lifts (hover keeps it paused on desktop)
+    if (e.pointerType !== "mouse") pausedRef.current = false;
+  }, []);
+
+  // A drag should not open the card under the finger
+  const onClickCapture = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    if (dragRef.current.moved > 8) { e.preventDefault(); e.stopPropagation(); dragRef.current.moved = 0; }
   }, []);
 
   return (
@@ -270,7 +319,7 @@ export function SelectedWork() {
                       />
                     </svg>
                   </Link>
-                  <div className="flex items-center gap-2">
+                  <div className="hidden sm:flex items-center gap-2">
                     <ArrowButton direction="left" onTap={() => nudge(-1)} />
                     <ArrowButton direction="right" onTap={() => nudge(1)} />
                   </div>
@@ -285,14 +334,16 @@ export function SelectedWork() {
 
       {/* Auto-moving strip, full bleed with faded edges */}
       <div
-        className="relative mt-14 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_6%,black_94%,transparent)]"
+        className="relative mt-14 overflow-hidden select-none [touch-action:pan-y] cursor-grab active:cursor-grabbing [mask-image:linear-gradient(to_right,transparent,black_6%,black_94%,transparent)]"
         onMouseEnter={pause}
         onMouseLeave={resume}
         onFocusCapture={pause}
         onBlurCapture={resume}
-        onTouchStart={pause}
-        onTouchEnd={resume}
-        onTouchCancel={resume}
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={endDrag}
+        onPointerCancel={endDrag}
+        onClickCapture={onClickCapture}
       >
         <div
           ref={trackRef}
@@ -305,6 +356,15 @@ export function SelectedWork() {
             <ProjectCard key={`${project.slug}-clone`} project={project} clone />
           ))}
         </div>
+      </div>
+
+      {/* Mobile controls: large, centred, right under the strip */}
+      <div className="sm:hidden mt-8 flex flex-col items-center gap-3">
+        <div className="flex items-center gap-4">
+          <ArrowButton direction="left" onTap={() => nudge(-1)} size="lg" />
+          <ArrowButton direction="right" onTap={() => nudge(1)} size="lg" />
+        </div>
+        <p className="text-xs text-[hsl(var(--color-foreground-subtle))]">Swipe or tap the arrows</p>
       </div>
     </Section>
   );
