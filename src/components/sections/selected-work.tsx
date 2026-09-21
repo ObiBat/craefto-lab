@@ -1,5 +1,6 @@
 "use client";
 
+import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Container } from "@/components/layout/container";
@@ -7,11 +8,38 @@ import { Section } from "@/components/layout/section";
 import { Separator } from "@/components/ui/separator";
 import { SectionLabel } from "@/components/ui/section-label";
 import { Badge } from "@/components/ui/badge";
-import { AnimatedSection, StaggeredGrid, StaggeredItem } from "@/components/ui/motion";
+import { AnimatedSection } from "@/components/ui/motion";
 import { ProjectImagePlaceholder } from "@/components/ui/project-image-placeholder";
 
-// Featured projects for homepage (show top 3)
+// Featured projects for the homepage strip, newest first
 const featuredProjects = [
+  {
+    slug: "tav-partners",
+    title: "TAV & Partners",
+    description: "A typography-led static site and brand system for a new Sydney chartered accounting and tax advisory firm.",
+    category: "Web",
+    year: 2026,
+    accentColor: "224 48% 21%",
+    thumbnail: "/images/projects/tav-partners/tav-partners-thumb.jpg",
+  },
+  {
+    slug: "japanoma",
+    title: "JapanoMa",
+    description: "A decision-aid platform helping Australian skiers weigh a Japan snow-country home base, from quiz to purchase.",
+    category: "Product",
+    year: 2026,
+    accentColor: "211 33% 36%",
+    thumbnail: "/images/projects/japanoma/japanoma-thumb.jpg",
+  },
+  {
+    slug: "fx-foundations",
+    title: "FX Foundations",
+    description: "A bilingual forex education platform with 163 researched lessons, a trading simulator and Pro plans.",
+    category: "Product",
+    year: 2026,
+    accentColor: "153 40% 30%",
+    thumbnail: "/images/projects/fx-foundations/fx-foundations-thumb.jpg",
+  },
   {
     slug: "fontkin",
     title: "Fontkin",
@@ -20,6 +48,15 @@ const featuredProjects = [
     year: 2026,
     accentColor: "0 0% 6%",
     thumbnail: "/images/projects/fontkin/fontkin-thumb.jpg",
+  },
+  {
+    slug: "globfam",
+    title: "GlobFam",
+    description: "Cross-border family finance platform with premium branding & motion design system.",
+    category: "Brand",
+    year: 2025,
+    accentColor: "195 78% 38%",
+    thumbnail: "/images/projects/globfam/globfam-thumb.jpg",
   },
   {
     slug: "tactix",
@@ -31,17 +68,170 @@ const featuredProjects = [
     thumbnail: "/images/projects/tactix/tactix-thumb.jpg",
   },
   {
-    slug: "globfam",
-    title: "GlobFam",
-    description: "Cross-border family finance platform with premium branding & motion design system.",
-    category: "Brand",
+    slug: "nuu",
+    title: "NUU",
+    description: "AI-powered property matching platform for the Australian rental market.",
+    category: "SaaS",
     year: 2025,
-    accentColor: "195 78% 38%",
-    thumbnail: "/images/projects/globfam/globfam-thumb.jpg",
+    accentColor: "90 30% 45%",
+    thumbnail: "/images/projects/nuu/nuu-thumb.jpg",
   },
 ];
 
+// Motion tuning (pixels per second)
+const BASE_SPEED = 14; // slow, continuous drift
+const TAP_BOOST = 1100; // added on each arrow tap
+const MAX_BOOST = 2600; // cap for repeated taps
+const BOOST_DECAY = 3.2; // higher decays faster (per second, exponential)
+
+type Project = (typeof featuredProjects)[number];
+
+function ProjectCard({ project, clone = false }: { project: Project; clone?: boolean }) {
+  return (
+    <Link
+      href={`/work/${project.slug}`}
+      className="group block w-[78vw] sm:w-[420px] lg:w-[440px] shrink-0"
+      aria-hidden={clone || undefined}
+      tabIndex={clone ? -1 : undefined}
+      draggable={false}
+    >
+      <div className="aspect-[4/3] rounded-xl mb-5 transition-shadow duration-500 ease-out group-hover:shadow-2xl overflow-hidden relative">
+        {project.thumbnail ? (
+          <Image
+            src={project.thumbnail}
+            alt={clone ? "" : `${project.title} thumbnail`}
+            fill
+            draggable={false}
+            className="object-cover transition-all duration-700 ease-[cubic-bezier(0.25,0.1,0.25,1)] group-hover:scale-105"
+            sizes="(max-width: 640px) 78vw, 440px"
+          />
+        ) : (
+          <ProjectImagePlaceholder
+            projectName={project.title}
+            imageType="thumb"
+            accentColor={project.accentColor}
+          />
+        )}
+      </div>
+      <div className="flex flex-col gap-3">
+        <div className="flex items-center gap-3">
+          <Badge variant="secondary">{project.category}</Badge>
+          <span className="text-sm text-[hsl(var(--color-foreground-subtle))]">{project.year}</span>
+        </div>
+        <h3 className="text-lg font-semibold tracking-tight">
+          <span className="animated-underline">{project.title}</span>
+        </h3>
+        <p className="text-sm text-[hsl(var(--color-foreground-muted))] leading-relaxed">
+          {project.description}
+        </p>
+      </div>
+    </Link>
+  );
+}
+
+function ArrowButton({
+  direction,
+  onTap,
+}: {
+  direction: "left" | "right";
+  onTap: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onTap}
+      aria-label={direction === "left" ? "Move case studies backwards" : "Move case studies forwards"}
+      className="h-11 w-11 rounded-full border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] text-[hsl(var(--color-foreground))] flex items-center justify-center transition-colors hover:bg-[hsl(var(--color-background-subtle))] active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--color-foreground))] focus-visible:ring-offset-2 focus-visible:ring-offset-[hsl(var(--color-background))]"
+    >
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        {direction === "left" ? (
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 16l-4-4m0 0l4-4m-4 4h18" />
+        ) : (
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+        )}
+      </svg>
+    </button>
+  );
+}
+
 export function SelectedWork() {
+  const trackRef = useRef<HTMLDivElement>(null);
+  const offsetRef = useRef(0);
+  const boostRef = useRef(0);
+  const loopWidthRef = useRef(0);
+  const pausedRef = useRef(false);
+  const [reducedMotion, setReducedMotion] = useState(false);
+
+  // Respect the OS reduced-motion preference: no drift, arrows still work.
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => setReducedMotion(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
+  // Measure one loop (the track holds two copies of the set).
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
+    const measure = () => {
+      // One loop is the distance from the first card to its clone,
+      // which already includes every gap in the set.
+      const first = track.children[0] as HTMLElement | undefined;
+      const clone = track.children[featuredProjects.length] as HTMLElement | undefined;
+      loopWidthRef.current = first && clone ? clone.offsetLeft - first.offsetLeft : 0;
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(track);
+    return () => ro.disconnect();
+  }, []);
+
+  // Animation loop
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
+    let frame = 0;
+    let last = performance.now();
+
+    const tick = (now: number) => {
+      const dt = Math.min((now - last) / 1000, 0.05);
+      last = now;
+
+      const base = reducedMotion || pausedRef.current ? 0 : BASE_SPEED;
+      const speed = base + boostRef.current;
+
+      // Exponential decay of the tap boost back to zero
+      boostRef.current *= Math.exp(-BOOST_DECAY * dt);
+      if (Math.abs(boostRef.current) < 0.5) boostRef.current = 0;
+
+      const loop = loopWidthRef.current;
+      if (loop > 0 && speed !== 0) {
+        let next = offsetRef.current + speed * dt;
+        next = ((next % loop) + loop) % loop;
+        offsetRef.current = next;
+        track.style.transform = `translate3d(${-next}px, 0, 0)`;
+      }
+      frame = requestAnimationFrame(tick);
+    };
+
+    frame = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame);
+  }, [reducedMotion]);
+
+  const nudge = useCallback((direction: 1 | -1) => {
+    const next = boostRef.current + direction * TAP_BOOST;
+    boostRef.current = Math.max(-MAX_BOOST, Math.min(MAX_BOOST, next));
+  }, []);
+
+  const pause = useCallback(() => {
+    pausedRef.current = true;
+  }, []);
+  const resume = useCallback(() => {
+    pausedRef.current = false;
+  }, []);
+
   return (
     <Section spacing="lg">
       <Container>
@@ -50,7 +240,7 @@ export function SelectedWork() {
           <AnimatedSection>
             <div className="flex flex-col gap-4">
               <SectionLabel number="02" label="Case studies" />
-              <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+              <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6">
                 <div>
                   <h2 className="font-semibold tracking-tight">
                     Featured case studies
@@ -59,74 +249,63 @@ export function SelectedWork() {
                     Recent projects for founders building the future.
                   </p>
                 </div>
-                <Link
-                  href="/work"
-                  className="text-sm text-[hsl(var(--color-foreground-muted))] hover:text-[hsl(var(--color-foreground))] transition-colors group flex items-center gap-2 shrink-0"
-                >
-                  All case studies
-                  <svg
-                    className="w-4 h-4 transition-transform group-hover:translate-x-1"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
+                <div className="flex items-center gap-5 shrink-0">
+                  <Link
+                    href="/work"
+                    className="text-sm text-[hsl(var(--color-foreground-muted))] hover:text-[hsl(var(--color-foreground))] transition-colors group flex items-center gap-2"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={1.5}
-                      d="M17 8l4 4m0 0l-4 4m4-4H3"
-                    />
-                  </svg>
-                </Link>
+                    All case studies
+                    <svg
+                      className="w-4 h-4 transition-transform group-hover:translate-x-1"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      aria-hidden="true"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={1.5}
+                        d="M17 8l4 4m0 0l-4 4m4-4H3"
+                      />
+                    </svg>
+                  </Link>
+                  <div className="flex items-center gap-2">
+                    <ArrowButton direction="left" onTap={() => nudge(-1)} />
+                    <ArrowButton direction="right" onTap={() => nudge(1)} />
+                  </div>
+                </div>
               </div>
             </div>
           </AnimatedSection>
 
           <Separator />
-
-          {/* Projects Grid */}
-          <StaggeredGrid className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-            {featuredProjects.map((project) => (
-              <StaggeredItem key={project.slug}>
-                <Link
-                  href={`/work/${project.slug}`}
-                  className="group block"
-                >
-                  <div className="aspect-[4/3] rounded-xl mb-5 transition-shadow duration-500 ease-out group-hover:shadow-2xl overflow-hidden relative">
-                    {project.thumbnail ? (
-                      <Image
-                        src={project.thumbnail}
-                        alt={`${project.title} thumbnail`}
-                        fill
-                        className="object-cover transition-all duration-700 ease-[cubic-bezier(0.25,0.1,0.25,1)] group-hover:scale-105"
-                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                      />
-                    ) : (
-                      <ProjectImagePlaceholder
-                        projectName={project.title}
-                        imageType="thumb"
-                        accentColor={project.accentColor}
-                      />
-                    )}
-                  </div>
-                  <div className="flex flex-col gap-3">
-                    <div className="flex items-center gap-3">
-                      <Badge variant="secondary">{project.category}</Badge>
-                      <span className="text-sm text-[hsl(var(--color-foreground-subtle))]">{project.year}</span>
-                    </div>
-                    <h3 className="text-lg font-semibold tracking-tight">
-                      <span className="animated-underline">{project.title}</span>
-                    </h3>
-                    <p className="text-sm text-[hsl(var(--color-foreground-muted))] leading-relaxed">
-                      {project.description}
-                    </p>
-                  </div>
-                </Link>
-              </StaggeredItem>
-            ))}
-          </StaggeredGrid>
         </div>
       </Container>
+
+      {/* Auto-moving strip, full bleed with faded edges */}
+      <div
+        className="relative mt-14 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_6%,black_94%,transparent)]"
+        onMouseEnter={pause}
+        onMouseLeave={resume}
+        onFocusCapture={pause}
+        onBlurCapture={resume}
+        onTouchStart={pause}
+        onTouchEnd={resume}
+        onTouchCancel={resume}
+      >
+        <div
+          ref={trackRef}
+          className="flex gap-6 lg:gap-8 pl-4 sm:pl-6 lg:pl-8 will-change-transform"
+        >
+          {featuredProjects.map((project) => (
+            <ProjectCard key={project.slug} project={project} />
+          ))}
+          {featuredProjects.map((project) => (
+            <ProjectCard key={`${project.slug}-clone`} project={project} clone />
+          ))}
+        </div>
+      </div>
     </Section>
   );
 }
