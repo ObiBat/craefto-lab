@@ -52,17 +52,6 @@ const projects = [
     thumbnail: "/images/projects/nuu/nuu-thumb.jpg",
   },
   {
-    slug: "stakeholder-portal",
-    title: "Stakeholder Portal",
-    description: "Real-time project transparency platform for client communication, built as a subdomain experience with role-based access.",
-    category: "Product",
-    industry: "Project Management / Agency Tools",
-    year: 2026,
-    featured: true,
-    accentColor: "90 30% 45%",
-    thumbnail: "/images/projects/portal/portal-thumb.jpg",
-  },
-  {
     slug: "fx-foundations",
     title: "FX Foundations",
     description: "A bilingual forex education platform with 163 researched lessons, a trading simulator and Pro plans.",
