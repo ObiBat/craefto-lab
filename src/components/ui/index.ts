@@ -4,6 +4,7 @@ export { Badge, badgeVariants } from "./badge";
 export { Logo, LogoStatic } from "./logo";
 export { ProjectImagePlaceholder } from "./project-image-placeholder";
 export { InteractiveLogo } from "./interactive-logo";
+export { BrandMoment } from "./brand-moment";
 export { Metaballs } from "./metaballs";
 export { Input } from "./input";
 export { Textarea } from "./textarea";

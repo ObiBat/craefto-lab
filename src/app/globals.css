@@ -1144,3 +1144,65 @@ article img {
     -webkit-text-size-adjust: 100%;
   }
 }
+
+/* ---------------------------------------------------------------------------
+ * Case study brand moments — see src/components/ui/brand-moment.tsx.
+ * Choreography ported from each client's production site.
+ * ------------------------------------------------------------------------- */
+
+/* TAV & Partners: each letter is revealed by a clip that lifts from the
+   baseline, so the mark inks itself in rather than fades. */
+@keyframes cs-tav-ink {
+  0%   { clip-path: inset(100% 0 0 0); opacity: 0; transform: translateY(9px); }
+  55%  { opacity: 1; }
+  100% { clip-path: inset(0 0 0 0); opacity: 1; transform: translateY(0); }
+}
+.cs-tav-letter {
+  transform-box: fill-box;
+  transform-origin: center bottom;
+  animation: cs-tav-ink 950ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.cs-tav-letter-1 { animation-delay: 150ms; }
+.cs-tav-letter-2 { animation-delay: 400ms; }
+.cs-tav-letter-3 { animation-delay: 650ms; }
+
+@keyframes cs-tav-rule-draw { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+.cs-tav-rule {
+  transform-box: fill-box;
+  transform-origin: left center;
+  animation: cs-tav-rule-draw 700ms cubic-bezier(0.22, 1, 0.36, 1) 1250ms both;
+}
+
+@keyframes cs-tav-wordmark-in {
+  0%   { clip-path: inset(0 100% 0 0); opacity: 0; }
+  35%  { opacity: 1; }
+  100% { clip-path: inset(0 0 0 0); opacity: 1; }
+}
+.cs-tav-wordmark { animation: cs-tav-wordmark-in 800ms cubic-bezier(0.22, 1, 0.36, 1) 1450ms both; }
+
+/* JapanoMa: each path traces its outline (pathLength-normalised dash), then
+   the ink floods the fill while the tracing stroke dissolves. */
+.cs-jp-ink path {
+  fill-opacity: 0;
+  stroke: currentColor;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation:
+    cs-jp-trace 1.2s cubic-bezier(0.25, 0.1, 0.25, 1) var(--ink-delay, 0ms) forwards,
+    cs-jp-flood 0.9s cubic-bezier(0.25, 0.1, 0.25, 1) calc(var(--ink-delay, 0ms) + 0.95s) forwards;
+}
+@keyframes cs-jp-trace { to { stroke-dashoffset: 0; } }
+@keyframes cs-jp-flood {
+  from { fill-opacity: 0; stroke-opacity: 1; }
+  to   { fill-opacity: 1; stroke-opacity: 0; }
+}
+@keyframes cs-jp-wordmark-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: none; }
+}
+.cs-jp-wordmark { animation: cs-jp-wordmark-in 700ms cubic-bezier(0.25, 0.1, 0.25, 1) 1900ms both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .cs-tav-letter, .cs-tav-rule, .cs-tav-wordmark, .cs-jp-wordmark { animation: none; }
+  .cs-jp-ink path { animation: none; fill-opacity: 1; stroke: none; }
+}

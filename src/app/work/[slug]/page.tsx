@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { notFound, useParams } from "next/navigation";
 import { Header, Footer, Container, Section } from "@/components/layout";
-import { Badge, Separator, PageTransition, AnimatedSection, HeroText, StaggeredGrid, StaggeredItem, ProjectImagePlaceholder, InteractiveLogo } from "@/components/ui";
+import { Badge, Separator, PageTransition, AnimatedSection, HeroText, StaggeredGrid, StaggeredItem, ProjectImagePlaceholder, InteractiveLogo, BrandMoment } from "@/components/ui";
 import { Button } from "@/components/ui/button";
 
 // TypeScript interfaces for case study data
@@ -671,6 +671,17 @@ export default function CaseStudyPage() {
               </AnimatedSection>
             </Container>
           </Section>
+
+          {/* Brand moment: the client's own logo entrance, ported from its site */}
+          {(project.slug === "tav-partners" || project.slug === "japanoma") && (
+            <Section spacing="sm">
+              <Container>
+                <AnimatedSection>
+                  <BrandMoment slug={project.slug} />
+                </AnimatedSection>
+              </Container>
+            </Section>
+          )}
 
           {/* The Solution */}
           <Section spacing="md">
