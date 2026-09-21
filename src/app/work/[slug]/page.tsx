@@ -126,9 +126,9 @@ const projects: CaseStudy[] = [
     heroImage: "/images/projects/tav-partners/tav-partners-hero.jpg",
     thumbnail: "/images/projects/tav-partners/tav-partners-thumb.jpg",
     gallery: [
-      { src: "/images/projects/tav-partners/tav-partners-gallery-01.jpg", alt: "The Services page showing the ledger layout with a sticky anchor navigation", caption: "Services. Eleven services in four clusters, set as a ledger with a cadence label on each row." },
-      { src: "/images/projects/tav-partners/tav-partners-gallery-02.jpg", alt: "The unlisted design-system page documenting the mark on white, navy and cream", caption: "The brand reference page, built from the same tokens as the site." },
-      { src: "/images/projects/tav-partners/tav-partners-gallery-03.jpg", alt: "The contact enquiry form beside the practice interior photograph", caption: "The enquiry path. Server Action, Zod validation, honeypot, rate limit, and a transport that swaps from log to Resend by environment." },
+      { src: "/images/projects/tav-partners/tav-partners-gallery-01.jpg", alt: "The Services page on an iPad on a leather desk pad with Sydney Harbour through the window", caption: "Services. Eleven services in four clusters, set as a ledger with a cadence label on each row." },
+      { src: "/images/projects/tav-partners/tav-partners-gallery-02.jpg", alt: "The design-system page on a MacBook Pro beside navy and cream card stock", caption: "The brand reference page, built from the same tokens as the site, ready for print and signage." },
+      { src: "/images/projects/tav-partners/tav-partners-gallery-03.jpg", alt: "The contact form on a phone held in a marble office lobby at dusk", caption: "The enquiry path. Server Action, Zod validation, honeypot, rate limit, and a transport that swaps from log to Resend by environment." },
       { src: "/images/projects/tav-partners/tav-partners-gallery-04.jpg", alt: "The About page introducing the practice", caption: "About. Typography-led on a navy sampled from the client's own mark." },
     ],
     metrics: [
@@ -192,9 +192,9 @@ const projects: CaseStudy[] = [
     heroImage: "/images/projects/fx-foundations/fx-foundations-hero.jpg",
     thumbnail: "/images/projects/fx-foundations/fx-foundations-thumb.jpg",
     gallery: [
-      { src: "/images/projects/fx-foundations/fx-foundations-gallery-01.jpg", alt: "Lesson page with key terms, a deliberate practice callout and the full curriculum sidebar", caption: "MDX lessons with typed key terms, callouts and cited sources" },
-      { src: "/images/projects/fx-foundations/fx-foundations-gallery-02.jpg", alt: "Curriculum overview showing 163 lessons across 18 sections", caption: "18 sections, 163 lessons, 39 hours, all statically rendered" },
-      { src: "/images/projects/fx-foundations/fx-foundations-gallery-03.jpg", alt: "Pricing page with the monthly plan and lifetime launch offer", caption: "Stripe powered Pro plans: $4.99 monthly or $39.95 lifetime" },
+      { src: "/images/projects/fx-foundations/fx-foundations-gallery-01.jpg", alt: "A lesson page on an iPad propped on a study desk beside headphones and a notebook", caption: "Every lesson is MDX with typed key terms, callouts and cited sources, narrated for listening on the go." },
+      { src: "/images/projects/fx-foundations/fx-foundations-gallery-02.jpg", alt: "The curriculum page on a phone laid flat beside earbuds, a notebook and an espresso", caption: "18 sections, 163 lessons, 39 hours, all statically rendered and readable on a phone." },
+      { src: "/images/projects/fx-foundations/fx-foundations-gallery-03.jpg", alt: "The pricing page on a green iMac in a plant-filled home study", caption: "Stripe powered Pro plans: $4.99 monthly or $39.95 lifetime." },
       { src: "/images/projects/fx-foundations/fx-foundations-gallery-04.jpg", alt: "Curriculum overview in Mongolian", caption: "Full Mongolian localisation across the curriculum and interface" },
       { src: "/images/projects/fx-foundations/fx-foundations-gallery-05.jpg", alt: "Public simulator leaderboard ranked by profit", caption: "Leaderboard, XP levels and achievements built on Supabase" },
     ],
