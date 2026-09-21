@@ -20,10 +20,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // Project pages (in production, fetch these from CMS or data source)
   const projectSlugs = [
-    "project-alpha",
-    "project-beta",
-    "project-gamma",
-    "project-delta",
+    "fontkin",
+    "globfam",
+    "tactix",
+    "nuu",
+    "fx-foundations",
+    "japanoma",
+    "tav-partners",
   ];
 
   const routes: MetadataRoute.Sitemap = staticPages.map((page) => ({

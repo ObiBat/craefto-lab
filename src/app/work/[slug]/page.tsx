@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { useState } from "react";
 import { notFound, useParams } from "next/navigation";
 import { Header, Footer, Container, Section } from "@/components/layout";
 import { Badge, Separator, PageTransition, AnimatedSection, HeroText, StaggeredGrid, StaggeredItem, ProjectImagePlaceholder, InteractiveLogo } from "@/components/ui";
@@ -54,6 +55,10 @@ interface CaseStudy {
   accentColor?: string;
 }
 
+// Projects that have real image files under /public/images/projects/{slug}/.
+// Anything else, or any listed file that fails to load, renders a placeholder.
+const PROJECTS_WITH_REAL_IMAGES = ["tactix", "nuu", "fontkin", "globfam", "fx-foundations", "japanoma", "tav-partners"];
+
 // Helper component to render real image or placeholder
 function ProjectImage({
   project,
@@ -70,11 +75,13 @@ function ProjectImage({
   imageType?: "hero" | "gallery" | "thumb";
   className?: string;
 }) {
-  // Check if this project has real images
-  const projectsWithRealImages = ["tactix", "nuu", "fontkin", "globfam"];
-  const hasRealImages = projectsWithRealImages.includes(project.slug) && src?.includes("/images/projects/");
+  const [failed, setFailed] = useState(false);
+  const hasRealImages =
+    PROJECTS_WITH_REAL_IMAGES.includes(project.slug) &&
+    src?.includes("/images/projects/") &&
+    !src.endsWith(".mp4");
 
-  if (hasRealImages && src) {
+  if (hasRealImages && src && !failed) {
     return (
       <Image
         src={src}
@@ -82,6 +89,7 @@ function ProjectImage({
         fill
         className={`object-cover ${className}`}
         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
+        onError={() => setFailed(true)}
       />
     );
   }
@@ -380,6 +388,110 @@ const projects: CaseStudy[] = [
       { label: "Mobile Performance", value: "60fps" },
     ],
     accentColor: "280 60% 50%",
+  },
+  {
+    slug: "fx-foundations",
+    title: "FX Foundations",
+    description: "A bilingual forex education platform with 163 researched lessons, a trading simulator and Pro plans.",
+    category: "Product",
+    client: "Internal Product",
+    industry: "Fintech / Trading Education",
+    timeline: "Feb 2026 – Mar 2026",
+    year: 2026,
+    featured: false,
+    services: ["Visual Identity", "UI/UX Design", "Design System", "Motion Design", "Frontend Development", "Backend Development", "API Integration", "Database Design", "Authentication", "Payments", "SEO", "Analytics", "Deployment and DevOps", "Content", "Copywriting"],
+    techStack: ["Next.js 16", "React 19", "TypeScript 5", "Tailwind CSS 4", "Motion 12", "Lightweight Charts 5", "MDX (next-mdx-remote 6)", "next-intl 4", "Supabase", "Stripe", "Resend", "PostHog", "Vercel Analytics", "Google Cloud Text-to-Speech", "Vercel"],
+    liveUrl: "https://fxfoundations.com",
+    challenge: "Online forex education is dominated by broker-sponsored courses, signal sellers and outdated content farms. FX Foundations set out to publish a complete, research-backed curriculum, from first principles to algorithmic trading, that a beginner could trust and actually finish. The product had to serve English and Mongolian readers from day one. It had to keep the fundamentals free while earning enough from Pro subscriptions to sustain itself. Trust requirements were strict: every factual claim needed cited sources and every page needed a clear risk disclaimer. Technically it needed rich charts and interactive diagrams without hurting load times, and the whole platform, simulator included, was built in under two months.",
+    approach: "We treated the curriculum as versioned code. Lessons live as MDX files in the repository with typed frontmatter for sources, key terms, prerequisites and FAQs, so content and interactive components ship together. The design direction was editorial rather than the usual dark trading terminal: Newsreader serif headlines, Geist body text, a warm off-white base and a muted forest green accent, all defined as Tailwind CSS 4 theme tokens. Server Components render lessons statically for speed and indexing, and only charts, quizzes and the simulator hydrate on the client. Monetization followed a written design spec: a metered paywall, sections six onward gated to Pro, and full lesson HTML kept in the DOM for search crawlers.",
+    solution: "We delivered a Next.js 16 platform with 163 lessons across 18 sections, fully localised into Mongolian with next-intl. Lessons embed 21 custom visualization components and TradingView Lightweight Charts driven by scenario data. A trading simulator with a seeded price engine covers 19 instruments, pending orders, margin, indicators, drawing tools, session history, a public leaderboard and XP levels. Supabase handles auth, progress, certificates, journals and strategies across 16 tables, Stripe handles monthly and lifetime Pro plans, and Resend sends 14 templated emails including a drip sequence run by a Vercel cron. Google Cloud Text-to-Speech narrates every lesson. PostHog tracks 11 funnel events, and structured data, Open Graph images and FAQ schema cover search.",
+    outcome: "FX Foundations is live at fxfoundations.com with the full bilingual curriculum, simulator, six calculators and Pro subscriptions in production. The repository records a 116 ms largest contentful paint and zero layout shift after the Core Web Vitals pass, with 181 pages pre-rendered at build time. The platform now has the instrumentation to measure conversion from free lessons to Pro, the email automation to re-engage readers, and a simulator designed to turn one-off readers into daily users. Post-launch traffic and revenue figures are not recorded in the repository.",
+    heroImage: "/images/projects/fx-foundations/fx-foundations-hero.jpg",
+    thumbnail: "/images/projects/fx-foundations/fx-foundations-thumb.jpg",
+    gallery: [
+      { src: "/images/projects/fx-foundations/fx-foundations-gallery-01.jpg", alt: "FX Foundations homepage hero with bull illustration and animated candlestick canvas", caption: "Editorial hero with a living market canvas over the bull illustration" },
+      { src: "/images/projects/fx-foundations/fx-foundations-gallery-02.jpg", alt: "Lesson page with key concept callout, educational diagram and source citations", caption: "MDX lessons with embedded visualizations and cited sources" },
+      { src: "/images/projects/fx-foundations/fx-foundations-gallery-03.jpg", alt: "Trading simulator running a session with chart, positions and account bar", caption: "Paper trading simulator with playback, pending orders and live P&L" },
+      { src: "/images/projects/fx-foundations/fx-foundations-gallery-04.jpg", alt: "Curriculum overview in Mongolian showing 18 sections", caption: "Full Mongolian localisation across the curriculum and interface" },
+      { src: "/images/projects/fx-foundations/fx-foundations-gallery-05.jpg", alt: "Simulator leaderboard and profile with XP level and achievements", caption: "Leaderboard, XP levels and achievements built on Supabase" },
+      { src: "/images/projects/fx-foundations/fx-foundations-gallery-06.jpg", alt: "Pricing page with monthly and lifetime Pro plans", caption: "Stripe powered Pro plans: $4.99 monthly or $39.95 lifetime" },
+    ],
+    metrics: [
+      { label: "Lessons", value: "163 × 2" },
+      { label: "Visualization Components", value: "21" },
+      { label: "API Endpoints", value: "22" },
+      { label: "Simulator Instruments", value: "19" },
+    ],
+    accentColor: "153 40% 30%",
+  },
+  {
+    slug: "japanoma",
+    title: "JapanoMa",
+    description: "A decision-aid platform helping Australian skiers weigh a Japan snow-country home base, from quiz to purchase.",
+    category: "Product",
+    client: "Go&C Partners",
+    industry: "Property / Cross-border Lifestyle Real Estate",
+    timeline: "Feb 2026 – Ongoing",
+    year: 2026,
+    featured: false,
+    services: ["Visual Identity", "Motion Design", "UI/UX Design", "Design System", "Frontend Development", "Backend Development", "API Integration", "Database Design", "Authentication", "Payments", "CMS", "SEO", "Analytics", "Deployment and DevOps", "Content", "Copywriting"],
+    techStack: ["Next.js 15", "React 19", "TypeScript 5", "Tailwind CSS 4", "shadcn/ui", "Supabase", "Drizzle ORM", "Sanity 5", "Stripe", "Resend", "three.js / React Three Fiber 9", "Remotion 4", "Recharts 3", "React Hook Form 7 + Zod 4", "Zustand 5", "Google Gemini (vision)", "Cal.com", "Plausible", "Sentry", "Playwright + Jest 30", "Vercel"],
+    liveUrl: "https://www.japanoma.com.au",
+    challenge: "Go&C Partners wanted to help Australian skiers decide whether to buy a home base in Northern Japan without behaving like a listings portal or a broker. The audience is roughly 184,500 Australian skiers who distrust hype and need honest total-cost figures, due diligence and local execution before they talk to anyone selling. The engagement had a thirteen-week timeline, a two-person Craefto team, a client with no existing brand guidelines, and content still to be written. The platform also had to meet the Australian Privacy Act, Japan's APPI and GDPR from day one, hold up under launch traffic, and hand over cleanly to Go&C as a documented codebase.",
+    approach: "We ran a three-week discovery that produced twelve architecture decision records, a scope-boundaries document separating v1 from v2, personas and sixty user stories before writing code. The visual language, Ma Space, treats emptiness as the primary material: a near-monochrome sumi and washi palette with one indigo accent, Shippori Mincho for headings, Satoshi for everything else, and a three-colour-per-screen rule. We chose Next.js with React Server Components and ISR so public pages are CDN-served, Supabase in Sydney for data residency, and Sanity so the client could edit without us. Every decision, and every later reversal, was written into the changelog with its reasoning, so the client inherits the why as well as the code.",
+    solution: "We delivered a production platform with 49 pages and 19 API routes. Visitors take a seven-step lifestyle quiz that scores 29 launch areas across nine prefectures, explore them on a three.js map of Japan, and compare towns side by side. A weekly partner workbook feeds the property pipeline: parsing, haversine area assignment, deduplicated image mirroring, caption-based gallery selection and a Gemini-assisted floor-plan translation pilot. Registration gates listings, quiz and consultation booking; Stripe handles consultation credits and a dormant membership tier. A 33-second Remotion film opens the homepage, and a customer story turns one recorded interview into fifteen chapters with audio, word-timed captions and transcripts. An admin area covers leads, users, reviews, area media, compliance exports and insights.",
+    outcome: "JapanoMa launched publicly on 26 May 2026 at japanoma.com.au, thirteen weeks after kickoff, and has been extended every month since. Production load testing drove the site to 2,000 concurrent users with zero failed requests. Go&C now runs its own editorial in Sanity, ingests partner stock weekly, and books and bills consultations through the platform. The quiz, once anonymous, now attaches every completion to a contactable account. Traffic, lead and revenue figures are not recorded in the repository.",
+    heroImage: "/images/projects/japanoma/japanoma-hero.jpg",
+    thumbnail: "/images/projects/japanoma/japanoma-thumb.jpg",
+    gallery: [
+      { src: "/images/projects/japanoma/japanoma-gallery-01.jpg", alt: "JapanoMa homepage hero with the headline set in Shippori Mincho", caption: "The homepage leads with a photograph and one line of type. Ma Space rations colour to sumi, washi and a single indigo accent." },
+      { src: "/images/projects/japanoma/japanoma-gallery-02.jpg", alt: "The 33-second JapanoMa film: an orbiting map of Japan lighting nine prefectures", caption: "A 33-second film rendered with Remotion and React Three Fiber, re-timed after testing showed the 48-second cut lost viewers." },
+      { src: "/images/projects/japanoma/japanoma-gallery-03.jpg", alt: "The areas directory with a three.js silhouette of Japan and a side panel for the selected town", caption: "The area directory and 3D map are one flow: pick a prefecture chip and the matching polygon rises on the canvas." },
+      { src: "/images/projects/japanoma/japanoma-gallery-04.jpg", alt: "The seven-step lifestyle quiz showing a speedometer-style difficulty gauge and borderless answer cards", caption: "Seven steps, one primary action per screen. Results rank 29 launch areas on budget fit, taxonomy scores and slope proximity." },
+      { src: "/images/projects/japanoma/japanoma-gallery-05.jpg", alt: "A chapter of the customer story with an audio waveform scrubber and word-by-word captions", caption: "One recorded conversation became fifteen chapters, each with its own clip, transcript and photograph." },
+      { src: "/images/projects/japanoma/japanoma-gallery-06.jpg", alt: "A property listing page with a five-image gallery led by an exterior shot and two floor plans", caption: "Listings choose their own five lead images from Japanese captions: one exterior, two floor plans, two interiors." },
+    ],
+    metrics: [
+      { label: "Kickoff to Launch", value: "13 weeks" },
+      { label: "Load Tested, Zero Failures", value: "2,000 users" },
+      { label: "Pages / API Routes", value: "49 / 19" },
+      { label: "Database Tables", value: "37" },
+    ],
+    accentColor: "211 33% 36%",
+  },
+  {
+    slug: "tav-partners",
+    title: "TAV & Partners",
+    description: "A typography-led static site and brand system for a new Sydney chartered accounting and tax advisory firm.",
+    category: "Web",
+    client: "TAV & Partners Pty Ltd",
+    industry: "Professional Services / Accounting and Tax Advisory",
+    timeline: "Jul 2026 – Sep 2026",
+    year: 2026,
+    featured: false,
+    services: ["Visual Identity", "Motion Design", "UI/UX Design", "Design System", "Frontend Development", "Backend Development", "API Integration", "SEO", "Analytics", "Deployment and DevOps", "Content", "Copywriting"],
+    techStack: ["Next.js 16", "React 19", "TypeScript 5", "Tailwind CSS 4", "Zod 4", "Resend 6", "Vercel Web Analytics 2", "Playwright 1 + axe-core", "Vercel"],
+    liveUrl: "https://www.tavpartners.com.au",
+    challenge: "TAV & Partners Pty Ltd is a newly established chartered accounting and tax advisory practice at 175 Pitt Street, Sydney. The firm was new but the practice behind it was not: many of its first clients had worked with the managing director for over a decade, and the site's first job was to confirm to those clients that this was a serious, technically capable practice rather than a startup. The brief asked for a reviewable version within five days. At kickoff there was no logo file, no photography, no bios, no confirmed registrations and no domain or DNS access, and Australian professional-services rules meant no credential, registration number or liability notice could be invented or shown without written confirmation.",
+    approach: "We wrote a specification before any code and put every external dependency behind a swap-in seam, so the site could be complete and demonstrable with zero client input. Copy lives in typed content objects marked as draft until the client's wording replaced it, and regulatory fields render nothing until confirmed. The visual language is typography-led on a navy sampled from the client's own mark, with a verdigris accent chosen deliberately over the gold-on-navy default. After a first build read as plain and a second as oversized, we rebenchmarked the type and spacing scale against Carbon, Material 3, Atlassian and Geist, and varied the section shapes so pages read as designed rather than templated.",
+    solution: "A fully static Next.js 16 site on Vercel with nine public routes, an unlisted brand reference page and ten typed content files. A ledger layout derived from the financial statement structures every page, using container queries so it holds in both full-bleed and nested contexts. The enquiry form is a Server Action with Zod validation, a honeypot, an in-memory rate limit and a transport interface that logs until a Resend key exists, then sends a branded notification and acknowledgement. Metadata, sitemap, robots, a generated social card and AccountingService JSON-LD are env-driven, so indexing is an explicit act at cutover. We also vectorised the supplied mark, produced a logo pack and email signature templates, and wrote the launch runbook.",
+    outcome: "The first reviewable preview reached the client within days of kickoff, and the client's wording, team roster and regulatory details dropped in as they arrived without component changes. The site is live and indexed at www.tavpartners.com.au, with the enquiry form delivering to the firm and acknowledging enquirers. Recorded verification shows zero axe violations across every route and breakpoint, Lighthouse scores of 100 for performance, accessibility and best practices, and zero layout shift. The firm owns its own Vercel and Resend accounts, and the engagement has continued into team profiles, monthly traffic reporting and a team portrait session.",
+    heroImage: "/images/projects/tav-partners/tav-partners-hero.jpg",
+    thumbnail: "/images/projects/tav-partners/tav-partners-thumb.jpg",
+    gallery: [
+      { src: "/images/projects/tav-partners/tav-partners-gallery-01.jpg", alt: "TAV & Partners home page hero with the practice interior ghosted behind the positioning statement", caption: "Home. One full-width image on the site, the rest held to the shell." },
+      { src: "/images/projects/tav-partners/tav-partners-gallery-02.jpg", alt: "The Services page showing the ledger layout with a sticky anchor navigation", caption: "Services. Eleven services in four clusters, set as a ledger with a cadence label on each row." },
+      { src: "/images/projects/tav-partners/tav-partners-gallery-03.jpg", alt: "The unlisted design-system page documenting the mark, colour swatches and type specimens", caption: "The brand reference page, built from the same tokens as the site." },
+      { src: "/images/projects/tav-partners/tav-partners-gallery-04.jpg", alt: "The Our People page showing team cards with monogram tiles", caption: "Our People. Adding a person is one object in a typed array; cards degrade to a monogram without a photo." },
+      { src: "/images/projects/tav-partners/tav-partners-gallery-05.jpg", alt: "The contact enquiry form beside the branded acknowledgement email it sends", caption: "The enquiry path. Server Action, Zod validation, honeypot, rate limit, and a transport that swaps from log to Resend by environment." },
+    ],
+    metrics: [
+      { label: "Lighthouse Scores", value: "100 / 100 / 100" },
+      { label: "Axe Violations", value: "0" },
+      { label: "Layout Shift", value: "0" },
+      { label: "Services in 4 Clusters", value: "11" },
+    ],
+    accentColor: "224 48% 21%",
   },
 ];
 
@@ -778,7 +890,7 @@ export default function CaseStudyPage() {
                   <div className="relative overflow-hidden rounded-2xl">
                     {/* Background Image */}
                     <div className="aspect-[4/3] sm:aspect-[21/9] md:aspect-[3/1] relative">
-                      {["tactix", "nuu", "fontkin", "globfam"].includes(nextProject.slug) ? (
+                      {PROJECTS_WITH_REAL_IMAGES.includes(nextProject.slug) ? (
                         <Image
                           src={nextProject.heroImage}
                           alt={`${nextProject.title} preview`}
