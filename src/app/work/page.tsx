@@ -8,6 +8,17 @@ import { Badge, Separator, PageTransition, AnimatedSection, StaggeredGrid, Stagg
 // Projects data - in production, this would come from a CMS or data file
 const projects = [
   {
+    slug: "mng-steel",
+    title: "MNG Steel",
+    description: "Trilingual website, brand mark and a private DBM financing dossier for a Mongolian grinding-ball plant.",
+    category: "Web",
+    industry: "Industrial Manufacturing / Mining Supply",
+    year: 2026,
+    featured: false,
+    accentColor: "16 100% 56%",
+    thumbnail: "/images/projects/mng-steel/mng-steel-thumb.jpg",
+  },
+  {
     slug: "tav-partners",
     title: "TAV & Partners",
     description: "A typography-led static site and brand system for a new Sydney chartered accounting and tax advisory firm.",

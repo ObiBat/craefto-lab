@@ -57,7 +57,7 @@ interface CaseStudy {
 
 // Projects that have real image files under /public/images/projects/{slug}/.
 // Anything else, or any listed file that fails to load, renders a placeholder.
-const PROJECTS_WITH_REAL_IMAGES = ["tactix", "nuu", "fontkin", "globfam", "fx-foundations", "japanoma", "tav-partners", "artisan"];
+const PROJECTS_WITH_REAL_IMAGES = ["tactix", "nuu", "fontkin", "globfam", "fx-foundations", "japanoma", "tav-partners", "artisan", "mng-steel"];
 
 // Helper component to render real image or placeholder
 function ProjectImage({
@@ -106,6 +106,38 @@ function ProjectImage({
 
 // Project data - in production, this would come from a CMS
 const projects: CaseStudy[] = [
+  {
+    slug: "mng-steel",
+    title: "MNG Steel",
+    description: "Trilingual website, brand mark and a private DBM financing dossier for a Mongolian grinding-ball plant.",
+    category: "Web",
+    client: "MNG Steel LLC",
+    industry: "Industrial Manufacturing / Mining Supply",
+    timeline: "Sep 2026",
+    year: 2026,
+    featured: false,
+    services: ["Logo Design", "Visual Identity", "UI/UX Design", "Frontend Development", "Backend Development", "Authentication", "SEO", "Deployment and DevOps", "Content", "Copywriting"],
+    techStack: ["HTML / CSS / JavaScript", "Python static generator", "Pillow", "Vercel", "Vercel Functions (Node 24)", "Upstash Redis", "marked 12", "Google Fonts", "Artlist"],
+    liveUrl: "https://mngsteel.mn/en/",
+    challenge: "MNG Steel, a Mongolian steel grinding-ball plant operating since 2017, is preparing a plant-expansion loan with the Development Bank of Mongolia to meet the grinding-media specifications of Oyu Tolgoi and Erdenet. The company had a secured domain but no public presence, no brand mark and no consolidated view of how the bank lends: product terms, hard gates such as the minimum request and the financing cap, and the 65-document application checklist behind them. The work had to serve Mongolian financiers, domestic mine buyers and Chinese-speaking suppliers at once, in under two weeks, before the founder had confirmed most figures.",
+    approach: "We started with evidence rather than layout. A research pass reverse-engineered the bank's website API, downloaded 52 public documents, read the audited statements for 2018 to 2025 and the 2025 draft law, and recorded every field with a source, date and confidence code. That library became the spine of a private dossier. For the site we chose a Python static generator that builds 24 pages in three languages from shared content dictionaries, so terminology can be corrected in one place. Every unconfirmed figure went into an assumptions register, the site stayed unindexed, and all photography was generated to a written brief until real plant photography exists.",
+    solution: "Three connected pieces. A brand mark, a forged ball held between two chamfered forging dies, generated parametrically as SVG, PNG and favicon in on-light, on-dark and mono variants, ember orange on graphite. A trilingual static site at mngsteel.mn with home, products, quality, supply record, expansion, about, careers and contact pages, grouped navigation, product spec tabs, a seven-step process stepper, count-up figures, an embedded plant map, a quote form that prefills mill and ball size, and hreflang and canonical tags. And the DBM Financing Dossier, a bilingual single-file web app with 14 sections, Markdown rendering, a passphrase-gated serverless API and Upstash Redis holding an application profile that mirrors the bank's own form, with versioned snapshots.",
+    outcome: "MNG Steel now has an identity and a site that presents it as an established supplier in Mongolian, English and Chinese, live on its own domain and ready to index once the founder clears the assumptions register. The dossier gives the founder and advisers one place to check the bank's requirements, track the 65 application documents and draft the loan application against the bank's own form structure. Whether the site has produced enquiries, and how the application progressed, is not recorded in the project files.",
+    heroImage: "/images/projects/mng-steel/mng-steel-hero.jpg",
+    thumbnail: "/images/projects/mng-steel/mng-steel-thumb.jpg",
+    gallery: [
+      { src: "/images/projects/mng-steel/mng-steel-gallery-01.jpg", alt: "The DBM Financing Dossier on a desktop monitor in a finance office beside a binder of application forms", caption: "The private dossier: 14 research sections and a bilingual application form saved to Redis." },
+      { src: "/images/projects/mng-steel/mng-steel-gallery-02.jpg", alt: "The English MNG Steel site on a phone held on the plant floor beside quenched grinding balls", caption: "Three languages from one content source, so a corrected term changes everywhere at once." },
+      { src: "/images/projects/mng-steel/mng-steel-gallery-03.jpg", alt: "The products page on a tablet on a metallurgy lab bench with a sectioned ball and a hardness tester", caption: "Product specifications as tabbed tables, with a quote link that prefills the contact form." },
+    ],
+    metrics: [
+      { label: "Languages", value: "3" },
+      { label: "Static Pages", value: "24" },
+      { label: "Bank Documents Indexed", value: "52" },
+      { label: "Dossier Sections", value: "14" },
+    ],
+    accentColor: "16 100% 56%",
+  },
   {
     slug: "tav-partners",
     title: "TAV & Partners",
