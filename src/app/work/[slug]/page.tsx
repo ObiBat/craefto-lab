@@ -258,7 +258,7 @@ const projects: CaseStudy[] = [
     gallery: [
       { src: "/images/projects/fx-foundations/fx-foundations-gallery-01.jpg", alt: "A lesson page on an iPad propped on a study desk beside headphones and a notebook", caption: "Every lesson is MDX with typed key terms, callouts and cited sources, narrated for listening on the go." },
       { src: "/images/projects/fx-foundations/fx-foundations-gallery-02.jpg", alt: "The curriculum page on a phone laid flat beside earbuds, a notebook and an espresso", caption: "18 sections, 163 lessons, 39 hours, all statically rendered and readable on a phone." },
-      { src: "/images/projects/fx-foundations/fx-foundations-gallery-03.jpg", alt: "The simulator leaderboard on a green iMac in a plant-filled home study", caption: "The public leaderboard: simulator sessions ranked by profit, win rate or profit factor, with XP and achievements behind it." },
+      { src: "/images/projects/fx-foundations/fx-foundations-gallery-03.jpg", alt: "A lesson with a live EUR/USD candlestick chart on a green iMac in a plant-filled home study", caption: "Lessons embed live charts driven by scenario data, so a pip is something you watch move rather than read about." },
       { src: "/images/projects/fx-foundations/fx-foundations-gallery-04.jpg", alt: "Curriculum overview in Mongolian", caption: "Full Mongolian localisation across the curriculum and interface" },
       { src: "/images/projects/fx-foundations/fx-foundations-gallery-05.jpg", alt: "Public simulator leaderboard ranked by profit", caption: "Leaderboard, XP levels and achievements built on Supabase" },
     ],
