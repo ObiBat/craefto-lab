@@ -134,6 +134,48 @@ function JapanomaLockup({ play }: { play: boolean }) {
 }
 
 // ---------------------------------------------------------------------------
+// Artisan
+// ---------------------------------------------------------------------------
+
+// The nipper mark from brand/logo/artisan-mark-animated.svg in the Artisan
+// repo: the jaws rotate about the rivet (256,195) and the ember dot pulses
+// on the close. Runs as a loop, exactly as the source file does.
+const ART = { ink0: "#26262B", ink1: "#151517", line: "#EDEDF1", bone: "#FAFAFA", ember: "#F97316" };
+
+function ArtisanMark({ play }: { play: boolean }) {
+  return (
+    <svg
+      viewBox="0 0 512 512"
+      className="w-full h-auto max-w-[280px]"
+      role="img"
+      aria-label="Artisan mark"
+      focusable="false"
+    >
+      <defs>
+        <linearGradient id="cs-art-bg" x1="256" y1="0" x2="256" y2="512" gradientUnits="userSpaceOnUse">
+          <stop stopColor={ART.ink0} />
+          <stop offset="1" stopColor={ART.ink1} />
+        </linearGradient>
+        <radialGradient id="cs-art-ember" cx="0.4" cy="0.35" r="0.85">
+          <stop stopColor="#FDBA74" />
+          <stop offset="0.42" stopColor="#F97316" />
+          <stop offset="1" stopColor="#EA580C" />
+        </radialGradient>
+      </defs>
+      <rect width="512" height="512" rx="116" fill="url(#cs-art-bg)" stroke="#2A2A31" strokeWidth="2" />
+      <g stroke={ART.line} strokeWidth="15" fill="none" strokeLinecap="round" strokeLinejoin="round">
+        <path className={play ? "cs-art-jaw-l" : undefined} d="M242 104 Q216 142 250 186" />
+        <path className={play ? "cs-art-jaw-r" : undefined} d="M270 104 Q296 142 262 186" />
+        <path d="M244 200 Q196 294 156 386" />
+        <path d="M268 200 Q316 294 356 386" />
+      </g>
+      <circle cx="256" cy="195" r="21" fill="none" stroke={ART.line} strokeWidth="14" />
+      <circle className={play ? "cs-art-rivet" : undefined} cx="256" cy="195" r="13.5" fill="url(#cs-art-ember)" />
+    </svg>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // Panel
 // ---------------------------------------------------------------------------
 
@@ -143,6 +185,12 @@ const COPY = {
     title: "The mark inks itself in.",
     body: "On tavpartners.com.au the lockup introduces itself once per visit: the T with its swoosh, then the A, then the V settle in from the baseline, the rule draws out, and the name is written in. Nothing else on the site animates on scroll. For a practice selling steadiness, movement everywhere would undercut it.",
     replay: "Replay the entrance",
+  },
+  artisan: {
+    label: "Brand moment",
+    title: "The mark snips.",
+    body: "Artisan's mark is a pair of steel-fixing nippers, the tool every fixer carries. In motion the jaws close about the rivet and the ember dot pulses on the snip, one three-second loop that lives in the app icon, the site and the deck. The ember is the identity's only accent.",
+    replay: "Snip again",
   },
   japanoma: {
     label: "Brand moment",
@@ -160,6 +208,8 @@ export function BrandMoment({ slug }: { slug: BrandMomentSlug }) {
   const [run, setRun] = useState(0);
   const copy = COPY[slug];
   const isTav = slug === "tav-partners";
+  const isArt = slug === "artisan";
+  const dark = isTav || isArt;
 
   // Play once when at least half the panel is on screen.
   useEffect(() => {
@@ -185,9 +235,9 @@ export function BrandMoment({ slug }: { slug: BrandMomentSlug }) {
     <div
       ref={ref}
       className={`relative overflow-hidden rounded-2xl border ${
-        isTav ? "border-[#2a3358]" : "border-[hsl(var(--color-border))]"
+        isTav ? "border-[#2a3358]" : isArt ? "border-[#2A2A31]" : "border-[hsl(var(--color-border))]"
       }`}
-      style={{ backgroundColor: isTav ? TAV_NAVY : JP.washi }}
+      style={{ background: isTav ? TAV_NAVY : isArt ? `linear-gradient(180deg, ${ART.ink0}, ${ART.ink1})` : JP.washi }}
     >
       <div className="grid grid-cols-1 lg:grid-cols-5">
         {/* Stage */}
@@ -199,10 +249,10 @@ export function BrandMoment({ slug }: { slug: BrandMomentSlug }) {
         >
           <div className={isTav ? "w-full max-w-[420px]" : "w-full max-w-[520px] flex justify-center"}>
             {inView ? (
-              isTav ? <TavLockup key={run} play /> : <JapanomaLockup key={run} play />
+              isTav ? <TavLockup key={run} play /> : isArt ? <ArtisanMark key={run} play /> : <JapanomaLockup key={run} play />
             ) : (
               <div className="invisible" aria-hidden="true">
-                {isTav ? <TavLockup play={false} /> : <JapanomaLockup play={false} />}
+                {isTav ? <TavLockup play={false} /> : isArt ? <ArtisanMark play={false} /> : <JapanomaLockup play={false} />}
               </div>
             )}
           </div>
@@ -211,22 +261,22 @@ export function BrandMoment({ slug }: { slug: BrandMomentSlug }) {
         {/* Copy */}
         <div
           className={`lg:col-span-2 flex flex-col justify-center gap-4 px-8 py-8 sm:px-10 lg:py-12 border-t lg:border-t-0 lg:border-l ${
-            isTav ? "border-[#2a3358] text-white" : "border-[hsl(var(--color-border))]"
+            isTav ? "border-[#2a3358] text-white" : isArt ? "border-[#2A2A31] text-white" : "border-[hsl(var(--color-border))]"
           }`}
-          style={isTav ? undefined : { color: JP.sumi }}
+          style={dark ? undefined : { color: JP.sumi }}
         >
-          <p className={`text-xs uppercase tracking-wide ${isTav ? "text-white/60" : "text-[hsl(var(--color-foreground-subtle))]"}`}>
+          <p className={`text-xs uppercase tracking-wide ${dark ? "text-white/60" : "text-[hsl(var(--color-foreground-subtle))]"}`}>
             {copy.label}
           </p>
-          <h3 className="text-xl sm:text-2xl font-semibold tracking-tight" style={{ color: isTav ? "#ffffff" : JP.sumi }}>{copy.title}</h3>
-          <p className={`text-sm leading-relaxed ${isTav ? "text-white/75" : "text-[hsl(var(--color-foreground-muted))]"}`}>
+          <h3 className="text-xl sm:text-2xl font-semibold tracking-tight" style={{ color: dark ? "#ffffff" : JP.sumi }}>{copy.title}</h3>
+          <p className={`text-sm leading-relaxed ${dark ? "text-white/75" : "text-[hsl(var(--color-foreground-muted))]"}`}>
             {copy.body}
           </p>
           <button
             type="button"
             onClick={replay}
             className={`self-start inline-flex items-center gap-2 text-sm font-medium rounded-full border px-4 py-2 transition-colors ${
-              isTav
+              dark
                 ? "border-white/25 text-white hover:bg-white/10"
                 : "border-[hsl(var(--color-border-strong))] hover:bg-[hsl(var(--color-background-muted))]"
             }`}

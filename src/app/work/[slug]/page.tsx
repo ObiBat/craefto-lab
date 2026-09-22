@@ -57,7 +57,7 @@ interface CaseStudy {
 
 // Projects that have real image files under /public/images/projects/{slug}/.
 // Anything else, or any listed file that fails to load, renders a placeholder.
-const PROJECTS_WITH_REAL_IMAGES = ["tactix", "nuu", "fontkin", "globfam", "fx-foundations", "japanoma", "tav-partners"];
+const PROJECTS_WITH_REAL_IMAGES = ["tactix", "nuu", "fontkin", "globfam", "fx-foundations", "japanoma", "tav-partners", "artisan"];
 
 // Helper component to render real image or placeholder
 function ProjectImage({
@@ -171,6 +171,38 @@ const projects: CaseStudy[] = [
       { label: "Database Tables", value: "37" },
     ],
     accentColor: "211 33% 36%",
+  },
+  {
+    slug: "artisan",
+    title: "Artisan",
+    description: "Crew OS and spot marketplace for construction labour, built as a mobile app, site, deck and backend.",
+    category: "Product",
+    client: "Internal Product",
+    industry: "Construction / Workforce Marketplace",
+    timeline: "Jan 2026 – Jul 2026",
+    year: 2026,
+    featured: false,
+    services: ["Brand Strategy", "Logo Design", "Visual Identity", "Motion Design", "UI/UX Design", "Design System", "Frontend Development", "Backend Development", "Mobile Development", "API Integration", "Database Design", "Authentication", "SEO", "Analytics", "Deployment and DevOps", "Content", "Copywriting"],
+    techStack: ["Expo SDK 54", "React Native 0.81", "Expo Router 6", "React 19", "TypeScript 5", "Next.js 16", "Vite 7", "Tailwind CSS 4", "NativeWind 4", "Supabase", "PostgreSQL", "TanStack Query 5", "Mapbox", "Reanimated 4", "Motion 12", "Recharts 3", "Twilio Verify", "Expo Push", "Sentry", "Vercel", "EAS Build", "pgTAP", "GitHub Actions"],
+    liveUrl: "https://artisan.construction",
+    challenge: "Construction labour hiring in Sydney runs on phone calls, 9pm Facebook posts and word of mouth. A boss who needs steel fixers tomorrow has no record of who shows up, and a reliable worker's reputation never leaves their own circle. The founder, a former steel fixer, wanted a trust-aggregation platform for the trade, starting with the Mongolian steel-fixing community as the beachhead. The constraints were real: a solo builder, a non-technical audience on glare-lit sites with patchy signal, a two-sided cold-start problem, and a product that must look like a tool for the boss rather than an employer or labour-hire agency. Everything had to be built, branded and hardened without a team.",
+    approach: "We started with strategy before screens: an aggregation thesis, a trust loop and a cold-start plan written in January 2026, then a Ship 1 scope that excluded payments, messaging and scheduling. The June realisation changed the architecture. Field truth showed 80 to 90 percent of worker-days move inside standing crews, so we reframed Artisan as two layers over one spine: a single-player Crew OS at the core and the spot marketplace as the overflow valve, joined by a worker-day primitive with one state per worker per day. We chose Supabase with row-level security as the only access layer, Expo for a single mobile codebase, and one token file so the app, site and deck could not drift apart.",
+    solution: "An Expo mobile app with 37 screens across boss, worker and auth flows, split into Artisan Crew and Artisan Jobs modes behind one toggle: crew invites by phone, per-worker rates, a schedule grid, a 6am Today screen with one-tap attendance, a lending exchange between bosses, a clustered Mapbox job map and a reputation engine fed by confirmed attendance. A Supabase backend with 28 tables, 43 migrations, 40 SQL functions, four edge functions and pgTAP security tests in CI. Around it: the nipper logo and brand kit with exportable tokens, a bilingual English and Mongolian marketing site with SEO and a live Founding-100 counter, a bilingual research survey, an operations dashboard, and a 24-section investor deck with a 17-slide pitch.",
+    outcome: "By July 2026 the full hire loop, Crew OS spine, lending exchange and push notifications were running end to end against the production backend, with a July production-readiness audit reproduced live and its P0 and P1 findings closed the same week. The marketing site is live at artisan.construction and every call to action funnels into the Founding-100 survey. The mobile app was moving through EAS builds toward TestFlight and the stores at the last commit. Usage numbers, store release and the first crews onboarded are not recorded in the repository.",
+    heroImage: "/images/projects/artisan/artisan-hero.jpg",
+    thumbnail: "/images/projects/artisan/artisan-thumb.jpg",
+    gallery: [
+      { src: "/images/projects/artisan/artisan-gallery-01.jpg", alt: "The artisan.construction marketing site on a laptop in a site office", caption: "The marketing site in English and Mongolian, with a live Founding-100 counter." },
+      { src: "/images/projects/artisan/artisan-gallery-02.jpg", alt: "The boss Today screen on a phone held on a rebar deck", caption: "The 6am screen. Attendance confirmed in one tap feeds the reliability engine." },
+      { src: "/images/projects/artisan/artisan-gallery-03.jpg", alt: "The Jobs map on a phone at the end of a site day", caption: "The spillover marketplace, drawing only on free, crew-verified days." },
+    ],
+    metrics: [
+      { label: "Mobile Screens", value: "37" },
+      { label: "Tables / Migrations", value: "28 / 43" },
+      { label: "Commits in Six Months", value: "193" },
+      { label: "Languages", value: "EN + MN" },
+    ],
+    accentColor: "25 95% 53%",
   },
   {
     slug: "fx-foundations",
@@ -673,7 +705,7 @@ export default function CaseStudyPage() {
           </Section>
 
           {/* Brand moment: the client's own logo entrance, ported from its site */}
-          {(project.slug === "tav-partners" || project.slug === "japanoma") && (
+          {(project.slug === "tav-partners" || project.slug === "japanoma" || project.slug === "artisan") && (
             <Section spacing="sm">
               <Container>
                 <AnimatedSection>

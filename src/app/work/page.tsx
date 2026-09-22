@@ -30,6 +30,17 @@ const projects = [
     thumbnail: "/images/projects/japanoma/japanoma-thumb.jpg",
   },
   {
+    slug: "artisan",
+    title: "Artisan",
+    description: "Crew OS and spot marketplace for construction labour, built as a mobile app, site, deck and backend.",
+    category: "Product",
+    industry: "Construction / Workforce Marketplace",
+    year: 2026,
+    featured: false,
+    accentColor: "25 95% 53%",
+    thumbnail: "/images/projects/artisan/artisan-thumb.jpg",
+  },
+  {
     slug: "fx-foundations",
     title: "FX Foundations",
     description: "A bilingual forex education platform with 163 researched lessons, a trading simulator and Pro plans.",

@@ -27,6 +27,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "fx-foundations",
     "japanoma",
     "tav-partners",
+    "artisan",
   ];
 
   const routes: MetadataRoute.Sitemap = staticPages.map((page) => ({

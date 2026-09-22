@@ -1206,3 +1206,13 @@ article img {
   .cs-tav-letter, .cs-tav-rule, .cs-tav-wordmark, .cs-jp-wordmark { animation: none; }
   .cs-jp-ink path { animation: none; fill-opacity: 1; stroke: none; }
 }
+
+/* Artisan: the nipper jaws rotate about the rivet; the ember pulses on the close. */
+.cs-art-jaw-l, .cs-art-jaw-r, .cs-art-rivet { transform-box: view-box; transform-origin: 256px 195px; }
+.cs-art-jaw-l { animation: cs-art-snip-l 3s cubic-bezier(.5,0,.2,1) infinite; }
+.cs-art-jaw-r { animation: cs-art-snip-r 3s cubic-bezier(.5,0,.2,1) infinite; }
+.cs-art-rivet { animation: cs-art-pulse 3s ease-out infinite; }
+@keyframes cs-art-snip-l { 0%,55%,100% { transform: rotate(0); } 20%,42% { transform: rotate(-13deg); } 50% { transform: rotate(0); } }
+@keyframes cs-art-snip-r { 0%,55%,100% { transform: rotate(0); } 20%,42% { transform: rotate(13deg); } 50% { transform: rotate(0); } }
+@keyframes cs-art-pulse { 0%,48%,100% { transform: scale(1); } 52% { transform: scale(1.22); } 64% { transform: scale(1); } }
+@media (prefers-reduced-motion: reduce) { .cs-art-jaw-l, .cs-art-jaw-r, .cs-art-rivet { animation: none; } }
