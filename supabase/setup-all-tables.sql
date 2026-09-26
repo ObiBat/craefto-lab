@@ -1,5 +1,5 @@
 -- =====================================================
--- CRAEFTO LAB - COMPLETE DATABASE SETUP
+-- CRAEFTO WORKS - COMPLETE DATABASE SETUP
 -- Run this in Supabase SQL Editor
 -- =====================================================
 
@@ -303,7 +303,7 @@ ON CONFLICT (slug) DO NOTHING;
 -- =====================================================
 INSERT INTO journal_authors (name, slug, role, bio, expertise)
 VALUES
-  ('Craefto Team', 'craefto-team', 'Editorial Team', 'The Craefto Lab editorial team shares insights on design, engineering, and product development.', ARRAY['Design Systems', 'Web Development', 'AI Tools'])
+  ('Craefto Team', 'craefto-team', 'Editorial Team', 'The Craefto Works editorial team shares insights on design, engineering, and product development.', ARRAY['Design Systems', 'Web Development', 'AI Tools'])
 ON CONFLICT (slug) DO NOTHING;
 
 -- =====================================================

@@ -1,8 +1,8 @@
-# Craefto Lab Content Engine - Runbook
+# Craefto Works Content Engine - Runbook
 
 ## Overview
 
-The Craefto Lab Content Engine is an AI-powered content management system built in 5 stages:
+The Craefto Works Content Engine is an AI-powered content management system built in 5 stages:
 
 1. **Foundation** - Database schema, Next.js pages, admin panel
 2. **SEO & Discovery** - Sitemaps, RSS feeds, JSON-LD schemas

@@ -1,4 +1,4 @@
-# Craefto Lab Growth Strategy
+# Craefto Works Growth Strategy
 
 ## Vision
 Solo creative tech studio → Productized agency → Product company

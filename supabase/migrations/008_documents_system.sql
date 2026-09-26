@@ -1,4 +1,4 @@
--- Craefto Lab Documents & E-Signature System
+-- Craefto Works Documents & E-Signature System
 -- Phase: Document Automation
 
 -- ============================================

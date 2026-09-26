@@ -141,7 +141,7 @@ const changelog: ChangelogEntry[] = [
         commits: 4,
       },
       {
-        title: "Craefto Lab → Craefto",
+        title: "Business renamed",
         description: "Renamed the business across all pages. Cleaner, sharper, no \"Lab\" suffix.",
         categories: ["branding"],
         commits: 1,

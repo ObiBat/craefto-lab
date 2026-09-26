@@ -58,7 +58,7 @@ This creates a predictable pattern: initial velocity feels good, then slows as t
 
 ## A Different Approach
 
-At Craefto Lab, we think in decades. Not because we''re slow, but because we understand that the most valuable systems are the ones designed to get better over time.
+At Craefto Works, we think in decades. Not because we''re slow, but because we understand that the most valuable systems are the ones designed to get better over time.
 
 <Callout type="tip">
 Compound growth isn''t just for investments. The same principle applies to design systems, codebases, and organizational knowledge.
@@ -94,9 +94,9 @@ We''re not building for the next sprint. We''re building for the next decade. An
 
 ---
 
-*This is the philosophy that guides everything we do at Craefto Lab. If this resonates with you, [let''s talk](/contact).*',
+*This is the philosophy that guides everything we do at Craefto Works. If this resonates with you, [let''s talk](/contact).*',
   (SELECT id FROM journal_pillars WHERE slug = 'systems-thinking' LIMIT 1),
-  (SELECT id FROM journal_authors WHERE slug = 'craefto-lab' LIMIT 1),
+  (SELECT id FROM journal_authors WHERE slug = 'craefto-works' LIMIT 1),
   'article',
   'published',
   5,
@@ -186,7 +186,7 @@ We''re here to help you navigate that process—without the hype.
 
 *Interested in exploring what AI could do for your product? [Get in touch](/contact).*',
   (SELECT id FROM journal_pillars WHERE slug = 'applied-ai' LIMIT 1),
-  (SELECT id FROM journal_authors WHERE slug = 'craefto-lab' LIMIT 1),
+  (SELECT id FROM journal_authors WHERE slug = 'craefto-works' LIMIT 1),
   'deep_dive',
   'published',
   4,

@@ -106,8 +106,8 @@ export const metadata: Metadata = {
     title: "Craefto | Creative Tech Studio",
     description:
       "We design and build brands, products, and tools for founders and teams who value craft.",
-    creator: "@craeftolab",
-    site: "@craeftolab",
+    creator: "@craefto",
+    site: "@craefto",
     images: ["/og-image.png"],
   },
   robots: {

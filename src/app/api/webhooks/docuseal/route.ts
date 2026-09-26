@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createServerClient } from '@/lib/supabase';
 import { verifyWebhookSignature } from '@/lib/documents';
 import { Resend } from 'resend';
+import { EMAIL_FROM } from '@/lib/resend';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 let supabase: SupabaseClient;
@@ -280,7 +281,7 @@ async function notifyAdminOfSignature(signature: {
 
   try {
     await resend.emails.send({
-      from: 'Craefto <noreply@craeftolab.com>',
+      from: EMAIL_FROM,
       to: adminEmail,
       subject: `Signature Received: ${document.document_number}`,
       html: `
@@ -342,7 +343,7 @@ async function sendCompletionEmails(
   if (adminEmail) {
     try {
       await resend.emails.send({
-        from: 'Craefto <noreply@craeftolab.com>',
+        from: EMAIL_FROM,
         to: adminEmail,
         subject: `✓ Fully Signed: ${document.document_number}`,
         html: emailContent,
@@ -356,7 +357,7 @@ async function sendCompletionEmails(
   if (document.lead?.email) {
     try {
       await resend.emails.send({
-        from: 'Craefto <noreply@craeftolab.com>',
+        from: EMAIL_FROM,
         to: document.lead.email,
         subject: `Your Signed Document: ${document.document_number}`,
         html: emailContent.replace(

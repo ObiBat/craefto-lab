@@ -1,4 +1,4 @@
--- Craefto Lab Backend Schema
+-- Craefto Works Backend Schema
 -- Phase 1: Foundation
 
 -- Enable UUID extension

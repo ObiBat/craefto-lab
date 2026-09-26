@@ -1,4 +1,4 @@
-# Craefto Lab Site Improvements
+# Craefto Works Site Improvements
 
 **Goal:** Make every feature effortlessly efficient and genuinely useful.
 

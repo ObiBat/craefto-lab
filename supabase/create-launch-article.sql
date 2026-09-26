@@ -108,7 +108,7 @@ We invite you to visit Craefto.com on February 1st. Explore what we have created
   'article',
   '/images/articles/craefto-launch-featured.png',
   'Craefto Launch Announcement - February 1st, 2026',
-  'February 1st: The Official Launch of Craefto.com | Craefto Lab',
+  'February 1st: The Official Launch of Craefto.com | Craefto Works',
   'Craefto.com officially launches on February 1st, 2026. Discover our vision for a design and technology studio built on the principles of craft and long-term value.',
   ARRAY['craefto launch', 'design studio', 'technology studio', 'february 2026', 'studio launch', 'craft-first design'],
   8,
@@ -120,7 +120,7 @@ We invite you to visit Craefto.com on February 1st. Explore what we have created
 FROM journal_pillars p
 CROSS JOIN journal_authors a
 WHERE p.slug = 'craefto-practice' 
-  AND a.slug = 'craefto-lab'
+  AND a.slug = 'craefto-works'
 LIMIT 1;
 
 -- Add article pillars (Craefto Practice + Design)

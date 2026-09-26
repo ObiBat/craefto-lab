@@ -12,6 +12,15 @@ const nextConfig: NextConfig = {
   allowedDevOrigins: ["http://192.168.1.100:3000"],
   // Required for @sparticuz/chromium to resolve its binary correctly on Vercel
   serverExternalPackages: ["@sparticuz/chromium", "puppeteer-core"],
+  async redirects() {
+    return [
+      {
+        source: "/journal/author/craefto-lab",
+        destination: "/journal/author/craefto-works",
+        permanent: true,
+      },
+    ];
+  },
   images: {
     remotePatterns: [
       {

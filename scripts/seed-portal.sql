@@ -40,7 +40,7 @@ INSERT INTO portal_projects (id, name, slug, description, status, progress, star
   ('22222222-aaaa-bbbb-cccc-222222222222', 'Flux SaaS Platform', 'flux-saas-platform', 'Full-stack SaaS platform build for Flux Analytics including dashboard, data visualization, user management, billing integration, and API.', 'at_risk', 45, '2026-02-01', '2026-05-15'),
   ('33333333-aaaa-bbbb-cccc-333333333333', 'Solaris Marketing Site', 'solaris-marketing-site', 'High-conversion marketing website for Solaris Energy with interactive 3D elements, case studies, and lead generation flows.', 'on_track', 88, '2025-11-01', '2026-03-15'),
   ('44444444-aaaa-bbbb-cccc-444444444444', 'Hatch Mobile App', 'hatch-mobile-app', 'React Native mobile application for Hatch Education including student portal, course management, and real-time messaging.', 'blocked', 31, '2026-01-20', '2026-06-01'),
-  ('55555555-aaaa-bbbb-cccc-555555555555', 'Craefto Lab Internal Tools', 'craefto-internal-tools', 'Internal tooling suite including project management dashboard, time tracking, and client communication portal.', 'on_track', 55, '2026-02-10', '2026-07-01')
+  ('55555555-aaaa-bbbb-cccc-555555555555', 'Craefto Works Internal Tools', 'craefto-internal-tools', 'Internal tooling suite including project management dashboard, time tracking, and client communication portal.', 'on_track', 55, '2026-02-10', '2026-07-01')
 ON CONFLICT DO NOTHING;
 
 -- (Team members, tasks, updates, and timeline events follow the same pattern as applied via migration)

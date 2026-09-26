@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS journal_authors (
 
 -- Create default author
 INSERT INTO journal_authors (name, slug, role, bio, expertise) VALUES
-  ('Craefto Lab', 'craefto-lab', 'Studio', 'A design and technology studio building systems that compound value.', ARRAY['design systems', 'product development', 'applied AI'])
+  ('Craefto Works', 'craefto-works', 'Studio', 'A design and technology studio building systems that compound value.', ARRAY['design systems', 'product development', 'applied AI'])
 ON CONFLICT (slug) DO NOTHING;
 
 -- ============================================

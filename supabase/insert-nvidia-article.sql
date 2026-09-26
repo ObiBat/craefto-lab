@@ -153,7 +153,7 @@ The AI industry is not slowing down. It is growing up. And Nvidia is positioning
 15. Seeking Alpha. "Anthropic may share up to $6.4B with Amazon, Google, Microsoft in 2027." February 18, 2026. [seekingalpha.com](https://seekingalpha.com/news/4553201-anthropic-may-share-up-to-64b-with-amazon-google-microsoft-in-2027)
 16. PYMNTS. "Nvidia Signals Final Investments in OpenAI and Anthropic." March 4, 2026. [pymnts.com](https://www.pymnts.com/artificial-intelligence-2/2026/nvidia-signals-final-investments-in-openai-and-anthropic/)',
   (SELECT id FROM journal_pillars WHERE slug = 'engineering' LIMIT 1),
-  (SELECT id FROM journal_authors WHERE slug = 'craefto-lab' LIMIT 1),
+  (SELECT id FROM journal_authors WHERE slug = 'craefto-works' LIMIT 1),
   'article',
   '/images/journal/hero-nvidia-ai.png',
   'Abstract visualization of Nvidia GPU chip glowing with green circuitry light representing AI infrastructure dominance',

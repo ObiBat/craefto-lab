@@ -38,7 +38,7 @@ INSERT INTO journal_pillars (name, slug, description, color) VALUES
 
 -- Insert an author
 INSERT INTO journal_authors (name, slug, role, bio, expertise) VALUES
-('Craefto Team', 'craefto-team', 'Editorial Team', 'The Craefto Lab editorial team shares insights on design, engineering, and product development.', ARRAY['Design Systems', 'Web Development', 'AI Tools']);
+('Craefto Team', 'craefto-team', 'Editorial Team', 'The Craefto Works editorial team shares insights on design, engineering, and product development.', ARRAY['Design Systems', 'Web Development', 'AI Tools']);
 ```
 
 ---
