@@ -8,7 +8,7 @@ CRAEFTO is a creative-tech studio (Australia) selling design engineering, brand 
 
 The opportunity is to layer professional AI-generated video on top of the same flywheel: every journal article, shipped client project, and service page should have a video counterpart, and the founder's face/voice should appear on social channels weekly without requiring a shoot. The May 2026 AI-video stack (Veo 3.1, Runway Gen-4, HeyGen, ElevenLabs, Descript, OpusClip) is finally good enough to do this without a film crew, at agency-grade quality, for under $600/month.
 
-This playbook is **SaaS-only, no code**. The deliverable is a tool stack, a per-format production workflow, brand-fit guardrails, a 4-week rollout, and a productization path so the same machine can be sold to clients later. It does not modify `craefto-lab`.
+This playbook is **SaaS-only, no code**. The deliverable is a tool stack, a per-format production workflow, brand-fit guardrails, a 4-week rollout, and a productization path so the same machine can be sold to clients later. It does not modify `craefto-works`.
 
 ---
 
@@ -85,7 +85,7 @@ These prevent "generic AI gloss" — the #1 reason AI video reads as cheap:
 
 - **Owner**: founder for week 1–4 (build the muscle), then hand to the Video Editor hire from the careers page once filled.
 - **Cadence**: weekly Friday "video block" — 1 founder talking head + 1 service explainer or case study + auto-generated social shorts off both. Quarterly brand film.
-- **Storage**: Google Drive folder structure mirrored to Supabase storage if/when the workflow is wired into `craefto-lab` later.
+- **Storage**: Google Drive folder structure mirrored to Supabase storage if/when the workflow is wired into `craefto-works` later.
 - **Approval**: founder reviews everything in week 1–2; after that, the Video Editor publishes social shorts directly and only escalates brand films + case studies.
 
 ---
@@ -144,13 +144,13 @@ Once the internal pipeline is humming, the same stack productizes for clients wi
 
 - **Client intake form** (Tally/Typeform → Supabase) → brief → assigned brand kit slot in HeyGen/Runway.
 - **White-label exports** (HeyGen + Descript both support custom branding).
-- **A 6th agent in the existing pipeline** ("Video Producer" agent next to Editorial Writer / Topic Scout) that turns a journal article or brief into a Runway/HeyGen API call. This is the moment to wire the SaaS stack into `craefto-lab` properly — and would be the subject of a separate plan.
+- **A 6th agent in the existing pipeline** ("Video Producer" agent next to Editorial Writer / Topic Scout) that turns a journal article or brief into a Runway/HeyGen API call. This is the moment to wire the SaaS stack into `craefto-works` properly — and would be the subject of a separate plan.
 
 ---
 
 ## Out of Scope (intentionally)
 
-- Any code changes in `craefto-lab`.
+- Any code changes in `craefto-works`.
 - Building a custom video studio UI under `/lab` or `/admin`.
 - Integration with the existing 5-stage agent pipeline.
 - Synthesia, Sora, Kling (rejected — see Stack notes).

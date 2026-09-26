@@ -6,7 +6,7 @@ from reportlab.pdfgen import canvas
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 
-OUTPUT = "/Users/craefto/Developer/craefto-lab/public/craefto-company-profile.pdf"
+OUTPUT = "/Users/craefto/Developer/craefto-works/public/craefto-company-profile.pdf"
 
 # Colors
 BLACK = HexColor("#0A0A0A")

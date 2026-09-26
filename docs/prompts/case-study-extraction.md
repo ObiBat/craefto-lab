@@ -1,6 +1,6 @@
 # Case Study Extraction Prompt
 
-Paste everything below the line into a Claude Code session opened at the root of a client project repo. It investigates the repo and writes one Markdown file to the Desktop containing a ready-to-add entry for the Craefto `/work` case study section, a shot list, and the questions only the client can answer. Bring that file back to the craefto-lab repo to have the case study added.
+Paste everything below the line into a Claude Code session opened at the root of a client project repo. It investigates the repo and writes one Markdown file to the Desktop containing a ready-to-add entry for the Craefto `/work` case study section, a shot list, and the questions only the client can answer. Bring that file back to the craefto-works repo to have the case study added.
 
 ---
 

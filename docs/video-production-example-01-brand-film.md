@@ -505,4 +505,4 @@ crane reveals. Cuts are slow (1.5–3 seconds). Subjects move at
 real-world speed; no slow-motion unless explicitly noted.
 ```
 
-Lock these into your `craefto-lab/docs/` as `video-prompt-library.md` once they survive 3 productions unchanged.
+Lock these into your `craefto-works/docs/` as `video-prompt-library.md` once they survive 3 productions unchanged.

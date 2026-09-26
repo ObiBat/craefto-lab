@@ -1,6 +1,6 @@
 # Stakeholder Updates Portal — Build Spec
 
-## Stack (Existing craefto-lab)
+## Stack (Existing craefto-works)
 - Next.js 16.1.1, React 19, TypeScript 5.9.3
 - Tailwind CSS 4, Framer Motion 12
 - Supabase (already integrated: @supabase/supabase-js 2.90.1)
@@ -82,7 +82,7 @@ All new files under src/app/portal/ and src/components/portal/
 - supabase/migrations/xxx-portal-tables.sql
 
 ## Deliverables
-1. Working codebase integrated into existing craefto-lab repo
+1. Working codebase integrated into existing craefto-works repo
 2. Supabase migration for portal tables
 3. README section for portal setup
 4. Demo seed data script
