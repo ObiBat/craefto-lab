@@ -1,9 +1,9 @@
 /**
  * Generates every favicon / app icon from the logo mark.
  *
- * The mark sits on a solid ink tile (#1A1714) in cream (#FAF7F2), so it keeps
- * strong contrast on light, dark and tinted browser chrome alike — the same
- * approach most product brands take instead of a transparent or white icon.
+ * The mark sits in black on a white tile with generous padding, so it keeps
+ * strong contrast on light, dark and tinted browser chrome alike: on a light
+ * tab bar it reads as a plain black mark, on a dark one as a white tile.
  *
  * Run: node scripts/generate-favicons.js
  */
@@ -14,8 +14,8 @@ const path = require('path');
 const publicDir = path.join(__dirname, '..', 'public');
 const appDir = path.join(__dirname, '..', 'src', 'app');
 
-const INK = '#1A1714';
-const CREAM = '#FAF7F2';
+const TILE = '#FFFFFF';
+const MARK = '#000000';
 
 // Logo mark v2 — potrace path in a 400x400 box (bbox ≈ 61..339, centered).
 const MARK_PATH =
@@ -33,9 +33,9 @@ function iconSvg({ mark, radius }) {
   const offset = S / 2 - 200 * scale; // mark is centered at 200,200
   const r = S * radius;
   return `<svg width="${S}" height="${S}" viewBox="0 0 ${S} ${S}" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="${S}" height="${S}" rx="${r}" fill="${INK}"/>
+  <rect width="${S}" height="${S}" rx="${r}" fill="${TILE}"/>
   <g transform="translate(${offset.toFixed(2)}, ${offset.toFixed(2)}) scale(${scale.toFixed(4)})">
-    <g transform="translate(0,400) scale(0.1,-0.1)" fill="${CREAM}" fill-rule="nonzero">
+    <g transform="translate(0,400) scale(0.1,-0.1)" fill="${MARK}" fill-rule="nonzero">
       <path d="${MARK_PATH}"/>
     </g>
   </g>
@@ -43,15 +43,15 @@ function iconSvg({ mark, radius }) {
 `;
 }
 
-// Browser tab: rounded tile, mark sized for legibility at 16–32px.
-const tabSvg = iconSvg({ mark: 0.64, radius: 0.22 });
-// Tiny rasters get a bigger mark — padding eats pixels at 16px.
-const tinySvg = iconSvg({ mark: 0.72, radius: 0.2 });
+// Browser tab: rounded tile, mark at 56% so there is clear space on every
+// edge while it stays legible at 16px.
+const tabSvg = iconSvg({ mark: 0.56, radius: 0.22 });
+const tinySvg = iconSvg({ mark: 0.56, radius: 0.2 });
 // Home-screen / PWA "any": rounded tile.
-const appSvg = iconSvg({ mark: 0.6, radius: 0.22 });
+const appSvg = iconSvg({ mark: 0.52, radius: 0.22 });
 // iOS & maskable: full-bleed square (the OS applies its own mask);
 // mark stays inside the 80% maskable safe zone.
-const bleedSvg = iconSvg({ mark: 0.52, radius: 0 });
+const bleedSvg = iconSvg({ mark: 0.46, radius: 0 });
 
 const png = (svg, size) =>
   sharp(Buffer.from(svg), { density: 384 }).resize(size, size).png().toBuffer();
